@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-17T20:02:31-0500",
-    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
+    date = "2024-03-17T22:06:24-0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
 )
 @Component
 public class RespuestaExamenValoracionMapperImpl implements RespuestaExamenValoracionMapper {
@@ -25,13 +25,13 @@ public class RespuestaExamenValoracionMapperImpl implements RespuestaExamenValor
 
         RespuestaExamenValoracionBuilder respuestaExamenValoracion = RespuestaExamenValoracion.builder();
 
-        respuestaExamenValoracion.estadoFinalizado( dto.getEstadoFinalizado() );
-        respuestaExamenValoracion.fechaMaxmiaEntrega( dto.getFechaMaxmiaEntrega() );
         respuestaExamenValoracion.linkFormatoB( dto.getLinkFormatoB() );
         respuestaExamenValoracion.linkFormatoC( dto.getLinkFormatoC() );
-        respuestaExamenValoracion.observacion( dto.getObservacion() );
         respuestaExamenValoracion.observaciones( dto.getObservaciones() );
         respuestaExamenValoracion.respuestaExamenValoracion( dto.getRespuestaExamenValoracion() );
+        respuestaExamenValoracion.fechaMaxmiaEntrega( dto.getFechaMaxmiaEntrega() );
+        respuestaExamenValoracion.estadoFinalizado( dto.getEstadoFinalizado() );
+        respuestaExamenValoracion.observacion( dto.getObservacion() );
 
         return respuestaExamenValoracion.build();
     }
@@ -44,13 +44,13 @@ public class RespuestaExamenValoracionMapperImpl implements RespuestaExamenValor
 
         RespuestaExamenValoracionDtoBuilder respuestaExamenValoracionDto = RespuestaExamenValoracionDto.builder();
 
-        respuestaExamenValoracionDto.estadoFinalizado( entity.getEstadoFinalizado() );
-        respuestaExamenValoracionDto.fechaMaxmiaEntrega( entity.getFechaMaxmiaEntrega() );
         respuestaExamenValoracionDto.linkFormatoB( entity.getLinkFormatoB() );
         respuestaExamenValoracionDto.linkFormatoC( entity.getLinkFormatoC() );
-        respuestaExamenValoracionDto.observacion( entity.getObservacion() );
         respuestaExamenValoracionDto.observaciones( entity.getObservaciones() );
         respuestaExamenValoracionDto.respuestaExamenValoracion( entity.getRespuestaExamenValoracion() );
+        respuestaExamenValoracionDto.fechaMaxmiaEntrega( entity.getFechaMaxmiaEntrega() );
+        respuestaExamenValoracionDto.estadoFinalizado( entity.getEstadoFinalizado() );
+        respuestaExamenValoracionDto.observacion( entity.getObservacion() );
 
         return respuestaExamenValoracionDto.build();
     }

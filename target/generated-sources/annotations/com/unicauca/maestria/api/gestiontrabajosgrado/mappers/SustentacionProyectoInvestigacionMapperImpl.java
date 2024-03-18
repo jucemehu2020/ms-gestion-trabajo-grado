@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-17T20:02:31-0500",
-    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
+    date = "2024-03-17T22:06:24-0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
 )
 @Component
 public class SustentacionProyectoInvestigacionMapperImpl implements SustentacionProyectoInvestigacionMapper {
@@ -25,16 +25,16 @@ public class SustentacionProyectoInvestigacionMapperImpl implements Sustentacion
 
         SustentacionTrabajoInvestigacionBuilder sustentacionTrabajoInvestigacion = SustentacionTrabajoInvestigacion.builder();
 
-        sustentacionTrabajoInvestigacion.fechaActa( dto.getFechaActa() );
+        sustentacionTrabajoInvestigacion.linkRemisionDocumentoFinal( dto.getLinkRemisionDocumentoFinal() );
+        sustentacionTrabajoInvestigacion.urlDocumentacion( dto.getUrlDocumentacion() );
+        sustentacionTrabajoInvestigacion.linkRemisionDocumentoFinalCF( dto.getLinkRemisionDocumentoFinalCF() );
+        sustentacionTrabajoInvestigacion.linkConstanciaDocumentoFinal( dto.getLinkConstanciaDocumentoFinal() );
         sustentacionTrabajoInvestigacion.linkActaSustentacion( dto.getLinkActaSustentacion() );
         sustentacionTrabajoInvestigacion.linkActaSustentacionPublica( dto.getLinkActaSustentacionPublica() );
-        sustentacionTrabajoInvestigacion.linkConstanciaDocumentoFinal( dto.getLinkConstanciaDocumentoFinal() );
-        sustentacionTrabajoInvestigacion.linkEstudioHojaVidaAcademica( dto.getLinkEstudioHojaVidaAcademica() );
-        sustentacionTrabajoInvestigacion.linkRemisionDocumentoFinal( dto.getLinkRemisionDocumentoFinal() );
-        sustentacionTrabajoInvestigacion.linkRemisionDocumentoFinalCF( dto.getLinkRemisionDocumentoFinalCF() );
-        sustentacionTrabajoInvestigacion.numeroActaTrabajoFinal( dto.getNumeroActaTrabajoFinal() );
         sustentacionTrabajoInvestigacion.respuestaSustentacion( dto.getRespuestaSustentacion() );
-        sustentacionTrabajoInvestigacion.urlDocumentacion( dto.getUrlDocumentacion() );
+        sustentacionTrabajoInvestigacion.linkEstudioHojaVidaAcademica( dto.getLinkEstudioHojaVidaAcademica() );
+        sustentacionTrabajoInvestigacion.numeroActaTrabajoFinal( dto.getNumeroActaTrabajoFinal() );
+        sustentacionTrabajoInvestigacion.fechaActa( dto.getFechaActa() );
 
         return sustentacionTrabajoInvestigacion.build();
     }
@@ -47,16 +47,16 @@ public class SustentacionProyectoInvestigacionMapperImpl implements Sustentacion
 
         SustentacionTrabajoInvestigacionDtoBuilder sustentacionTrabajoInvestigacionDto = SustentacionTrabajoInvestigacionDto.builder();
 
-        sustentacionTrabajoInvestigacionDto.fechaActa( entity.getFechaActa() );
+        sustentacionTrabajoInvestigacionDto.linkRemisionDocumentoFinal( entity.getLinkRemisionDocumentoFinal() );
+        sustentacionTrabajoInvestigacionDto.urlDocumentacion( entity.getUrlDocumentacion() );
+        sustentacionTrabajoInvestigacionDto.linkRemisionDocumentoFinalCF( entity.getLinkRemisionDocumentoFinalCF() );
+        sustentacionTrabajoInvestigacionDto.linkConstanciaDocumentoFinal( entity.getLinkConstanciaDocumentoFinal() );
         sustentacionTrabajoInvestigacionDto.linkActaSustentacion( entity.getLinkActaSustentacion() );
         sustentacionTrabajoInvestigacionDto.linkActaSustentacionPublica( entity.getLinkActaSustentacionPublica() );
-        sustentacionTrabajoInvestigacionDto.linkConstanciaDocumentoFinal( entity.getLinkConstanciaDocumentoFinal() );
-        sustentacionTrabajoInvestigacionDto.linkEstudioHojaVidaAcademica( entity.getLinkEstudioHojaVidaAcademica() );
-        sustentacionTrabajoInvestigacionDto.linkRemisionDocumentoFinal( entity.getLinkRemisionDocumentoFinal() );
-        sustentacionTrabajoInvestigacionDto.linkRemisionDocumentoFinalCF( entity.getLinkRemisionDocumentoFinalCF() );
-        sustentacionTrabajoInvestigacionDto.numeroActaTrabajoFinal( entity.getNumeroActaTrabajoFinal() );
         sustentacionTrabajoInvestigacionDto.respuestaSustentacion( entity.getRespuestaSustentacion() );
-        sustentacionTrabajoInvestigacionDto.urlDocumentacion( entity.getUrlDocumentacion() );
+        sustentacionTrabajoInvestigacionDto.linkEstudioHojaVidaAcademica( entity.getLinkEstudioHojaVidaAcademica() );
+        sustentacionTrabajoInvestigacionDto.numeroActaTrabajoFinal( entity.getNumeroActaTrabajoFinal() );
+        sustentacionTrabajoInvestigacionDto.fechaActa( entity.getFechaActa() );
 
         return sustentacionTrabajoInvestigacionDto.build();
     }
