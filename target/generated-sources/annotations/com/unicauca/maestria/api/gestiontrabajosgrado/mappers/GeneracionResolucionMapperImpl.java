@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-17T22:06:24-0500",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
+    date = "2024-03-26T09:19:48-0500",
+    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class GeneracionResolucionMapperImpl implements GeneracionResolucionMapper {
@@ -25,17 +25,17 @@ public class GeneracionResolucionMapperImpl implements GeneracionResolucionMappe
 
         GeneracionResolucionBuilder generacionResolucion = GeneracionResolucion.builder();
 
-        generacionResolucion.titulo( dto.getTitulo() );
-        generacionResolucion.director( dto.getDirector() );
         generacionResolucion.codirector( dto.getCodirector() );
-        generacionResolucion.numeroActaRevision( dto.getNumeroActaRevision() );
+        generacionResolucion.director( dto.getDirector() );
         generacionResolucion.fechaActa( dto.getFechaActa() );
+        generacionResolucion.fechaResolucion( dto.getFechaResolucion() );
         generacionResolucion.linkAnteproyectoAprobado( dto.getLinkAnteproyectoAprobado() );
+        generacionResolucion.linkResolucionGeneradaCF( dto.getLinkResolucionGeneradaCF() );
         generacionResolucion.linkSolicitudComite( dto.getLinkSolicitudComite() );
         generacionResolucion.linkSolicitudConcejoFacultad( dto.getLinkSolicitudConcejoFacultad() );
+        generacionResolucion.numeroActaRevision( dto.getNumeroActaRevision() );
         generacionResolucion.numeroResolucionGeneradaCF( dto.getNumeroResolucionGeneradaCF() );
-        generacionResolucion.fechaResolucion( dto.getFechaResolucion() );
-        generacionResolucion.linkResolucionGeneradaCF( dto.getLinkResolucionGeneradaCF() );
+        generacionResolucion.titulo( dto.getTitulo() );
 
         return generacionResolucion.build();
     }
@@ -48,17 +48,17 @@ public class GeneracionResolucionMapperImpl implements GeneracionResolucionMappe
 
         GeneracionResolucionDtoBuilder generacionResolucionDto = GeneracionResolucionDto.builder();
 
-        generacionResolucionDto.titulo( entity.getTitulo() );
-        generacionResolucionDto.director( entity.getDirector() );
         generacionResolucionDto.codirector( entity.getCodirector() );
-        generacionResolucionDto.numeroActaRevision( entity.getNumeroActaRevision() );
+        generacionResolucionDto.director( entity.getDirector() );
         generacionResolucionDto.fechaActa( entity.getFechaActa() );
+        generacionResolucionDto.fechaResolucion( entity.getFechaResolucion() );
         generacionResolucionDto.linkAnteproyectoAprobado( entity.getLinkAnteproyectoAprobado() );
+        generacionResolucionDto.linkResolucionGeneradaCF( entity.getLinkResolucionGeneradaCF() );
         generacionResolucionDto.linkSolicitudComite( entity.getLinkSolicitudComite() );
         generacionResolucionDto.linkSolicitudConcejoFacultad( entity.getLinkSolicitudConcejoFacultad() );
+        generacionResolucionDto.numeroActaRevision( entity.getNumeroActaRevision() );
         generacionResolucionDto.numeroResolucionGeneradaCF( entity.getNumeroResolucionGeneradaCF() );
-        generacionResolucionDto.fechaResolucion( entity.getFechaResolucion() );
-        generacionResolucionDto.linkResolucionGeneradaCF( entity.getLinkResolucionGeneradaCF() );
+        generacionResolucionDto.titulo( entity.getTitulo() );
 
         return generacionResolucionDto.build();
     }

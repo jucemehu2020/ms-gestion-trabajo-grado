@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-17T22:06:24-0500",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
+    date = "2024-03-26T09:19:48-0500",
+    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class TrabajoGradoMapperImpl implements TrabajoGradoMapper {
@@ -25,9 +25,9 @@ public class TrabajoGradoMapperImpl implements TrabajoGradoMapper {
 
         TrabajoGradoBuilder trabajoGrado = TrabajoGrado.builder();
 
-        trabajoGrado.id( dto.getId() );
         trabajoGrado.estado( dto.getEstado() );
         trabajoGrado.fechaCreacion( dto.getFechaCreacion() );
+        trabajoGrado.id( dto.getId() );
         trabajoGrado.numeroEstado( dto.getNumeroEstado() );
 
         return trabajoGrado.build();
@@ -41,9 +41,9 @@ public class TrabajoGradoMapperImpl implements TrabajoGradoMapper {
 
         TrabajoGradoDtoBuilder trabajoGradoDto = TrabajoGradoDto.builder();
 
-        trabajoGradoDto.id( entity.getId() );
         trabajoGradoDto.estado( entity.getEstado() );
         trabajoGradoDto.fechaCreacion( entity.getFechaCreacion() );
+        trabajoGradoDto.id( entity.getId() );
         trabajoGradoDto.numeroEstado( entity.getNumeroEstado() );
 
         return trabajoGradoDto.build();

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-17T22:06:24-0500",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
+    date = "2024-03-26T09:19:48-0500",
+    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class ExamenValoracionMapperImpl implements ExamenValoracionMapper {
@@ -25,15 +25,15 @@ public class ExamenValoracionMapperImpl implements ExamenValoracionMapper {
 
         SolicitudExamenValoracionBuilder solicitudExamenValoracion = SolicitudExamenValoracion.builder();
 
-        solicitudExamenValoracion.titulo( dto.getTitulo() );
-        solicitudExamenValoracion.linkFormatoA( dto.getLinkFormatoA() );
-        solicitudExamenValoracion.linkFormatoD( dto.getLinkFormatoD() );
-        solicitudExamenValoracion.linkFormatoE( dto.getLinkFormatoE() );
         solicitudExamenValoracion.evaluadorExterno( dto.getEvaluadorExterno() );
         solicitudExamenValoracion.evaluadorInterno( dto.getEvaluadorInterno() );
         solicitudExamenValoracion.fechaActa( dto.getFechaActa() );
-        solicitudExamenValoracion.linkOficioDirigidoEvaluadores( dto.getLinkOficioDirigidoEvaluadores() );
         solicitudExamenValoracion.fechaMaximaEvaluacion( dto.getFechaMaximaEvaluacion() );
+        solicitudExamenValoracion.linkFormatoA( dto.getLinkFormatoA() );
+        solicitudExamenValoracion.linkFormatoD( dto.getLinkFormatoD() );
+        solicitudExamenValoracion.linkFormatoE( dto.getLinkFormatoE() );
+        solicitudExamenValoracion.linkOficioDirigidoEvaluadores( dto.getLinkOficioDirigidoEvaluadores() );
+        solicitudExamenValoracion.titulo( dto.getTitulo() );
 
         return solicitudExamenValoracion.build();
     }
@@ -46,15 +46,15 @@ public class ExamenValoracionMapperImpl implements ExamenValoracionMapper {
 
         ExamenValoracionDtoBuilder examenValoracionDto = ExamenValoracionDto.builder();
 
-        examenValoracionDto.titulo( entity.getTitulo() );
-        examenValoracionDto.linkFormatoA( entity.getLinkFormatoA() );
-        examenValoracionDto.linkFormatoD( entity.getLinkFormatoD() );
-        examenValoracionDto.linkFormatoE( entity.getLinkFormatoE() );
         examenValoracionDto.evaluadorExterno( entity.getEvaluadorExterno() );
         examenValoracionDto.evaluadorInterno( entity.getEvaluadorInterno() );
         examenValoracionDto.fechaActa( entity.getFechaActa() );
-        examenValoracionDto.linkOficioDirigidoEvaluadores( entity.getLinkOficioDirigidoEvaluadores() );
         examenValoracionDto.fechaMaximaEvaluacion( entity.getFechaMaximaEvaluacion() );
+        examenValoracionDto.linkFormatoA( entity.getLinkFormatoA() );
+        examenValoracionDto.linkFormatoD( entity.getLinkFormatoD() );
+        examenValoracionDto.linkFormatoE( entity.getLinkFormatoE() );
+        examenValoracionDto.linkOficioDirigidoEvaluadores( entity.getLinkOficioDirigidoEvaluadores() );
+        examenValoracionDto.titulo( entity.getTitulo() );
 
         return examenValoracionDto.build();
     }

@@ -1,5 +1,8 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_grado;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -8,8 +11,10 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClien
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.estudiante.Estudiante;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.InformacionEstudianteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
@@ -30,9 +35,16 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 
 	@Override
 	@Transactional(readOnly = true)
-	public EstudianteResponseDtoAll obtenerEstudiantes() {
-		EstudianteResponseDtoAll infomracionEstudiantes = archivoClient.obtenerEstudiantes();
-		return infomracionEstudiantes;
+	public List<EstudianteInfoDto> obtenerEstudiantes() {
+		List<EstudianteResponseDtoAll> informacionEstudiantes = archivoClient.obtenerEstudiantes();
+		List<EstudianteInfoDto> estudiantesReducidos = informacionEstudiantes.stream()
+				.map(estudiante -> new EstudianteInfoDto(
+						estudiante.getPersona().getNombre(),
+						estudiante.getPersona().getApellido(),
+						estudiante.getPersona().getTipoIdentificacion(),
+						estudiante.getPersona().getIdentificacion()))
+				.collect(Collectors.toList());
+		return estudiantesReducidos;
 	}
 
 	@Override
