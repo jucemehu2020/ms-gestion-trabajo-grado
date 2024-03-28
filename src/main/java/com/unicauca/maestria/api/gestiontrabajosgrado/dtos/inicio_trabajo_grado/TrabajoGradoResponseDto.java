@@ -14,13 +14,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TrabajoGradoDto {
+public class TrabajoGradoResponseDto {
 	private Long id;
 
+	@NotBlank
 	private String estado;
 
+	@NotNull
 	private LocalDate fechaCreacion;
 
+	@NotBlank
 	private Integer numeroEstado;
-
 }

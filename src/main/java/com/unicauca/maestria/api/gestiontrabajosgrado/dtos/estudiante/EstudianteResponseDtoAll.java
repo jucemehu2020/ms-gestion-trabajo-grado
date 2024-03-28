@@ -30,6 +30,6 @@ public class EstudianteResponseDtoAll {
 	private InformacionMaestriaActual informacionMaestria;
 	private List<ProrrogaDto> prorrogas;
 	private List<ReingresoDto> reingresos;
-	private Boolean estadoTrabajoGrado;
+	private Integer estadoTrabajoGrado;
 	private List<TrabajoGradoDto> trabajoGrado;
 }

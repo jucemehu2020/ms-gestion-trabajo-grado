@@ -14,6 +14,5 @@ import lombok.NoArgsConstructor;
 public class EstudianteResponseDto {
 
 	private Long id;
-	private Boolean estadoTrabajoGrado;
 	private List<TrabajoGradoDto> trabajoGrado;
 }

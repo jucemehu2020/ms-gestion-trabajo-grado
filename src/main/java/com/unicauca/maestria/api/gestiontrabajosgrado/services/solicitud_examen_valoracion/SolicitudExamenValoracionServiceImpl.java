@@ -9,8 +9,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_va
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExamenValoracionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.*;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.ExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;

@@ -40,11 +40,9 @@ public class TrabajoGrado {
     @JoinColumn(name = "id_estudiante")
     private Estudiante estudiante;
 
-    private String estado;
-
     private LocalDate fechaCreacion;
 
-    private String numeroEstado;
+    private Integer numeroEstado;
 
     @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
     private SolicitudExamenValoracion examenValoracion;

@@ -12,12 +12,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.InformacionEstudianteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_grado.InicioTrabajoGradoService;
 
 @RequiredArgsConstructor
@@ -39,11 +37,10 @@ public class InicioTrabajoGradoController {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.buscarEstadoEstudiantePor(id));
     }
 
-    @PostMapping
-    public ResponseEntity<TrabajoGradoDto> crearTrabajoGrado(@Valid @RequestBody TrabajoGradoDto trabajoGrado,
-            BindingResult result) {
+    @PostMapping("/{idEstudiante}")
+    public ResponseEntity<TrabajoGradoResponseDto> crearTrabajoGrado(@PathVariable Long idEstudiante) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(inicioTrabajoGradoService.crearTrabajoGrado(trabajoGrado, result));
+                .body(inicioTrabajoGradoService.crearTrabajoGrado(idEstudiante));
     }
 
 }

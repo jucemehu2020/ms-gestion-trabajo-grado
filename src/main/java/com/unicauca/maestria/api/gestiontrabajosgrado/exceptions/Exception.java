@@ -8,8 +8,9 @@ import lombok.Data;
 @Data
 @Builder
 public class Exception {
-        private String mensaje;
-    private HttpStatus estado;
-    private LocalDate marcaTiempo;
-    private String descripcionUrl;
+
+	private String mensaje;
+	private HttpStatus estado;
+	private LocalDate marcaTiempo;
+	private String descripcionUrl;
 }

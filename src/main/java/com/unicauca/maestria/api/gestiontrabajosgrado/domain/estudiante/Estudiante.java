@@ -66,7 +66,7 @@ public class Estudiante {
 
 	// Nuevo trabajo de grado
 	@Column(unique = true)
-	private Boolean estadoTrabajoGrado;
+	private Integer estadoTrabajoGrado;
 
 	public Estudiante() {
 		this.prorrogas = new ArrayList<>();
