@@ -4,17 +4,13 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_grado.InicioTrabajoGradoService;
 
@@ -41,6 +37,12 @@ public class InicioTrabajoGradoController {
     public ResponseEntity<TrabajoGradoResponseDto> crearTrabajoGrado(@PathVariable Long idEstudiante) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(inicioTrabajoGradoService.crearTrabajoGrado(idEstudiante));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> eliminarTrabajoGrado(@PathVariable Long id) {
+        inicioTrabajoGradoService.eliminarTrabajoGrado(id);
+        return ResponseEntity.ok().build();
     }
 
 }

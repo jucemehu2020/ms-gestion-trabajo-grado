@@ -11,40 +11,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-28T00:42:43-0500",
+    date = "2024-03-29T00:03:29-0500",
     comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class TrabajoGradoMapperImpl implements TrabajoGradoMapper {
-
-    @Override
-    public TrabajoGradoDto toDto(TrabajoGrado entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        TrabajoGradoDtoBuilder trabajoGradoDto = TrabajoGradoDto.builder();
-
-        trabajoGradoDto.fechaCreacion( entity.getFechaCreacion() );
-        trabajoGradoDto.id( entity.getId() );
-        trabajoGradoDto.numeroEstado( entity.getNumeroEstado() );
-
-        return trabajoGradoDto.build();
-    }
-
-    @Override
-    public List<TrabajoGradoDto> toDtoList(List<TrabajoGrado> entities) {
-        if ( entities == null ) {
-            return null;
-        }
-
-        List<TrabajoGradoDto> list = new ArrayList<TrabajoGradoDto>( entities.size() );
-        for ( TrabajoGrado trabajoGrado : entities ) {
-            list.add( toDto( trabajoGrado ) );
-        }
-
-        return list;
-    }
 
     @Override
     public TrabajoGrado toEntity(TrabajoGradoDto dto) {
@@ -62,6 +33,21 @@ public class TrabajoGradoMapperImpl implements TrabajoGradoMapper {
     }
 
     @Override
+    public TrabajoGradoDto toDto(TrabajoGrado entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        TrabajoGradoDtoBuilder trabajoGradoDto = TrabajoGradoDto.builder();
+
+        trabajoGradoDto.fechaCreacion( entity.getFechaCreacion() );
+        trabajoGradoDto.id( entity.getId() );
+        trabajoGradoDto.numeroEstado( entity.getNumeroEstado() );
+
+        return trabajoGradoDto.build();
+    }
+
+    @Override
     public List<TrabajoGrado> toEntityList(List<TrabajoGradoDto> dtos) {
         if ( dtos == null ) {
             return null;
@@ -70,6 +56,20 @@ public class TrabajoGradoMapperImpl implements TrabajoGradoMapper {
         List<TrabajoGrado> list = new ArrayList<TrabajoGrado>( dtos.size() );
         for ( TrabajoGradoDto trabajoGradoDto : dtos ) {
             list.add( toEntity( trabajoGradoDto ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<TrabajoGradoDto> toDtoList(List<TrabajoGrado> entities) {
+        if ( entities == null ) {
+            return null;
+        }
+
+        List<TrabajoGradoDto> list = new ArrayList<TrabajoGradoDto>( entities.size() );
+        for ( TrabajoGrado trabajoGrado : entities ) {
+            list.add( toDto( trabajoGrado ) );
         }
 
         return list;

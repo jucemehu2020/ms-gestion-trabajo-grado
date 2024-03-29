@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 public class ExamenValoracionDto {
 
     @NotNull
-    private Long idTrabajoGrados; // Cambiado a Long
+    private Long idTrabajoGrados; 
 
     @NotNull
     private String titulo;

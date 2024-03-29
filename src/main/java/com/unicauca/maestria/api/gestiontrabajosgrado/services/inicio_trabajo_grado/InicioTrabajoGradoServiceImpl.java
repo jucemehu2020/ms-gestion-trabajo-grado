@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.EstadoMaestriaActual;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.estudiante.Estudiante;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.InformacionEstudianteResponseDto;
@@ -110,6 +111,16 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		trabajoGradoConvertDto.setEstado(estadoEnum.getMensaje());
 
 		return trabajoGradoConvertDto;
+	}
+
+	@Override
+	@Transactional
+	public void eliminarTrabajoGrado(Long idTrabajoGrado) {
+		trabajoGradoRepository.findById(idTrabajoGrado)
+				.orElseThrow(
+						() -> new ResourceNotFoundException("Tarabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
+		trabajoGradoRepository.deleteById(idTrabajoGrado);
+
 	}
 
 }
