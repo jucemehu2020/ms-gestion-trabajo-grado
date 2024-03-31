@@ -1,7 +1,6 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.TipoIdentificacion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

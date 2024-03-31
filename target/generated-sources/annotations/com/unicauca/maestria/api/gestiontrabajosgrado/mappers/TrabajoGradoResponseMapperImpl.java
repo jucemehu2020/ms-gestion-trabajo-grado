@@ -11,26 +11,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-29T00:03:29-0500",
+    date = "2024-03-31T18:29:47-0500",
     comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class TrabajoGradoResponseMapperImpl implements TrabajoGradoResponseMapper {
-
-    @Override
-    public TrabajoGrado toEntity(TrabajoGradoResponseDto dto) {
-        if ( dto == null ) {
-            return null;
-        }
-
-        TrabajoGradoBuilder trabajoGrado = TrabajoGrado.builder();
-
-        trabajoGrado.fechaCreacion( dto.getFechaCreacion() );
-        trabajoGrado.id( dto.getId() );
-        trabajoGrado.numeroEstado( dto.getNumeroEstado() );
-
-        return trabajoGrado.build();
-    }
 
     @Override
     public TrabajoGradoResponseDto toDto(TrabajoGrado entity) {
@@ -48,20 +33,6 @@ public class TrabajoGradoResponseMapperImpl implements TrabajoGradoResponseMappe
     }
 
     @Override
-    public List<TrabajoGrado> toEntityList(List<TrabajoGradoResponseDto> dtos) {
-        if ( dtos == null ) {
-            return null;
-        }
-
-        List<TrabajoGrado> list = new ArrayList<TrabajoGrado>( dtos.size() );
-        for ( TrabajoGradoResponseDto trabajoGradoResponseDto : dtos ) {
-            list.add( toEntity( trabajoGradoResponseDto ) );
-        }
-
-        return list;
-    }
-
-    @Override
     public List<TrabajoGradoResponseDto> toDtoList(List<TrabajoGrado> entities) {
         if ( entities == null ) {
             return null;
@@ -70,6 +41,35 @@ public class TrabajoGradoResponseMapperImpl implements TrabajoGradoResponseMappe
         List<TrabajoGradoResponseDto> list = new ArrayList<TrabajoGradoResponseDto>( entities.size() );
         for ( TrabajoGrado trabajoGrado : entities ) {
             list.add( toDto( trabajoGrado ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public TrabajoGrado toEntity(TrabajoGradoResponseDto dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        TrabajoGradoBuilder trabajoGrado = TrabajoGrado.builder();
+
+        trabajoGrado.fechaCreacion( dto.getFechaCreacion() );
+        trabajoGrado.id( dto.getId() );
+        trabajoGrado.numeroEstado( dto.getNumeroEstado() );
+
+        return trabajoGrado.build();
+    }
+
+    @Override
+    public List<TrabajoGrado> toEntityList(List<TrabajoGradoResponseDto> dtos) {
+        if ( dtos == null ) {
+            return null;
+        }
+
+        List<TrabajoGrado> list = new ArrayList<TrabajoGrado>( dtos.size() );
+        for ( TrabajoGradoResponseDto trabajoGradoResponseDto : dtos ) {
+            list.add( toEntity( trabajoGradoResponseDto ) );
         }
 
         return list;
