@@ -6,23 +6,16 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.EstadoMaestriaActual;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.estudiante.Estudiante;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.InformacionEstudianteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
-import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.estudiante.EstudianteRepository;
@@ -35,7 +28,6 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 
 	private final EstudianteRepository estudianteRepository;
 	private final TrabajoGradoRepository trabajoGradoRepository;
-	private final TrabajoGradoMapper trabajoGradoMapper;
 	private final TrabajoGradoResponseMapper trabajoGradoResponseMapper;
 	private final ArchivoClient archivoClient;
 
@@ -56,19 +48,22 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	@Override
 	@Transactional(readOnly = true)
 	public EstudianteResponseDto buscarEstadoEstudiantePor(Long idEstudiante) {
+
+		// Consultar si existe estudiante
+		estudianteRepository.findById(idEstudiante)
+				.orElseThrow(
+						() -> new ResourceNotFoundException("Estudiante con id: " + idEstudiante + " No encontrado"));
+
+		// Si existe consulta los datos del otro ms
 		EstudianteResponseDto estadoTmp = archivoClient.obtenerPorIdEstudiante(idEstudiante);
-		System.out.println(estadoTmp);
 
 		// Obtener la lista de trabajos de grado del estudiante
-		List<TrabajoGradoDto> trabajosGrado = estadoTmp.getTrabajoGrado();
+		List<TrabajoGradoResponseDto> trabajosGrado = estadoTmp.getTrabajoGrado();
 
 		// Iterar sobre los trabajos de grado para modificar el estado
-		for (TrabajoGradoDto trabajo : trabajosGrado) {
+		for (TrabajoGradoResponseDto trabajo : trabajosGrado) {
 			// Obtener el estado actual del trabajo de grado
 			Integer estadoActual = trabajo.getNumeroEstado();
-
-			// // Convertir el estado actual a entero
-			// int estadoActualInt = estadoActual;
 
 			// Obtener el enum correspondiente a partir del entero
 			EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[estadoActual];
@@ -76,6 +71,8 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 			// Asignar el estado del trabajo de grado utilizando el enum
 			trabajo.setEstado(estadoEnum.getMensaje());
 		}
+
+		estadoTmp.setIdEstudiante(idEstudiante);
 
 		return estadoTmp;
 	}
@@ -118,7 +115,8 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	public void eliminarTrabajoGrado(Long idTrabajoGrado) {
 		trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(
-						() -> new ResourceNotFoundException("Tarabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
+						() -> new ResourceNotFoundException(
+								"Tarabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
 		trabajoGradoRepository.deleteById(idTrabajoGrado);
 
 	}

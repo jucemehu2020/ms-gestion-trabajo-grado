@@ -19,5 +19,5 @@ public class EstadoTrabajoGrado {
     @NotNull
     private Boolean estadoTrabajoGrado;
 
-    private List<TrabajoGradoDto> trabajoGrado;
+    private List<TrabajoGradoResponseDto> trabajoGrado;
 }

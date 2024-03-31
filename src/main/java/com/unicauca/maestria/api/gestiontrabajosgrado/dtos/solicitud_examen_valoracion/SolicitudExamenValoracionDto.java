@@ -3,6 +3,8 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_val
 import lombok.*;
 
 import java.time.LocalDate;
+
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -10,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ExamenValoracionDto {
+public class SolicitudExamenValoracionDto {
 
     @NotNull
     private Long idTrabajoGrados; 
@@ -24,7 +26,7 @@ public class ExamenValoracionDto {
     @NotNull
     private String linkFormatoD;
 
-    @NotNull
+    @NotBlank
     private String linkFormatoE;
 
     @NotNull
@@ -34,7 +36,7 @@ public class ExamenValoracionDto {
     private String evaluadorInterno;
 
     @NotNull
-    private String actaNombramientoEvaluadores;
+    private String actaAprobacionExamen;
 
     @NotNull
     private LocalDate fechaActa;

@@ -1,18 +1,28 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion;
 
+import java.util.List;
+
 import org.springframework.validation.BindingResult;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExamenValoracionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
 
 public interface SolicitudExamenValoracionService {
 
-    public DocenteResponseDto listarDocentes();
+    public List<DocenteInfoDto> listarDocentes();
 
-    public ExamenValoracionDto crear(ExamenValoracionDto oficio, BindingResult result);
+    public List<ExpertoInfoDto> listarExpertos();
 
-    public ExamenValoracionDto buscarPorId(Long idTrabajoGrado);
+    public SolicitudExamenValoracionResponseDto crear(SolicitudExamenValoracionDto oficio, BindingResult result);
 
-    public ExamenValoracionDto actualizar(Long id, ExamenValoracionDto examenValoracionDto, BindingResult result);
+    public SolicitudExamenValoracionDto buscarPorId(Long idTrabajoGrado);
+
+    public SolicitudExamenValoracionResponseDto actualizar(Long id, SolicitudExamenValoracionDto examenValoracionDto, BindingResult result);
+
+    public String descargarArchivo(RutaArchivoDto rutaArchivo);
 }

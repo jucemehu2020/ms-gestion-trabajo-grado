@@ -2,8 +2,8 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.mappers;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion.SolicitudExamenValoracionBuilder;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExamenValoracionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExamenValoracionDto.ExamenValoracionDtoBuilder;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto.SolicitudExamenValoracionDtoBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -11,20 +11,21 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-29T00:03:28-0500",
+    date = "2024-03-31T17:11:00-0500",
     comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
-public class ExamenValoracionMapperImpl implements ExamenValoracionMapper {
+public class SolicitudExamenValoracionMapperImpl implements SolicitudExamenValoracionMapper {
 
     @Override
-    public SolicitudExamenValoracion toEntity(ExamenValoracionDto dto) {
+    public SolicitudExamenValoracion toEntity(SolicitudExamenValoracionDto dto) {
         if ( dto == null ) {
             return null;
         }
 
         SolicitudExamenValoracionBuilder solicitudExamenValoracion = SolicitudExamenValoracion.builder();
 
+        solicitudExamenValoracion.actaAprobacionExamen( dto.getActaAprobacionExamen() );
         solicitudExamenValoracion.evaluadorExterno( dto.getEvaluadorExterno() );
         solicitudExamenValoracion.evaluadorInterno( dto.getEvaluadorInterno() );
         solicitudExamenValoracion.fechaActa( dto.getFechaActa() );
@@ -39,47 +40,48 @@ public class ExamenValoracionMapperImpl implements ExamenValoracionMapper {
     }
 
     @Override
-    public ExamenValoracionDto toDto(SolicitudExamenValoracion entity) {
+    public SolicitudExamenValoracionDto toDto(SolicitudExamenValoracion entity) {
         if ( entity == null ) {
             return null;
         }
 
-        ExamenValoracionDtoBuilder examenValoracionDto = ExamenValoracionDto.builder();
+        SolicitudExamenValoracionDtoBuilder solicitudExamenValoracionDto = SolicitudExamenValoracionDto.builder();
 
-        examenValoracionDto.evaluadorExterno( entity.getEvaluadorExterno() );
-        examenValoracionDto.evaluadorInterno( entity.getEvaluadorInterno() );
-        examenValoracionDto.fechaActa( entity.getFechaActa() );
-        examenValoracionDto.fechaMaximaEvaluacion( entity.getFechaMaximaEvaluacion() );
-        examenValoracionDto.linkFormatoA( entity.getLinkFormatoA() );
-        examenValoracionDto.linkFormatoD( entity.getLinkFormatoD() );
-        examenValoracionDto.linkFormatoE( entity.getLinkFormatoE() );
-        examenValoracionDto.linkOficioDirigidoEvaluadores( entity.getLinkOficioDirigidoEvaluadores() );
-        examenValoracionDto.titulo( entity.getTitulo() );
+        solicitudExamenValoracionDto.actaAprobacionExamen( entity.getActaAprobacionExamen() );
+        solicitudExamenValoracionDto.evaluadorExterno( entity.getEvaluadorExterno() );
+        solicitudExamenValoracionDto.evaluadorInterno( entity.getEvaluadorInterno() );
+        solicitudExamenValoracionDto.fechaActa( entity.getFechaActa() );
+        solicitudExamenValoracionDto.fechaMaximaEvaluacion( entity.getFechaMaximaEvaluacion() );
+        solicitudExamenValoracionDto.linkFormatoA( entity.getLinkFormatoA() );
+        solicitudExamenValoracionDto.linkFormatoD( entity.getLinkFormatoD() );
+        solicitudExamenValoracionDto.linkFormatoE( entity.getLinkFormatoE() );
+        solicitudExamenValoracionDto.linkOficioDirigidoEvaluadores( entity.getLinkOficioDirigidoEvaluadores() );
+        solicitudExamenValoracionDto.titulo( entity.getTitulo() );
 
-        return examenValoracionDto.build();
+        return solicitudExamenValoracionDto.build();
     }
 
     @Override
-    public List<SolicitudExamenValoracion> toEntityList(List<ExamenValoracionDto> dtos) {
+    public List<SolicitudExamenValoracion> toEntityList(List<SolicitudExamenValoracionDto> dtos) {
         if ( dtos == null ) {
             return null;
         }
 
         List<SolicitudExamenValoracion> list = new ArrayList<SolicitudExamenValoracion>( dtos.size() );
-        for ( ExamenValoracionDto examenValoracionDto : dtos ) {
-            list.add( toEntity( examenValoracionDto ) );
+        for ( SolicitudExamenValoracionDto solicitudExamenValoracionDto : dtos ) {
+            list.add( toEntity( solicitudExamenValoracionDto ) );
         }
 
         return list;
     }
 
     @Override
-    public List<ExamenValoracionDto> toDtoList(List<SolicitudExamenValoracion> entities) {
+    public List<SolicitudExamenValoracionDto> toDtoList(List<SolicitudExamenValoracion> entities) {
         if ( entities == null ) {
             return null;
         }
 
-        List<ExamenValoracionDto> list = new ArrayList<ExamenValoracionDto>( entities.size() );
+        List<SolicitudExamenValoracionDto> list = new ArrayList<SolicitudExamenValoracionDto>( entities.size() );
         for ( SolicitudExamenValoracion solicitudExamenValoracion : entities ) {
             list.add( toDto( solicitudExamenValoracion ) );
         }
