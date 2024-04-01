@@ -115,6 +115,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		// Se cambia el numero de estado
 		trabajoGrado.setNumeroEstado(1);
+		trabajoGrado.setTitulo(examenValoracionDto.getTitulo());
 
 		// Guardar la entidad ExamenValoracion
 		examenValoracion
@@ -190,7 +191,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 												examenValoracionDto.getLinkOficioDirigidoEvaluadores(), nombreCarpeta));
 				FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkOficioDirigidoEvaluadores());
 			}
-			updateExamenValoracionValues(examenValoracionTmp, examenValoracionDto);
+			updateExamenValoracionValues(examenValoracionTmp, examenValoracionDto, trabajoGrado);
 			responseExamenValoracion = solicitudExamenValoracionRepository.save(examenValoracionTmp);
 		}
 		return examenValoracionResponseMapper.toDto(responseExamenValoracion);
@@ -204,12 +205,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 	// Funciones privadas
 	private void updateExamenValoracionValues(SolicitudExamenValoracion examenValoracion,
-			SolicitudExamenValoracionDto examenValoracionDto) {
+			SolicitudExamenValoracionDto examenValoracionDto, TrabajoGrado trabajoGrado) {
 
-		if (!examenValoracion.getTitulo().equals(examenValoracionDto.getTitulo())) {
-			String tituloTrabajoGrado = ConvertString.obtenerIniciales(examenValoracion.getTitulo());
+		if (!examenValoracionDto.getTitulo().equals(examenValoracionDto.getTitulo())) {
+			String tituloTrabajoGrado = ConvertString.obtenerIniciales(examenValoracionDto.getTitulo());
 			FilesUtilities.deleteFolderAndItsContents(tituloTrabajoGrado);
 		}
+
+		trabajoGrado.setTitulo(examenValoracionDto.getTitulo());
 		examenValoracion.setTitulo(examenValoracionDto.getTitulo());
 		examenValoracion.setEvaluadorExterno(examenValoracionDto.getEvaluadorExterno());
 		examenValoracion.setEvaluadorInterno(examenValoracion.getEvaluadorInterno());

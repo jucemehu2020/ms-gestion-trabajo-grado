@@ -62,7 +62,7 @@ public class FilesUtilities {
             String fechaFormateada = formatoFecha.format(fechaActual);
 
             String rutaCarpeta = "./files/" + tituloTG + "/" + procesoVa + "/" + nombre + "/" + fechaFormateada;
-            String rutaArchivo = rutaCarpeta + "/" + partesBase64[0];
+            String rutaArchivo = rutaCarpeta + "/" + generateUniqueFileName() + "-" +partesBase64[0];
             File carpeta = new File(rutaCarpeta);
             OutputStream out = null;
             if (!carpeta.exists()) {

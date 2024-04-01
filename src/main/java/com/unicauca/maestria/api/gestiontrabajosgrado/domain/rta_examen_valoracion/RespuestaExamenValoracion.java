@@ -29,7 +29,7 @@ public class RespuestaExamenValoracion {
 
     private String linkFormatoC;
 
-    private String observaciones;
+    private String linkObservaciones;
 
     private String respuestaExamenValoracion;
 

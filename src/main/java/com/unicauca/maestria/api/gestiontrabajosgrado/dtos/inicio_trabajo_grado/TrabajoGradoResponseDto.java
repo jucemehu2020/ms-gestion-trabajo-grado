@@ -16,6 +16,7 @@ public class TrabajoGradoResponseDto {
 	private Long id;
 	private String estado;
 	private LocalDate fechaCreacion;
+	private String titulo;
 	private Integer numeroEstado;
 
 }

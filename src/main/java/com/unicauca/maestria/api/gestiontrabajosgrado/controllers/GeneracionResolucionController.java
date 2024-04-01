@@ -1,5 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -16,10 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.SustentacionTrabajoInvestigacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.generacion_resolucion.GeneracionResolucionService;
-import com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +31,11 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class GeneracionResolucionController {
     private final GeneracionResolucionService generacionResolucion;
+
+    @GetMapping("/listarDirectorAndCodirector")
+    public ResponseEntity<List<DirectorAndCodirectorResponseDto>> listarDirectorAndCodirector() {
+        return ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.listarDirectorAndCodirector());
+    }
 
     @PostMapping
     public ResponseEntity<GeneracionResolucionDto> crear(

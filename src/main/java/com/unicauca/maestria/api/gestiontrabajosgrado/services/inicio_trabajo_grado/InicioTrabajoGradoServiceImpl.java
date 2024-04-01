@@ -91,6 +91,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		trabajoGradoConvert.setEstudiante(estudianteBD);
 		trabajoGradoConvert.setFechaCreacion(LocalDate.now());
 		trabajoGradoConvert.setNumeroEstado(0);
+		trabajoGradoConvert.setTitulo("");
 
 		// Guardar el TrabajoGrado en la base de datos
 		TrabajoGrado trabajoGradoGuardado = trabajoGradoRepository.save(trabajoGradoConvert);

@@ -9,9 +9,11 @@ public enum EstadoTrabajoGrado {
     EXAMEN_DE_VALORACION_APROBADO("Examen de valoración aprobado"),
     EXAMEN_DE_VALORACION_NO_APROBADO("Examen de valoración no aprobado"),
     EXAMEN_DE_VALORACION_APLAZADO("Examen de valoración aplazado"),
+    SIN_REGISTRAR_GENERACION_DE_RESOLUCION("Sin registrar generacion de resolucion"),
+    PENDIENTE_RESPUESTA_GENERACION_RESOLUCION("Pendiente respuesta generacion de resolucion"),
     SUSTENTACION_APROBADA("Sustentación aprobada"),
     SUSTENTACION_NO_APROBADA("Sustentación no aprobada"),
-    EXAMEN_DE_VALORACION_FINALIZADO_SIN_EXITO("Examen de valoración finalizado sin éxito");
+    EXAMEN_DE_VALORACION_FINALIZADO_SIN_EXITO("Examen de valoración finalizado con éxito");
 
     private final String mensaje;
 

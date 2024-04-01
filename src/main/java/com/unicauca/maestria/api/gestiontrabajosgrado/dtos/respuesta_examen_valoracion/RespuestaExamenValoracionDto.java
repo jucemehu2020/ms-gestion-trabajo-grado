@@ -24,13 +24,12 @@ public class RespuestaExamenValoracionDto {
     private String linkFormatoC;
 
     @NotBlank
-    private String observaciones;
+    private String linkObservaciones;
 
     @NotBlank
     private String respuestaExamenValoracion;
 
-    @NotNull
-    private LocalDate fechaMaxmiaEntrega;
+    private LocalDate fechaMaximaEntrega;
 
     @NotNull
     private Boolean estadoFinalizado;
