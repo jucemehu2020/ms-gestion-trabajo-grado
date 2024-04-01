@@ -2,6 +2,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_pro
 
 import org.springframework.validation.BindingResult;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.SustentacionTrabajoInvestigacionDto;
 
 public interface SustentacionProyectoInvestigacionService {
@@ -11,4 +12,6 @@ public interface SustentacionProyectoInvestigacionService {
     public SustentacionTrabajoInvestigacionDto buscarPorId(Long idTrabajoGrado);
 
     public SustentacionTrabajoInvestigacionDto actualizar(Long id, SustentacionTrabajoInvestigacionDto examenValoracionDto, BindingResult result);
+
+    public String descargarArchivo(RutaArchivoDto rutaArchivo);
 }

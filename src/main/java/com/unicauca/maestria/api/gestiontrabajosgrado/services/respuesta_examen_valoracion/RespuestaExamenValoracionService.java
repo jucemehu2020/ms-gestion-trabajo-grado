@@ -2,6 +2,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen
 
 import org.springframework.validation.BindingResult;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 
 public interface RespuestaExamenValoracionService {
@@ -11,4 +12,6 @@ public interface RespuestaExamenValoracionService {
     public RespuestaExamenValoracionDto buscarPorId(Long idTrabajoGrado);
 
     public RespuestaExamenValoracionDto actualizar(Long id, RespuestaExamenValoracionDto respuestaExamenValoracionDto, BindingResult result);
+
+    public String descargarArchivo(RutaArchivoDto rutaArchivo);
 }

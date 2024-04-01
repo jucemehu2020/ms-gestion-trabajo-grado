@@ -7,12 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion.RespuestaExamenValoracionService;
 
@@ -22,13 +18,14 @@ import lombok.RequiredArgsConstructor;
 @Validated
 @RestController
 @RequestMapping("/api/respuesta_examen_valoracion")
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class RespuestaExamenValoracionController {
 
     private final RespuestaExamenValoracionService respuestaExamenValoracion;
 
     @PostMapping
-    public ResponseEntity<RespuestaExamenValoracionDto> crear(@Valid @RequestBody RespuestaExamenValoracionDto examenValoracion,
+    public ResponseEntity<RespuestaExamenValoracionDto> crear(
+            @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion,
             BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(respuestaExamenValoracion.crear(examenValoracion, result));
@@ -44,5 +41,11 @@ public class RespuestaExamenValoracionController {
             @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(respuestaExamenValoracion.actualizar(id, examenValoracion, result));
+    }
+
+    @GetMapping("/descargarDocumento")
+    public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(respuestaExamenValoracion.descargarArchivo(rutaArchivo));
     }
 }

@@ -20,6 +20,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.CamposUnicosGenerarResolucionDto;
@@ -217,6 +218,12 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         responseExamenValoracion = generacionResolucionRepository.save(generacionResolucionTmp);
                 }
                 return generacionResolucionMapper.toDto(responseExamenValoracion);
+        }
+
+        @Override
+        @Transactional(readOnly = true)
+        public String descargarArchivo(RutaArchivoDto rutaArchivo) {
+                return FilesUtilities.recuperarArchivo(rutaArchivo.getRutaArchivo());
         }
 
         // Funciones privadas

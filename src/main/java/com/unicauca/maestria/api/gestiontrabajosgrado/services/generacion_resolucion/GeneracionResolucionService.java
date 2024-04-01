@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.validation.BindingResult;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto;
 
@@ -18,4 +19,6 @@ public interface GeneracionResolucionService {
 
         public GeneracionResolucionDto actualizar(Long id, GeneracionResolucionDto generacionResolucion,
                         BindingResult result);
+
+        public String descargarArchivo(RutaArchivoDto rutaArchivo);
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.generacion_resolucion.GeneracionResolucionService;
@@ -55,5 +56,11 @@ public class GeneracionResolucionController {
             @Valid @RequestBody GeneracionResolucionDto generacionResolucionDto, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(generacionResolucion.actualizar(id, generacionResolucionDto, result));
+    }
+
+    @GetMapping("/descargarDocumento")
+    public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(generacionResolucion.descargarArchivo(rutaArchivo));
     }
 }

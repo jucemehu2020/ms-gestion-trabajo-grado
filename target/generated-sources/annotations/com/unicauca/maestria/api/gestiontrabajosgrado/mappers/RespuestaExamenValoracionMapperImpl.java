@@ -11,43 +11,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-31T22:51:56-0500",
+    date = "2024-04-01T09:31:29-0500",
     comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class RespuestaExamenValoracionMapperImpl implements RespuestaExamenValoracionMapper {
-
-    @Override
-    public RespuestaExamenValoracionDto toDto(RespuestaExamenValoracion entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        RespuestaExamenValoracionDtoBuilder respuestaExamenValoracionDto = RespuestaExamenValoracionDto.builder();
-
-        respuestaExamenValoracionDto.estadoFinalizado( entity.getEstadoFinalizado() );
-        respuestaExamenValoracionDto.linkFormatoB( entity.getLinkFormatoB() );
-        respuestaExamenValoracionDto.linkFormatoC( entity.getLinkFormatoC() );
-        respuestaExamenValoracionDto.linkObservaciones( entity.getLinkObservaciones() );
-        respuestaExamenValoracionDto.observacion( entity.getObservacion() );
-        respuestaExamenValoracionDto.respuestaExamenValoracion( entity.getRespuestaExamenValoracion() );
-
-        return respuestaExamenValoracionDto.build();
-    }
-
-    @Override
-    public List<RespuestaExamenValoracionDto> toDtoList(List<RespuestaExamenValoracion> entities) {
-        if ( entities == null ) {
-            return null;
-        }
-
-        List<RespuestaExamenValoracionDto> list = new ArrayList<RespuestaExamenValoracionDto>( entities.size() );
-        for ( RespuestaExamenValoracion respuestaExamenValoracion : entities ) {
-            list.add( toDto( respuestaExamenValoracion ) );
-        }
-
-        return list;
-    }
 
     @Override
     public RespuestaExamenValoracion toEntity(RespuestaExamenValoracionDto dto) {
@@ -68,6 +36,24 @@ public class RespuestaExamenValoracionMapperImpl implements RespuestaExamenValor
     }
 
     @Override
+    public RespuestaExamenValoracionDto toDto(RespuestaExamenValoracion entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        RespuestaExamenValoracionDtoBuilder respuestaExamenValoracionDto = RespuestaExamenValoracionDto.builder();
+
+        respuestaExamenValoracionDto.estadoFinalizado( entity.getEstadoFinalizado() );
+        respuestaExamenValoracionDto.linkFormatoB( entity.getLinkFormatoB() );
+        respuestaExamenValoracionDto.linkFormatoC( entity.getLinkFormatoC() );
+        respuestaExamenValoracionDto.linkObservaciones( entity.getLinkObservaciones() );
+        respuestaExamenValoracionDto.observacion( entity.getObservacion() );
+        respuestaExamenValoracionDto.respuestaExamenValoracion( entity.getRespuestaExamenValoracion() );
+
+        return respuestaExamenValoracionDto.build();
+    }
+
+    @Override
     public List<RespuestaExamenValoracion> toEntityList(List<RespuestaExamenValoracionDto> dtos) {
         if ( dtos == null ) {
             return null;
@@ -76,6 +62,20 @@ public class RespuestaExamenValoracionMapperImpl implements RespuestaExamenValor
         List<RespuestaExamenValoracion> list = new ArrayList<RespuestaExamenValoracion>( dtos.size() );
         for ( RespuestaExamenValoracionDto respuestaExamenValoracionDto : dtos ) {
             list.add( toEntity( respuestaExamenValoracionDto ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<RespuestaExamenValoracionDto> toDtoList(List<RespuestaExamenValoracion> entities) {
+        if ( entities == null ) {
+            return null;
+        }
+
+        List<RespuestaExamenValoracionDto> list = new ArrayList<RespuestaExamenValoracionDto>( entities.size() );
+        for ( RespuestaExamenValoracion respuestaExamenValoracion : entities ) {
+            list.add( toDto( respuestaExamenValoracion ) );
         }
 
         return list;

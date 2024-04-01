@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.SustentacionTrabajoInvestigacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacionService;
 
@@ -22,7 +23,8 @@ public class SustentacionProyectoInvestigacionController {
     private final SustentacionProyectoInvestigacionService sustentacionProyectoInvestigacion;
 
     @PostMapping
-    public ResponseEntity<SustentacionTrabajoInvestigacionDto> crear(@Valid @RequestBody SustentacionTrabajoInvestigacionDto examenValoracion,
+    public ResponseEntity<SustentacionTrabajoInvestigacionDto> crear(
+            @Valid @RequestBody SustentacionTrabajoInvestigacionDto examenValoracion,
             BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(sustentacionProyectoInvestigacion.crear(examenValoracion, result));
@@ -38,5 +40,11 @@ public class SustentacionProyectoInvestigacionController {
             @Valid @RequestBody SustentacionTrabajoInvestigacionDto examenValoracion, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(sustentacionProyectoInvestigacion.actualizar(id, examenValoracion, result));
+    }
+
+    @GetMapping("/descargarDocumento")
+    public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(sustentacionProyectoInvestigacion.descargarArchivo(rutaArchivo));
     }
 }

@@ -17,6 +17,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.rta_examen_valoracion.RespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.CamposUnicosRespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.CamposUnicosSolicitudExamenValoracionDto;
@@ -162,6 +163,12 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                         .save(respuestaExamenValoracionTmp);
                 }
                 return respuestaExamenValoracionMapper.toDto(responseExamenValoracion);
+        }
+
+        @Override
+        @Transactional(readOnly = true)
+        public String descargarArchivo(RutaArchivoDto rutaArchivo) {
+                return FilesUtilities.recuperarArchivo(rutaArchivo.getRutaArchivo());
         }
 
         // Funciones privadas
