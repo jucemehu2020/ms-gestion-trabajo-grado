@@ -138,11 +138,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 	@Override
 	@Transactional(readOnly = true)
-	public SolicitudExamenValoracionDto buscarPorId(Long idTrabajoGrado) {
-		return solicitudExamenValoracionRepository.findById(idTrabajoGrado).map(examenValoracionMapper::toDto)
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"Examen de valoracion con id: " + idTrabajoGrado + " no encontrado"));
+	public List<SolicitudExamenValoracionDto> buscarPorId(Long idTrabajoGrado) {
+		return solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
+				.stream()
+				.map(examenValoracionMapper::toDto)
+				.collect(Collectors.toList());
 	}
+	
+	
 
 	@Override
 	public SolicitudExamenValoracionResponseDto actualizar(Long id, SolicitudExamenValoracionDto examenValoracionDto,

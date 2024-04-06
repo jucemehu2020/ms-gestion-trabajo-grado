@@ -2,6 +2,8 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.controllers;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class SustentacionProyectoInvestigacionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SustentacionTrabajoInvestigacionDto> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<List<SustentacionTrabajoInvestigacionDto>> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.buscarPorId(id));
     }
 

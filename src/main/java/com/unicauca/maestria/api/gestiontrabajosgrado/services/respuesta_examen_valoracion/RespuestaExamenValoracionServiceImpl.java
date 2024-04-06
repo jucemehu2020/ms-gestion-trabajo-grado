@@ -3,6 +3,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -100,12 +101,11 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public RespuestaExamenValoracionDto buscarPorId(Long idTrabajoGrado) {
-                return respuestaExamenValoracionRepository.findById(idTrabajoGrado)
+        public List<RespuestaExamenValoracionDto> buscarPorId(Long idTrabajoGrado) {
+                return respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
+                                .stream()
                                 .map(respuestaExamenValoracionMapper::toDto)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Respuesta examen de valoracion con id: " + idTrabajoGrado
-                                                                + " no encontrado"));
+                                .collect(Collectors.toList());
         }
 
         @Override

@@ -47,7 +47,7 @@ public class GeneracionResolucionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GeneracionResolucionDto> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<List<GeneracionResolucionDto>> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.buscarPorId(id));
     }
 

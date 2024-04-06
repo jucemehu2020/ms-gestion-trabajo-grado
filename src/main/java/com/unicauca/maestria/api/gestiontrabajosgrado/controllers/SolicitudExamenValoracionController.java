@@ -39,7 +39,7 @@ public class SolicitudExamenValoracionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SolicitudExamenValoracionDto> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<List<SolicitudExamenValoracionDto>> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.buscarPorId(id));
     }
 

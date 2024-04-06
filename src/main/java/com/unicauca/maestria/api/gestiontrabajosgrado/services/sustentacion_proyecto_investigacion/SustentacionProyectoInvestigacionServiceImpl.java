@@ -3,6 +3,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_pro
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -111,11 +112,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
         @Override
         @Transactional(readOnly = true)
-        public SustentacionTrabajoInvestigacionDto buscarPorId(Long idTrabajoGrado) {
-                return sustentacionProyectoInvestigacionRepository.findById(idTrabajoGrado)
+        public List<SustentacionTrabajoInvestigacionDto> buscarPorId(Long idTrabajoGrado) {
+                return sustentacionProyectoInvestigacionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
+                                .stream()
                                 .map(sustentacionProyectoIngestigacionMapper::toDto)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Examen de valoracion con id: " + idTrabajoGrado + " no encontrado"));
+                                .collect(Collectors.toList());
         }
 
         @Override

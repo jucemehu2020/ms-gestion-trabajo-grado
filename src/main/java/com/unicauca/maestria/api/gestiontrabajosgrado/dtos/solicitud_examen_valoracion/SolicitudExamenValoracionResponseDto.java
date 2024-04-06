@@ -2,8 +2,6 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_val
 
 import java.time.LocalDate;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

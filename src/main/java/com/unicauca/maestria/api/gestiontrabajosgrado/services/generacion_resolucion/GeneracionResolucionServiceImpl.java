@@ -139,11 +139,11 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
         @Override
         @Transactional(readOnly = true)
-        public GeneracionResolucionDto buscarPorId(Long idTrabajoGrado) {
-                return generacionResolucionRepository.findById(idTrabajoGrado).map(generacionResolucionMapper::toDto)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con id: " + idTrabajoGrado
-                                                                + " no encontrado"));
+        public List<GeneracionResolucionDto> buscarPorId(Long idTrabajoGrado) {
+                return generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
+                                .stream()
+                                .map(generacionResolucionMapper::toDto)
+                                .collect(Collectors.toList());
         }
 
         @Override

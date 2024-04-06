@@ -1,5 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +34,7 @@ public class RespuestaExamenValoracionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RespuestaExamenValoracionDto> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<List<RespuestaExamenValoracionDto>> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.buscarPorId(id));
     }
 
