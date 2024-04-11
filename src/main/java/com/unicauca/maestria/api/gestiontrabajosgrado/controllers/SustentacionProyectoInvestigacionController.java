@@ -33,7 +33,7 @@ public class SustentacionProyectoInvestigacionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<SustentacionTrabajoInvestigacionDto>> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<SustentacionTrabajoInvestigacionDto> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.buscarPorId(id));
     }
 

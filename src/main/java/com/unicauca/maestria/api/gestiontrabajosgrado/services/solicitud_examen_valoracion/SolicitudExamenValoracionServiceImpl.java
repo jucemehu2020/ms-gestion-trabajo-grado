@@ -138,14 +138,13 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<SolicitudExamenValoracionDto> buscarPorId(Long idTrabajoGrado) {
+	public SolicitudExamenValoracionDto buscarPorId(Long idTrabajoGrado) {
 		return solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
 				.stream()
 				.map(examenValoracionMapper::toDto)
-				.collect(Collectors.toList());
+				.findFirst() 
+				.orElse(null);
 	}
-	
-	
 
 	@Override
 	public SolicitudExamenValoracionResponseDto actualizar(Long id, SolicitudExamenValoracionDto examenValoracionDto,
@@ -218,7 +217,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		trabajoGrado.setTitulo(examenValoracionDto.getTitulo());
 		examenValoracion.setTitulo(examenValoracionDto.getTitulo());
 		examenValoracion.setEvaluadorExterno(examenValoracionDto.getEvaluadorExterno());
-		examenValoracion.setEvaluadorInterno(examenValoracion.getEvaluadorInterno());
+		examenValoracion.setEvaluadorInterno(examenValoracionDto.getEvaluadorInterno());
 		examenValoracion.setActaAprobacionExamen(examenValoracionDto.getActaAprobacionExamen());
 		examenValoracion.setFechaActa(examenValoracionDto.getFechaActa());
 		examenValoracion.setFechaMaximaEvaluacion(examenValoracionDto.getFechaMaximaEvaluacion());

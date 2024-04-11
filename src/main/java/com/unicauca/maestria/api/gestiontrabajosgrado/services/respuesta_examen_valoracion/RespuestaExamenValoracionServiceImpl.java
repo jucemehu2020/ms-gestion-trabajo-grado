@@ -57,12 +57,12 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                 + respuestaExamenValoracionDto.getIdTrabajoGrados()
                                                                 + " No encontrado"));
 
-                Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
-                                obtenerCamposUnicos(respuestaExamenValoracionDto),
-                                null);
-                if (!validacionCamposUnicos.isEmpty()) {
-                        throw new FieldUniqueException(validacionCamposUnicos);
-                }
+                // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
+                //                 obtenerCamposUnicos(respuestaExamenValoracionDto),
+                //                 null);
+                // if (!validacionCamposUnicos.isEmpty()) {
+                //         throw new FieldUniqueException(validacionCamposUnicos);
+                // }
 
                 // Obtener iniciales del trabajo de grado
                 String procesoVa = "Respuesta_Examen_Valoracion";
@@ -101,13 +101,14 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public List<RespuestaExamenValoracionDto> buscarPorId(Long idTrabajoGrado) {
-                return respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
-                                .stream()
-                                .map(respuestaExamenValoracionMapper::toDto)
-                                .collect(Collectors.toList());
+        public RespuestaExamenValoracionDto buscarPorId(Long idTrabajoGrado) {
+            return respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
+                    .stream()
+                    .map(respuestaExamenValoracionMapper::toDto)
+                    .findFirst() 
+                    .orElse(null);
         }
-
+        
         @Override
         public RespuestaExamenValoracionDto actualizar(Long id,
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,

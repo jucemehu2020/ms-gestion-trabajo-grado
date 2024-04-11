@@ -139,11 +139,12 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
         @Override
         @Transactional(readOnly = true)
-        public List<GeneracionResolucionDto> buscarPorId(Long idTrabajoGrado) {
+        public GeneracionResolucionDto buscarPorId(Long idTrabajoGrado) {
                 return generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
                                 .stream()
                                 .map(generacionResolucionMapper::toDto)
-                                .collect(Collectors.toList());
+                                .findFirst() // Obtener el primer elemento de la lista
+                                .orElse(null); 
         }
 
         @Override

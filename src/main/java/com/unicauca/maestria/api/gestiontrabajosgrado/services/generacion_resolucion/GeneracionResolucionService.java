@@ -15,7 +15,7 @@ public interface GeneracionResolucionService {
         public GeneracionResolucionDto crear(GeneracionResolucionDto generacionResolucion,
                         BindingResult result);
 
-        public List<GeneracionResolucionDto> buscarPorId(Long idTrabajoGrado);
+        public GeneracionResolucionDto buscarPorId(Long idTrabajoGrado);
 
         public GeneracionResolucionDto actualizar(Long id, GeneracionResolucionDto generacionResolucion,
                         BindingResult result);

@@ -34,7 +34,7 @@ public class RespuestaExamenValoracionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<RespuestaExamenValoracionDto>> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<RespuestaExamenValoracionDto> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.buscarPorId(id));
     }
 

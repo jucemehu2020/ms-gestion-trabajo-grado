@@ -112,11 +112,12 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
         @Override
         @Transactional(readOnly = true)
-        public List<SustentacionTrabajoInvestigacionDto> buscarPorId(Long idTrabajoGrado) {
+        public SustentacionTrabajoInvestigacionDto buscarPorId(Long idTrabajoGrado) {
                 return sustentacionProyectoInvestigacionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
                                 .stream()
                                 .map(sustentacionProyectoIngestigacionMapper::toDto)
-                                .collect(Collectors.toList());
+                                .findFirst() 
+                                .orElse(null); 
         }
 
         @Override
@@ -219,7 +220,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         SustentacionTrabajoInvestigacionDto sustentacionDto) {
                 examenValoracion.setUrlDocumentacion(sustentacionDto.getUrlDocumentacion());
                 examenValoracion.setRespuestaSustentacion(sustentacionDto.getRespuestaSustentacion());
-                examenValoracion.setNumeroActaTrabajoFinal(examenValoracion.getNumeroActaTrabajoFinal());
+                examenValoracion.setNumeroActaTrabajoFinal(sustentacionDto.getNumeroActaTrabajoFinal());
                 examenValoracion.setFechaActa(sustentacionDto.getFechaActa());
         }
 

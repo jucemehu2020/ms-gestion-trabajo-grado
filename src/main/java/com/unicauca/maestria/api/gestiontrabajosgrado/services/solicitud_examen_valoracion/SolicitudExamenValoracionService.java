@@ -18,7 +18,7 @@ public interface SolicitudExamenValoracionService {
 
     public SolicitudExamenValoracionResponseDto crear(SolicitudExamenValoracionDto oficio, BindingResult result);
 
-    public List<SolicitudExamenValoracionDto> buscarPorId(Long idTrabajoGrado);
+    public SolicitudExamenValoracionDto buscarPorId(Long idTrabajoGrado);
 
     public SolicitudExamenValoracionResponseDto actualizar(Long id, SolicitudExamenValoracionDto examenValoracionDto, BindingResult result);
 

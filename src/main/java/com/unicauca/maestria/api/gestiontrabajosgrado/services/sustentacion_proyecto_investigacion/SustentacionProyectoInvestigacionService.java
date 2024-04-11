@@ -11,7 +11,7 @@ public interface SustentacionProyectoInvestigacionService {
     
     public SustentacionTrabajoInvestigacionDto crear(SustentacionTrabajoInvestigacionDto oficio, BindingResult result);
 
-    public List<SustentacionTrabajoInvestigacionDto> buscarPorId(Long idTrabajoGrado);
+    public SustentacionTrabajoInvestigacionDto buscarPorId(Long idTrabajoGrado);
 
     public SustentacionTrabajoInvestigacionDto actualizar(Long id, SustentacionTrabajoInvestigacionDto examenValoracionDto, BindingResult result);
 
