@@ -17,6 +17,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapper;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapperImpl;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.estudiante.EstudianteRepository;
 
@@ -75,6 +76,19 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		estadoTmp.setIdEstudiante(idEstudiante);
 
 		return estadoTmp;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public TrabajoGradoResponseDto buscarTrabajoGrado(Long idTrabajoGrado) {
+
+		// Consultar si existe estudiante
+		TrabajoGrado resTrabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
+				.orElseThrow(
+						() -> new ResourceNotFoundException(
+								"Trabajo de grado con id: " + idTrabajoGrado + " No encontrado"));
+
+		return trabajoGradoResponseMapper.toDto(resTrabajoGrado);
 	}
 
 	@Override

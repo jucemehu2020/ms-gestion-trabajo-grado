@@ -71,43 +71,43 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 // Mapear DTO a entidad
-                SustentacionTrabajoInvestigacion examenValoracion = sustentacionProyectoIngestigacionMapper
+                SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoIngestigacionMapper
                                 .toEntity(sustentacionDto);
 
                 // Establecer la relación uno a uno
-                examenValoracion.setIdTrabajoGrado(trabajoGrado);
-                trabajoGrado.setIdSustentacionProyectoInvestigacion(examenValoracion);
+                sustentacionProyectoInvestigacion.setIdTrabajoGrado(trabajoGrado);
+                trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionProyectoInvestigacion);
 
                 // Se cambia el numero de estado
                 int numEstado = validarEstado(sustentacionDto.getRespuestaSustentacion());
                 trabajoGrado.setNumeroEstado(numEstado);
 
-                // Guardar la entidad ExamenValoracion
-                examenValoracion.setLinkRemisionDocumentoFinal(
+                // Guardar la entidad SustentacionProyectoInvestigacion
+                sustentacionProyectoInvestigacion.setLinkRemisionDocumentoFinal(
                                 FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                examenValoracion.getLinkRemisionDocumentoFinal(), nombreCarpeta));
-                examenValoracion.setLinkRemisionDocumentoFinalCF(
+                                                sustentacionProyectoInvestigacion.getLinkRemisionDocumentoFinal(), nombreCarpeta));
+                sustentacionProyectoInvestigacion.setLinkRemisionDocumentoFinalCF(
                                 FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                examenValoracion.getLinkRemisionDocumentoFinalCF(), nombreCarpeta));
-                examenValoracion.setLinkConstanciaDocumentoFinal(
+                                                sustentacionProyectoInvestigacion.getLinkRemisionDocumentoFinalCF(), nombreCarpeta));
+                sustentacionProyectoInvestigacion.setLinkConstanciaDocumentoFinal(
                                 FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                examenValoracion.getLinkConstanciaDocumentoFinal(), nombreCarpeta));
-                examenValoracion
+                                                sustentacionProyectoInvestigacion.getLinkConstanciaDocumentoFinal(), nombreCarpeta));
+                sustentacionProyectoInvestigacion
                                 .setLinkActaSustentacion(FilesUtilities
                                                 .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                                examenValoracion.getLinkActaSustentacion(),
+                                                                sustentacionProyectoInvestigacion.getLinkActaSustentacion(),
                                                                 nombreCarpeta));
-                examenValoracion.setLinkActaSustentacionPublica(
+                sustentacionProyectoInvestigacion.setLinkActaSustentacionPublica(
                                 FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                examenValoracion.getLinkActaSustentacionPublica(), nombreCarpeta));
-                examenValoracion.setLinkEstudioHojaVidaAcademica(
+                                                sustentacionProyectoInvestigacion.getLinkActaSustentacionPublica(), nombreCarpeta));
+                sustentacionProyectoInvestigacion.setLinkEstudioHojaVidaAcademica(
                                 FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                examenValoracion.getLinkEstudioHojaVidaAcademica(), nombreCarpeta));
+                                                sustentacionProyectoInvestigacion.getLinkEstudioHojaVidaAcademica(), nombreCarpeta));
 
-                SustentacionTrabajoInvestigacion examenValoracionRes = sustentacionProyectoInvestigacionRepository
-                                .save(examenValoracion);
+                SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
-                return sustentacionProyectoIngestigacionMapper.toDto(examenValoracionRes);
+                return sustentacionProyectoIngestigacionMapper.toDto(sustentacionProyectoInvestigacionRes);
         }
 
         @Override
@@ -116,8 +116,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 return sustentacionProyectoInvestigacionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
                                 .stream()
                                 .map(sustentacionProyectoIngestigacionMapper::toDto)
-                                .findFirst() 
-                                .orElse(null); 
+                                .findFirst()
+                                .orElse(null);
         }
 
         @Override
@@ -128,7 +128,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new FieldErrorException(result);
                 }
 
-                SustentacionTrabajoInvestigacion examenValoracionTmp = sustentacionProyectoInvestigacionRepository
+                SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(id)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion trabajo de investigacion con id: " + id
@@ -146,67 +146,67 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
-                SustentacionTrabajoInvestigacion responseExamenValoracion = null;
-                if (examenValoracionTmp != null) {
+                SustentacionTrabajoInvestigacion responseSustentacionProyectoInvestigacion = null;
+                if (sustentacionProyectoInvestigacionTmp != null) {
                         if (sustentacionDto.getLinkRemisionDocumentoFinal()
-                                        .compareTo(examenValoracionTmp.getLinkRemisionDocumentoFinal()) != 0) {
+                                        .compareTo(sustentacionProyectoInvestigacionTmp.getLinkRemisionDocumentoFinal()) != 0) {
                                 sustentacionDto
                                                 .setLinkRemisionDocumentoFinal(FilesUtilities.guardarArchivoNew(
                                                                 tituloTrabajoGrado, procesoVa,
                                                                 sustentacionDto.getLinkRemisionDocumentoFinal(),
                                                                 nombreCarpeta));
-                                FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkRemisionDocumentoFinal());
+                                FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp.getLinkRemisionDocumentoFinal());
                         }
                         if (sustentacionDto.getLinkRemisionDocumentoFinalCF()
-                                        .compareTo(examenValoracionTmp.getLinkRemisionDocumentoFinalCF()) != 0) {
+                                        .compareTo(sustentacionProyectoInvestigacionTmp.getLinkRemisionDocumentoFinalCF()) != 0) {
                                 sustentacionDto
                                                 .setLinkRemisionDocumentoFinalCF(FilesUtilities.guardarArchivoNew(
                                                                 tituloTrabajoGrado, procesoVa,
                                                                 sustentacionDto.getLinkRemisionDocumentoFinalCF(),
                                                                 nombreCarpeta));
-                                FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkRemisionDocumentoFinalCF());
+                                FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp.getLinkRemisionDocumentoFinalCF());
                         }
                         if (sustentacionDto.getLinkConstanciaDocumentoFinal()
-                                        .compareTo(examenValoracionTmp.getLinkConstanciaDocumentoFinal()) != 0) {
+                                        .compareTo(sustentacionProyectoInvestigacionTmp.getLinkConstanciaDocumentoFinal()) != 0) {
                                 sustentacionDto
                                                 .setLinkConstanciaDocumentoFinal(FilesUtilities.guardarArchivoNew(
                                                                 tituloTrabajoGrado, procesoVa,
                                                                 sustentacionDto.getLinkConstanciaDocumentoFinal(),
                                                                 nombreCarpeta));
-                                FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkConstanciaDocumentoFinal());
+                                FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp.getLinkConstanciaDocumentoFinal());
                         }
                         if (sustentacionDto.getLinkActaSustentacion()
-                                        .compareTo(examenValoracionTmp.getLinkActaSustentacion()) != 0) {
+                                        .compareTo(sustentacionProyectoInvestigacionTmp.getLinkActaSustentacion()) != 0) {
                                 sustentacionDto
                                                 .setLinkActaSustentacion(FilesUtilities.guardarArchivoNew(
                                                                 tituloTrabajoGrado, procesoVa,
                                                                 sustentacionDto.getLinkActaSustentacion(),
                                                                 nombreCarpeta));
-                                FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkActaSustentacion());
+                                FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp.getLinkActaSustentacion());
                         }
                         if (sustentacionDto.getLinkActaSustentacionPublica()
-                                        .compareTo(examenValoracionTmp.getLinkActaSustentacionPublica()) != 0) {
+                                        .compareTo(sustentacionProyectoInvestigacionTmp.getLinkActaSustentacionPublica()) != 0) {
                                 sustentacionDto
                                                 .setLinkActaSustentacionPublica(FilesUtilities.guardarArchivoNew(
                                                                 tituloTrabajoGrado, procesoVa,
                                                                 sustentacionDto.getLinkActaSustentacionPublica(),
                                                                 nombreCarpeta));
-                                FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkActaSustentacionPublica());
+                                FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp.getLinkActaSustentacionPublica());
                         }
                         if (sustentacionDto.getLinkEstudioHojaVidaAcademica()
-                                        .compareTo(examenValoracionTmp.getLinkEstudioHojaVidaAcademica()) != 0) {
+                                        .compareTo(sustentacionProyectoInvestigacionTmp.getLinkEstudioHojaVidaAcademica()) != 0) {
                                 sustentacionDto
                                                 .setLinkEstudioHojaVidaAcademica(FilesUtilities.guardarArchivoNew(
                                                                 tituloTrabajoGrado, procesoVa,
                                                                 sustentacionDto.getLinkEstudioHojaVidaAcademica(),
                                                                 nombreCarpeta));
-                                FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkEstudioHojaVidaAcademica());
+                                FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp.getLinkEstudioHojaVidaAcademica());
                         }
-                        updateExamenValoracionValues(examenValoracionTmp, sustentacionDto);
-                        responseExamenValoracion = sustentacionProyectoInvestigacionRepository
-                                        .save(examenValoracionTmp);
+                        updateSustentacionProyectoInvestigacionValues(sustentacionProyectoInvestigacionTmp, sustentacionDto);
+                        responseSustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                        .save(sustentacionProyectoInvestigacionTmp);
                 }
-                return sustentacionProyectoIngestigacionMapper.toDto(responseExamenValoracion);
+                return sustentacionProyectoIngestigacionMapper.toDto(responseSustentacionProyectoInvestigacion);
         }
 
         @Override
@@ -216,12 +216,19 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
         }
 
         // Funciones privadas
-        private void updateExamenValoracionValues(SustentacionTrabajoInvestigacion examenValoracion,
+        private void updateSustentacionProyectoInvestigacionValues(SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion,
                         SustentacionTrabajoInvestigacionDto sustentacionDto) {
-                examenValoracion.setUrlDocumentacion(sustentacionDto.getUrlDocumentacion());
-                examenValoracion.setRespuestaSustentacion(sustentacionDto.getRespuestaSustentacion());
-                examenValoracion.setNumeroActaTrabajoFinal(sustentacionDto.getNumeroActaTrabajoFinal());
-                examenValoracion.setFechaActa(sustentacionDto.getFechaActa());
+                sustentacionProyectoInvestigacion.setUrlDocumentacion(sustentacionDto.getUrlDocumentacion());
+                sustentacionProyectoInvestigacion.setRespuestaSustentacion(sustentacionDto.getRespuestaSustentacion());
+                sustentacionProyectoInvestigacion.setNumeroActaTrabajoFinal(sustentacionDto.getNumeroActaTrabajoFinal());
+                sustentacionProyectoInvestigacion.setFechaActa(sustentacionDto.getFechaActa());
+                // Update archivos
+                sustentacionProyectoInvestigacion.setLinkRemisionDocumentoFinal(sustentacionDto.getLinkRemisionDocumentoFinal());
+                sustentacionProyectoInvestigacion.setLinkRemisionDocumentoFinalCF(sustentacionDto.getLinkRemisionDocumentoFinalCF());
+                sustentacionProyectoInvestigacion.setLinkConstanciaDocumentoFinal(sustentacionDto.getLinkConstanciaDocumentoFinal());
+                sustentacionProyectoInvestigacion.setLinkActaSustentacion(sustentacionDto.getLinkActaSustentacion());
+                sustentacionProyectoInvestigacion.setLinkActaSustentacionPublica(sustentacionDto.getLinkActaSustentacionPublica());
+                sustentacionProyectoInvestigacion.setLinkEstudioHojaVidaAcademica(sustentacionDto.getLinkEstudioHojaVidaAcademica());
         }
 
         private int validarEstado(Boolean estado) {

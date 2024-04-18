@@ -34,7 +34,7 @@ public class RespuestaExamenValoracionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RespuestaExamenValoracionDto> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<List<RespuestaExamenValoracionDto>> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.buscarPorId(id));
     }
 
@@ -45,7 +45,7 @@ public class RespuestaExamenValoracionController {
                 .body(respuestaExamenValoracion.actualizar(id, examenValoracion, result));
     }
 
-    @GetMapping("/descargarDocumento")
+    @PostMapping("/descargarDocumento")
     public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(respuestaExamenValoracion.descargarArchivo(rutaArchivo));

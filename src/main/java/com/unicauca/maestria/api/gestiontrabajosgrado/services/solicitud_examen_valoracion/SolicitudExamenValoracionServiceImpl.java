@@ -221,6 +221,11 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		examenValoracion.setActaAprobacionExamen(examenValoracionDto.getActaAprobacionExamen());
 		examenValoracion.setFechaActa(examenValoracionDto.getFechaActa());
 		examenValoracion.setFechaMaximaEvaluacion(examenValoracionDto.getFechaMaximaEvaluacion());
+		//Update archivos
+		examenValoracion.setLinkFormatoA(examenValoracionDto.getLinkFormatoA());
+		examenValoracion.setLinkFormatoD(examenValoracionDto.getLinkFormatoD());
+		examenValoracion.setLinkFormatoE(examenValoracionDto.getLinkFormatoE());
+		examenValoracion.setLinkOficioDirigidoEvaluadores(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
 	}
 
 	private CamposUnicosSolicitudExamenValoracionDto obtenerCamposUnicos(SolicitudExamenValoracionDto docenteSaveDto) {

@@ -58,7 +58,7 @@ public class GeneracionResolucionController {
                 .body(generacionResolucion.actualizar(id, generacionResolucionDto, result));
     }
 
-    @GetMapping("/descargarDocumento")
+    @PostMapping("/descargarDocumento")
     public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(generacionResolucion.descargarArchivo(rutaArchivo));

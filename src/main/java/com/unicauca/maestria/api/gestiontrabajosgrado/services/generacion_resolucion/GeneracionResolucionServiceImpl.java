@@ -26,17 +26,12 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoRespon
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.CamposUnicosGenerarResolucionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.CamposUnicosRespuestaExamenValoracionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldUniqueException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.GeneracionResolucionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.GeneracionResolucionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
-import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion.InformacionUnicaRespuestaExamenValoracion;
 
 import lombok.RequiredArgsConstructor;
 
@@ -144,11 +139,11 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 .stream()
                                 .map(generacionResolucionMapper::toDto)
                                 .findFirst() // Obtener el primer elemento de la lista
-                                .orElse(null); 
+                                .orElse(null);
         }
 
         @Override
-        public GeneracionResolucionDto actualizar(Long id, GeneracionResolucionDto respuestaExamenValoracionDto,
+        public GeneracionResolucionDto actualizar(Long id, GeneracionResolucionDto generacionResolucionDto,
                         BindingResult result) {
 
                 if (result.hasErrors()) {
@@ -173,49 +168,49 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 GeneracionResolucion responseExamenValoracion = null;
                 if (generacionResolucionTmp != null) {
-                        if (respuestaExamenValoracionDto.getLinkAnteproyectoAprobado()
+                        if (generacionResolucionDto.getLinkAnteproyectoAprobado()
                                         .compareTo(generacionResolucionTmp.getLinkAnteproyectoAprobado()) != 0) {
-                                respuestaExamenValoracionDto
+                                generacionResolucionDto
                                                 .setLinkAnteproyectoAprobado(FilesUtilities
                                                                 .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                                                respuestaExamenValoracionDto
+                                                                                generacionResolucionDto
                                                                                                 .getLinkAnteproyectoAprobado(),
                                                                                 nombreCarpeta));
                                 FilesUtilities.deleteFileExample(generacionResolucionTmp.getLinkAnteproyectoAprobado());
                         }
-                        if (respuestaExamenValoracionDto.getLinkSolicitudComite()
+                        if (generacionResolucionDto.getLinkSolicitudComite()
                                         .compareTo(generacionResolucionTmp.getLinkSolicitudComite()) != 0) {
-                                respuestaExamenValoracionDto
+                                generacionResolucionDto
                                                 .setLinkSolicitudComite(FilesUtilities
                                                                 .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                                                respuestaExamenValoracionDto
+                                                                                generacionResolucionDto
                                                                                                 .getLinkSolicitudComite(),
                                                                                 nombreCarpeta));
                                 FilesUtilities.deleteFileExample(generacionResolucionTmp.getLinkSolicitudComite());
                         }
-                        if (respuestaExamenValoracionDto.getLinkSolicitudConcejoFacultad()
+                        if (generacionResolucionDto.getLinkSolicitudConcejoFacultad()
                                         .compareTo(generacionResolucionTmp.getLinkSolicitudConcejoFacultad()) != 0) {
-                                respuestaExamenValoracionDto
+                                generacionResolucionDto
                                                 .setLinkSolicitudConcejoFacultad(FilesUtilities
                                                                 .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                                                respuestaExamenValoracionDto
+                                                                                generacionResolucionDto
                                                                                                 .getLinkSolicitudConcejoFacultad(),
                                                                                 nombreCarpeta));
                                 FilesUtilities.deleteFileExample(
                                                 generacionResolucionTmp.getLinkSolicitudConcejoFacultad());
                         }
-                        if (respuestaExamenValoracionDto.getLinkResolucionGeneradaCF()
+                        if (generacionResolucionDto.getLinkResolucionGeneradaCF()
                                         .compareTo(generacionResolucionTmp.getLinkResolucionGeneradaCF()) != 0) {
-                                respuestaExamenValoracionDto
+                                generacionResolucionDto
                                                 .setLinkResolucionGeneradaCF(FilesUtilities
                                                                 .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                                                respuestaExamenValoracionDto
+                                                                                generacionResolucionDto
                                                                                                 .getLinkResolucionGeneradaCF(),
                                                                                 nombreCarpeta));
                                 FilesUtilities.deleteFileExample(generacionResolucionTmp.getLinkResolucionGeneradaCF());
                         }
                         // Repetir esto
-                        updateRtaExamenValoracionValues(generacionResolucionTmp, respuestaExamenValoracionDto);
+                        updateRtaExamenValoracionValues(generacionResolucionTmp, generacionResolucionDto);
                         responseExamenValoracion = generacionResolucionRepository.save(generacionResolucionTmp);
                 }
                 return generacionResolucionMapper.toDto(responseExamenValoracion);
@@ -228,16 +223,21 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         }
 
         // Funciones privadas
-        private void updateRtaExamenValoracionValues(GeneracionResolucion respuestaExamenValoracion,
-                        GeneracionResolucionDto respuestaExamenValoracionDto) {
-                respuestaExamenValoracion.setDirector(respuestaExamenValoracionDto.getDirector());
-                respuestaExamenValoracion.setCodirector(respuestaExamenValoracionDto.getCodirector());
-                respuestaExamenValoracion.setNumeroActaRevision(respuestaExamenValoracionDto.getNumeroActaRevision());
-                respuestaExamenValoracion.setFechaActa(respuestaExamenValoracionDto.getFechaActa());
-                respuestaExamenValoracion
+        private void updateRtaExamenValoracionValues(GeneracionResolucion generacionResolucion,
+                        GeneracionResolucionDto generacionResolucionDto) {
+                generacionResolucion.setDirector(generacionResolucionDto.getDirector());
+                generacionResolucion.setCodirector(generacionResolucionDto.getCodirector());
+                generacionResolucion.setNumeroActaRevision(generacionResolucionDto.getNumeroActaRevision());
+                generacionResolucion.setFechaActa(generacionResolucionDto.getFechaActa());
+                generacionResolucion
                                 .setNumeroResolucionGeneradaCF(
-                                                respuestaExamenValoracionDto.getNumeroResolucionGeneradaCF());
-                respuestaExamenValoracion.setFechaResolucion(respuestaExamenValoracionDto.getFechaResolucion());
+                                                generacionResolucionDto.getNumeroResolucionGeneradaCF());
+                generacionResolucion.setFechaResolucion(generacionResolucionDto.getFechaResolucion());
+                // Update archivos
+                generacionResolucion.setLinkAnteproyectoAprobado(generacionResolucionDto.getLinkAnteproyectoAprobado());
+                generacionResolucion.setLinkSolicitudComite(generacionResolucionDto.getLinkAnteproyectoAprobado());
+                generacionResolucion.setLinkSolicitudConcejoFacultad(generacionResolucionDto.getLinkSolicitudConcejoFacultad());
+                generacionResolucion.setLinkResolucionGeneradaCF(generacionResolucionDto.getLinkResolucionGeneradaCF());
         }
 
         private CamposUnicosGenerarResolucionDto obtenerCamposUnicos(

@@ -10,7 +10,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabaj
 
 public interface SustentacionProyectoInvestigacionRepository
         extends JpaRepository<SustentacionTrabajoInvestigacion, Long> {
-    @Query("SELECT COUNT(sev) FROM RespuestaExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
+    @Query("SELECT COUNT(sev) FROM SustentacionTrabajoInvestigacion sev WHERE sev.idTrabajoGrado.id = ?1")
     public int countByTrabajoGradoId(Long trabajoGradoId);
 
     Optional<SustentacionTrabajoInvestigacion> findByIdTrabajoGradoId(Long idTrabajoGradoId);

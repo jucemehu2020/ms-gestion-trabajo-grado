@@ -44,7 +44,7 @@ public class SustentacionProyectoInvestigacionController {
                 .body(sustentacionProyectoInvestigacion.actualizar(id, examenValoracion, result));
     }
 
-    @GetMapping("/descargarDocumento")
+    @PostMapping("/descargarDocumento")
     public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(sustentacionProyectoInvestigacion.descargarArchivo(rutaArchivo));

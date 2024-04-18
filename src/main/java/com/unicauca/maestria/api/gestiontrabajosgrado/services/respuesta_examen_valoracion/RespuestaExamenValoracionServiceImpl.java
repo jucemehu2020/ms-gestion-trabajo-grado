@@ -19,7 +19,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.rta_examen_valoracion.RespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.CamposUnicosRespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.CamposUnicosSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
@@ -40,7 +39,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         private final RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
         private final RespuestaExamenValoracionMapper respuestaExamenValoracionMapper;
         private final TrabajoGradoRepository trabajoGradoRepository;
-        private final InformacionUnicaRespuestaExamenValoracion informacionUnicaRespuestaExamenValoracion;
 
         @Override
         @Transactional
@@ -57,13 +55,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                 + respuestaExamenValoracionDto.getIdTrabajoGrados()
                                                                 + " No encontrado"));
 
-                // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
-                //                 obtenerCamposUnicos(respuestaExamenValoracionDto),
-                //                 null);
-                // if (!validacionCamposUnicos.isEmpty()) {
-                //         throw new FieldUniqueException(validacionCamposUnicos);
-                // }
-
                 // Obtener iniciales del trabajo de grado
                 String procesoVa = "Respuesta_Examen_Valoracion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
@@ -77,10 +68,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 RespuestaExamenValoracion rtaExamenValoracion = respuestaExamenValoracionMapper
                                 .toEntity(respuestaExamenValoracionDto);
 
-                // Establecer la relación uno a uno
-                rtaExamenValoracion.setIdTrabajoGrado(trabajoGrado);
-                trabajoGrado.setIdRtaExamenValoracion(rtaExamenValoracion);
-
                 // Se cambia el numero de estado
                 int numEstado = validarEstado(respuestaExamenValoracionDto.getRespuestaExamenValoracion());
                 trabajoGrado.setNumeroEstado(numEstado);
@@ -93,6 +80,9 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 rtaExamenValoracion.setLinkObservaciones(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
                                 rtaExamenValoracion.getLinkObservaciones(), nombreCarpeta));
 
+                //Se asigna al trabajo de grado
+                rtaExamenValoracion.setTrabajoGrado(trabajoGrado);
+
                 RespuestaExamenValoracion examenValoracionRes = respuestaExamenValoracionRepository
                                 .save(rtaExamenValoracion);
 
@@ -101,14 +91,13 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public RespuestaExamenValoracionDto buscarPorId(Long idTrabajoGrado) {
-            return respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
-                    .stream()
-                    .map(respuestaExamenValoracionMapper::toDto)
-                    .findFirst() 
-                    .orElse(null);
+        public List<RespuestaExamenValoracionDto> buscarPorId(Long idTrabajoGrado) {
+                return respuestaExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado)
+                                .stream()
+                                .map(respuestaExamenValoracionMapper::toDto)
+                                .collect(Collectors.toList());
         }
-        
+
         @Override
         public RespuestaExamenValoracionDto actualizar(Long id,
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,
@@ -123,15 +112,15 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                 "Respuesta examen de valoracion con id: " + id + " no encontrado"));
 
                 // Busca el trabajo de grado
-                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
-                                () -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id: " + id + " no encontrado"));
+                // TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
+                //                 () -> new ResourceNotFoundException(
+                //                                 "Trabajo de grado con id: " + id + " no encontrado"));
 
                 String procesoVa = "Respuesta_Examen_Valoracion";
-                String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                String tituloTrabajoGrado = ConvertString.obtenerIniciales(respuestaExamenValoracionTmp.getTrabajoGrado().getTitulo());
+                Long idenficiacionEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona().getIdentificacion();
+                String nombreEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona().getNombre();
+                String apellidoEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 RespuestaExamenValoracion responseExamenValoracion = null;
@@ -178,8 +167,12 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                 respuestaExamenValoracion.setRespuestaExamenValoracion(
                                 respuestaExamenValoracionDto.getRespuestaExamenValoracion());
-                respuestaExamenValoracion.setFechaMaxmiaEntrega(respuestaExamenValoracionDto.getFechaMaximaEntrega());
+                respuestaExamenValoracion.setFechaMaximaEntrega(respuestaExamenValoracionDto.getFechaMaximaEntrega());
                 respuestaExamenValoracion.setObservacion(respuestaExamenValoracionDto.getObservacion());
+                //Update archivos
+                respuestaExamenValoracion.setLinkFormatoB(respuestaExamenValoracionDto.getLinkFormatoB());
+                respuestaExamenValoracion.setLinkFormatoC(respuestaExamenValoracionDto.getLinkFormatoC());
+                respuestaExamenValoracion.setLinkObservaciones(respuestaExamenValoracionDto.getLinkObservaciones());
         }
 
         private int validarEstado(String estado) {
@@ -198,43 +191,4 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 return numEstado;
         }
 
-        private CamposUnicosRespuestaExamenValoracionDto obtenerCamposUnicos(
-                        RespuestaExamenValoracionDto respuesta) {
-                return informacionUnicaRespuestaExamenValoracion.apply(respuesta);
-        }
-
-        private Map<String, String> validacionCampoUnicos(CamposUnicosRespuestaExamenValoracionDto camposUnicos,
-                        CamposUnicosRespuestaExamenValoracionDto camposUnicosBD) {
-
-                Map<String, Function<CamposUnicosRespuestaExamenValoracionDto, Boolean>> mapCamposUnicos = new HashMap<>();
-
-                mapCamposUnicos.put("idTrabajoGrados",
-                                dto -> (camposUnicosBD == null || !dto.getIdTrabajoGrados()
-                                                .equals(camposUnicosBD.getIdTrabajoGrados()))
-                                                && respuestaExamenValoracionRepository
-                                                                .countByTrabajoGradoId(dto.getIdTrabajoGrados()) > 0);
-
-                Predicate<Field> existeCampoUnico = campo -> mapCamposUnicos.containsKey(campo.getName());
-                Predicate<Field> existeCampoBD = campoBD -> mapCamposUnicos.get(campoBD.getName()).apply(camposUnicos);
-                Predicate<Field> campoInvalido = existeCampoUnico.and(existeCampoBD);
-
-                return Arrays.stream(camposUnicos.getClass().getDeclaredFields())
-                                .filter(campoInvalido)
-                                .peek(field -> field.setAccessible(true))
-                                .collect(Collectors.toMap(Field::getName, field -> {
-                                        Object valorCampo = null;
-                                        try {
-                                                valorCampo = field.get(camposUnicos);
-                                        } catch (IllegalAccessException e) {
-                                                e.printStackTrace();
-                                        }
-                                        return mensajeException(field.getName(), valorCampo);
-                                }));
-
-        }
-
-        private <T> String mensajeException(String nombreCampo, T valorCampo) {
-                return "Campo único, ya se ha registrado una RESPUESTA DE EXAMEN DE VALORACION al trabajo de grado: "
-                                + valorCampo;
-        }
 }

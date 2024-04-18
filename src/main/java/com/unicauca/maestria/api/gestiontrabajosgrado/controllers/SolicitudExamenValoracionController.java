@@ -20,6 +20,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/solicitud_examen_valoracion")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class SolicitudExamenValoracionController {
     private final SolicitudExamenValoracionService serviceSolicitudExamenValoracion;
 
@@ -48,7 +49,7 @@ public class SolicitudExamenValoracionController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(serviceSolicitudExamenValoracion.actualizar(id, examenValoracion, result));
 	}
 
-    @GetMapping("/descargarDocumento")
+    @PostMapping("/descargarDocumento")
     public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
         return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.descargarArchivo(rutaArchivo));
     }

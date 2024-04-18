@@ -33,14 +33,14 @@ public class RespuestaExamenValoracion {
 
     private String respuestaExamenValoracion;
 
-    private LocalDate fechaMaxmiaEntrega;
+    private LocalDate fechaMaximaEntrega;
 
     private Boolean estadoFinalizado;
 
     private String observacion;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "id_trabajo_grado")
-    private TrabajoGrado idTrabajoGrado;
+    private TrabajoGrado trabajoGrado;
 
 }

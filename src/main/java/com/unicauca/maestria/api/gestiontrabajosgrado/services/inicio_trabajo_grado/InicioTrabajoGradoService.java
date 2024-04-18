@@ -12,6 +12,8 @@ public interface InicioTrabajoGradoService {
 
     EstudianteResponseDto buscarEstadoEstudiantePor(Long id);
 
+    TrabajoGradoResponseDto buscarTrabajoGrado(Long id);
+
     TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante);
 
     void eliminarTrabajoGrado(Long idTrabajoGrado);
