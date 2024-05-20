@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.comite.GeneracionResolucionComiteDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.comite.GeneracionResolucionComiteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.GeneracionResolucionCoordinadorDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.GeneracionResolucionCoordinadorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.generacion_resolucion.GeneracionResolucionService;
 
 import lombok.RequiredArgsConstructor;
@@ -38,17 +42,46 @@ public class GeneracionResolucionController {
         return ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.listarDirectorAndCodirector());
     }
 
-    @PostMapping
-    public ResponseEntity<GeneracionResolucionDto> crear(
-            @Valid @RequestBody GeneracionResolucionDto generacionResolucionDto,
+    // @PostMapping
+    // public ResponseEntity<GeneracionResolucionDto> crear(
+    // @Valid @RequestBody GeneracionResolucionDto generacionResolucionDto,
+    // BindingResult result) {
+    // return ResponseEntity.status(HttpStatus.CREATED)
+    // .body(generacionResolucion.crear(generacionResolucionDto, result));
+    // }
+
+    @PostMapping("/insertarInformacionCoordinador")
+    public ResponseEntity<GeneracionResolucionCoordinadorResponseDto> insertarInformacionCoordinador(
+            @Valid @RequestBody GeneracionResolucionCoordinadorDto generacionResolucionDto,
             BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(generacionResolucion.crear(generacionResolucionDto, result));
+                .body(generacionResolucion.insertarInformacionCoordinador(generacionResolucionDto, result));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GeneracionResolucionDto> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.buscarPorId(id));
+    @PostMapping("/insertarInformacionComite")
+    public ResponseEntity<GeneracionResolucionComiteResponseDto> insertarInformacionComite(
+            @Valid @RequestBody GeneracionResolucionComiteDto generacionResolucionDto,
+            BindingResult result) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(generacionResolucion.insertarInformacionComite(generacionResolucionDto, result));
+    }
+
+    // @GetMapping("/{id}")
+    // public ResponseEntity<GeneracionResolucionDto> buscarPorId(@PathVariable Long
+    // id) {
+    // return
+    // ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.buscarPorId(id));
+    // }
+
+    @GetMapping("/listarInformacionCoordinador/{id}")
+    public ResponseEntity<GeneracionResolucionCoordinadorResponseDto> listarInformacionCoordinador(
+            @PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.listarInformacionCoordinador(id));
+    }
+
+    @GetMapping("/listarInformacionComite/{id}")
+    public ResponseEntity<GeneracionResolucionDto> listarInformacionComite(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.listarInformacionComite(id));
     }
 
     @PutMapping("/{id}")

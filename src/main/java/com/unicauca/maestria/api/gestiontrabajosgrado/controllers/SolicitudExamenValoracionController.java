@@ -11,6 +11,10 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion.SolicitudExamenValoracionService;
 
 import java.util.List;
@@ -34,23 +38,66 @@ public class SolicitudExamenValoracionController {
         return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.listarExpertos());
     }
 
-    @PostMapping
-    public ResponseEntity<SolicitudExamenValoracionResponseDto> crear(@Valid @RequestBody SolicitudExamenValoracionDto examenValoracion, BindingResult result){
-        return ResponseEntity.status(HttpStatus.CREATED).body(serviceSolicitudExamenValoracion.crear(examenValoracion, result));
+    @PostMapping("/insertarInformacionDocente")
+    public ResponseEntity<SolicitudExamenValoracionDocenteResponseDto> insertarInformacionDocente(
+            @Valid @RequestBody SolicitudExamenValoracionDocenteDto informacionDocente, BindingResult result) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(serviceSolicitudExamenValoracion.insertarInformacionDocente(informacionDocente, result));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SolicitudExamenValoracionDto> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.buscarPorId(id));
+    @PostMapping("/insertarInformacionCoordinador")
+    public ResponseEntity<SolicitudExamenValoracionCoordinadorResponseDto> insertarInformacionCoordinador(
+            @Valid @RequestBody SolicitudExamenValoracionCoordinadorDto informacionCoordinador, BindingResult result) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(serviceSolicitudExamenValoracion.insertarInformacionCoordinador(informacionCoordinador, result));
     }
 
-    @PutMapping("/{id}")
-	public ResponseEntity<SolicitudExamenValoracionResponseDto> actualizar(@PathVariable Long id, @Valid @RequestBody SolicitudExamenValoracionDto examenValoracion,BindingResult result){
-		return ResponseEntity.status(HttpStatus.CREATED).body(serviceSolicitudExamenValoracion.actualizar(id, examenValoracion, result));
-	}
+    // @GetMapping("/{id}")
+    // public ResponseEntity<SolicitudExamenValoracionDto> buscarPorId(@PathVariable
+    // Long id) {
+    // return
+    // ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.buscarPorId(id));
+    // }
+
+    @GetMapping("/listarInformacionDocente/{id}")
+    public ResponseEntity<SolicitudExamenValoracionDocenteResponseDto> listarInformacionDocente(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.listarInformacionDocente(id));
+    }
+
+    @GetMapping("/listarInformacionCoordinador/{id}")
+    public ResponseEntity<SolicitudExamenValoracionResponseDto> listarInformacionCoordinador(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(serviceSolicitudExamenValoracion.listarInformacionCoordinador(id));
+    }
+
+    // @PutMapping("/{id}")
+    // public ResponseEntity<SolicitudExamenValoracionResponseDto>
+    // actualizar(@PathVariable Long id, @Valid @RequestBody
+    // SolicitudExamenValoracionDto examenValoracion,BindingResult result){
+    // return
+    // ResponseEntity.status(HttpStatus.CREATED).body(serviceSolicitudExamenValoracion.actualizar(id,
+    // examenValoracion, result));
+    // }
+
+    @PutMapping("/actualizarInformacionDocente/{id}")
+    public ResponseEntity<SolicitudExamenValoracionDocenteResponseDto> actualizarInformacionDocente(
+            @PathVariable Long id, @Valid @RequestBody SolicitudExamenValoracionDocenteDto examenValoracion,
+            BindingResult result) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(serviceSolicitudExamenValoracion.actualizarInformacionDocente(id, examenValoracion, result));
+    }
+
+    @PutMapping("/actualizarInformacionCoordinador/{id}")
+    public ResponseEntity<SolicitudExamenValoracionCoordinadorResponseDto> actualizarInformacionCoordinador(
+            @PathVariable Long id, @Valid @RequestBody SolicitudExamenValoracionCoordinadorDto examenValoracion,
+            BindingResult result) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(serviceSolicitudExamenValoracion.actualizarInformacionCoordinador(id, examenValoracion, result));
+    }
 
     @PostMapping("/descargarDocumento")
     public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
-        return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.descargarArchivo(rutaArchivo));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(serviceSolicitudExamenValoracion.descargarArchivo(rutaArchivo));
     }
 }

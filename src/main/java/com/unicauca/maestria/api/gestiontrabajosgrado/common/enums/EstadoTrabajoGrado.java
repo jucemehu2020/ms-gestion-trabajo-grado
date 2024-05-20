@@ -5,6 +5,8 @@ import java.util.Map;
 
 public enum EstadoTrabajoGrado {
     SIN_REGISTRAR_SOLICITUD_EXAMEN_DE_VALORACION("Sin registrar solicitud de examen de valoración"),
+    //PENDIENTE_SUBIDA_ARCHIVOS_DOCENTE("Pendiente informacion por parte del docente"),
+    PENDIENTE_SUBIDA_ARCHIVOS_COORDINADOR("Pendiente informacion por parte del coordinador"),
     PENDIENTE_RESULTADO_EXAMEN_DE_VALORACION("Pendiente resultado de examen de valoración"),
     EXAMEN_DE_VALORACION_APROBADO("Examen de valoración aprobado"),
     EXAMEN_DE_VALORACION_NO_APROBADO("Examen de valoración no aprobado"),

@@ -4,6 +4,10 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resoluci
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion.GeneracionResolucionBuilder;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto.GeneracionResolucionDtoBuilder;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.comite.GeneracionResolucionComiteDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.comite.GeneracionResolucionComiteDto.GeneracionResolucionComiteDtoBuilder;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.GeneracionResolucionCoordinadorDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.GeneracionResolucionCoordinadorDto.GeneracionResolucionCoordinadorDtoBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -11,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-17T20:48:36-0500",
-    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.38.0.v20240325-1403, environment: Java 17.0.10 (Eclipse Adoptium)"
+    date = "2024-05-19T19:10:34-0500",
+    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.38.0.v20240417-1011, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class GeneracionResolucionMapperImpl implements GeneracionResolucionMapper {
@@ -89,5 +93,75 @@ public class GeneracionResolucionMapperImpl implements GeneracionResolucionMappe
         }
 
         return list;
+    }
+
+    @Override
+    public GeneracionResolucion toEntity(GeneracionResolucionCoordinadorDto docenteDto) {
+        if ( docenteDto == null ) {
+            return null;
+        }
+
+        GeneracionResolucionBuilder generacionResolucion = GeneracionResolucion.builder();
+
+        generacionResolucion.codirector( docenteDto.getCodirector() );
+        generacionResolucion.director( docenteDto.getDirector() );
+        generacionResolucion.fechaActa( docenteDto.getFechaActa() );
+        generacionResolucion.linkAnteproyectoAprobado( docenteDto.getLinkAnteproyectoAprobado() );
+        generacionResolucion.linkSolicitudComite( docenteDto.getLinkSolicitudComite() );
+        generacionResolucion.numeroActaRevision( docenteDto.getNumeroActaRevision() );
+        generacionResolucion.titulo( docenteDto.getTitulo() );
+
+        return generacionResolucion.build();
+    }
+
+    @Override
+    public GeneracionResolucionCoordinadorDto toCoordinadorDto(GeneracionResolucion entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        GeneracionResolucionCoordinadorDtoBuilder generacionResolucionCoordinadorDto = GeneracionResolucionCoordinadorDto.builder();
+
+        generacionResolucionCoordinadorDto.codirector( entity.getCodirector() );
+        generacionResolucionCoordinadorDto.director( entity.getDirector() );
+        generacionResolucionCoordinadorDto.fechaActa( entity.getFechaActa() );
+        generacionResolucionCoordinadorDto.linkAnteproyectoAprobado( entity.getLinkAnteproyectoAprobado() );
+        generacionResolucionCoordinadorDto.linkSolicitudComite( entity.getLinkSolicitudComite() );
+        generacionResolucionCoordinadorDto.numeroActaRevision( entity.getNumeroActaRevision() );
+        generacionResolucionCoordinadorDto.titulo( entity.getTitulo() );
+
+        return generacionResolucionCoordinadorDto.build();
+    }
+
+    @Override
+    public GeneracionResolucion toEntity(GeneracionResolucionComiteDto coordinadorDto) {
+        if ( coordinadorDto == null ) {
+            return null;
+        }
+
+        GeneracionResolucionBuilder generacionResolucion = GeneracionResolucion.builder();
+
+        generacionResolucion.fechaResolucion( coordinadorDto.getFechaResolucion() );
+        generacionResolucion.linkResolucionGeneradaCF( coordinadorDto.getLinkResolucionGeneradaCF() );
+        generacionResolucion.linkSolicitudConcejoFacultad( coordinadorDto.getLinkSolicitudConcejoFacultad() );
+        generacionResolucion.numeroResolucionGeneradaCF( coordinadorDto.getNumeroResolucionGeneradaCF() );
+
+        return generacionResolucion.build();
+    }
+
+    @Override
+    public GeneracionResolucionComiteDto toComiteDto(GeneracionResolucion entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        GeneracionResolucionComiteDtoBuilder generacionResolucionComiteDto = GeneracionResolucionComiteDto.builder();
+
+        generacionResolucionComiteDto.fechaResolucion( entity.getFechaResolucion() );
+        generacionResolucionComiteDto.linkResolucionGeneradaCF( entity.getLinkResolucionGeneradaCF() );
+        generacionResolucionComiteDto.linkSolicitudConcejoFacultad( entity.getLinkSolicitudConcejoFacultad() );
+        generacionResolucionComiteDto.numeroResolucionGeneradaCF( entity.getNumeroResolucionGeneradaCF() );
+
+        return generacionResolucionComiteDto.build();
     }
 }

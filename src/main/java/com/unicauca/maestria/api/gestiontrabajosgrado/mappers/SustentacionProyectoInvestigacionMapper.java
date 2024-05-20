@@ -1,10 +1,33 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.mappers;
 
 import org.mapstruct.Mapper;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.GeneracionResolucionCoordinadorDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.SustentacionTrabajoInvestigacionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.comite.SustentacionTrabajoInvestigacionComiteDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.comite.SustentacionTrabajoInvestigacionComiteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.SustentacionTrabajoInvestigacionCoordinadorDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteDto;
 
 @Mapper(componentModel = "spring")
-public interface SustentacionProyectoInvestigacionMapper extends GenericMapper<SustentacionTrabajoInvestigacionDto, SustentacionTrabajoInvestigacion>{
-    
+public interface SustentacionProyectoInvestigacionMapper
+        extends GenericMapper<SustentacionTrabajoInvestigacionDto, SustentacionTrabajoInvestigacion> {
+
+    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionDocenteDto docenteDto);
+
+    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionComiteDto comiteDto);
+
+    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorDto coordinadorDto);
+
+    SustentacionTrabajoInvestigacionDocenteDto toDocenteDto(SustentacionTrabajoInvestigacion entity);
+
+    SustentacionTrabajoInvestigacionDocenteDto toDocenteResponseDto(SustentacionTrabajoInvestigacionDto entity);
+
+    SustentacionTrabajoInvestigacionComiteResponseDto toCoordinadorDto(SolicitudExamenValoracion entity);
+
+    SolicitudExamenValoracionResponseDto toDto(SolicitudExamenValoracionResponseDto entity);
 }

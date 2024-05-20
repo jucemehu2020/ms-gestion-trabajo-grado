@@ -24,7 +24,7 @@ public class GeneracionResolucion {
     @Id
     @Column(name = "id_generacion_resolucion")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long idGeneracionResolucion;
 
     private String titulo;
 
