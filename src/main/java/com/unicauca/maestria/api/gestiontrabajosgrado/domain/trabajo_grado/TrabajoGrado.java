@@ -17,7 +17,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.FetchType;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.estudiante.Estudiante;
@@ -31,6 +34,8 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabaj
 @AllArgsConstructor
 @Builder
 @Entity
+@Getter
+@Setter
 @Table(name = "trabajo_grado")
 public class TrabajoGrado {
 

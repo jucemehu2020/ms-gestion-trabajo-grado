@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class SolicitudExamenValoracionDocenteDto {
 
-    @NotNull
     private Long idTrabajoGrados; 
 
     @NotNull

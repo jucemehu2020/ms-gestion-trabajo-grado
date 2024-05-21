@@ -11,7 +11,6 @@ import lombok.*;
 public class GeneracionResolucionComiteResponseDto {
     
     private Long idGeneracionResolucion;
-    private Long idTrabajoGrados;
     private String linkSolicitudConcejoFacultad;
     private String numeroResolucionGeneradaCF;
     private LocalDate fechaResolucion;

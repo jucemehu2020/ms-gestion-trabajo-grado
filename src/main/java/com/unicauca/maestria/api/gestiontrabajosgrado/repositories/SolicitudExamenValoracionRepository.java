@@ -11,6 +11,9 @@ public interface SolicitudExamenValoracionRepository extends JpaRepository<Solic
     @Query("SELECT COUNT(sev) FROM SolicitudExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
     public int countByTrabajoGradoId(Long trabajoGradoId);
 
+    @Query("SELECT sev.idTrabajoGrado.id FROM SolicitudExamenValoracion sev WHERE sev.id = ?1")
+    public Long obtenerIdTrabajoGrado(Long trabajoGradoId);
+
     @Query("SELECT sev FROM SolicitudExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
     public SolicitudExamenValoracion findByTrabajoGradoId(Long trabajoGradoId);
 

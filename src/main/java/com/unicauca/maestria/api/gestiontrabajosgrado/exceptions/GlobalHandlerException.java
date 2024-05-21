@@ -25,6 +25,7 @@ public class GlobalHandlerException {
 		
 		return new ResponseEntity<Object>(exc, estado);
 	}
+
 	@ExceptionHandler(value = {FieldErrorException.class})
 	public ResponseEntity<Object> fieldErrorExceptionHandler(FieldErrorException exception,WebRequest request){
 		HttpStatus estado=HttpStatus.BAD_REQUEST;
@@ -40,6 +41,19 @@ public class GlobalHandlerException {
 	@ExceptionHandler(value = {FieldUniqueException.class})
 	public ResponseEntity<Object> fieldUniqueExceptionHandler(FieldUniqueException exception,WebRequest request){
 		return new ResponseEntity<Object>(exception.getInformacionCamposUnicos(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(value = {InformationException.class})
+	public ResponseEntity<Object> informationExceptionHandler(InformationException exception,WebRequest request){
+		HttpStatus estado = HttpStatus.CONFLICT;
+		Exception exc = Exception.builder()
+				.mensaje(exception.getMessage())
+				.estado(estado)
+				.marcaTiempo(LocalDate.now())
+				.descripcionUrl(request.getDescription(false))
+				.build();
+		
+		return new ResponseEntity<Object>(exc, estado);
 	}
 	
 }
