@@ -1,6 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -8,11 +9,20 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
@@ -55,12 +65,19 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	private final ArchivoClientExpertos archivoClientExpertos;
 	private final InformacionUnicaSolicitudExamenValoracion informacionUnicaSolicitudExamenValoracion;
 
+	@Autowired
+	private JavaMailSender mailSender;
+
+	@Autowired
+	private SpringTemplateEngine templateEngine;
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<DocenteInfoDto> listarDocentes() {
 		List<DocenteResponseDto> estadoTmp = archivoClient.listarDocentesRes();
 		List<DocenteInfoDto> docentes = estadoTmp.stream()
 				.map(docente -> new DocenteInfoDto(
+						docente.getPersona().getId(),
 						docente.getPersona().getNombre(),
 						docente.getPersona().getApellido(),
 						docente.getPersona().getCorreoElectronico()))
@@ -74,6 +91,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		List<ExpertoResponseDto> estadoTmp = archivoClientExpertos.listar();
 		List<ExpertoInfoDto> expertos = estadoTmp.stream()
 				.map(experto -> new ExpertoInfoDto(
+						experto.getPersona().getId(),
 						experto.getPersona().getNombre(),
 						experto.getPersona().getApellido(),
 						experto.getPersona().getCorreoElectronico(),
@@ -191,6 +209,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		SolicitudExamenValoracion examenValoracionRes = solicitudExamenValoracionRepository.save(examenValoracionTmp);
 
+		enviarCorreoEvaluadores(examenValoracionTmp);
+
 		return examenValoracionResponseMapper.toCoordinadorDto(examenValoracionRes);
 	}
 
@@ -203,6 +223,37 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		examenValoracion.setFechaMaximaEvaluacion(examenValoracionDto.getFechaMaximaEvaluacion());
 		// Update archivos
 		examenValoracion.setLinkOficioDirigidoEvaluadores(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
+	}
+
+	private boolean enviarCorreoEvaluadores(SolicitudExamenValoracion examenValoracionTmp) {
+		try {
+			ArrayList<String> correos = new ArrayList();
+			Map<String, Object> templateModel = new HashMap<>();
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message);
+
+			DocenteResponseDto docente = archivoClient.obtenerDocentePorId(Long.parseLong(examenValoracionTmp.getEvaluadorInterno()));
+			correos.add(docente.getPersona().getCorreoElectronico());
+			ExpertoResponseDto experto = archivoClientExpertos.obtenerExpertoPorId(Long.parseLong(examenValoracionTmp.getEvaluadorExterno()));
+			correos.add(experto.getPersona().getCorreoElectronico());
+
+			Context context = new Context();
+			context.setVariables(templateModel);
+
+			String html = templateEngine.process("emailTemplate", context);
+
+			for (var i = 0; i < correos.size(); i++) {
+				helper.setTo(correos.get(i));
+				helper.setSubject("Mensaje de prueba");
+				helper.setText(html, true);
+
+				mailSender.send(message);
+			}
+
+			return true;
+		} catch (MessagingException e) {
+			return false;
+		}
 	}
 
 	@Override

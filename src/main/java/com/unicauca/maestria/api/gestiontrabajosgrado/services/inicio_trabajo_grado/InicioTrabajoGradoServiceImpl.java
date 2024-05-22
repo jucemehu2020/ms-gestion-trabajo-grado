@@ -2,10 +2,19 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_g
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.context.Context;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
@@ -31,6 +40,12 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	private final TrabajoGradoRepository trabajoGradoRepository;
 	private final TrabajoGradoResponseMapper trabajoGradoResponseMapper;
 	private final ArchivoClient archivoClient;
+
+	@Autowired
+	private JavaMailSender mailSender;
+
+	@Autowired
+	private SpringTemplateEngine templateEngine;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -134,6 +149,22 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 								"Tarabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
 		trabajoGradoRepository.deleteById(idTrabajoGrado);
 
+	}
+
+	public void sendEmail(String dirigidoA, String mensaje, Map<String, Object> templateModel) throws MessagingException {
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+
+		Context context = new Context();
+		context.setVariables(templateModel);
+
+		String html = templateEngine.process("emailTemplate", context);
+
+		helper.setTo(dirigidoA);
+		helper.setSubject(mensaje);
+		helper.setText(html, true);
+
+		mailSender.send(message);
 	}
 
 }
