@@ -1,6 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_grado;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,9 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.context.Context;
-
+import org.json.JSONObject;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientLogin;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.security.JwtUtil;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.estudiante.Estudiante;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
@@ -30,6 +33,8 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoRespon
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.estudiante.EstudianteRepository;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -40,12 +45,16 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	private final TrabajoGradoRepository trabajoGradoRepository;
 	private final TrabajoGradoResponseMapper trabajoGradoResponseMapper;
 	private final ArchivoClient archivoClient;
+	private final ArchivoClientLogin archivoClientLogin;
 
 	@Autowired
 	private JavaMailSender mailSender;
 
 	@Autowired
 	private SpringTemplateEngine templateEngine;
+
+	@Autowired
+	private JwtUtil jwtTokenProvider;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -108,12 +117,19 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 
 	@Override
 	@Transactional
-	public TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante) {
+	public TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante, String token) {
 
 		// Obtener el estudiante
 		Estudiante estudianteBD = estudianteRepository.findById(idEstudiante)
 				.orElseThrow(
 						() -> new ResourceNotFoundException("Estudiante con id: " + idEstudiante + " No encontrado"));
+
+		String usuario = jwtTokenProvider.getUserNameFromJwtToken(token);
+		System.out.println("Usuario::: " + usuario);
+		String respuestaLogin = archivoClientLogin.obtenerCorreo(usuario);
+		JSONObject jsonObject = new JSONObject(respuestaLogin);
+		String correoElectronico = jsonObject.getString("message");
+		System.out.println("correoElectronico::: " + correoElectronico);
 
 		// Crear el objeto TrabajoGrado
 		TrabajoGrado trabajoGradoConvert = new TrabajoGrado();
@@ -121,6 +137,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		trabajoGradoConvert.setFechaCreacion(LocalDate.now());
 		trabajoGradoConvert.setNumeroEstado(0);
 		trabajoGradoConvert.setTitulo("");
+		trabajoGradoConvert.setCorreoElectronicoTutor(correoElectronico);
 
 		// Guardar el TrabajoGrado en la base de datos
 		TrabajoGrado trabajoGradoGuardado = trabajoGradoRepository.save(trabajoGradoConvert);
@@ -151,7 +168,8 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 
 	}
 
-	public void sendEmail(String dirigidoA, String mensaje, Map<String, Object> templateModel) throws MessagingException {
+	public void sendEmail(String dirigidoA, String mensaje, Map<String, Object> templateModel)
+			throws MessagingException {
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 

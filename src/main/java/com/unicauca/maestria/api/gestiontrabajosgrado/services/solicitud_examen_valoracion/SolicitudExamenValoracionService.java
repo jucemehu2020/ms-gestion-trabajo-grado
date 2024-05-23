@@ -9,6 +9,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailCorrecionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
@@ -20,9 +21,11 @@ public interface SolicitudExamenValoracionService {
 
     public List<ExpertoInfoDto> listarExpertos();
 
-    public SolicitudExamenValoracionDocenteResponseDto insertarInformacionDocente(SolicitudExamenValoracionDocenteDto informacionDocente, BindingResult result);
+    public SolicitudExamenValoracionDocenteResponseDto insertarInformacionDocente(
+            SolicitudExamenValoracionDocenteDto informacionDocente, BindingResult result);
 
-    public SolicitudExamenValoracionCoordinadorResponseDto insertarInformacionCoordinador(SolicitudExamenValoracionCoordinadorDto informacionDocente, BindingResult result);
+    public SolicitudExamenValoracionCoordinadorResponseDto insertarInformacionCoordinador(
+            SolicitudExamenValoracionCoordinadorDto informacionDocente, BindingResult result);
 
     public SolicitudExamenValoracionResponseDto crear(SolicitudExamenValoracionDto oficio, BindingResult result);
 
@@ -30,11 +33,16 @@ public interface SolicitudExamenValoracionService {
 
     public SolicitudExamenValoracionResponseDto listarInformacionCoordinador(Long idTrabajoGrado);
 
-    //public SolicitudExamenValoracionResponseDto actualizar(Long id, SolicitudExamenValoracionDto examenValoracionDto, BindingResult result);
+    // public SolicitudExamenValoracionResponseDto actualizar(Long id,
+    // SolicitudExamenValoracionDto examenValoracionDto, BindingResult result);
 
-    public SolicitudExamenValoracionDocenteResponseDto actualizarInformacionDocente(Long id, SolicitudExamenValoracionDocenteDto examenValoracionDto, BindingResult result);
+    public SolicitudExamenValoracionDocenteResponseDto actualizarInformacionDocente(Long id,
+            SolicitudExamenValoracionDocenteDto examenValoracionDto, BindingResult result);
 
-    public SolicitudExamenValoracionCoordinadorResponseDto actualizarInformacionCoordinador(Long id, SolicitudExamenValoracionCoordinadorDto examenValoracionDto, BindingResult result);
+    public SolicitudExamenValoracionCoordinadorResponseDto actualizarInformacionCoordinador(Long id,
+            SolicitudExamenValoracionCoordinadorDto examenValoracionDto, BindingResult result);
 
     public String descargarArchivo(RutaArchivoDto rutaArchivo);
+
+    public Boolean enviarCorreoElectronicoCorrecion(EnvioEmailCorrecionDto envioEmailCorrecionDto, BindingResult result);
 }

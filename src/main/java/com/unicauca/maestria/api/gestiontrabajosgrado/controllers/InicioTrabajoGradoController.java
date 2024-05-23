@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,9 +48,12 @@ public class InicioTrabajoGradoController {
     }
 
     @PostMapping("/{idEstudiante}")
-    public ResponseEntity<TrabajoGradoResponseDto> crearTrabajoGrado(@PathVariable Long idEstudiante) {
+    @PreAuthorize("hasRole('DOCENTE')")
+    public ResponseEntity<TrabajoGradoResponseDto> crearTrabajoGrado(@PathVariable Long idEstudiante,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(inicioTrabajoGradoService.crearTrabajoGrado(idEstudiante));
+                .body(inicioTrabajoGradoService.crearTrabajoGrado(idEstudiante, token));
     }
 
     @DeleteMapping("{id}")
@@ -59,7 +63,7 @@ public class InicioTrabajoGradoController {
     }
 
     @GetMapping("/sendEmail")
-    public ResponseEntity<?> sendEmail() throws MessagingException{
+    public ResponseEntity<?> sendEmail() throws MessagingException {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("title", "Correo de Ejemplo");
         templateModel.put("message", "Este es un mensaje enviado utilizando Thymeleaf y Spring Boot.");

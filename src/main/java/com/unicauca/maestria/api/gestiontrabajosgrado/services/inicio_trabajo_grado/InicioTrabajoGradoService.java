@@ -17,7 +17,7 @@ public interface InicioTrabajoGradoService {
 
     TrabajoGradoResponseDto buscarTrabajoGrado(Long id);
 
-    TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante);
+    TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante, String token);
 
     void eliminarTrabajoGrado(Long idTrabajoGrado);
 

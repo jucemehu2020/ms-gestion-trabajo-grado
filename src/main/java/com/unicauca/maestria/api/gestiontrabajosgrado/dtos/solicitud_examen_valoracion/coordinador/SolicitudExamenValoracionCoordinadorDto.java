@@ -1,10 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador;
 
 import lombok.*;
-
 import java.time.LocalDate;
-
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter

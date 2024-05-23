@@ -38,6 +38,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailCorrecionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
@@ -232,9 +233,11 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message);
 
-			DocenteResponseDto docente = archivoClient.obtenerDocentePorId(Long.parseLong(examenValoracionTmp.getEvaluadorInterno()));
+			DocenteResponseDto docente = archivoClient
+					.obtenerDocentePorId(Long.parseLong(examenValoracionTmp.getEvaluadorInterno()));
 			correos.add(docente.getPersona().getCorreoElectronico());
-			ExpertoResponseDto experto = archivoClientExpertos.obtenerExpertoPorId(Long.parseLong(examenValoracionTmp.getEvaluadorExterno()));
+			ExpertoResponseDto experto = archivoClientExpertos
+					.obtenerExpertoPorId(Long.parseLong(examenValoracionTmp.getEvaluadorExterno()));
 			correos.add(experto.getPersona().getCorreoElectronico());
 
 			Context context = new Context();
@@ -318,6 +321,18 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	public SolicitudExamenValoracionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado) {
 		Optional<SolicitudExamenValoracionResponseDto> responseDto = solicitudExamenValoracionRepository
 				.findByIdTrabajoGradoId(idTrabajoGrado);
+		System.out.println("tiene::: " + responseDto);
+
+		DocenteResponseDto docente = archivoClient
+				.obtenerDocentePorId(Long.parseLong(responseDto.get().getEvaluadorInterno()));
+		String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+		ExpertoResponseDto experto = archivoClientExpertos
+				.obtenerExpertoPorId(Long.parseLong(responseDto.get().getEvaluadorExterno()));
+		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
+
+		responseDto.get().setEvaluadorInterno(nombre_docente);
+		responseDto.get().setEvaluadorExterno(nombre_experto);
+
 		if (responseDto.isPresent()) {
 			return examenValoracionResponseMapper.toDocenteResponseDto(responseDto.get());
 		} else {
@@ -493,6 +508,39 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	@Transactional(readOnly = true)
 	public String descargarArchivo(RutaArchivoDto rutaArchivo) {
 		return FilesUtilities.recuperarArchivo(rutaArchivo.getRutaArchivo());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Boolean enviarCorreoElectronicoCorrecion(EnvioEmailCorrecionDto envioEmailCorrecionDto,
+			BindingResult result) {
+		try {
+			TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(envioEmailCorrecionDto.getIdTrabajoGrado())
+					.orElseThrow(
+							() -> new ResourceNotFoundException("Trabajo de grado con id: "
+									+ envioEmailCorrecionDto.getIdTrabajoGrado() + " no encontrado"));
+
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+			Map<String, Object> templateModel = new HashMap<>();
+			templateModel.put("title", envioEmailCorrecionDto.getTituloAsunto());
+			templateModel.put("message", envioEmailCorrecionDto.getMensaje());
+
+			Context context = new Context();
+			context.setVariables(templateModel);
+
+			String html = templateEngine.process("emailTemplate", context);
+
+			helper.setTo(trabajoGrado.getCorreoElectronicoTutor());
+			helper.setSubject(envioEmailCorrecionDto.getTituloAsunto());
+			helper.setText(html, true);
+
+			mailSender.send(message);
+			return true;
+		} catch (MessagingException e) {
+			return false;
+		}
 	}
 
 	// Funciones privadas

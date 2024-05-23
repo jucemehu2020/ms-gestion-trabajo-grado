@@ -54,6 +54,8 @@ public class TrabajoGrado {
 
     private String titulo;
 
+    private String correoElectronicoTutor;
+
     @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
     private SolicitudExamenValoracion examenValoracion;
 
