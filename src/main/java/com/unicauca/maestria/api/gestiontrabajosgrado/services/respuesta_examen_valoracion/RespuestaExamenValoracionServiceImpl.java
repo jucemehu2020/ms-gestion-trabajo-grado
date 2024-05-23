@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -14,19 +15,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.rta_examen_valoracion.RespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionInformacionGeneralDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.CamposUnicosSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldUniqueException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion.InformacionUnicaSolicitudExamenValoracion;
 
@@ -39,6 +47,11 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         private final RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
         private final RespuestaExamenValoracionMapper respuestaExamenValoracionMapper;
         private final TrabajoGradoRepository trabajoGradoRepository;
+
+        // Extras
+        private final SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
+        private final ArchivoClient archivoClient;
+        private final ArchivoClientExpertos archivoClientExpertos;
 
         @Override
         @Transactional
@@ -80,7 +93,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 rtaExamenValoracion.setLinkObservaciones(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
                                 rtaExamenValoracion.getLinkObservaciones(), nombreCarpeta));
 
-                //Se asigna al trabajo de grado
+                // Se asigna al trabajo de grado
                 rtaExamenValoracion.setTrabajoGrado(trabajoGrado);
 
                 RespuestaExamenValoracion examenValoracionRes = respuestaExamenValoracionRepository
@@ -91,11 +104,47 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public List<RespuestaExamenValoracionDto> buscarPorId(Long idTrabajoGrado) {
+        public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idTrabajoGrado) {
+
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado).orElseThrow(
+                                () -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
+
+                Optional<SolicitudExamenValoracionResponseDto> responseDto = solicitudExamenValoracionRepository
+                                .findByIdTrabajoGradoId(idTrabajoGrado);
+
+                DocenteResponseDto docente = archivoClient
+                                .obtenerDocentePorId(Long.parseLong(responseDto.get().getEvaluadorInterno()));
+                String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+                ExpertoResponseDto experto = archivoClientExpertos
+                                .obtenerExpertoPorId(Long.parseLong(responseDto.get().getEvaluadorExterno()));
+                String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
+
+                RespuestaExamenValoracionInformacionGeneralDto responseDtoInformacion = new RespuestaExamenValoracionInformacionGeneralDto();
+                ;
+
+                responseDtoInformacion.setIdTrabajoGrado(idTrabajoGrado);
+                responseDtoInformacion.setTituloTrabajoGrado(trabajoGrado.getTitulo());
+                responseDtoInformacion.setIdEvaluadorInterno(docente.getPersona().getId());
+                responseDtoInformacion.setNombreEvaluadorInterno(nombre_docente);
+                responseDtoInformacion.setUniversidadEvaluadorInterno("Universidad del Cauca");
+                responseDtoInformacion.setIdEvaluadorExterno(idTrabajoGrado);
+                responseDtoInformacion.setNombreEvaluadorExterno(nombre_experto);
+                responseDtoInformacion.setUniversidadEvaluadorExterno(experto.getUniversidad());
+
+                return responseDtoInformacion;
+        }
+
+        @Override
+        @Transactional(readOnly = true)
+        public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idTrabajoGrado) {
                 return respuestaExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado)
                                 .stream()
                                 .map(respuestaExamenValoracionMapper::toDto)
-                                .collect(Collectors.toList());
+                                .collect(Collectors.groupingBy(
+                                                respuesta -> "Interno".equalsIgnoreCase(respuesta.getTipoEvaluador())
+                                                                ? "evaluador_interno"
+                                                                : "evaluador_externo"));
         }
 
         @Override
@@ -113,14 +162,18 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                 // Busca el trabajo de grado
                 // TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
-                //                 () -> new ResourceNotFoundException(
-                //                                 "Trabajo de grado con id: " + id + " no encontrado"));
+                // () -> new ResourceNotFoundException(
+                // "Trabajo de grado con id: " + id + " no encontrado"));
 
                 String procesoVa = "Respuesta_Examen_Valoracion";
-                String tituloTrabajoGrado = ConvertString.obtenerIniciales(respuestaExamenValoracionTmp.getTrabajoGrado().getTitulo());
-                Long idenficiacionEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona().getApellido();
+                String tituloTrabajoGrado = ConvertString
+                                .obtenerIniciales(respuestaExamenValoracionTmp.getTrabajoGrado().getTitulo());
+                Long idenficiacionEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante()
+                                .getPersona().getIdentificacion();
+                String nombreEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona()
+                                .getNombre();
+                String apellidoEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona()
+                                .getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 RespuestaExamenValoracion responseExamenValoracion = null;
@@ -169,7 +222,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 respuestaExamenValoracionDto.getRespuestaExamenValoracion());
                 respuestaExamenValoracion.setFechaMaximaEntrega(respuestaExamenValoracionDto.getFechaMaximaEntrega());
                 respuestaExamenValoracion.setObservacion(respuestaExamenValoracionDto.getObservacion());
-                //Update archivos
+                // Update archivos
                 respuestaExamenValoracion.setLinkFormatoB(respuestaExamenValoracionDto.getLinkFormatoB());
                 respuestaExamenValoracion.setLinkFormatoC(respuestaExamenValoracionDto.getLinkFormatoC());
                 respuestaExamenValoracion.setLinkObservaciones(respuestaExamenValoracionDto.getLinkObservaciones());

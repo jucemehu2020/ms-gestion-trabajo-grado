@@ -35,6 +35,10 @@ public class RespuestaExamenValoracion {
 
     private LocalDate fechaMaximaEntrega;
 
+    private String idEvaluador;
+
+    private String tipoEvaluador;
+
     private Boolean estadoFinalizado;
 
     private String observacion;
