@@ -7,7 +7,6 @@ import org.springframework.validation.BindingResult;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailCorrecionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
@@ -27,7 +26,7 @@ public interface SolicitudExamenValoracionService {
     public SolicitudExamenValoracionCoordinadorResponseDto insertarInformacionCoordinador(
             SolicitudExamenValoracionCoordinadorDto informacionDocente, BindingResult result);
 
-    public SolicitudExamenValoracionResponseDto crear(SolicitudExamenValoracionDto oficio, BindingResult result);
+//     public SolicitudExamenValoracionResponseDto crear(SolicitudExamenValoracionDto oficio, BindingResult result);
 
     public SolicitudExamenValoracionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado);
 
