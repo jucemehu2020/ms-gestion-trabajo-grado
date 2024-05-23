@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class DocenteInfoDto {
-    private Long id;
+    private Long idDocente;
     private String nombre;
     private String apellido;
     private String correoUniversitario;

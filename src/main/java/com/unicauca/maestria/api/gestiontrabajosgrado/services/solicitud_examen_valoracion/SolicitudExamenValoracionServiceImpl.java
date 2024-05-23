@@ -78,7 +78,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		List<DocenteResponseDto> estadoTmp = archivoClient.listarDocentesRes();
 		List<DocenteInfoDto> docentes = estadoTmp.stream()
 				.map(docente -> new DocenteInfoDto(
-						docente.getPersona().getId(),
+						docente.getId(),
 						docente.getPersona().getNombre(),
 						docente.getPersona().getApellido(),
 						docente.getPersona().getCorreoElectronico()))
@@ -92,7 +92,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		List<ExpertoResponseDto> estadoTmp = archivoClientExpertos.listar();
 		List<ExpertoInfoDto> expertos = estadoTmp.stream()
 				.map(experto -> new ExpertoInfoDto(
-						experto.getPersona().getId(),
+						experto.getId(),
 						experto.getPersona().getNombre(),
 						experto.getPersona().getApellido(),
 						experto.getPersona().getCorreoElectronico(),

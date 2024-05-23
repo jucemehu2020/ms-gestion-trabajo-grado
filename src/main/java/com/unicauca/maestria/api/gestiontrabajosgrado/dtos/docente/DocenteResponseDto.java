@@ -18,5 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class DocenteResponseDto {
+
+	private Long id;
 	private PersonaDto persona;
 }

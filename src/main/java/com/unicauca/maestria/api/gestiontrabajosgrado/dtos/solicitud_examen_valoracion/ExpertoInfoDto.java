@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ExpertoInfoDto {
-    private Long id;
+    private Long idExperto;
     private String nombre;
     private String apellido;
     private String correo;

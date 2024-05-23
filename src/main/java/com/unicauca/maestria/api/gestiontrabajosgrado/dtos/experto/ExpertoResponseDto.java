@@ -10,6 +10,8 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class ExpertoResponseDto {
+
+    private Long id;
     
     private PersonaDto persona;
 
