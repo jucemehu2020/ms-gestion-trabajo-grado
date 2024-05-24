@@ -24,6 +24,8 @@ import org.springframework.validation.BindingResult;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
@@ -32,6 +34,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_va
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.SolicitudExamenValoracionDocenteResponseListDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.CamposUnicosSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
@@ -317,27 +320,49 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 	@Override
 	@Transactional(readOnly = true)
-	public SolicitudExamenValoracionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado) {
-		Optional<SolicitudExamenValoracionResponseDto> responseDto = solicitudExamenValoracionRepository
+	public SolicitudExamenValoracionDocenteResponseListDto listarInformacionDocente(Long idTrabajoGrado) {
+		Optional<SolicitudExamenValoracionResponseDto> responseDtoOptional = solicitudExamenValoracionRepository
 				.findByIdTrabajoGradoId(idTrabajoGrado);
-		System.out.println("tiene::: " + responseDto);
-
-		DocenteResponseDto docente = archivoClient
-				.obtenerDocentePorId(Long.parseLong(responseDto.get().getEvaluadorInterno()));
-		String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
-		ExpertoResponseDto experto = archivoClientExpertos
-				.obtenerExpertoPorId(Long.parseLong(responseDto.get().getEvaluadorExterno()));
-		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
-
-		responseDto.get().setEvaluadorInterno(nombre_docente);
-		responseDto.get().setEvaluadorExterno(nombre_experto);
-
-		if (responseDto.isPresent()) {
-			return examenValoracionResponseMapper.toDocenteResponseDto(responseDto.get());
-		} else {
+		System.out.println("tiene::: " + responseDtoOptional);
+	
+		if (!responseDtoOptional.isPresent()) {
 			return null;
 		}
+	
+		SolicitudExamenValoracionResponseDto responseDto = responseDtoOptional.get();
+	
+		// Obtener y construir información del evaluador interno
+		DocenteResponseDto docente = archivoClient
+				.obtenerDocentePorId(Long.parseLong(responseDto.getEvaluadorInterno()));
+		String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+		Map<String, String> evaluadorInternoMap = new HashMap<>();
+		evaluadorInternoMap.put("nombres", nombre_docente);
+		evaluadorInternoMap.put("universidad", "Universidad del Cauca");
+		evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
+	
+		// Obtener y construir información del evaluador externo
+		ExpertoResponseDto experto = archivoClientExpertos
+				.obtenerExpertoPorId(Long.parseLong(responseDto.getEvaluadorExterno()));
+		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
+		Map<String, String> evaluadorExternoMap = new HashMap<>();
+		evaluadorExternoMap.put("nombres", nombre_experto);
+		evaluadorExternoMap.put("universidad", experto.getUniversidad());
+		evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
+	
+		// Crear y poblar el nuevo DTO
+		SolicitudExamenValoracionDocenteResponseListDto docenteResponseDto = new SolicitudExamenValoracionDocenteResponseListDto();
+		docenteResponseDto.setIdExamenValoracion(responseDto.getIdExamenValoracion());
+		docenteResponseDto.setTitulo(responseDto.getTitulo());
+		docenteResponseDto.setLinkFormatoA(responseDto.getLinkFormatoA());
+		docenteResponseDto.setLinkFormatoD(responseDto.getLinkFormatoD());
+		docenteResponseDto.setLinkFormatoE(responseDto.getLinkFormatoE());
+		docenteResponseDto.setEvaluadorInterno(evaluadorInternoMap);
+		docenteResponseDto.setEvaluadorExterno(evaluadorExternoMap);
+	
+		return docenteResponseDto;
 	}
+	
+
 
 	@Override
 	@Transactional(readOnly = true)

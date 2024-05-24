@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.SolicitudExamenValoracionDocenteResponseListDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
@@ -60,7 +61,7 @@ public class SolicitudExamenValoracionController {
     // }
 
     @GetMapping("/listarInformacionDocente/{id}")
-    public ResponseEntity<SolicitudExamenValoracionDocenteResponseDto> listarInformacionDocente(@PathVariable Long id) {
+    public ResponseEntity<SolicitudExamenValoracionDocenteResponseListDto> listarInformacionDocente(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.listarInformacionDocente(id));
     }
 
