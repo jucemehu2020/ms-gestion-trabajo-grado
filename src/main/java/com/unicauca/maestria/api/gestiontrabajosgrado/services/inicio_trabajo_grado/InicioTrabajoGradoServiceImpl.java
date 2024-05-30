@@ -65,7 +65,8 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 						estudiante.getPersona().getNombre(),
 						estudiante.getPersona().getApellido(),
 						estudiante.getPersona().getTipoIdentificacion(),
-						estudiante.getPersona().getIdentificacion()))
+						estudiante.getPersona().getIdentificacion(),
+						estudiante.getCodigo()))
 				.collect(Collectors.toList());
 		return estudiantesReducidos;
 	}
@@ -100,6 +101,19 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		estadoTmp.setIdEstudiante(idEstudiante);
 
 		return estadoTmp;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public EstudianteInfoDto obtenerInformacionEstudiante(Long id) {
+		EstudianteResponseDtoAll informacionEstudiantes = archivoClient.obtenerInformacionEstudiante(id);
+		return new EstudianteInfoDto(
+            informacionEstudiantes.getPersona().getNombre(),
+            informacionEstudiantes.getPersona().getApellido(),
+            informacionEstudiantes.getPersona().getTipoIdentificacion(),
+            informacionEstudiantes.getPersona().getIdentificacion(),
+			informacionEstudiantes.getCodigo()
+    );
 	}
 
 	@Override

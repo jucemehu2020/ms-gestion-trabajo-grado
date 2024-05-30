@@ -222,6 +222,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 respuestaExamenValoracionDto.getRespuestaExamenValoracion());
                 respuestaExamenValoracion.setFechaMaximaEntrega(respuestaExamenValoracionDto.getFechaMaximaEntrega());
                 respuestaExamenValoracion.setObservacion(respuestaExamenValoracionDto.getObservacion());
+                respuestaExamenValoracion.setEstadoFinalizado(respuestaExamenValoracionDto.getEstadoFinalizado());
                 // Update archivos
                 respuestaExamenValoracion.setLinkFormatoB(respuestaExamenValoracionDto.getLinkFormatoB());
                 respuestaExamenValoracion.setLinkFormatoC(respuestaExamenValoracionDto.getLinkFormatoC());

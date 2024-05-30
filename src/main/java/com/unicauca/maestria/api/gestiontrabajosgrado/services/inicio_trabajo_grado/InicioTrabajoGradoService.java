@@ -15,6 +15,8 @@ public interface InicioTrabajoGradoService {
 
     EstudianteResponseDto buscarEstadoEstudiantePor(Long id);
 
+    EstudianteInfoDto obtenerInformacionEstudiante(Long id);
+
     TrabajoGradoResponseDto buscarTrabajoGrado(Long id);
 
     TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante, String token);

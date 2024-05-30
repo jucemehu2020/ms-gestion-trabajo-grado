@@ -16,4 +16,5 @@ public class EstudianteInfoDto {
 	private String apellido;
 	private TipoIdentificacion tipoIdentificacion;
 	private Long identificacion;
+	private String Sodigo;
 }

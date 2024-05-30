@@ -42,6 +42,11 @@ public class InicioTrabajoGradoController {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.buscarEstadoEstudiantePor(id));
     }
 
+    @GetMapping("/obtenerInformacionEstudiante/{id}")
+    public ResponseEntity<EstudianteInfoDto> obtenerInformacionEstudiante(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.obtenerInformacionEstudiante(id));
+    }
+
     @GetMapping("/buscarTrabajoGrado/{id}")
     public ResponseEntity<TrabajoGradoResponseDto> buscarTrabajoGrado(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.buscarTrabajoGrado(id));
