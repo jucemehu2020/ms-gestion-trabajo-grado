@@ -11,9 +11,9 @@ import lombok.*;
 public class STICoordinadorFase2ResponseDto {
 
     private Long idSustentacionTI;
-    private String linkRemisionDocumentoFinal;
+    private String linkFormatoF;
     private String urlDocumentacion;
-    private String linkRemisionDocumentoFinalAlConsejo;
+    private String linkFormatoG;
     private String linkEstudioHojaVidaAcademica;
     private String juradoExterno;
     private String juradoInterno;

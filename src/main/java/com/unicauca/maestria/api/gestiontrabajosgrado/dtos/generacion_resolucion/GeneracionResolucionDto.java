@@ -15,36 +15,29 @@ public class GeneracionResolucionDto {
     private Long idTrabajoGrados;
 
     @NotNull
-    private String titulo;
-
-    @NotNull
     private String director;
 
     @NotNull
     private String codirector;
 
     @NotNull
-    private String numeroActaRevision;
-
-    @NotNull
-    private LocalDate fechaActa;
-
-    @NotNull
-    private String linkAnteproyectoAprobado;
+    private String linkAnteproyectoFinal;
 
     @NotNull
     private String linkSolicitudComite;
 
     @NotNull
-    private String linkSolicitudConcejoFacultad;
-
-    //CF: Concejo de facultad
-    @NotNull
-    private String numeroResolucionGeneradaCF;
+    private String numeroActaSolicitudComite;
 
     @NotNull
-    private LocalDate fechaResolucion;
+    private LocalDate fechaActaSolicitudComite;
 
     @NotNull
-    private String linkResolucionGeneradaCF;
+    private String linkSolicitudConsejoFacultad;
+
+    @NotNull
+    private String numeroActaConsejoFacultad;
+
+    @NotNull
+    private LocalDate fechaActaConsejoFacultad;
 }

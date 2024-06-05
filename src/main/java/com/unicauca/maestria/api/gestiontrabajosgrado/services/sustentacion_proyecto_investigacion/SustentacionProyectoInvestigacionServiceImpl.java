@@ -247,6 +247,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 sustentacionProyectoInvestigacion.getLinkFormatoG(),
                                                 nombreCarpeta));
 
+                sustentacionProyectoInvestigacion.setLinkEstudioHojaVidaAcademica(
+                                FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
+                                                sustentacionProyectoInvestigacion.getLinkEstudioHojaVidaAcademica(),
+                                                nombreCarpeta));
+
                 agregarInformacionCoordinadorFase1(sustentacionProyectoInvestigacionTmp, sustentacionDto);
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
@@ -261,6 +266,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto) {
                 sustentacionProyectoInvestigacion
                                 .setLinkFormatoG(sustentacionDto.getLinkFormatoG());
+                sustentacionProyectoInvestigacion
+                                .setLinkEstudioHojaVidaAcademica(sustentacionDto.getLinkEstudioHojaVidaAcademica());
         }
 
         @Override
@@ -323,7 +330,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 sustentacionProyectoInvestigacion
                                 .setJuradoExterno(sustentacionDto.getJuradoExterno());
                 sustentacionProyectoInvestigacion
-                                .setJuradoInterno(sustentacionDto.getJuradoExterno());
+                                .setJuradoInterno(sustentacionDto.getJuradoInterno());
                 sustentacionProyectoInvestigacion
                                 .setNumeroActa(sustentacionDto.getNumeroActa());
                 sustentacionProyectoInvestigacion

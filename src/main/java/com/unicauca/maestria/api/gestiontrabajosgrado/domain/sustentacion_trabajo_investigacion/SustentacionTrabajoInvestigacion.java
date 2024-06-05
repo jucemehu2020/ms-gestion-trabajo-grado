@@ -47,7 +47,7 @@ public class SustentacionTrabajoInvestigacion {
 
     private String linkActaSustentacionPublica;
 
-    private Boolean respuestaSustentacion;
+    private String respuestaSustentacion;
 
     private String linkEstudioHojaVidaAcademicaGrado;
 
