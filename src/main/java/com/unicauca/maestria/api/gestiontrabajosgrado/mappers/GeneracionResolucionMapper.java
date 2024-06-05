@@ -1,25 +1,29 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.mappers;
 
 import org.mapstruct.Mapper;
-
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.comite.GeneracionResolucionComiteDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.GeneracionResolucionCoordinadorDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1Dto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2.GeneracionResolucionCoordinadorFase2Dto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteDto;
 
 @Mapper(componentModel = "spring")
 public interface GeneracionResolucionMapper extends GenericMapper<GeneracionResolucionDto, GeneracionResolucion> {
 
     // Métodos de mapeo para el DTO de Coordinador
-    GeneracionResolucion toEntity(GeneracionResolucionCoordinadorDto docenteDto);
+    GeneracionResolucion toEntity(GeneracionResolucionDocenteDto docenteDto);
 
-    GeneracionResolucionCoordinadorDto toCoordinadorDto(GeneracionResolucion entity);
+    // GeneracionResolucionDocenteDto toDocenteDto(GeneracionResolucion entity);
 
     // Métodos de mapeo para el DTO de Comite
-    GeneracionResolucion toEntity(GeneracionResolucionComiteDto coordinadorDto);
+    GeneracionResolucion toEntity(GeneracionResolucionCoordinadorFase1Dto coordinadorDto);
 
-    GeneracionResolucionComiteDto toComiteDto(GeneracionResolucion entity);
+    // GeneracionResolucionCoordinadorFase1Dto
+    // toCoordinadorFase1Dto(GeneracionResolucion entity);
+
+    // Métodos de mapeo para el DTO de Comite
+    GeneracionResolucion toEntity(GeneracionResolucionCoordinadorFase2Dto coordinadorDto);
+
+    // GeneracionResolucionCoordinadorFase2Dto
+    // toCoordinadorFase2Dto(GeneracionResolucion entity);
 }

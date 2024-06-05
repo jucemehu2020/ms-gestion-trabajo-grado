@@ -25,28 +25,38 @@ public class SustentacionTrabajoInvestigacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idSustentacionTI;
 
-    private String linkRemisionDocumentoFinal;
+    private String linkFormatoF;
 
     private String urlDocumentacion;
 
-    // CF: Concejo de facultad
-    private String linkRemisionDocumentoFinalCF;
+    private String linkFormatoG;
 
-    private String linkConstanciaDocumentoFinal;
+    private String linkEstudioHojaVidaAcademica;
 
-    private String linkActaSustentacion;
+    private String juradoExterno;
+
+    private String juradoInterno;
+
+    private String numeroActa;
+
+    private LocalDate fechaActa;
+
+    private String linkFormatoH;
+
+    private String linkFormatoI;
 
     private String linkActaSustentacionPublica;
 
     private Boolean respuestaSustentacion;
 
-    private String linkEstudioHojaVidaAcademica;
+    private String linkEstudioHojaVidaAcademicaGrado;
 
-    private String numeroActaTrabajoFinal;
+    private String numeroActaFinal;
 
-    private LocalDate fechaActa;
+    private LocalDate fechaActaFinal;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_trabajo_grado")
     private TrabajoGrado idTrabajoGrado;
+
 }

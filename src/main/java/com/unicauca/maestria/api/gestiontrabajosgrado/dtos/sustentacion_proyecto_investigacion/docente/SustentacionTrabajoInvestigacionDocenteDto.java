@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 public class SustentacionTrabajoInvestigacionDocenteDto {
 
     @NotNull
-    private Long idTrabajoGrados; 
+    private Long idTrabajoGrados;
 
     @NotNull
-    private String linkRemisionDocumentoFinal;
+    private String linkFormatoF;
 
     @NotNull
     private String urlDocumentacion;

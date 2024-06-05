@@ -12,23 +12,37 @@ import javax.validation.constraints.NotNull;
 public class SustentacionTrabajoInvestigacionDto {
 
     @NotNull
-    private Long idTrabajoGrados; 
+    private Long idTrabajoGrados;
 
     @NotNull
-    private String linkRemisionDocumentoFinal;
+    private String linkFormatoF;
 
     @NotNull
     private String urlDocumentacion;
 
-    // CF: Concejo de facultad
     @NotNull
-    private String linkRemisionDocumentoFinalCF;
+    private String linkFormatoG;
 
     @NotNull
-    private String linkConstanciaDocumentoFinal;
+    private String linkEstudioHojaVidaAcademica;
 
     @NotNull
-    private String linkActaSustentacion;
+    private Boolean juradoExterno;
+
+    @NotNull
+    private String juradoInterno;
+
+    @NotNull
+    private String numeroActa;
+
+    @NotNull
+    private LocalDate fechaActa;
+
+    @NotNull
+    private String linkFormatoH;
+
+    @NotNull
+    private String linkFormatoI;
 
     @NotNull
     private String linkActaSustentacionPublica;
@@ -37,12 +51,12 @@ public class SustentacionTrabajoInvestigacionDto {
     private Boolean respuestaSustentacion;
 
     @NotNull
-    private String linkEstudioHojaVidaAcademica;
+    private String linkEstudioHojaVidaAcademicaGrado;
 
     @NotNull
-    private String numeroActaTrabajoFinal;
+    private String numeroActaFinal;
 
     @NotNull
-    private LocalDate fechaActa;
+    private LocalDate fechaActaFinal;
 
 }

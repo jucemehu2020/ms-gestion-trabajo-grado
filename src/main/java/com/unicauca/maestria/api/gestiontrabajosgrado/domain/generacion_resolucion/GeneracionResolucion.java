@@ -26,28 +26,26 @@ public class GeneracionResolucion {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idGeneracionResolucion;
 
-    private String titulo;
-
+    //Docente
     private String director;
 
     private String codirector;
 
-    private String numeroActaRevision;
-
-    private LocalDate fechaActa;
-
-    private String linkAnteproyectoAprobado;
+    private String linkAnteproyectoFinal;
 
     private String linkSolicitudComite;
 
-    private String linkSolicitudConcejoFacultad;
+    //Coordinador - Fase 1
+    private String numeroActaSolicitudComite;
 
-    //CF: Concejo de facultad
-    private String numeroResolucionGeneradaCF;
+    private LocalDate fechaActaSolicitudComite;
 
-    private LocalDate fechaResolucion;
+    private String linkSolicitudConsejoFacultad;
 
-    private String linkResolucionGeneradaCF;
+    //Coordinador - Fase 2
+    private String numeroActaConsejoFacultad;
+
+    private LocalDate fechaActaConsejoFacultad;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_trabajo_grado")
