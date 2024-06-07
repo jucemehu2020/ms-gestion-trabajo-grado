@@ -21,6 +21,10 @@ public interface SolicitudExamenValoracionService {
 
     public List<ExpertoInfoDto> listarExpertos();
 
+    public DocenteInfoDto obtenerDocente(Long id);
+
+    public ExpertoInfoDto obtenerExperto(Long id);
+
     public SolicitudExamenValoracionDocenteResponseDto insertarInformacionDocente(
             SolicitudExamenValoracionDocenteDto informacionDocente, BindingResult result);
 

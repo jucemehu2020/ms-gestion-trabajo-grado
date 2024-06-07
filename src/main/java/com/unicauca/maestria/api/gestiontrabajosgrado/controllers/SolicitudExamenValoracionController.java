@@ -39,6 +39,16 @@ public class SolicitudExamenValoracionController {
         return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.listarExpertos());
     }
 
+    @GetMapping("/docente/{id}")
+    public ResponseEntity<DocenteInfoDto> obtenerDocente(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.obtenerDocente(id));
+    }
+
+    @GetMapping("/experto/{id}")
+    public ResponseEntity<ExpertoInfoDto> obtenerExperto(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.obtenerExperto(id));
+    }
+
     @PostMapping("/insertarInformacionDocente")
     public ResponseEntity<SolicitudExamenValoracionDocenteResponseDto> insertarInformacionDocente(
             @Valid @RequestBody SolicitudExamenValoracionDocenteDto informacionDocente, BindingResult result) {

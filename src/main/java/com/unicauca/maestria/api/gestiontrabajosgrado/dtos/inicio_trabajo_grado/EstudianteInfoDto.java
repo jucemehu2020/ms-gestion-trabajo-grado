@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class EstudianteInfoDto {
+	private Long id;
 	private String nombre;
 	private String apellido;
 	private TipoIdentificacion tipoIdentificacion;

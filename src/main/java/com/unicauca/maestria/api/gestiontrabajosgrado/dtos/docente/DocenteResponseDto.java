@@ -21,4 +21,12 @@ public class DocenteResponseDto {
 
 	private Long id;
 	private PersonaDto persona;
+	private List<TituloDto> titulos;
+
+	public String getUltimaUniversidad() {
+        if (titulos != null && !titulos.isEmpty()) {
+            return titulos.get(titulos.size() - 1).getUniversidad();
+        }
+        return "Universidad del Cauca";
+    }
 }

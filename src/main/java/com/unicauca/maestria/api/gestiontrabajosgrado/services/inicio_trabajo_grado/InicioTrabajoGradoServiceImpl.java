@@ -62,6 +62,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		List<EstudianteResponseDtoAll> informacionEstudiantes = archivoClient.obtenerEstudiantes();
 		List<EstudianteInfoDto> estudiantesReducidos = informacionEstudiantes.stream()
 				.map(estudiante -> new EstudianteInfoDto(
+						estudiante.getId(),
 						estudiante.getPersona().getNombre(),
 						estudiante.getPersona().getApellido(),
 						estudiante.getPersona().getTipoIdentificacion(),
@@ -108,12 +109,12 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	public EstudianteInfoDto obtenerInformacionEstudiante(Long id) {
 		EstudianteResponseDtoAll informacionEstudiantes = archivoClient.obtenerInformacionEstudiante(id);
 		return new EstudianteInfoDto(
-            informacionEstudiantes.getPersona().getNombre(),
-            informacionEstudiantes.getPersona().getApellido(),
-            informacionEstudiantes.getPersona().getTipoIdentificacion(),
-            informacionEstudiantes.getPersona().getIdentificacion(),
-			informacionEstudiantes.getCodigo()
-    );
+				informacionEstudiantes.getId(),
+				informacionEstudiantes.getPersona().getNombre(),
+				informacionEstudiantes.getPersona().getApellido(),
+				informacionEstudiantes.getPersona().getTipoIdentificacion(),
+				informacionEstudiantes.getPersona().getIdentificacion(),
+				informacionEstudiantes.getCodigo());
 	}
 
 	@Override
