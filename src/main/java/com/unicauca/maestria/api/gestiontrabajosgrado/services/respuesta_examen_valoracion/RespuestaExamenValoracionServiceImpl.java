@@ -82,8 +82,10 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 .toEntity(respuestaExamenValoracionDto);
 
                 // Se cambia el numero de estado
-                int numEstado = validarEstado(respuestaExamenValoracionDto.getRespuestaExamenValoracion());
-                trabajoGrado.setNumeroEstado(numEstado);
+                // int numEstado = validarEstado(respuestaExamenValoracionDto.getRespuestaExamenValoracion());
+                // trabajoGrado.setNumeroEstado(numEstado);
+
+                trabajoGrado.setNumeroEstado(4);
 
                 // Guardar la entidad ExamenValoracion
                 rtaExamenValoracion.setLinkFormatoB(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,

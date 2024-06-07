@@ -178,6 +178,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 sustentacionProyectoInvestigacion.setIdTrabajoGrado(trabajoGrado);
                 trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionProyectoInvestigacion);
 
+                trabajoGrado.setNumeroEstado(12);
+
                 // Se cambia el numero de estado
                 // int numEstado = validarEstado(sustentacionDto.getRespuestaSustentacion());
                 // trabajoGrado.setNumeroEstado(numEstado);
@@ -239,6 +241,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 // Se cambia el numero de estado
                 // int numEstado = validarEstado(sustentacionDto.getRespuestaSustentacion());
                 // trabajoGrado.setNumeroEstado(numEstado);
+                trabajoGrado.setNumeroEstado(13);
 
                 // Guardar la entidad SustentacionProyectoInvestigacion
 
@@ -314,6 +317,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 // Se cambia el numero de estado
                 // int numEstado = validarEstado(sustentacionDto.getRespuestaSustentacion());
                 // trabajoGrado.setNumeroEstado(numEstado);
+                trabajoGrado.setNumeroEstado(14);
 
                 agregarInformacionCoordinadorFase2(sustentacionProyectoInvestigacionTmp, sustentacionDto);
 
@@ -381,6 +385,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 // Se cambia el numero de estado
                 // int numEstado = validarEstado(sustentacionDto.getRespuestaSustentacion());
                 // trabajoGrado.setNumeroEstado(numEstado);
+                trabajoGrado.setNumeroEstado(16);
 
                 // Guardar la entidad SustentacionProyectoInvestigacion
 
@@ -456,6 +461,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 // Se cambia el numero de estado
                 // int numEstado = validarEstado(sustentacionDto.getRespuestaSustentacion());
                 // trabajoGrado.setNumeroEstado(numEstado);
+                trabajoGrado.setNumeroEstado(17);
 
                 // Guardar la entidad SustentacionProyectoInvestigacion
 

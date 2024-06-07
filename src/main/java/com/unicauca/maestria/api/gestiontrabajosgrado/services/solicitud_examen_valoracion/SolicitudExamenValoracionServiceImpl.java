@@ -217,7 +217,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		// trabajoGrado.setExamenValoracion(examenValoracion);
 
 		// Se cambia el numero de estado
-		trabajoGrado.setNumeroEstado(2);
+		trabajoGrado.setNumeroEstado(3);
 
 		String procesoVa = "Solicitud_Examen_Valoracion";
 		String tituloTrabajoGrado = ConvertString.obtenerIniciales(examenValoracionTmp.getTitulo());

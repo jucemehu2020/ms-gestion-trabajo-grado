@@ -188,7 +188,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 trabajoGrado.setIdGeneracionResolucion(generarResolucion);
 
                 // Se cambia el numero de estado
-                trabajoGrado.setNumeroEstado(6);
+                trabajoGrado.setNumeroEstado(8);
 
                 // Guardar la entidad ExamenValoracion
                 generarResolucion.setLinkAnteproyectoFinal(
@@ -245,7 +245,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 // trabajoGrado.setIdGeneracionResolucion(generarResolucion);
 
                 // Se cambia el numero de estado
-                trabajoGrado.setNumeroEstado(6);
+                trabajoGrado.setNumeroEstado(9);
 
                 // Guardar la entidad ExamenValoracion
                 generarResolucion.setLinkSolicitudConsejoFacultad(
@@ -312,7 +312,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 // trabajoGrado.setIdGeneracionResolucion(generarResolucion);
 
                 // Se cambia el numero de estado
-                trabajoGrado.setNumeroEstado(6);
+                trabajoGrado.setNumeroEstado(10);
 
                 agregarInformacionCoordinadorFase2(generacionResolucionTmp, generacionResolucionDto);
 
