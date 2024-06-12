@@ -11,6 +11,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.SolicitudExam
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.DatosFormatoBResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailCorrecionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
@@ -71,7 +72,8 @@ public class SolicitudExamenValoracionController {
     // }
 
     @GetMapping("/listarInformacionDocente/{id}")
-    public ResponseEntity<SolicitudExamenValoracionDocenteResponseListDto> listarInformacionDocente(@PathVariable Long id) {
+    public ResponseEntity<SolicitudExamenValoracionDocenteResponseListDto> listarInformacionDocente(
+            @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.listarInformacionDocente(id));
     }
 
@@ -116,6 +118,13 @@ public class SolicitudExamenValoracionController {
     public ResponseEntity<?> enviarEmailParaCorrecion(
             @Valid @RequestBody EnvioEmailCorrecionDto envioEmailCorrecionDto, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(serviceSolicitudExamenValoracion.enviarCorreoElectronicoCorrecion(envioEmailCorrecionDto, result));
+                .body(serviceSolicitudExamenValoracion.enviarCorreoElectronicoCorrecion(envioEmailCorrecionDto,
+                        result));
+    }
+
+    @GetMapping("/obtenerInformacionFormatoB/{id}")
+    public ResponseEntity<DatosFormatoBResponseDto> obtenerInformacionFormatoB(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(serviceSolicitudExamenValoracion.obtenerInformacionFormatoB(id));
     }
 }

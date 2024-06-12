@@ -81,27 +81,26 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 				.orElseThrow(
 						() -> new ResourceNotFoundException("Estudiante con id: " + idEstudiante + " No encontrado"));
 
-		// Si existe consulta los datos del otro ms
-		EstudianteResponseDto estadoTmp = archivoClient.obtenerPorIdEstudiante(idEstudiante);
+		// Obtener la lista de trabajos de grado del estudiante desde el repositorio
+		List<TrabajoGrado> trabajosGrado = trabajoGradoRepository.findByEstudianteId(idEstudiante);
 
-		// Obtener la lista de trabajos de grado del estudiante
-		List<TrabajoGradoResponseDto> trabajosGrado = estadoTmp.getTrabajoGrado();
+		// Transformar la lista de trabajos de grado a DTOs
+		List<TrabajoGradoResponseDto> trabajosGradoDto = trabajosGrado.stream().map(trabajo -> {
+			EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[trabajo.getNumeroEstado()];
+			return TrabajoGradoResponseDto.builder()
+					.id(trabajo.getId())
+					.estado(estadoEnum.getMensaje())
+					.fechaCreacion(trabajo.getFechaCreacion())
+					.titulo(trabajo.getTitulo() != null ? trabajo.getTitulo() : "Título no disponible")
+					.numeroEstado(trabajo.getNumeroEstado())
+					.build();
+		}).collect(Collectors.toList());
 
-		// Iterar sobre los trabajos de grado para modificar el estado
-		for (TrabajoGradoResponseDto trabajo : trabajosGrado) {
-			// Obtener el estado actual del trabajo de grado
-			Integer estadoActual = trabajo.getNumeroEstado();
-
-			// Obtener el enum correspondiente a partir del entero
-			EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[estadoActual];
-
-			// Asignar el estado del trabajo de grado utilizando el enum
-			trabajo.setEstado(estadoEnum.getMensaje());
-		}
-
-		estadoTmp.setIdEstudiante(idEstudiante);
-
-		return estadoTmp;
+		// Crear y retornar el DTO de respuesta del estudiante
+		return EstudianteResponseDto.builder()
+				.idEstudiante(idEstudiante)
+				.trabajoGrado(trabajosGradoDto)
+				.build();
 	}
 
 	@Override
@@ -127,7 +126,18 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 						() -> new ResourceNotFoundException(
 								"Trabajo de grado con id: " + idTrabajoGrado + " No encontrado"));
 
-		return trabajoGradoResponseMapper.toDto(resTrabajoGrado);
+		TrabajoGradoResponseDto trabajoGradoConvertDto = trabajoGradoResponseMapper.toDto(resTrabajoGrado);
+
+		// Convertir el estado actual a entero
+		int estadoActualInt = trabajoGradoConvertDto.getNumeroEstado();
+
+		// Obtener el enum correspondiente a partir del entero
+		EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[estadoActualInt];
+
+		// Asignar el estado del trabajo de grado utilizando el enum
+		trabajoGradoConvertDto.setEstado(estadoEnum.getMensaje());
+
+		return trabajoGradoConvertDto;
 	}
 
 	@Override

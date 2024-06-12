@@ -3,6 +3,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
 
 import java.util.Optional;
 
@@ -35,11 +37,13 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.Traba
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.SolicitudExamenValoracionDocenteResponseListDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.CamposUnicosSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.DatosFormatoBResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailCorrecionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
@@ -88,7 +92,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.collect(Collectors.toList());
 		return docentes;
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<ExpertoInfoDto> listarExpertos() {
@@ -236,7 +240,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		SolicitudExamenValoracion examenValoracionRes = solicitudExamenValoracionRepository.save(examenValoracionTmp);
 
-		enviarCorreoEvaluadores(examenValoracionTmp);
+		enviarCorreoEvaluadores(examenValoracionTmp, examenValoracionDto);
 
 		return examenValoracionResponseMapper.toCoordinadorDto(examenValoracionRes);
 	}
@@ -252,13 +256,13 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		examenValoracion.setLinkOficioDirigidoEvaluadores(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
 	}
 
-	private boolean enviarCorreoEvaluadores(SolicitudExamenValoracion examenValoracionTmp) {
+	private boolean enviarCorreoEvaluadores(SolicitudExamenValoracion examenValoracionTmp,
+			SolicitudExamenValoracionCoordinadorDto solicitudExamenValoracionCoordinadorDto) {
 		try {
-			ArrayList<String> correos = new ArrayList();
+			ArrayList<String> correos = new ArrayList<>();
 			Map<String, Object> templateModel = new HashMap<>();
-			MimeMessage message = mailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message);
 
+			// Obtener correos de los evaluadores
 			DocenteResponseDto docente = archivoClient
 					.obtenerDocentePorId(Long.parseLong(examenValoracionTmp.getEvaluadorInterno()));
 			correos.add(docente.getPersona().getCorreoElectronico());
@@ -266,21 +270,44 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 					.obtenerExpertoPorId(Long.parseLong(examenValoracionTmp.getEvaluadorExterno()));
 			correos.add(experto.getPersona().getCorreoElectronico());
 
-			Context context = new Context();
-			context.setVariables(templateModel);
+			// Iterar sobre cada correo electrónico para enviar los mensajes individualmente
+			for (String correo : correos) {
+				MimeMessage message = mailSender.createMimeMessage();
+				MimeMessageHelper helper = new MimeMessageHelper(message, true); // habilitar modo multipart
 
-			String html = templateEngine.process("emailTemplate", context);
+				// Configurar variables del contexto para la plantilla
+				// templateModel.put("nombreEvaluador", "Nombre del Evaluador");
+				templateModel.put("mensaje", solicitudExamenValoracionCoordinadorDto.getInformacionEnvioEvaluador().getMensaje());
 
-			for (var i = 0; i < correos.size(); i++) {
-				helper.setTo(correos.get(i));
-				helper.setSubject("Mensaje de prueba");
-				helper.setText(html, true);
+				// Crear el contexto para el motor de plantillas
+				Context context = new Context();
+				context.setVariables(templateModel);
 
+				// Procesar la plantilla de correo electrónico
+				String html = templateEngine.process("emailTemplate", context);
+
+				helper.setTo(correo);
+				helper.setSubject(solicitudExamenValoracionCoordinadorDto.getInformacionEnvioEvaluador().getAsunto());
+				helper.setText(html, true); // Establecer el cuerpo del mensaje HTML
+
+				// Obtener documentos y adjuntarlos
+				Map<String, String> documentosParaEvaluador = solicitudExamenValoracionCoordinadorDto
+						.getInformacionEnvioEvaluador().getDocumentos();
+				for (Map.Entry<String, String> entry : documentosParaEvaluador.entrySet()) {
+					String nombreDocumento = entry.getKey();
+					String base64Documento = entry.getValue();
+					byte[] documentoBytes = Base64.getDecoder().decode(base64Documento);
+					ByteArrayDataSource dataSource = new ByteArrayDataSource(documentoBytes, "application/pdf");
+					helper.addAttachment(nombreDocumento + ".pdf", dataSource); // Cambiar a .pdf si es necesario
+				}
+
+				// Enviar el mensaje
 				mailSender.send(message);
 			}
 
 			return true;
 		} catch (MessagingException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -601,6 +628,47 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		} catch (MessagingException e) {
 			return false;
 		}
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public DatosFormatoBResponseDto obtenerInformacionFormatoB(Long idTrabajoGrado) {
+
+		// Obtener informacion trabajo de grado
+		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
+				.orElseThrow(() -> new ResourceNotFoundException(
+						"TrabajoGrado con id: " + idTrabajoGrado + " No encontrado"));
+
+		// Obtener informacion estudiante
+		EstudianteResponseDtoAll estudiante = archivoClient
+				.obtenerInformacionEstudiante(trabajoGrado.getEstudiante().getId());
+
+		// Obtener informacion examen de valoracion
+		Optional<SolicitudExamenValoracionResponseDto> examenValoracion = solicitudExamenValoracionRepository
+				.findByIdTrabajoGradoId(idTrabajoGrado);
+		SolicitudExamenValoracionResponseDto responseDto = examenValoracion.get();
+
+		// Obtener informacion evaluador interno
+		DocenteResponseDto docente = archivoClient
+				.obtenerDocentePorId(Long.parseLong(responseDto.getEvaluadorInterno()));
+		String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+		Map<String, String> evaluadorInternoMap = new HashMap<>();
+		evaluadorInternoMap.put("nombres", nombre_docente);
+		evaluadorInternoMap.put("universidad", "Universidad del Cauca");
+		evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
+
+		// Obtener informacion evaluador externo
+		ExpertoResponseDto experto = archivoClientExpertos
+				.obtenerExpertoPorId(Long.parseLong(responseDto.getEvaluadorExterno()));
+		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
+		Map<String, String> evaluadorExternoMap = new HashMap<>();
+		evaluadorExternoMap.put("nombres", nombre_experto);
+		evaluadorExternoMap.put("universidad", experto.getUniversidad());
+		evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
+
+		return new DatosFormatoBResponseDto(trabajoGrado.getTitulo(),
+				estudiante.getPersona().getNombre() + " " + estudiante.getPersona().getApellido(),
+				evaluadorInternoMap, evaluadorExternoMap);
 	}
 
 	// Funciones privadas

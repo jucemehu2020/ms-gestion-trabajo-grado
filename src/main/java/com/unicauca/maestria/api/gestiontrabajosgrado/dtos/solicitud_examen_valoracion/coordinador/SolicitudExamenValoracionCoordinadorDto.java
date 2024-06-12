@@ -25,4 +25,7 @@ public class SolicitudExamenValoracionCoordinadorDto {
 
     @NotNull
     private LocalDate fechaMaximaEvaluacion;
+
+    @NotNull
+    private InformacionEnvioEvaluador informacionEnvioEvaluador;
 }

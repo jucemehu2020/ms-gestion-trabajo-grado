@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.InformacionEnvioEvaluador;
 
 @Getter
 @Setter
@@ -33,7 +34,7 @@ public class RespuestaExamenValoracionDto {
     private LocalDate fechaMaximaEntrega;
 
     private Boolean estadoFinalizado;
-    
+
     private String observacion;
 
     @NonNull
@@ -43,5 +44,8 @@ public class RespuestaExamenValoracionDto {
     private String tipoEvaluador;
 
     private TrabajoGradoResponseDto trabajoGrado;
+
+    @NotNull
+    private InformacionEnvioDto informacionEnvioDto;
 
 }

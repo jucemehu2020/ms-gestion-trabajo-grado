@@ -1,7 +1,9 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,25 +12,37 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
+
 import org.apache.poi.ss.formula.atp.Switch;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.rta_examen_valoracion.RespuestaExamenValoracion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionInformacionGeneralDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.CamposUnicosSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldUniqueException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
@@ -52,6 +66,12 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         private final SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
         private final ArchivoClient archivoClient;
         private final ArchivoClientExpertos archivoClientExpertos;
+
+        @Autowired
+        private JavaMailSender mailSender;
+
+        @Autowired
+        private SpringTemplateEngine templateEngine;
 
         @Override
         @Transactional
@@ -82,7 +102,8 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 .toEntity(respuestaExamenValoracionDto);
 
                 // Se cambia el numero de estado
-                // int numEstado = validarEstado(respuestaExamenValoracionDto.getRespuestaExamenValoracion());
+                // int numEstado =
+                // validarEstado(respuestaExamenValoracionDto.getRespuestaExamenValoracion());
                 // trabajoGrado.setNumeroEstado(numEstado);
 
                 trabajoGrado.setNumeroEstado(4);
@@ -98,10 +119,71 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 // Se asigna al trabajo de grado
                 rtaExamenValoracion.setTrabajoGrado(trabajoGrado);
 
+                enviarCorreoTutorEstudiante(respuestaExamenValoracionDto, trabajoGrado);
+
                 RespuestaExamenValoracion examenValoracionRes = respuestaExamenValoracionRepository
                                 .save(rtaExamenValoracion);
 
                 return respuestaExamenValoracionMapper.toDto(examenValoracionRes);
+        }
+
+        private boolean enviarCorreoTutorEstudiante(RespuestaExamenValoracionDto respuestaExamenValoracionDto,
+                        TrabajoGrado trabajoGrado) {
+                try {
+                        ArrayList<String> correos = new ArrayList<>();
+                        Map<String, Object> templateModel = new HashMap<>();
+
+                        // Obtener correo tutor
+                        correos.add(trabajoGrado.getCorreoElectronicoTutor());
+
+                        // Obtener correo estudiante
+                        EstudianteResponseDtoAll estudiante = archivoClient
+                                        .obtenerInformacionEstudiante(trabajoGrado.getEstudiante().getId());
+                        correos.add(estudiante.getPersona().getCorreoElectronico());
+
+                        // Iterar sobre cada correo electrónico para enviar los mensajes individualmente
+                        for (String correo : correos) {
+                                MimeMessage message = mailSender.createMimeMessage();
+                                MimeMessageHelper helper = new MimeMessageHelper(message, true); // habilitar modo
+                                                                                                 // multipart
+
+                                // Configurar variables del contexto para la plantilla
+                                // templateModel.put("nombreEvaluador", "Nombre del Evaluador");
+                                templateModel.put("mensaje", respuestaExamenValoracionDto.getInformacionEnvioDto().getMensaje());
+
+                                // Crear el contexto para el motor de plantillas
+                                Context context = new Context();
+                                context.setVariables(templateModel);
+
+                                // Procesar la plantilla de correo electrónico
+                                String html = templateEngine.process("emailTemplate", context);
+
+                                helper.setTo(correo);
+                                helper.setSubject(respuestaExamenValoracionDto.getInformacionEnvioDto().getAsunto());
+                                helper.setText(html, true); // Establecer el cuerpo del mensaje HTML
+
+                                // Obtener documentos y adjuntarlos
+                                Map<String, String> documentosParaEvaluador = respuestaExamenValoracionDto
+                                                .getInformacionEnvioDto().getDocumentos();
+                                for (Map.Entry<String, String> entry : documentosParaEvaluador.entrySet()) {
+                                        String nombreDocumento = entry.getKey();
+                                        String base64Documento = entry.getValue();
+                                        byte[] documentoBytes = Base64.getDecoder().decode(base64Documento);
+                                        ByteArrayDataSource dataSource = new ByteArrayDataSource(documentoBytes,
+                                                        "application/pdf");
+                                        helper.addAttachment(nombreDocumento + ".pdf", dataSource); // Cambiar a .pdf si
+                                                                                                    // es necesario
+                                }
+
+                                // Enviar el mensaje
+                                mailSender.send(message);
+                        }
+
+                        return true;
+                } catch (MessagingException e) {
+                        e.printStackTrace();
+                        return false;
+                }
         }
 
         @Override
