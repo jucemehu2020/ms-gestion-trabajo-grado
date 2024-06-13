@@ -33,6 +33,8 @@ public class SolicitudExamenValoracion {
 
     private String linkFormatoE;
 
+    private String linkAnexos;
+
     private String evaluadorExterno;
 
     private String evaluadorInterno;

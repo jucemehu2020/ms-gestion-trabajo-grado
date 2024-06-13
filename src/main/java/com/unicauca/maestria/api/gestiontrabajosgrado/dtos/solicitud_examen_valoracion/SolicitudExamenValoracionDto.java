@@ -29,6 +29,8 @@ public class SolicitudExamenValoracionDto {
     @NotBlank
     private String linkFormatoE;
 
+    private String linkAnexos;
+
     @NotNull
     private String evaluadorExterno;
 

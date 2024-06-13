@@ -1,18 +1,8 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.docente.EscalafonDocente;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.docente.EstadoPersona;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.docente.TipoVinculacion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -25,6 +15,7 @@ public class SolicitudExamenValoracionDocenteResponseListDto{
     private String linkFormatoA;
     private String linkFormatoD;
     private String linkFormatoE;
+    private String linkAnexos;
     private Map<String, String> evaluadorInterno;
     private Map<String, String> evaluadorExterno;
 }

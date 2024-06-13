@@ -108,7 +108,7 @@ public class SolicitudExamenValoracionController {
                 .body(serviceSolicitudExamenValoracion.actualizarInformacionCoordinador(id, examenValoracion, result));
     }
 
-    @PostMapping("/descargarDocumento")
+    @GetMapping("/descargarDocumento")
     public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(serviceSolicitudExamenValoracion.descargarArchivo(rutaArchivo));
@@ -127,4 +127,11 @@ public class SolicitudExamenValoracionController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(serviceSolicitudExamenValoracion.obtenerInformacionFormatoB(id));
     }
+
+    @GetMapping("/obtenerDocumentosParaEvaluador/{idExamenValoracion}")
+    public ResponseEntity<?> obtenerDocumentosParaEvaluador(@PathVariable Long idExamenValoracion) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(serviceSolicitudExamenValoracion.obtenerDocumentosParaEvaluador(idExamenValoracion));
+    }
+
 }

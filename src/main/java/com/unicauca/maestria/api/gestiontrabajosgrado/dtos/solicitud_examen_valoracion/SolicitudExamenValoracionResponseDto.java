@@ -16,6 +16,7 @@ public class SolicitudExamenValoracionResponseDto {
     private String linkFormatoA;
     private String linkFormatoD;
     private String linkFormatoE;
+    private String linkAnexos;
     private String evaluadorExterno;
     private String evaluadorInterno;
     private String actaAprobacionExamen;

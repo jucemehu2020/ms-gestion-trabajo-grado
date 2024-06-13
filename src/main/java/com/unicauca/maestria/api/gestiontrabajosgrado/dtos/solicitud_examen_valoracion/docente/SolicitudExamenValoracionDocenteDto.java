@@ -28,6 +28,8 @@ public class SolicitudExamenValoracionDocenteDto {
     @NotBlank
     private String linkFormatoE;
 
+    private String linkAnexos;
+
     @NotNull
     private String evaluadorExterno;
 

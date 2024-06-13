@@ -1,12 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -14,8 +9,6 @@ import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
-
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,8 +19,6 @@ import org.springframework.validation.BindingResult;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
@@ -45,6 +36,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.DatosFormatoBResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailCorrecionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.ObtenerDocumentosParaEvaluadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
@@ -81,8 +73,12 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	@Override
 	@Transactional(readOnly = true)
 	public List<DocenteInfoDto> listarDocentes() {
-		List<DocenteResponseDto> estadoTmp = archivoClient.listarDocentesRes();
-		List<DocenteInfoDto> docentes = estadoTmp.stream()
+		List<DocenteResponseDto> docenteResponse = archivoClient.listarDocentesRes();
+		System.out.println("Docente response: " + docenteResponse);
+		if(docenteResponse.size() == 0){
+			throw new InformationException("No hay docentes registrados");
+		}
+		List<DocenteInfoDto> docentes = docenteResponse.stream()
 				.map(docente -> new DocenteInfoDto(
 						docente.getId(),
 						docente.getPersona().getNombre(),
@@ -182,6 +178,10 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.setLinkFormatoE(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
 						examenValoracion.getLinkFormatoE(), nombreCarpeta));
 
+		examenValoracion
+				.setLinkAnexos(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
+						examenValoracion.getLinkAnexos(), nombreCarpeta));
+
 		SolicitudExamenValoracion examenValoracionRes = solicitudExamenValoracionRepository.save(examenValoracion);
 
 		return examenValoracionResponseMapper.toDocenteDto(examenValoracionRes);
@@ -277,7 +277,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 				// Configurar variables del contexto para la plantilla
 				// templateModel.put("nombreEvaluador", "Nombre del Evaluador");
-				templateModel.put("mensaje", solicitudExamenValoracionCoordinadorDto.getInformacionEnvioEvaluador().getMensaje());
+				templateModel.put("mensaje",
+						solicitudExamenValoracionCoordinadorDto.getInformacionEnvioEvaluador().getMensaje());
 
 				// Crear el contexto para el motor de plantillas
 				Context context = new Context();
@@ -311,77 +312,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			return false;
 		}
 	}
-
-	// @Override
-	// @Transactional
-	// public SolicitudExamenValoracionResponseDto
-	// crear(SolicitudExamenValoracionDto examenValoracionDto,
-	// BindingResult result) {
-	// if (result.hasErrors()) {
-	// throw new FieldErrorException(result);
-	// }
-
-	// TrabajoGrado trabajoGrado =
-	// trabajoGradoRepository.findById(examenValoracionDto.getIdTrabajoGrados())
-	// .orElseThrow(() -> new ResourceNotFoundException(
-	// "TrabajoGrado con id: " + examenValoracionDto.getIdTrabajoGrados() + " No
-	// encontrado"));
-
-	// Map<String, String> validacionCamposUnicos =
-	// validacionCampoUnicos(obtenerCamposUnicos(examenValoracionDto),
-	// null);
-	// if (!validacionCamposUnicos.isEmpty()) {
-	// throw new FieldUniqueException(validacionCamposUnicos);
-	// }
-
-	// // Obtener iniciales del trabajo de grado
-	// String procesoVa = "Solicitud_Examen_Valoracion";
-	// String tituloTrabajoGrado =
-	// ConvertString.obtenerIniciales(examenValoracionDto.getTitulo());
-
-	// Long idenficiacionEstudiante =
-	// trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-	// String nombreEstudiante =
-	// trabajoGrado.getEstudiante().getPersona().getNombre();
-	// String apellidoEstudiante =
-	// trabajoGrado.getEstudiante().getPersona().getApellido();
-	// String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_"
-	// + apellidoEstudiante;
-
-	// // Mapear DTO a entidad
-	// SolicitudExamenValoracion examenValoracion =
-	// examenValoracionMapper.toEntity(examenValoracionDto);
-
-	// // Establecer la relación uno a uno
-	// examenValoracion.setIdTrabajoGrado(trabajoGrado);
-	// trabajoGrado.setExamenValoracion(examenValoracion);
-
-	// // Se cambia el numero de estado
-	// trabajoGrado.setNumeroEstado(1);
-	// trabajoGrado.setTitulo(examenValoracionDto.getTitulo());
-
-	// // Guardar la entidad ExamenValoracion
-	// examenValoracion
-	// .setLinkFormatoA(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado,
-	// procesoVa,
-	// examenValoracion.getLinkFormatoA(), nombreCarpeta));
-	// examenValoracion
-	// .setLinkFormatoD(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado,
-	// procesoVa,
-	// examenValoracion.getLinkFormatoD(), nombreCarpeta));
-	// examenValoracion
-	// .setLinkFormatoE(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado,
-	// procesoVa,
-	// examenValoracion.getLinkFormatoE(), nombreCarpeta));
-	// examenValoracion.setLinkOficioDirigidoEvaluadores(
-	// FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-	// examenValoracion.getLinkOficioDirigidoEvaluadores(), nombreCarpeta));
-
-	// SolicitudExamenValoracion examenValoracionRes =
-	// solicitudExamenValoracionRepository.save(examenValoracion);
-
-	// return examenValoracionResponseMapper.toDto(examenValoracionRes);
-	// }
 
 	@Override
 	@Transactional(readOnly = true)
@@ -421,6 +351,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		docenteResponseDto.setLinkFormatoA(responseDto.getLinkFormatoA());
 		docenteResponseDto.setLinkFormatoD(responseDto.getLinkFormatoD());
 		docenteResponseDto.setLinkFormatoE(responseDto.getLinkFormatoE());
+		docenteResponseDto.setLinkAnexos(responseDto.getLinkAnexos());
 		docenteResponseDto.setEvaluadorInterno(evaluadorInternoMap);
 		docenteResponseDto.setEvaluadorExterno(evaluadorExternoMap);
 
@@ -436,79 +367,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.findFirst()
 				.orElse(null);
 	}
-
-	// @Override
-	// public SolicitudExamenValoracionResponseDto actualizar(Long id,
-	// SolicitudExamenValoracionDto examenValoracionDto,
-	// BindingResult result) {
-
-	// SolicitudExamenValoracion examenValoracionTmp =
-	// solicitudExamenValoracionRepository.findById(id).orElseThrow(
-	// () -> new ResourceNotFoundException("Examen de valoracion con id: " + id + "
-	// no encontrado"));
-
-	// // Busca el trabajo de grado
-	// TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
-	// () -> new ResourceNotFoundException("Trabajo de grado con id: " + id + " no
-	// encontrado"));
-
-	// String procesoVa = "Solicitud_Examen_Valoracion";
-	// String tituloTrabajoGrado =
-	// ConvertString.obtenerIniciales(examenValoracionDto.getTitulo());
-	// Long idenficiacionEstudiante =
-	// trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-	// String nombreEstudiante =
-	// trabajoGrado.getEstudiante().getPersona().getNombre();
-	// String apellidoEstudiante =
-	// trabajoGrado.getEstudiante().getPersona().getApellido();
-	// String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_"
-	// + apellidoEstudiante;
-
-	// SolicitudExamenValoracion responseExamenValoracion = null;
-	// if (examenValoracionTmp != null) {
-	// if
-	// (examenValoracionDto.getLinkFormatoA().compareTo(examenValoracionTmp.getLinkFormatoA())
-	// != 0) {
-	// examenValoracionDto
-	// .setLinkFormatoA(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado,
-	// procesoVa,
-	// examenValoracionDto.getLinkFormatoA(), nombreCarpeta));
-	// FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkFormatoA());
-	// }
-	// if
-	// (examenValoracionDto.getLinkFormatoD().compareTo(examenValoracionTmp.getLinkFormatoD())
-	// != 0) {
-	// examenValoracionDto
-	// .setLinkFormatoD(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado,
-	// procesoVa,
-	// examenValoracionDto.getLinkFormatoD(), nombreCarpeta));
-	// FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkFormatoD());
-	// }
-	// if
-	// (examenValoracionDto.getLinkFormatoE().compareTo(examenValoracionTmp.getLinkFormatoE())
-	// != 0) {
-	// examenValoracionDto
-	// .setLinkFormatoE(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado,
-	// procesoVa,
-	// examenValoracionDto.getLinkFormatoE(), nombreCarpeta));
-	// FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkFormatoE());
-	// }
-	// if (examenValoracionDto.getLinkOficioDirigidoEvaluadores()
-	// .compareTo(examenValoracionTmp.getLinkOficioDirigidoEvaluadores()) != 0) {
-	// examenValoracionDto
-	// .setLinkOficioDirigidoEvaluadores(
-	// FilesUtilities
-	// .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-	// examenValoracionDto.getLinkOficioDirigidoEvaluadores(), nombreCarpeta));
-	// FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkOficioDirigidoEvaluadores());
-	// }
-	// updateExamenValoracionValues(examenValoracionTmp, examenValoracionDto,
-	// trabajoGrado);
-	// responseExamenValoracion =
-	// solicitudExamenValoracionRepository.save(examenValoracionTmp);
-	// }
-	// return examenValoracionResponseMapper.toDto(responseExamenValoracion);
-	// }
 
 	@Override
 	public SolicitudExamenValoracionDocenteResponseDto actualizarInformacionDocente(Long id,
@@ -548,6 +406,12 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						.setLinkFormatoE(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
 								examenValoracionDto.getLinkFormatoE(), nombreCarpeta));
 				FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkFormatoE());
+			}
+			if (examenValoracionDto.getLinkAnexos().compareTo(examenValoracionTmp.getLinkAnexos()) != 0) {
+				examenValoracionDto
+						.setLinkAnexos(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
+								examenValoracionDto.getLinkAnexos(), nombreCarpeta));
+				FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkAnexos());
 			}
 			updateExamenValoracionDocenteValues(examenValoracionTmp, examenValoracionDto, trabajoGrado);
 			responseExamenValoracion = solicitudExamenValoracionRepository.save(examenValoracionTmp);
@@ -669,6 +533,23 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		return new DatosFormatoBResponseDto(trabajoGrado.getTitulo(),
 				estudiante.getPersona().getNombre() + " " + estudiante.getPersona().getApellido(),
 				evaluadorInternoMap, evaluadorExternoMap);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluador(Long idExamenValoracion) {
+
+		SolicitudExamenValoracion examenValoracion = solicitudExamenValoracionRepository.findById(idExamenValoracion)
+				.orElseThrow(
+						() -> new ResourceNotFoundException(
+								"Examen de valoracion con id: " + idExamenValoracion + " no encontrado"));
+
+		ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluadorDto = new ObtenerDocumentosParaEvaluadorDto(
+				FilesUtilities.recuperarArchivo(examenValoracion.getLinkFormatoD()),
+				FilesUtilities.recuperarArchivo(examenValoracion.getLinkFormatoE()),
+				FilesUtilities.recuperarArchivo(examenValoracion.getLinkAnexos()));
+
+		return obtenerDocumentosParaEvaluadorDto;
 	}
 
 	// Funciones privadas
