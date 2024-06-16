@@ -5,8 +5,10 @@ import java.util.Map;
 
 public enum EstadoTrabajoGrado {
         SIN_REGISTRAR_SOLICITUD_EXAMEN_DE_VALORACION("Sin registrar solicitud de examen de valoración por parte del docente"),
-        PENDIENTE_SUBIDA_ARCHIVOS_COORDINADOR("Pendiente registro de informacion por parte del coordinador"),
-        DEVUELTO_EXAMEN_DE_VALORACION_PARA_CORREGIR("Se ha devuelto el examen de valoracion para correciones"),
+        PENDIENTE_REVISION_COORDINADOR("Pendiente revision por parte del coordinador"),
+        DEVUELTO_EXAMEN_DE_VALORACION_POR_COORDINADOR("Se ha devuelto el examen de valoracion para correciones solicitadas del coordinador"),
+        PENDIENTE_SUBIDA_ARCHIVOS_COORDINADOR("Pendiente registro de informacion por parte del coordinador con respuesta de comite"),
+        DEVUELTO_EXAMEN_DE_VALORACION_POR_COMITE("Se ha devuelto el examen de valoracion para correciones realizadas por el comite"),
         PENDIENTE_RESULTADO_EXAMEN_DE_VALORACION("Pendiente respuesta de examen de valoración por parte de los evaluadores"),
         EXAMEN_DE_VALORACION_APROBADO("Sin registrar informacion por parte del docente para generacion de resolucion"),
         EXAMEN_DE_VALORACION_NO_APROBADO("Examen de valoración no aprobado"),

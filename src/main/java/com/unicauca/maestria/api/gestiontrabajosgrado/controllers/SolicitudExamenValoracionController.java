@@ -7,16 +7,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.SolicitudExamenValoracionDocenteResponseListDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.DatosFormatoBResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailCorrecionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorFase1Dto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseListDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion.SolicitudExamenValoracionService;
 
 import java.util.List;
@@ -54,14 +55,26 @@ public class SolicitudExamenValoracionController {
     public ResponseEntity<SolicitudExamenValoracionDocenteResponseDto> insertarInformacionDocente(
             @Valid @RequestBody SolicitudExamenValoracionDocenteDto informacionDocente, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(serviceSolicitudExamenValoracion.insertarInformacionDocente(informacionDocente, result));
+                .body(serviceSolicitudExamenValoracion
+                .insertarInformacionDocente(informacionDocente, result));
     }
 
-    @PostMapping("/insertarInformacionCoordinador")
-    public ResponseEntity<SolicitudExamenValoracionCoordinadorResponseDto> insertarInformacionCoordinador(
-            @Valid @RequestBody SolicitudExamenValoracionCoordinadorDto informacionCoordinador, BindingResult result) {
+    @PostMapping("/insertarInformacionCoordinadorFase1")
+    public ResponseEntity<SolicitudExamenValoracionCoordinadorFase1Dto> insertarInformacionCoordinadorFase1(
+            @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase1Dto informacionCoordinador,
+            BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(serviceSolicitudExamenValoracion.insertarInformacionCoordinador(informacionCoordinador, result));
+                .body(serviceSolicitudExamenValoracion.insertarInformacionCoordinadorFase1(informacionCoordinador,
+                        result));
+    }
+
+    @PostMapping("/insertarInformacionCoordinadorFase2")
+    public ResponseEntity<SolicitudExamenValoracionCoordinadorResponseDto> insertarInformacionCoordinadorFase2(
+            @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase2Dto informacionCoordinador,
+            BindingResult result) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(serviceSolicitudExamenValoracion.insertarInformacionCoordinadorFase2(informacionCoordinador,
+                        result));
     }
 
     // @GetMapping("/{id}")
@@ -102,7 +115,7 @@ public class SolicitudExamenValoracionController {
 
     @PutMapping("/actualizarInformacionCoordinador/{id}")
     public ResponseEntity<SolicitudExamenValoracionCoordinadorResponseDto> actualizarInformacionCoordinador(
-            @PathVariable Long id, @Valid @RequestBody SolicitudExamenValoracionCoordinadorDto examenValoracion,
+            @PathVariable Long id, @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase2Dto examenValoracion,
             BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(serviceSolicitudExamenValoracion.actualizarInformacionCoordinador(id, examenValoracion, result));

@@ -1,5 +1,10 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +19,7 @@ public class SolicitudExamenValoracionDocenteResponseDto {
     private String linkFormatoA;
     private String linkFormatoD;
     private String linkFormatoE;
-    private String linkAnexos;
-    private String evaluadorExterno;
-    private String evaluadorInterno;
+    private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();
+    private String idEvaluadorInterno;
+    private String idEvaluadorExterno;
 }

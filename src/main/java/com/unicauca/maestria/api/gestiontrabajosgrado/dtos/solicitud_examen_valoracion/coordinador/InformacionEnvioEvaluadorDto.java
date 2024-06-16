@@ -1,6 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.*;
@@ -10,18 +11,16 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InformacionEnvioEvaluador {
+public class InformacionEnvioEvaluadorDto {
 
-    private String asunto;
-    private String mensaje;
     private String formatoD;
     private String formatoE;
-    private String anexos;
+    private List<String> anexos;
     private String formatoB;
     private String formatoC;
 
-    public Map<String, String> getDocumentos() {
-        Map<String, String> documentos = new HashMap<>();
+    public Map<String, Object> getDocumentos() {
+        Map<String, Object> documentos = new HashMap<>();
         documentos.put("formatoD", formatoD);
         documentos.put("formatoE", formatoE);
         documentos.put("anexos", anexos);

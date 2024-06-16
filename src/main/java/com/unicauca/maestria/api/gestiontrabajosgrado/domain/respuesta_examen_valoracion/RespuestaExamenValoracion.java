@@ -1,35 +1,39 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.domain.rta_examen_valoracion;
+package com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion;
 
 import java.time.LocalDate;
-
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
-
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
+
+
+
 @Entity
-@Table(name = "rta_examen_valoracion")
+@Table(name = "respuesta_examen_valoracion")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class RespuestaExamenValoracion {
-    
+
     @Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idRtaExamenValoracion;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idRespuestaExamenValoracion;
 
     private String linkFormatoB;
 
     private String linkFormatoC;
 
     private String linkObservaciones;
+
+    @OneToMany(mappedBy = "respuestaExamenValoracion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnexoRespuestaExamenValoracion> linkAnexo;
 
     private String respuestaExamenValoracion;
 
@@ -38,6 +42,8 @@ public class RespuestaExamenValoracion {
     private String idEvaluador;
 
     private String tipoEvaluador;
+
+    private Boolean permitidoExamen;
 
     private Boolean estadoFinalizado;
 

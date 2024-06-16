@@ -2,10 +2,13 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_val
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 
 @Getter
 @Setter
@@ -28,11 +31,11 @@ public class SolicitudExamenValoracionDocenteDto {
     @NotBlank
     private String linkFormatoE;
 
-    private String linkAnexos;
+    private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();
 
     @NotNull
-    private String evaluadorExterno;
+    private String idEvaluadorInterno;
 
     @NotNull
-    private String evaluadorInterno;
+    private String idEvaluadorExterno;
 }

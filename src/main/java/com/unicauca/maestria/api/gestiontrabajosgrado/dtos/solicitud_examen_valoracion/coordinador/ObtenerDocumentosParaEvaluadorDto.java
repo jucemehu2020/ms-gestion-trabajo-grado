@@ -1,5 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador;
 
+import java.util.ArrayList;
+
 import lombok.*;
 
 @Getter
@@ -11,6 +13,6 @@ public class ObtenerDocumentosParaEvaluadorDto {
     
     private String base64FormatoD;
     private String base64FormatoE;
-    private String base64Anexos;
+    private ArrayList<String> base64Anexos;
 
 }

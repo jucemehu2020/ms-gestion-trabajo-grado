@@ -1,5 +1,6 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente;
+package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import lombok.*;
@@ -15,7 +16,7 @@ public class SolicitudExamenValoracionDocenteResponseListDto{
     private String linkFormatoA;
     private String linkFormatoD;
     private String linkFormatoE;
-    private String linkAnexos;
+    private ArrayList<String> anexos = new ArrayList<>();
     private Map<String, String> evaluadorInterno;
     private Map<String, String> evaluadorExterno;
 }

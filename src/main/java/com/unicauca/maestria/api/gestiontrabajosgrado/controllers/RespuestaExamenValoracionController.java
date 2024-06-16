@@ -13,7 +13,6 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionInformacionGeneralDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion.RespuestaExamenValoracionService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,10 +34,10 @@ public class RespuestaExamenValoracionController {
                 .body(respuestaExamenValoracion.crear(examenValoracion, result));
     }
 
-    @GetMapping("/listarInformacionGeneral/{id}")
-    public ResponseEntity<RespuestaExamenValoracionInformacionGeneralDto> listarInformacionGeneral(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.listarInformacionGeneral(id));
-    }
+    // @GetMapping("/listarInformacionGeneral/{id}")
+    // public ResponseEntity<RespuestaExamenValoracionInformacionGeneralDto> listarInformacionGeneral(@PathVariable Long id) {
+    //     return ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.listarInformacionGeneral(id));
+    // }
 
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, List<RespuestaExamenValoracionDto>>> buscarPorId(@PathVariable Long id) {

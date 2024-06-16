@@ -1,9 +1,10 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "examen_valoracion")
+@Table(name = "solicitud_examen_valoracion")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,16 +33,20 @@ public class SolicitudExamenValoracion {
     private String linkFormatoD;
 
     private String linkFormatoE;
+    
+    @OneToMany(mappedBy = "solicitudExamenValoracion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<AnexoSolicitudExamenValoracion> anexos;
 
-    private String linkAnexos;
+    private String idEvaluadorInterno;
 
-    private String evaluadorExterno;
+    private String idEvaluadorExterno;
 
-    private String evaluadorInterno;
+    private String conceptoCoordinadorDocumentos;
 
-    private String actaAprobacionExamen;
-
-    private LocalDate fechaActa;
+    @OneToMany(mappedBy = "solicitudExamenValoracion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<RespuestaComite> actaFechaRespuestaComite;
 
     private String linkOficioDirigidoEvaluadores;
 

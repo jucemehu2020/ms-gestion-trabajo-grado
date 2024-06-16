@@ -1,12 +1,17 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComite;
 
-@Data
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class SolicitudExamenValoracionResponseDto {
@@ -16,11 +21,11 @@ public class SolicitudExamenValoracionResponseDto {
     private String linkFormatoA;
     private String linkFormatoD;
     private String linkFormatoE;
-    private String linkAnexos;
-    private String evaluadorExterno;
-    private String evaluadorInterno;
-    private String actaAprobacionExamen;
-    private LocalDate fechaActa;
+    private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();;
+    private String idEvaluadorInterno;
+    private String idEvaluadorExterno;
+    private String conceptoCoordinadorDocumentos;
+    private List<RespuestaComite> actaFechaRespuestaComite = new ArrayList<>();;
     private String linkOficioDirigidoEvaluadores;
     private LocalDate fechaMaximaEvaluacion;
 }

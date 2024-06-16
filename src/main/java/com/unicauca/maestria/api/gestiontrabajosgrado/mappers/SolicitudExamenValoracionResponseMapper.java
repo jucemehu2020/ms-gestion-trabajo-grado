@@ -4,12 +4,14 @@ import org.mapstruct.Mapper;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseDto;
 
 @Mapper(componentModel = "spring")
 public interface SolicitudExamenValoracionResponseMapper extends GenericMapper<SolicitudExamenValoracionResponseDto, SolicitudExamenValoracion> {
 
+    
     // Métodos de mapeo para el DTO de Docente
     //SolicitudExamenValoracion toEntity(SolicitudExamenValoracionDocenteDto docenteDto);
 
@@ -18,9 +20,12 @@ public interface SolicitudExamenValoracionResponseMapper extends GenericMapper<S
     SolicitudExamenValoracionDocenteResponseDto toDocenteResponseDto(SolicitudExamenValoracionResponseDto entity);
 
     // Métodos de mapeo para el DTO de Coordinador
+
+    SolicitudExamenValoracionCoordinadorFase1Dto toCoordinadorFase1Dto(SolicitudExamenValoracion entity);
+
     //SolicitudExamenValoracion toEntity(SolicitudExamenValoracionCoordinadorDto coordinadorDto);
 
-    SolicitudExamenValoracionCoordinadorResponseDto toCoordinadorDto(SolicitudExamenValoracion entity);
+    SolicitudExamenValoracionCoordinadorResponseDto toCoordinadorFase2Dto(SolicitudExamenValoracion entity);
     
     // Agrega este método
     SolicitudExamenValoracionResponseDto toDto(SolicitudExamenValoracionResponseDto entity);

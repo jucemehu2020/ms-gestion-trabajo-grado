@@ -30,7 +30,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClien
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.rta_examen_valoracion.RespuestaExamenValoracion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
@@ -42,7 +42,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.CamposUnicosSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldUniqueException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
@@ -194,14 +193,14 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 () -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
 
-                Optional<SolicitudExamenValoracionResponseDto> responseDto = solicitudExamenValoracionRepository
+                Optional<SolicitudExamenValoracion> responseDto = solicitudExamenValoracionRepository
                                 .findByIdTrabajoGradoId(idTrabajoGrado);
 
                 DocenteResponseDto docente = archivoClient
-                                .obtenerDocentePorId(Long.parseLong(responseDto.get().getEvaluadorInterno()));
+                                .obtenerDocentePorId(Long.parseLong(responseDto.get().getIdEvaluadorInterno()));
                 String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
                 ExpertoResponseDto experto = archivoClientExpertos
-                                .obtenerExpertoPorId(Long.parseLong(responseDto.get().getEvaluadorExterno()));
+                                .obtenerExpertoPorId(Long.parseLong(responseDto.get().getIdEvaluadorExterno()));
                 String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
 
                 RespuestaExamenValoracionInformacionGeneralDto responseDtoInformacion = new RespuestaExamenValoracionInformacionGeneralDto();

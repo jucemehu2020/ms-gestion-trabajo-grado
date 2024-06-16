@@ -41,7 +41,7 @@ class MsGestionTrabajoGradoApplicationTests {
 
 	@BeforeEach
 	public void setUp() {
-		docenteService = new SolicitudExamenValoracionServiceImpl(null, null, null, null, archivoClient, null, null);
+		docenteService = new SolicitudExamenValoracionServiceImpl(null, null, null, null, null, archivoClient, null, null);
 	}
 
 	@Test
