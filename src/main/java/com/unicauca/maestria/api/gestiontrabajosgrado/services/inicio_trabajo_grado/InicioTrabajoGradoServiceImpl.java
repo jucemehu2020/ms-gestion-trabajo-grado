@@ -21,7 +21,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClien
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientLogin;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.security.JwtUtil;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.estudiante.Estudiante;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
@@ -31,7 +30,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoun
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapperImpl;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
-import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.estudiante.EstudianteRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -41,7 +39,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService {
 
-	private final EstudianteRepository estudianteRepository;
 	private final TrabajoGradoRepository trabajoGradoRepository;
 	private final TrabajoGradoResponseMapper trabajoGradoResponseMapper;
 	private final ArchivoClient archivoClient;
@@ -76,10 +73,13 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	@Transactional(readOnly = true)
 	public EstudianteResponseDto buscarEstadoEstudiantePor(Long idEstudiante) {
 
-		// Consultar si existe estudiante
-		estudianteRepository.findById(idEstudiante)
-				.orElseThrow(
-						() -> new ResourceNotFoundException("Estudiante con id: " + idEstudiante + " No encontrado"));
+		// // Consultar si existe estudiante
+		// estudianteRepository.findById(idEstudiante)
+		// .orElseThrow(
+		// () -> new ResourceNotFoundException("Estudiante con id: " + idEstudiante + "
+		// No encontrado"));
+		EstudianteResponseDtoAll informacionEstudiantes = archivoClient.obtenerInformacionEstudiante(idEstudiante);
+		//hacer aqui si no existe estudiante
 
 		// Obtener la lista de trabajos de grado del estudiante desde el repositorio
 		List<TrabajoGrado> trabajosGrado = trabajoGradoRepository.findByEstudianteId(idEstudiante);
@@ -144,10 +144,12 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	@Transactional
 	public TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante, String token) {
 
+		EstudianteResponseDtoAll informacionEstudiantes = archivoClient.obtenerInformacionEstudiante(idEstudiante);
 		// Obtener el estudiante
-		Estudiante estudianteBD = estudianteRepository.findById(idEstudiante)
-				.orElseThrow(
-						() -> new ResourceNotFoundException("Estudiante con id: " + idEstudiante + " No encontrado"));
+		// Estudiante estudianteBD = estudianteRepository.findById(idEstudiante)
+		// .orElseThrow(
+		// () -> new ResourceNotFoundException("Estudiante con id: " + idEstudiante + "
+		// No encontrado"));
 
 		String usuario = jwtTokenProvider.getUserNameFromJwtToken(token);
 		System.out.println("Usuario::: " + usuario);
@@ -158,7 +160,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 
 		// Crear el objeto TrabajoGrado
 		TrabajoGrado trabajoGradoConvert = new TrabajoGrado();
-		trabajoGradoConvert.setEstudiante(estudianteBD);
+		trabajoGradoConvert.setIdEstudiante(informacionEstudiantes.getId());
 		trabajoGradoConvert.setFechaCreacion(LocalDate.now());
 		trabajoGradoConvert.setNumeroEstado(0);
 		trabajoGradoConvert.setTitulo("");

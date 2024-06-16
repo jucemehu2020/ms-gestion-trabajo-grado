@@ -1,6 +1,5 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
@@ -147,6 +146,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"TrabajoGrado con id: " + examenValoracionDto.getIdTrabajoGrados() + " No encontrado"));
 
+		EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+				.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
 		if (trabajoGrado.getNumeroEstado() == 0 || trabajoGrado.getNumeroEstado() == 2
 				|| trabajoGrado.getNumeroEstado() == 4) {
 
@@ -160,9 +162,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			String procesoVa = "Solicitud_Examen_Valoracion";
 			String tituloTrabajoGrado = ConvertString.obtenerIniciales(examenValoracionDto.getTitulo());
 
-			Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-			String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-			String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+			Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+			String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+			String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
 			String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
 			// Mapear DTO a entidad
@@ -283,6 +285,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
 				.findByTrabajoGradoId(examenValoracionDto.getIdTrabajoGrados());
 
+		EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+				.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
 		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals("Aprobado")) {
 			trabajoGrado.setNumeroEstado(5);
 		} else {
@@ -291,9 +296,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		String procesoVa = "Solicitud_Examen_Valoracion";
 		String tituloTrabajoGrado = ConvertString.obtenerIniciales(examenValoracionTmp.getTitulo());
-		Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-		String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-		String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+		Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+		String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+		String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
 		String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
 		examenValoracionDto
@@ -426,7 +431,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 									+ examenValoracionTmp.getIdTrabajoGrado().getId() + " no encontrado"));
 
 			EstudianteResponseDtoAll estudiante = archivoClient
-					.obtenerInformacionEstudiante(trabajoGrado.getEstudiante().getId());
+					.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 
 			correos.add(estudiante.getPersona().getCorreoElectronico());
 			correos.add(trabajoGrado.getCorreoElectronicoTutor());
@@ -465,16 +470,16 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		Optional<SolicitudExamenValoracion> entityOptional = solicitudExamenValoracionRepository
 				.findByIdTrabajoGradoId(idTrabajoGrado);
 
-		if (!entityOptional.isPresent()) {
-			return null;
-		}
+		// if (!entityOptional.isPresent()) {
+		// return null;
+		// }
 
-		SolicitudExamenValoracion entity = entityOptional.get();
-		SolicitudExamenValoracionResponseDto responseDto = examenValoracionResponseMapper.toDto(entity);
+		// SolicitudExamenValoracion entity = entityOptional.get();
+		SolicitudExamenValoracionResponseDto responseDto = examenValoracionResponseMapper.toDto(entityOptional.get());
 
 		// Obtener y construir información del evaluador interno
 		DocenteResponseDto docente = archivoClient
-				.obtenerDocentePorId(Long.parseLong(responseDto.getIdEvaluadorInterno()));
+				.obtenerDocentePorId(Long.parseLong(entityOptional.get().getIdEvaluadorInterno()));
 		String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
 		Map<String, String> evaluadorInternoMap = new HashMap<>();
 		evaluadorInternoMap.put("nombres", nombre_docente);
@@ -483,7 +488,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		// Obtener y construir información del evaluador externo
 		ExpertoResponseDto experto = archivoClientExpertos
-				.obtenerExpertoPorId(Long.parseLong(responseDto.getIdEvaluadorExterno()));
+				.obtenerExpertoPorId(Long.parseLong(entityOptional.get().getIdEvaluadorExterno()));
 		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
 		Map<String, String> evaluadorExternoMap = new HashMap<>();
 		evaluadorExternoMap.put("nombres", nombre_experto);
@@ -516,11 +521,38 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	@Override
 	@Transactional(readOnly = true)
 	public SolicitudExamenValoracionResponseDto listarInformacionCoordinador(Long idTrabajoGrado) {
-		return solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
-				.stream()
-				.map(examenValoracionResponseMapper::toDto)
-				.findFirst()
-				.orElse(null);
+		Optional<SolicitudExamenValoracion> entityOptional = solicitudExamenValoracionRepository
+				.findByIdTrabajoGradoId(idTrabajoGrado);
+
+		// if (!entityOptional.isPresent()) {
+		// return null;
+		// }
+
+		// SolicitudExamenValoracion entity = entityOptional.get();
+		SolicitudExamenValoracionResponseDto responseDto = examenValoracionResponseMapper.toDto(entityOptional.get());
+
+		// Obtener y construir información del evaluador interno
+		DocenteResponseDto docente = archivoClient
+				.obtenerDocentePorId(Long.parseLong(entityOptional.get().getIdEvaluadorInterno()));
+		String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+		Map<String, String> evaluadorInternoMap = new HashMap<>();
+		evaluadorInternoMap.put("nombres", nombre_docente);
+		evaluadorInternoMap.put("universidad", "Universidad del Cauca");
+		evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
+
+		// Obtener y construir información del evaluador externo
+		ExpertoResponseDto experto = archivoClientExpertos
+				.obtenerExpertoPorId(Long.parseLong(entityOptional.get().getIdEvaluadorExterno()));
+		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
+		Map<String, String> evaluadorExternoMap = new HashMap<>();
+		evaluadorExternoMap.put("nombres", nombre_experto);
+		evaluadorExternoMap.put("universidad", experto.getUniversidad());
+		evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
+
+		responseDto.setEvaluadorInterno(evaluadorInternoMap);
+		responseDto.setEvaluadorExterno(evaluadorExternoMap);
+
+		return responseDto;
 	}
 
 	@Override
@@ -535,11 +567,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Trabajo de grado con id: " + id + " no encontrado"));
 
+		EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+				.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
 		String procesoVa = "Solicitud_Examen_Valoracion";
 		String tituloTrabajoGrado = ConvertString.obtenerIniciales(examenValoracionDto.getTitulo());
-		Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-		String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-		String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+		Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+		String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+		String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
 		String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
 		SolicitudExamenValoracion responseExamenValoracion = null;
@@ -589,11 +624,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Trabajo de grado con id: " + id + " no encontrado"));
 
+		EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+				.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
 		String procesoVa = "Solicitud_Examen_Valoracion";
 		String tituloTrabajoGrado = ConvertString.obtenerIniciales(examenValoracionTmp.getTitulo());
-		Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-		String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-		String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+		Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+		String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+		String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
 		String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
 		SolicitudExamenValoracion responseExamenValoracion = null;
@@ -670,7 +708,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 									+ envioEmailCorrecionDto.getIdTrabajoGrado() + " no encontrado"));
 
 			EstudianteResponseDtoAll estudiante = archivoClient
-					.obtenerInformacionEstudiante(trabajoGrado.getEstudiante().getId());
+					.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 
 			correos.add(estudiante.getPersona().getCorreoElectronico());
 			correos.add(trabajoGrado.getCorreoElectronicoTutor());
@@ -714,7 +752,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		// Obtener información estudiante
 		EstudianteResponseDtoAll estudiante = archivoClient
-				.obtenerInformacionEstudiante(trabajoGrado.getEstudiante().getId());
+				.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 
 		// Obtener información examen de valoración
 		Optional<SolicitudExamenValoracion> examenValoracion = solicitudExamenValoracionRepository
@@ -725,12 +763,13 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 					"SolicitudExamenValoracion con idTrabajoGrado: " + idTrabajoGrado + " No encontrada");
 		}
 
-		SolicitudExamenValoracion entity = examenValoracion.get();
-		SolicitudExamenValoracionResponseDto responseDto = examenValoracionResponseMapper.toDto(entity);
+		// SolicitudExamenValoracion entity = examenValoracion.get();
+		// SolicitudExamenValoracionResponseDto responseDto =
+		// examenValoracionResponseMapper.toDto(entity);
 
 		// Obtener información evaluador interno
 		DocenteResponseDto docente = archivoClient
-				.obtenerDocentePorId(Long.parseLong(responseDto.getIdEvaluadorInterno()));
+				.obtenerDocentePorId(Long.parseLong(examenValoracion.get().getIdEvaluadorInterno()));
 		String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
 		Map<String, String> evaluadorInternoMap = new HashMap<>();
 		evaluadorInternoMap.put("nombres", nombre_docente);
@@ -739,7 +778,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		// Obtener información evaluador externo
 		ExpertoResponseDto experto = archivoClientExpertos
-				.obtenerExpertoPorId(Long.parseLong(responseDto.getIdEvaluadorExterno()));
+				.obtenerExpertoPorId(Long.parseLong(examenValoracion.get().getIdEvaluadorExterno()));
 		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
 		Map<String, String> evaluadorExternoMap = new HashMap<>();
 		evaluadorExternoMap.put("nombres", nombre_experto);

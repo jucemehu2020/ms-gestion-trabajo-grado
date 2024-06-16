@@ -87,13 +87,16 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                 + respuestaExamenValoracionDto.getIdTrabajoGrados()
                                                                 + " No encontrado"));
 
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
                 // Obtener iniciales del trabajo de grado
                 String procesoVa = "Respuesta_Examen_Valoracion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
 
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 // Mapear DTO a entidad
@@ -137,7 +140,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                         // Obtener correo estudiante
                         EstudianteResponseDtoAll estudiante = archivoClient
-                                        .obtenerInformacionEstudiante(trabajoGrado.getEstudiante().getId());
+                                        .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
                         correos.add(estudiante.getPersona().getCorreoElectronico());
 
                         // Iterar sobre cada correo electrónico para enviar los mensajes individualmente
@@ -148,7 +151,8 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                                 // Configurar variables del contexto para la plantilla
                                 // templateModel.put("nombreEvaluador", "Nombre del Evaluador");
-                                templateModel.put("mensaje", respuestaExamenValoracionDto.getInformacionEnvioDto().getMensaje());
+                                templateModel.put("mensaje",
+                                                respuestaExamenValoracionDto.getInformacionEnvioDto().getMensaje());
 
                                 // Crear el contexto para el motor de plantillas
                                 Context context = new Context();
@@ -244,19 +248,21 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                 "Respuesta examen de valoracion con id: " + id + " no encontrado"));
 
                 // Busca el trabajo de grado
-                // TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
-                // () -> new ResourceNotFoundException(
-                // "Trabajo de grado con id: " + id + " no encontrado"));
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
+                                () -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id: "
+                                                                + respuestaExamenValoracionTmp.getTrabajoGrado().getId()
+                                                                + " no encontrado"));
+
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 
                 String procesoVa = "Respuesta_Examen_Valoracion";
                 String tituloTrabajoGrado = ConvertString
                                 .obtenerIniciales(respuestaExamenValoracionTmp.getTrabajoGrado().getTitulo());
-                Long idenficiacionEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante()
-                                .getPersona().getIdentificacion();
-                String nombreEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona()
-                                .getNombre();
-                String apellidoEstudiante = respuestaExamenValoracionTmp.getTrabajoGrado().getEstudiante().getPersona()
-                                .getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 RespuestaExamenValoracion responseExamenValoracion = null;

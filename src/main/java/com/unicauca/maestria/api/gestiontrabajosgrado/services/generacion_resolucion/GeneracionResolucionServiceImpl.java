@@ -23,6 +23,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resoluci
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.CamposUnicosGenerarResolucionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
@@ -164,6 +165,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 "TrabajoGrado con id: " + generacionResolucionDto.getIdTrabajoGrados()
                                                                 + " No encontrado"));
 
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
                 // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
                 // obtenerCamposUnicos(generacionResolucionDto),
                 // null);
@@ -175,9 +179,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 String procesoVa = "Generacion_Resolucion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
 
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 // Mapear DTO a entidad
@@ -221,6 +225,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
                                 .findByTrabajoGradoId(generacionResolucionDto.getIdTrabajoGrados());
 
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
                 // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
                 // obtenerCamposUnicos(generacionResolucionDto),
                 // null);
@@ -232,9 +239,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 String procesoVa = "Generacion_Resolucion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
 
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 // Mapear DTO a entidad
@@ -288,6 +295,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
                                 .findByTrabajoGradoId(generacionResolucionDto.getIdTrabajoGrados());
 
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
                 // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
                 // obtenerCamposUnicos(generacionResolucionDto),
                 // null);
@@ -299,13 +309,14 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 String procesoVa = "Generacion_Resolucion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
 
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 // Mapear DTO a entidad
-                //GeneracionResolucion generarResolucion = generacionResolucionMapper.toEntity(generacionResolucionDto);
+                // GeneracionResolucion generarResolucion =
+                // generacionResolucionMapper.toEntity(generacionResolucionDto);
 
                 // Establecer la relación uno a uno
                 // generarResolucion.setIdTrabajoGrado(trabajoGrado);
@@ -373,98 +384,106 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         }
 
         // @Override
-        // public GeneracionResolucionDto actualizar(Long id, GeneracionResolucionDto generacionResolucionDto,
-        //                 BindingResult result) {
+        // public GeneracionResolucionDto actualizar(Long id, GeneracionResolucionDto
+        // generacionResolucionDto,
+        // BindingResult result) {
 
-        //         if (result.hasErrors()) {
-        //                 throw new FieldErrorException(result);
-        //         }
-
-        //         GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository.findById(id).orElseThrow(
-        //                         () -> new ResourceNotFoundException(
-        //                                         "Generacion de resolucion con id: " + id + " no encontrado"));
-
-        //         // Busca el trabajo de grado
-        //         TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
-        //                         () -> new ResourceNotFoundException(
-        //                                         "Trabajo de grado con id: " + id + " no encontrado"));
-
-        //         String procesoVa = "Generacion_Resolucion";
-        //         String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
-        //         Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-        //         String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-        //         String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
-        //         String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
-
-        //         GeneracionResolucion responseExamenValoracion = null;
-        //         if (generacionResolucionTmp != null) {
-        //                 if (generacionResolucionDto.getLinkAnteproyectoAprobado()
-        //                                 .compareTo(generacionResolucionTmp.getLinkAnteproyectoAprobado()) != 0) {
-        //                         generacionResolucionDto
-        //                                         .setLinkAnteproyectoAprobado(FilesUtilities
-        //                                                         .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        //                                                                         generacionResolucionDto
-        //                                                                                         .getLinkAnteproyectoAprobado(),
-        //                                                                         nombreCarpeta));
-        //                         FilesUtilities.deleteFileExample(generacionResolucionTmp.getLinkAnteproyectoAprobado());
-        //                 }
-        //                 if (generacionResolucionDto.getLinkSolicitudComite()
-        //                                 .compareTo(generacionResolucionTmp.getLinkSolicitudComite()) != 0) {
-        //                         generacionResolucionDto
-        //                                         .setLinkSolicitudComite(FilesUtilities
-        //                                                         .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        //                                                                         generacionResolucionDto
-        //                                                                                         .getLinkSolicitudComite(),
-        //                                                                         nombreCarpeta));
-        //                         FilesUtilities.deleteFileExample(generacionResolucionTmp.getLinkSolicitudComite());
-        //                 }
-        //                 if (generacionResolucionDto.getLinkSolicitudConcejoFacultad()
-        //                                 .compareTo(generacionResolucionTmp.getLinkSolicitudConcejoFacultad()) != 0) {
-        //                         generacionResolucionDto
-        //                                         .setLinkSolicitudConcejoFacultad(FilesUtilities
-        //                                                         .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        //                                                                         generacionResolucionDto
-        //                                                                                         .getLinkSolicitudConcejoFacultad(),
-        //                                                                         nombreCarpeta));
-        //                         FilesUtilities.deleteFileExample(
-        //                                         generacionResolucionTmp.getLinkSolicitudConcejoFacultad());
-        //                 }
-        //                 if (generacionResolucionDto.getLinkResolucionGeneradaCF()
-        //                                 .compareTo(generacionResolucionTmp.getLinkResolucionGeneradaCF()) != 0) {
-        //                         generacionResolucionDto
-        //                                         .setLinkResolucionGeneradaCF(FilesUtilities
-        //                                                         .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        //                                                                         generacionResolucionDto
-        //                                                                                         .getLinkResolucionGeneradaCF(),
-        //                                                                         nombreCarpeta));
-        //                         FilesUtilities.deleteFileExample(generacionResolucionTmp.getLinkResolucionGeneradaCF());
-        //                 }
-        //                 // Repetir esto
-        //                 updateRtaExamenValoracionValues(generacionResolucionTmp, generacionResolucionDto);
-        //                 responseExamenValoracion = generacionResolucionRepository.save(generacionResolucionTmp);
-        //         }
-        //         return generacionResolucionMapper.toDto(responseExamenValoracion);
+        // if (result.hasErrors()) {
+        // throw new FieldErrorException(result);
         // }
 
+        // GeneracionResolucion generacionResolucionTmp =
+        // generacionResolucionRepository.findById(id).orElseThrow(
+        // () -> new ResourceNotFoundException(
+        // "Generacion de resolucion con id: " + id + " no encontrado"));
 
+        // // Busca el trabajo de grado
+        // TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
+        // () -> new ResourceNotFoundException(
+        // "Trabajo de grado con id: " + id + " no encontrado"));
+
+        // String procesoVa = "Generacion_Resolucion";
+        // String tituloTrabajoGrado =
+        // ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
+        // Long idenficiacionEstudiante =
+        // trabajoGrado.getEstudiante().getPersona().getIdentificacion();
+        // String nombreEstudiante =
+        // trabajoGrado.getEstudiante().getPersona().getNombre();
+        // String apellidoEstudiante =
+        // trabajoGrado.getEstudiante().getPersona().getApellido();
+        // String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_"
+        // + apellidoEstudiante;
+
+        // GeneracionResolucion responseExamenValoracion = null;
+        // if (generacionResolucionTmp != null) {
+        // if (generacionResolucionDto.getLinkAnteproyectoAprobado()
+        // .compareTo(generacionResolucionTmp.getLinkAnteproyectoAprobado()) != 0) {
+        // generacionResolucionDto
+        // .setLinkAnteproyectoAprobado(FilesUtilities
+        // .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
+        // generacionResolucionDto
+        // .getLinkAnteproyectoAprobado(),
+        // nombreCarpeta));
+        // FilesUtilities.deleteFileExample(generacionResolucionTmp.getLinkAnteproyectoAprobado());
+        // }
+        // if (generacionResolucionDto.getLinkSolicitudComite()
+        // .compareTo(generacionResolucionTmp.getLinkSolicitudComite()) != 0) {
+        // generacionResolucionDto
+        // .setLinkSolicitudComite(FilesUtilities
+        // .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
+        // generacionResolucionDto
+        // .getLinkSolicitudComite(),
+        // nombreCarpeta));
+        // FilesUtilities.deleteFileExample(generacionResolucionTmp.getLinkSolicitudComite());
+        // }
+        // if (generacionResolucionDto.getLinkSolicitudConcejoFacultad()
+        // .compareTo(generacionResolucionTmp.getLinkSolicitudConcejoFacultad()) != 0) {
+        // generacionResolucionDto
+        // .setLinkSolicitudConcejoFacultad(FilesUtilities
+        // .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
+        // generacionResolucionDto
+        // .getLinkSolicitudConcejoFacultad(),
+        // nombreCarpeta));
+        // FilesUtilities.deleteFileExample(
+        // generacionResolucionTmp.getLinkSolicitudConcejoFacultad());
+        // }
+        // if (generacionResolucionDto.getLinkResolucionGeneradaCF()
+        // .compareTo(generacionResolucionTmp.getLinkResolucionGeneradaCF()) != 0) {
+        // generacionResolucionDto
+        // .setLinkResolucionGeneradaCF(FilesUtilities
+        // .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
+        // generacionResolucionDto
+        // .getLinkResolucionGeneradaCF(),
+        // nombreCarpeta));
+        // FilesUtilities.deleteFileExample(generacionResolucionTmp.getLinkResolucionGeneradaCF());
+        // }
+        // // Repetir esto
+        // updateRtaExamenValoracionValues(generacionResolucionTmp,
+        // generacionResolucionDto);
+        // responseExamenValoracion =
+        // generacionResolucionRepository.save(generacionResolucionTmp);
+        // }
+        // return generacionResolucionMapper.toDto(responseExamenValoracion);
+        // }
 
         // // Funciones privadas
-        // private void updateRtaExamenValoracionValues(GeneracionResolucion generacionResolucion,
-        //                 GeneracionResolucionDto generacionResolucionDto) {
-        //         generacionResolucion.setDirector(generacionResolucionDto.getDirector());
-        //         generacionResolucion.setCodirector(generacionResolucionDto.getCodirector());
-        //         generacionResolucion.setNumeroActaRevision(generacionResolucionDto.getNumeroActaRevision());
-        //         generacionResolucion.setFechaActa(generacionResolucionDto.getFechaActa());
-        //         generacionResolucion
-        //                         .setNumeroResolucionGeneradaCF(
-        //                                         generacionResolucionDto.getNumeroResolucionGeneradaCF());
-        //         generacionResolucion.setFechaResolucion(generacionResolucionDto.getFechaResolucion());
-        //         // Update archivos
-        //         generacionResolucion.setLinkAnteproyectoAprobado(generacionResolucionDto.getLinkAnteproyectoAprobado());
-        //         generacionResolucion.setLinkSolicitudComite(generacionResolucionDto.getLinkAnteproyectoAprobado());
-        //         generacionResolucion.setLinkSolicitudConcejoFacultad(
-        //                         generacionResolucionDto.getLinkSolicitudConcejoFacultad());
-        //         generacionResolucion.setLinkResolucionGeneradaCF(generacionResolucionDto.getLinkResolucionGeneradaCF());
+        // private void updateRtaExamenValoracionValues(GeneracionResolucion
+        // generacionResolucion,
+        // GeneracionResolucionDto generacionResolucionDto) {
+        // generacionResolucion.setDirector(generacionResolucionDto.getDirector());
+        // generacionResolucion.setCodirector(generacionResolucionDto.getCodirector());
+        // generacionResolucion.setNumeroActaRevision(generacionResolucionDto.getNumeroActaRevision());
+        // generacionResolucion.setFechaActa(generacionResolucionDto.getFechaActa());
+        // generacionResolucion
+        // .setNumeroResolucionGeneradaCF(
+        // generacionResolucionDto.getNumeroResolucionGeneradaCF());
+        // generacionResolucion.setFechaResolucion(generacionResolucionDto.getFechaResolucion());
+        // // Update archivos
+        // generacionResolucion.setLinkAnteproyectoAprobado(generacionResolucionDto.getLinkAnteproyectoAprobado());
+        // generacionResolucion.setLinkSolicitudComite(generacionResolucionDto.getLinkAnteproyectoAprobado());
+        // generacionResolucion.setLinkSolicitudConcejoFacultad(
+        // generacionResolucionDto.getLinkSolicitudConcejoFacultad());
+        // generacionResolucion.setLinkResolucionGeneradaCF(generacionResolucionDto.getLinkResolucionGeneradaCF());
         // }
 
         @Override

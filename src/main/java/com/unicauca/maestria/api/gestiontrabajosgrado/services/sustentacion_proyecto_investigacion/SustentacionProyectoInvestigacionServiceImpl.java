@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.CamposUnicosGenerarResolucionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2.GeneracionResolucionCoordinadorFase2ResponseDto;
@@ -55,6 +57,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
         private final SustentacionProyectoInvestigacionResponseMapper sustentacionProyectoIngestigacionResponseMapper;
         private final TrabajoGradoRepository trabajoGradoRepository;
         private final InformacionUnicaSustentacionProyectoInvestigacion informacionUnicaSustentacionProyectoInvestigacion;
+        private final ArchivoClient archivoClient;
 
         // @Override
         // @Transactional
@@ -154,6 +157,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 "TrabajoGrado con id: " + sustentacionDto.getIdTrabajoGrados()
                                                                 + " No encontrado"));
 
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
                 // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
                 // obtenerCamposUnicos(sustentacionDto),
                 // null);
@@ -165,9 +171,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 String procesoVa = "Sustentacion_Proyecto_Investigacion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
 
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 // Mapear DTO a entidad
@@ -214,6 +220,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findByTrabajoGradoId(sustentacionDto.getIdTrabajoGrados());
 
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
                 // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
                 // obtenerCamposUnicos(sustentacionDto),
                 // null);
@@ -225,9 +234,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 String procesoVa = "Sustentacion_Proyecto_Investigacion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
 
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 // Mapear DTO a entidad
@@ -290,6 +299,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findByTrabajoGradoId(sustentacionDto.getIdTrabajoGrados());
 
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
                 // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
                 // obtenerCamposUnicos(sustentacionDto),
                 // null);
@@ -301,9 +313,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 String procesoVa = "Sustentacion_Proyecto_Investigacion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
 
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 // Mapear DTO a entidad
@@ -358,6 +370,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findByTrabajoGradoId(sustentacionDto.getIdTrabajoGrados());
 
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
                 // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
                 // obtenerCamposUnicos(sustentacionDto),
                 // null);
@@ -369,11 +384,10 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 String procesoVa = "Sustentacion_Proyecto_Investigacion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
 
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
-
                 // Mapear DTO a entidad
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoIngestigacionMapper
                                 .toEntity(sustentacionDto);
@@ -434,6 +448,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findByTrabajoGradoId(sustentacionDto.getIdTrabajoGrados());
 
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
                 // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
                 // obtenerCamposUnicos(sustentacionDto),
                 // null);
@@ -445,9 +462,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 String procesoVa = "Sustentacion_Proyecto_Investigacion";
                 String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
 
-                Long idenficiacionEstudiante = trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-                String nombreEstudiante = trabajoGrado.getEstudiante().getPersona().getNombre();
-                String apellidoEstudiante = trabajoGrado.getEstudiante().getPersona().getApellido();
+                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
 
                 // Mapear DTO a entidad
