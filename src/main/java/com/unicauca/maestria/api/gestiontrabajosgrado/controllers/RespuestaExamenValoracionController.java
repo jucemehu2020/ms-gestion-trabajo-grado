@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.ObtenerDocumentosParaEnvioCorreoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Fase2.ExamenValoracionCanceladoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion.RespuestaExamenValoracionService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,8 +38,10 @@ public class RespuestaExamenValoracionController {
     }
 
     // @GetMapping("/listarInformacionGeneral/{id}")
-    // public ResponseEntity<RespuestaExamenValoracionInformacionGeneralDto> listarInformacionGeneral(@PathVariable Long id) {
-    //     return ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.listarInformacionGeneral(id));
+    // public ResponseEntity<RespuestaExamenValoracionInformacionGeneralDto>
+    // listarInformacionGeneral(@PathVariable Long id) {
+    // return
+    // ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.listarInformacionGeneral(id));
     // }
 
     @GetMapping("/{id}")
@@ -55,5 +60,32 @@ public class RespuestaExamenValoracionController {
     public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(respuestaExamenValoracion.descargarArchivo(rutaArchivo));
+    }
+
+    @PostMapping("/insertarInformacionCancelado")
+    public ResponseEntity<ExamenValoracionCanceladoDto> insertarInformacionCancelado(
+            @Valid @RequestBody ExamenValoracionCanceladoDto examenValoracionCanceladoDto, BindingResult result) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(respuestaExamenValoracion.insertarInformacionCancelado(examenValoracionCanceladoDto, result));
+    }
+
+    @GetMapping("/validarNumeroNoAprobado/{idTrabajoGrado}")
+    public ResponseEntity<?> validarNumeroNoAprobado(@PathVariable Long idTrabajoGrado) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(respuestaExamenValoracion.validarNumeroNoAprobado(idTrabajoGrado));
+    }
+
+    @GetMapping("/obtenerDocumentosParaEnviarCorreo/{idRespuestaExamenValoracion}")
+    public ResponseEntity<ObtenerDocumentosParaEnvioCorreoDto> obtenerDocumentosParaEnviarCorreo(
+            @PathVariable Long idRespuestaExamenValoracion) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(respuestaExamenValoracion.obtenerDocumentosParaEnviarCorreo(idRespuestaExamenValoracion));
+    }
+
+    @GetMapping("/listarEstadosRespuestaExamenValoracion/{numeroEstado}")
+    public ResponseEntity<List<TrabajoGradoResponseDto>> listarEstadosRespuestaExamenValoracion(
+            @PathVariable Integer numeroEstado) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(respuestaExamenValoracion.listarEstadosRespuestaExamenValoracion(numeroEstado));
     }
 }

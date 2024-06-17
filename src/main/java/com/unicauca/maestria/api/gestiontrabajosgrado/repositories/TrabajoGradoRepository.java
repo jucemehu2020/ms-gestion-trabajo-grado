@@ -14,4 +14,7 @@ public interface TrabajoGradoRepository extends JpaRepository<TrabajoGrado, Long
     @Query("SELECT tg FROM TrabajoGrado tg WHERE tg.idEstudiante = ?1")
     public List<TrabajoGrado> findByEstudianteId(Long estudianteId);
 
+    @Query("SELECT tg FROM TrabajoGrado tg WHERE tg.numeroEstado = ?1")
+    public List<TrabajoGrado> findByNumeroEstado(Integer numeroEstado);
+
 }

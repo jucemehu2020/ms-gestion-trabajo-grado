@@ -5,28 +5,25 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 @Entity
-@Table(name = "anexos_respuesta_examen_valoracion")
+@Table(name = "examen_valoracion_cancelado")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AnexoRespuestaExamenValoracion {
+public class ExamenValoracionCancelado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String linkAnexo;
+    private Long idRespuestaExamenValoracion;
 
-    @ManyToOne
-    @JoinColumn(name = "id_respuesta_examen_valoracion")
-    @JsonBackReference
-    private RespuestaExamenValoracion respuestaExamenValoracion;
+    private Boolean estadoFinalizado;
+
+    private String observacion;
+
 }

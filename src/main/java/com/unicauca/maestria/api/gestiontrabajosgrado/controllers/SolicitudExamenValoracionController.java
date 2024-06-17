@@ -6,12 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.DatosFormatoBResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailCorrecionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.ObtenerDocumentosParaEvaluadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
@@ -56,7 +59,7 @@ public class SolicitudExamenValoracionController {
             @Valid @RequestBody SolicitudExamenValoracionDocenteDto informacionDocente, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(serviceSolicitudExamenValoracion
-                .insertarInformacionDocente(informacionDocente, result));
+                        .insertarInformacionDocente(informacionDocente, result));
     }
 
     @PostMapping("/insertarInformacionCoordinadorFase1")
@@ -142,9 +145,17 @@ public class SolicitudExamenValoracionController {
     }
 
     @GetMapping("/obtenerDocumentosParaEvaluador/{idExamenValoracion}")
-    public ResponseEntity<?> obtenerDocumentosParaEvaluador(@PathVariable Long idExamenValoracion) {
+    public ResponseEntity<ObtenerDocumentosParaEvaluadorDto> obtenerDocumentosParaEvaluador(
+            @PathVariable Long idExamenValoracion) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(serviceSolicitudExamenValoracion.obtenerDocumentosParaEvaluador(idExamenValoracion));
+    }
+
+    @GetMapping("/listarEstadosExamenValoracion/{numeroEstado}")
+    public ResponseEntity<List<TrabajoGradoResponseDto>> listarEstadosExamenValoracion(
+            @PathVariable Integer numeroEstado) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(serviceSolicitudExamenValoracion.listarEstadosExamenValoracion(numeroEstado));
     }
 
 }

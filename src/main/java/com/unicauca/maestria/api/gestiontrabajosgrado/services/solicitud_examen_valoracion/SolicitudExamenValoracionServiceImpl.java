@@ -21,6 +21,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
@@ -31,6 +32,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.CamposUnicosSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
@@ -657,44 +659,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		return FilesUtilities.recuperarArchivo(rutaArchivo.getRutaArchivo());
 	}
 
-	// @Override
-	// @Transactional(readOnly = true)
-	// public Boolean enviarCorreoElectronicoCorrecion(EnvioEmailCorrecionDto
-	// envioEmailCorrecionDto,
-	// BindingResult result) {
-	// try {
-	// TrabajoGrado trabajoGrado =
-	// trabajoGradoRepository.findById(envioEmailCorrecionDto.getIdTrabajoGrado())
-	// .orElseThrow(
-	// () -> new ResourceNotFoundException("Trabajo de grado con id: "
-	// + envioEmailCorrecionDto.getIdTrabajoGrado() + " no encontrado"));
-
-	// EstudianteResponseDtoAll estudiante = archivoClient
-	// .obtenerInformacionEstudiante(trabajoGrado.getEstudiante().getId());
-
-	// MimeMessage message = mailSender.createMimeMessage();
-	// MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-	// Map<String, Object> templateModel = new HashMap<>();
-	// templateModel.put("title", envioEmailCorrecionDto.getTituloAsunto());
-	// templateModel.put("message", envioEmailCorrecionDto.getMensaje());
-
-	// Context context = new Context();
-	// context.setVariables(templateModel);
-
-	// String html = templateEngine.process("emailTemplate", context);
-
-	// helper.setTo(trabajoGrado.getCorreoElectronicoTutor());
-	// helper.setSubject(envioEmailCorrecionDto.getTituloAsunto());
-	// helper.setText(html, true);
-
-	// mailSender.send(message);
-	// return true;
-	// } catch (MessagingException e) {
-	// return false;
-	// }
-	// }
-
 	@Override
 	@Transactional(readOnly = true)
 	public Boolean enviarCorreoElectronicoCorrecion(EnvioEmailCorrecionDto envioEmailCorrecionDto,
@@ -814,6 +778,24 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				listaAnexos);
 
 		return obtenerDocumentosParaEvaluadorDto;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado) {
+
+		List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findByNumeroEstado(numeroEstado);
+		List<TrabajoGradoResponseDto> trabajosGradoDto = listaTrabajoGrado.stream().map(trabajo -> {
+			EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[trabajo.getNumeroEstado()];
+			return TrabajoGradoResponseDto.builder()
+					.id(trabajo.getId())
+					.estado(estadoEnum.getMensaje())
+					.fechaCreacion(trabajo.getFechaCreacion())
+					.titulo(trabajo.getTitulo() != null ? trabajo.getTitulo() : "Título no disponible")
+					.numeroEstado(trabajo.getNumeroEstado())
+					.build();
+		}).collect(Collectors.toList());
+		return trabajosGradoDto;
 	}
 
 	// Funciones privadas

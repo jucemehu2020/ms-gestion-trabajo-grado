@@ -11,8 +11,6 @@ import javax.persistence.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
-
-
 @Entity
 @Table(name = "respuesta_examen_valoracion")
 @Getter
@@ -33,7 +31,7 @@ public class RespuestaExamenValoracion {
     private String linkObservaciones;
 
     @OneToMany(mappedBy = "respuestaExamenValoracion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AnexoRespuestaExamenValoracion> linkAnexo;
+    private List<AnexoRespuestaExamenValoracion> anexos;
 
     private String respuestaExamenValoracion;
 
@@ -44,10 +42,6 @@ public class RespuestaExamenValoracion {
     private String tipoEvaluador;
 
     private Boolean permitidoExamen;
-
-    private Boolean estadoFinalizado;
-
-    private String observacion;
 
     @ManyToOne
     @JoinColumn(name = "id_trabajo_grado")
