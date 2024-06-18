@@ -27,6 +27,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
@@ -52,6 +53,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_3.GeneracionResolucionCoordinadorFase3ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.ObtenerDocumentosParaEvaluadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorFase2Dto;
@@ -656,6 +658,25 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         @Transactional(readOnly = true)
         public String descargarArchivo(RutaArchivoDto rutaArchivo) {
                 return FilesUtilities.recuperarArchivo(rutaArchivo.getRutaArchivo());
+        }
+
+        @Override
+        @Transactional(readOnly = true)
+        public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado) {
+
+                List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findByNumeroEstado(numeroEstado);
+                List<TrabajoGradoResponseDto> trabajosGradoDto = listaTrabajoGrado.stream().map(trabajo -> {
+                        EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[trabajo.getNumeroEstado()];
+                        return TrabajoGradoResponseDto.builder()
+                                        .id(trabajo.getId())
+                                        .estado(estadoEnum.getMensaje())
+                                        .fechaCreacion(trabajo.getFechaCreacion())
+                                        .titulo(trabajo.getTitulo() != null ? trabajo.getTitulo()
+                                                        : "Título no disponible")
+                                        .numeroEstado(trabajo.getNumeroEstado())
+                                        .build();
+                }).collect(Collectors.toList());
+                return trabajosGradoDto;
         }
 
         private CamposUnicosGenerarResolucionDto obtenerCamposUnicos(
