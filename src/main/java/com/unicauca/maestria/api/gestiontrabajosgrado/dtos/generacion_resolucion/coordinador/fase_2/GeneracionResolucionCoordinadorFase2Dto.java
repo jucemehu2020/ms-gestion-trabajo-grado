@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import lombok.*;
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.EnvioEmailCorrecionesDto;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,9 +17,15 @@ public class GeneracionResolucionCoordinadorFase2Dto {
     private Long idTrabajoGrados;
 
     @NotNull
-    private String numeroActaConsejoFacultad;
+    private String numeroActaSolicitudComite;
 
     @NotNull
-    private LocalDate fechaActaConsejoFacultad;
+    private LocalDate fechaActaSolicitudComite;
+
+    @NotNull
+    private String linkSolicitudConsejoFacultad;
+
+    @NotNull
+    private EnvioEmailCorrecionesDto envioEmailCorrecionesDto;
 
 }

@@ -7,9 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GeneracionResolucionCoordinadorFase1ResponseDto {
-
-    private Long idGeneracionResolucion;
-    private Boolean conceptoDocumentosCoordinador;
+public class ObtenerDocumentosParaEnvioDto {
+    
+    private String base64AnteproyectoFinal;
+    private String base64SolicitudComite;
 
 }

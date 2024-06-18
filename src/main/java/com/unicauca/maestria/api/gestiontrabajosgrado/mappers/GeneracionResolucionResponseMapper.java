@@ -6,6 +6,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resoluci
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2.GeneracionResolucionCoordinadorFase2ResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_3.GeneracionResolucionCoordinadorFase3ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteResponseDto;
 
 @Mapper(componentModel = "spring")
@@ -26,5 +27,10 @@ public interface GeneracionResolucionResponseMapper
     GeneracionResolucionDocenteResponseDto toCoordinadorFase2ResponseDto(GeneracionResolucionResponseDto dto);
 
     GeneracionResolucionCoordinadorFase2ResponseDto toCoordinadorFase2Dto(GeneracionResolucion entity);
+
+    // Coordinador - Fase 3
+    GeneracionResolucionDocenteResponseDto toCoordinadorFase3ResponseDto(GeneracionResolucionResponseDto dto);
+
+    GeneracionResolucionCoordinadorFase3ResponseDto toCoordinadorFase3Dto(GeneracionResolucion entity);
 
 }

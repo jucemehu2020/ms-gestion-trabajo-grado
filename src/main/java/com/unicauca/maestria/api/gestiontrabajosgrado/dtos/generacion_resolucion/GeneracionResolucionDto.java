@@ -27,6 +27,9 @@ public class GeneracionResolucionDto {
     private String linkSolicitudComite;
 
     @NotNull
+    private Boolean conceptoDocumentosCoordinador;
+
+    @NotNull
     private String numeroActaSolicitudComite;
 
     @NotNull

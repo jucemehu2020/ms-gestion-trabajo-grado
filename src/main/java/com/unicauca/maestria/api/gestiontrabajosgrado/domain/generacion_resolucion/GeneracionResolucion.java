@@ -20,13 +20,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 public class GeneracionResolucion {
-    
+
     @Id
     @Column(name = "id_generacion_resolucion")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idGeneracionResolucion;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idGeneracionResolucion;
 
-    //Docente
+    // Docente
     private String director;
 
     private String codirector;
@@ -35,14 +35,17 @@ public class GeneracionResolucion {
 
     private String linkSolicitudComite;
 
-    //Coordinador - Fase 1
+    // Coordinador - Fase 1
+    private Boolean conceptoDocumentosCoordinador;
+
+    // Coordinador - Fase 2
     private String numeroActaSolicitudComite;
 
     private LocalDate fechaActaSolicitudComite;
 
     private String linkSolicitudConsejoFacultad;
 
-    //Coordinador - Fase 2
+    // Coordinador - Fase 3
     private String numeroActaConsejoFacultad;
 
     private LocalDate fechaActaConsejoFacultad;
