@@ -3,65 +3,29 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyect
 import java.time.LocalDate;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SustentacionTrabajoInvestigacionDto {
+public class SustentacionTrabajoInvestigacionResponseDto {
 
-    @NotNull
-    private Long idTrabajoGrados;
-
-    @NotBlank
+    private Long idSustentacionTI;
     private String linkFormatoF;
-
-    @NotBlank
     private String urlDocumentacion;
-
-    @NotNull
     private Long idJuradoInterno;
-
-    @NotNull
     private Long idJuradoExterno;
-
-    @NotBlank
     private String linkFormatoG;
-
-    @NotBlank
     private String linkEstudioHojaVidaAcademica;
-
-    @NotNull
     private Boolean juradosAceptados;
-
-    @NotBlank
     private String numeroActa;
-
-    @NotNull
     private LocalDate fechaActa;
-
-    @NotBlank
     private String linkFormatoH;
-
-    @NotBlank
     private String linkFormatoI;
-
-    @NotBlank
     private String linkActaSustentacionPublica;
-
-    @NotNull
     private Boolean respuestaSustentacion;
-
-    @NotBlank
     private String linkEstudioHojaVidaAcademicaGrado;
-
-    @NotBlank
     private String numeroActaFinal;
-
-    @NotNull
     private LocalDate fechaActaFinal;
 
 }

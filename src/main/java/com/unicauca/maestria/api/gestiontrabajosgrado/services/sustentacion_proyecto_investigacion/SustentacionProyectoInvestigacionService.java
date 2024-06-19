@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.SustentacionTrabajoInvestigacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
@@ -64,4 +65,8 @@ public interface SustentacionProyectoInvestigacionService {
         //                 SustentacionTrabajoInvestigacionDto examenValoracionDto, BindingResult result);
 
         public String descargarArchivo(RutaArchivoDto rutaArchivo);
+
+        public Boolean verificarEgresado(Long idTrabajoGrado);
+
+        public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado);
 }

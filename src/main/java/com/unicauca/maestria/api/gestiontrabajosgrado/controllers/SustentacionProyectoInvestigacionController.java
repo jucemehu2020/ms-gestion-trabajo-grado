@@ -1,6 +1,9 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.controllers;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -10,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.STICoordinadorFase2ResponseDto;
@@ -144,4 +148,18 @@ public class SustentacionProyectoInvestigacionController {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(sustentacionProyectoInvestigacion.descargarArchivo(rutaArchivo));
         }
+
+        @GetMapping("/verificarEgresado/{idEstudiante}")
+        public ResponseEntity<?> verificarEgresado(@PathVariable Long idTrabajoGrado) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(sustentacionProyectoInvestigacion.verificarEgresado(idTrabajoGrado));
+        }
+
+        @GetMapping("/listarEstadosExamenValoracion/{numeroEstado}")
+        public ResponseEntity<List<TrabajoGradoResponseDto>> listarEstadosExamenValoracion(
+                        @PathVariable Integer numeroEstado) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(sustentacionProyectoInvestigacion.listarEstadosExamenValoracion(numeroEstado));
+        }
+
 }

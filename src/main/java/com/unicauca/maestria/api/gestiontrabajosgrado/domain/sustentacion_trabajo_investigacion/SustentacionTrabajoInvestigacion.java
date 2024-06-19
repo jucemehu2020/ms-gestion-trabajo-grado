@@ -29,13 +29,15 @@ public class SustentacionTrabajoInvestigacion {
 
     private String urlDocumentacion;
 
+    private Long idJuradoInterno;
+
+    private Long idJuradoExterno;
+
     private String linkFormatoG;
 
     private String linkEstudioHojaVidaAcademica;
 
-    private String juradoExterno;
-
-    private String juradoInterno;
+    private Boolean juradosAceptados;
 
     private String numeroActa;
 
@@ -47,7 +49,7 @@ public class SustentacionTrabajoInvestigacion {
 
     private String linkActaSustentacionPublica;
 
-    private String respuestaSustentacion;
+    private Boolean respuestaSustentacion;
 
     private String linkEstudioHojaVidaAcademicaGrado;
 

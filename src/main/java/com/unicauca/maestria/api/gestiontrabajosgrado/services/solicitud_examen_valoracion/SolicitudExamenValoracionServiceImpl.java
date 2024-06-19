@@ -472,10 +472,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		Optional<SolicitudExamenValoracion> entityOptional = solicitudExamenValoracionRepository
 				.findByIdTrabajoGradoId(idTrabajoGrado);
 
-		// if (!entityOptional.isPresent()) {
-		// return null;
-		// }
-
 		// SolicitudExamenValoracion entity = entityOptional.get();
 		SolicitudExamenValoracionResponseDto responseDto = examenValoracionResponseMapper.toDto(entityOptional.get());
 

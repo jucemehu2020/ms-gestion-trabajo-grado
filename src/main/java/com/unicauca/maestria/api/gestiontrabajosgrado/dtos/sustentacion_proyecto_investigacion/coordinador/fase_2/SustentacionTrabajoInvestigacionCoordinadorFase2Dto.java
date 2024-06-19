@@ -15,17 +15,18 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase2Dto {
     private Long idTrabajoGrados; 
 
     @NotNull
-    private String juradoExterno;
+    private Boolean juradosAceptados;
+    
+    @Builder.Default
+    private String idJuradoInterno = "Sin cambios";
 
-    @NotNull
-    private String juradoInterno;
+    @Builder.Default
+    private String idJuradoExterno = "Sin cambios";
 
     @NotNull
     private String numeroActa;
 
     @NotNull
     private LocalDate fechaActa;
-
-
 
 }

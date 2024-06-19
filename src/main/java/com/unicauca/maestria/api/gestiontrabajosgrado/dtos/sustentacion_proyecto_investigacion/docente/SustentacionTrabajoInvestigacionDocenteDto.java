@@ -19,4 +19,10 @@ public class SustentacionTrabajoInvestigacionDocenteDto {
     @NotNull
     private String urlDocumentacion;
 
+    @NotNull
+    private String idJuradoInterno;
+
+    @NotNull
+    private String idJuradoExterno;
+
 }

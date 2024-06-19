@@ -18,7 +18,7 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase3Dto {
     private String linkActaSustentacionPublica;
 
     @NotNull
-    private String respuestaSustentacion;
+    private Boolean respuestaSustentacion;
 
     @NotNull
     private String linkEstudioHojaVidaAcademicaGrado;

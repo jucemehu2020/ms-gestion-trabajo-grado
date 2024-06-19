@@ -2,6 +2,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_pro
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,20 +11,35 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.egresado.CursoSaveDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.egresado.EmpresaSaveDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.CamposUnicosGenerarResolucionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.GeneracionResolucionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.CamposUnicosSustentacionProyectoInvestigacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.SustentacionTrabajoInvestigacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
@@ -37,13 +53,11 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldUniqueException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SustentacionProyectoInvestigacionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
-import com.unicauca.maestria.api.gestiontrabajosgrado.services.generacion_resolucion.InformacionUnicaGeneracionResolucion;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,94 +67,18 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
         private final SustentacionProyectoInvestigacionRepository sustentacionProyectoInvestigacionRepository;
         private final SustentacionProyectoInvestigacionMapper sustentacionProyectoIngestigacionMapper;
-        private final SustentacionProyectoInvestigacionResponseMapper sustentacionProyectoIngestigacionResponseMapper;
+        private final SustentacionProyectoInvestigacionResponseMapper sustentacionProyectoInvestigacionResponseMapper;
         private final TrabajoGradoRepository trabajoGradoRepository;
         private final InformacionUnicaSustentacionProyectoInvestigacion informacionUnicaSustentacionProyectoInvestigacion;
         private final ArchivoClient archivoClient;
+        private final ArchivoClientExpertos archivoClientExpertos;
+        private final ArchivoClientEgresados archivoClientEgresados;
 
-        // @Override
-        // @Transactional
-        // public SustentacionTrabajoInvestigacionDto
-        // crear(SustentacionTrabajoInvestigacionDto sustentacionDto,
-        // BindingResult result) {
-        // if (result.hasErrors()) {
-        // throw new FieldErrorException(result);
-        // }
+        @Autowired
+        private JavaMailSender mailSender;
 
-        // TrabajoGrado trabajoGrado =
-        // trabajoGradoRepository.findById(sustentacionDto.getIdTrabajoGrados())
-        // .orElseThrow(() -> new ResourceNotFoundException(
-        // "TrabajoGrado con id: " + sustentacionDto.getIdTrabajoGrados()
-        // + " No encontrado"));
-
-        // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
-        // obtenerCamposUnicos(sustentacionDto),
-        // null);
-        // if (!validacionCamposUnicos.isEmpty()) {
-        // throw new FieldUniqueException(validacionCamposUnicos);
-        // }
-
-        // // Obtener iniciales del trabajo de grado
-        // String procesoVa = "Sustentacion_Proyecto_Investigacion";
-        // String tituloTrabajoGrado =
-        // ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
-
-        // Long idenficiacionEstudiante =
-        // trabajoGrado.getEstudiante().getPersona().getIdentificacion();
-        // String nombreEstudiante =
-        // trabajoGrado.getEstudiante().getPersona().getNombre();
-        // String apellidoEstudiante =
-        // trabajoGrado.getEstudiante().getPersona().getApellido();
-        // String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_"
-        // + apellidoEstudiante;
-
-        // // Mapear DTO a entidad
-        // SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion =
-        // sustentacionProyectoIngestigacionMapper
-        // .toEntity(sustentacionDto);
-
-        // // Establecer la relación uno a uno
-        // sustentacionProyectoInvestigacion.setIdTrabajoGrado(trabajoGrado);
-        // trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionProyectoInvestigacion);
-
-        // // Se cambia el numero de estado
-        // int numEstado = validarEstado(sustentacionDto.getRespuestaSustentacion());
-        // trabajoGrado.setNumeroEstado(numEstado);
-
-        // // Guardar la entidad SustentacionProyectoInvestigacion
-        // sustentacionProyectoInvestigacion.setLinkRemisionDocumentoFinal(
-        // FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        // sustentacionProyectoInvestigacion.getLinkRemisionDocumentoFinal(),
-        // nombreCarpeta));
-        // sustentacionProyectoInvestigacion.setLinkRemisionDocumentoFinalCF(
-        // FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        // sustentacionProyectoInvestigacion.getLinkRemisionDocumentoFinalCF(),
-        // nombreCarpeta));
-        // sustentacionProyectoInvestigacion.setLinkConstanciaDocumentoFinal(
-        // FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        // sustentacionProyectoInvestigacion.getLinkConstanciaDocumentoFinal(),
-        // nombreCarpeta));
-        // sustentacionProyectoInvestigacion
-        // .setLinkActaSustentacion(FilesUtilities
-        // .guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        // sustentacionProyectoInvestigacion.getLinkActaSustentacion(),
-        // nombreCarpeta));
-        // sustentacionProyectoInvestigacion.setLinkActaSustentacionPublica(
-        // FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        // sustentacionProyectoInvestigacion.getLinkActaSustentacionPublica(),
-        // nombreCarpeta));
-        // sustentacionProyectoInvestigacion.setLinkEstudioHojaVidaAcademica(
-        // FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-        // sustentacionProyectoInvestigacion.getLinkEstudioHojaVidaAcademica(),
-        // nombreCarpeta));
-
-        // SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionRes =
-        // sustentacionProyectoInvestigacionRepository
-        // .save(sustentacionProyectoInvestigacion);
-
-        // return
-        // sustentacionProyectoIngestigacionMapper.toDto(sustentacionProyectoInvestigacionRes);
-        // }
+        @Autowired
+        private SpringTemplateEngine templateEngine;
 
         @Override
         @Transactional
@@ -198,7 +136,31 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacion);
 
-                return sustentacionProyectoIngestigacionResponseMapper
+                // Obtener y construir información del evaluador interno
+                DocenteResponseDto docente = archivoClient
+                                .obtenerDocentePorId(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
+                String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+                Map<String, String> evaluadorInternoMap = new HashMap<>();
+                evaluadorInternoMap.put("nombres", nombre_docente);
+                evaluadorInternoMap.put("universidad", "Universidad del Cauca");
+                evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
+
+                // Obtener y construir información del evaluador externo
+                ExpertoResponseDto experto = archivoClientExpertos
+                                .obtenerExpertoPorId(Long.parseLong(sustentacionDto.getIdJuradoExterno()));
+                String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
+                Map<String, String> evaluadorExternoMap = new HashMap<>();
+                evaluadorExternoMap.put("nombres", nombre_experto);
+                evaluadorExternoMap.put("universidad", experto.getUniversidad());
+                evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
+
+                SustentacionTrabajoInvestigacionDocenteResponseDto sustentacionResponseDto = sustentacionProyectoInvestigacionResponseMapper
+                                .toDocenteDto(sustentacionProyectoInvestigacionRes);
+
+                sustentacionResponseDto.setJuradoInterno(evaluadorInternoMap);
+                sustentacionResponseDto.setJuradoExterno(evaluadorExternoMap);
+
+                return sustentacionProyectoInvestigacionResponseMapper
                                 .toDocenteDto(sustentacionProyectoInvestigacionRes);
         }
 
@@ -268,7 +230,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacionTmp);
 
-                return sustentacionProyectoIngestigacionResponseMapper
+                enviarCorreoConsejo(sustentacionDto);
+
+                return sustentacionProyectoInvestigacionResponseMapper
                                 .toCoordinadorFase1Dto(sustentacionProyectoInvestigacionRes);
         }
 
@@ -279,6 +243,70 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .setLinkFormatoG(sustentacionDto.getLinkFormatoG());
                 sustentacionProyectoInvestigacion
                                 .setLinkEstudioHojaVidaAcademica(sustentacionDto.getLinkEstudioHojaVidaAcademica());
+        }
+
+        private boolean enviarCorreoConsejo(
+                        SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto) {
+                try {
+                        Map<String, Object> templateModel = new HashMap<>();
+
+                        MimeMessage message = mailSender.createMimeMessage();
+                        MimeMessageHelper helper = new MimeMessageHelper(message, true); // habilitar modo
+                                                                                         // multipart
+
+                        // Configurar variables del contexto para la plantilla
+                        // templateModel.put("nombreEvaluador", "Nombre del Evaluador");
+                        templateModel.put("mensaje",
+                                        sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                                        .getEnvioEmailComiteDto()
+                                                        .getMensaje());
+
+                        // Crear el contexto para el motor de plantillas
+                        Context context = new Context();
+                        context.setVariables(templateModel);
+
+                        // Procesar la plantilla de correo electrónico
+                        String html = templateEngine.process("emailTemplate", context);
+
+                        helper.setTo(Constants.correoConsejo);
+                        helper.setSubject(sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                        .getEnvioEmailComiteDto()
+                                        .getAsunto());
+                        helper.setText(html, true); // Establecer el cuerpo del mensaje HTML
+
+                        // Obtener documentos y adjuntarlos
+                        Map<String, Object> documentosParaEvaluador = new HashMap<>();
+
+                        // Agregar un String manualmente
+                        String[] formatoG = sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                        .getLinkFormatoG()
+                                        .split("-");
+                        String[] estudioHojaVidaAcademica = sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                        .getLinkEstudioHojaVidaAcademica()
+                                        .split("-");
+                        documentosParaEvaluador.put("FormatoG", formatoG[1]);
+                        documentosParaEvaluador.put("EstudioHojaVidaAcademica", estudioHojaVidaAcademica[1]);
+
+                        for (Map.Entry<String, Object> entry : documentosParaEvaluador.entrySet()) {
+                                String nombreDocumento = entry.getKey();
+                                Object valorDocumento = entry.getValue();
+
+                                // Manejar los documentos que son cadenas
+                                String base64Documento = (String) valorDocumento;
+                                byte[] documentoBytes = Base64.getDecoder().decode(base64Documento);
+                                ByteArrayDataSource dataSource = new ByteArrayDataSource(documentoBytes,
+                                                "application/pdf");
+                                helper.addAttachment(nombreDocumento + ".pdf", dataSource);
+                        }
+
+                        // Enviar el mensaje
+                        mailSender.send(message);
+
+                        return true;
+                } catch (MessagingException e) {
+                        e.printStackTrace();
+                        return false;
+                }
         }
 
         @Override
@@ -295,11 +323,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 "TrabajoGrado con id: " + sustentacionDto.getIdTrabajoGrados()
                                                                 + " No encontrado"));
 
-                SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
+                SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
                                 .findByTrabajoGradoId(sustentacionDto.getIdTrabajoGrados());
-
-                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
-                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 
                 // Map<String, String> validacionCamposUnicos = validacionCampoUnicos(
                 // obtenerCamposUnicos(sustentacionDto),
@@ -308,44 +333,27 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 // throw new FieldUniqueException(validacionCamposUnicos);
                 // }
 
-                // Obtener iniciales del trabajo de grado
-                String procesoVa = "Sustentacion_Proyecto_Investigacion";
-                String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
-
-                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
-                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
-                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
-                String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
-
-                // Mapear DTO a entidad
-                SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoIngestigacionMapper
-                                .toEntity(sustentacionDto);
-
-                // Establecer la relación uno a uno
-                // sustentacionProyectoInvestigacion.setIdTrabajoGrado(trabajoGrado);
-                // trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionProyectoInvestigacion);
-
-                // Se cambia el numero de estado
-                // int numEstado = validarEstado(sustentacionDto.getRespuestaSustentacion());
-                // trabajoGrado.setNumeroEstado(numEstado);
                 trabajoGrado.setNumeroEstado(14);
 
-                agregarInformacionCoordinadorFase2(sustentacionProyectoInvestigacionTmp, sustentacionDto);
+                agregarInformacionCoordinadorFase2(sustentacionProyectoInvestigacion, sustentacionDto);
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
+                                .save(sustentacionProyectoInvestigacion);
 
-                return sustentacionProyectoIngestigacionResponseMapper
+                return sustentacionProyectoInvestigacionResponseMapper
                                 .toCoordinadorFase2Dto(sustentacionProyectoInvestigacionRes);
         }
 
         private void agregarInformacionCoordinadorFase2(
                         SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion,
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto) {
-                sustentacionProyectoInvestigacion
-                                .setJuradoExterno(sustentacionDto.getJuradoExterno());
-                sustentacionProyectoInvestigacion
-                                .setJuradoInterno(sustentacionDto.getJuradoInterno());
+
+                if (!sustentacionDto.getJuradosAceptados()) {
+                        sustentacionProyectoInvestigacion
+                                        .setIdJuradoInterno(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
+                        sustentacionProyectoInvestigacion
+                                        .setIdJuradoExterno(Long.parseLong(sustentacionDto.getIdJuradoExterno()));
+                }
                 sustentacionProyectoInvestigacion
                                 .setNumeroActa(sustentacionDto.getNumeroActa());
                 sustentacionProyectoInvestigacion
@@ -417,7 +425,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacionTmp);
 
-                return sustentacionProyectoIngestigacionResponseMapper
+                return sustentacionProyectoInvestigacionResponseMapper
                                 .toEstudianteDto(sustentacionProyectoInvestigacionRes);
         }
 
@@ -497,7 +505,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacionTmp);
 
-                return sustentacionProyectoIngestigacionResponseMapper
+                return sustentacionProyectoInvestigacionResponseMapper
                                 .toCoordinadorFase3Dto(sustentacionProyectoInvestigacionRes);
         }
 
@@ -533,7 +541,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
         public SustentacionTrabajoInvestigacionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado) {
                 return sustentacionProyectoInvestigacionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
                                 .stream()
-                                .map(sustentacionProyectoIngestigacionResponseMapper::toDocenteDto)
+                                .map(sustentacionProyectoInvestigacionResponseMapper::toDocenteDto)
                                 .findFirst()
                                 .orElse(null);
         }
@@ -544,7 +552,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         Long idTrabajoGrado) {
                 return sustentacionProyectoInvestigacionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
                                 .stream()
-                                .map(sustentacionProyectoIngestigacionResponseMapper::toCoordinadorFase1Dto)
+                                .map(sustentacionProyectoInvestigacionResponseMapper::toCoordinadorFase1Dto)
                                 .findFirst()
                                 .orElse(null);
         }
@@ -553,11 +561,45 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
         @Transactional(readOnly = true)
         public STICoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(
                         Long idTrabajoGrado) {
-                return sustentacionProyectoInvestigacionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
-                                .stream()
-                                .map(sustentacionProyectoIngestigacionResponseMapper::toCoordinadorFase2Dto)
-                                .findFirst()
-                                .orElse(null);
+
+                Optional<SustentacionTrabajoInvestigacion> entityOptional = sustentacionProyectoInvestigacionRepository
+                                .findByIdTrabajoGradoId(idTrabajoGrado);
+
+                // SolicitudExamenValoracion entity = entityOptional.get();
+                STICoordinadorFase2ResponseDto responseDto = sustentacionProyectoInvestigacionResponseMapper
+                                .toCoordinadorFase2Dto(entityOptional.get());
+
+                // Obtener y construir información del evaluador interno
+                DocenteResponseDto docente = archivoClient
+                                .obtenerDocentePorId(entityOptional.get().getIdJuradoInterno());
+                String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+                Map<String, String> evaluadorInternoMap = new HashMap<>();
+                evaluadorInternoMap.put("nombres", nombre_docente);
+                evaluadorInternoMap.put("universidad", "Universidad del Cauca");
+                evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
+
+                // Obtener y construir información del evaluador externo
+                ExpertoResponseDto experto = archivoClientExpertos
+                                .obtenerExpertoPorId(entityOptional.get().getIdJuradoExterno());
+                String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
+                Map<String, String> evaluadorExternoMap = new HashMap<>();
+                evaluadorExternoMap.put("nombres", nombre_experto);
+                evaluadorExternoMap.put("universidad", experto.getUniversidad());
+                evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
+
+                // STICoordinadorFase2ResponseDto coordinadorFase2ResponseDto = new
+                // STICoordinadorFase2ResponseDto();
+                // coordinadorFase2ResponseDto.setIdSustentacionTI(idTrabajoGrado);
+                // coordinadorFase2ResponseDto.setLinkFormatoF(nombre_experto);
+                // coordinadorFase2ResponseDto.setUrlDocumentacion(nombre_experto);
+                // coordinadorFase2ResponseDto.setLinkFormatoG(nombre_experto);
+                // coordinadorFase2ResponseDto.setLinkEstudioHojaVidaAcademica(nombre_experto);
+                responseDto.setJuradoInterno(evaluadorExternoMap);
+                responseDto.setJuradoExterno(evaluadorExternoMap);
+                // coordinadorFase2ResponseDto.setNumeroActa();
+                // coordinadorFase2ResponseDto.setFechaActa(null);
+
+                return responseDto;
         }
 
         @Override
@@ -565,7 +607,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
         public SustentacionTrabajoInvestigacionEstudianteResponseDto listarInformacionEstudiante(Long idTrabajoGrado) {
                 return sustentacionProyectoInvestigacionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
                                 .stream()
-                                .map(sustentacionProyectoIngestigacionResponseMapper::toEstudianteDto)
+                                .map(sustentacionProyectoInvestigacionResponseMapper::toEstudianteDto)
                                 .findFirst()
                                 .orElse(null);
         }
@@ -576,7 +618,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         Long idTrabajoGrado) {
                 return sustentacionProyectoInvestigacionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
                                 .stream()
-                                .map(sustentacionProyectoIngestigacionResponseMapper::toCoordinadorFase3Dto)
+                                .map(sustentacionProyectoInvestigacionResponseMapper::toCoordinadorFase3Dto)
                                 .findFirst()
                                 .orElse(null);
         }
@@ -589,7 +631,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
         // .findByIdTrabajoGradoId(idTrabajoGrado);
         // if (responseDto.isPresent()) {
         // return
-        // sustentacionProyectoIngestigacionResponseMapper.toComiteDto(responseDto.get());
+        // sustentacionProyectoInvestigacionResponseMapper.toComiteDto(responseDto.get());
         // } else {
         // return null;
         // }
@@ -795,5 +837,43 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
         private <T> String mensajeException(String nombreCampo, T valorCampo) {
                 return "Campo único, ya se ha registrado una SUSTENTACION PROYECTO DE INVESTIGACION al trabajo de grado: "
                                 + valorCampo;
+        }
+
+        @Override
+        @Transactional(readOnly = true)
+        public Boolean verificarEgresado(Long idTrabajoGrado) {
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "TrabajoGrado con id: " + idTrabajoGrado + " no encontrado"));
+
+                List<CursoSaveDto> cursos = archivoClientEgresados
+                                .obtenerCursosPorIdEstudiante(trabajoGrado.getIdEstudiante());
+                List<EmpresaSaveDto> empresas = archivoClientEgresados
+                                .obtenerEmpresasPorIdEstudiante(trabajoGrado.getIdEstudiante());
+                
+                if(cursos.size() == 0 || empresas.size() == 0){
+                        return false;
+                }
+
+                return true;
+        }
+
+        @Override
+        @Transactional(readOnly = true)
+        public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado) {
+
+                List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findByNumeroEstado(numeroEstado);
+                List<TrabajoGradoResponseDto> trabajosGradoDto = listaTrabajoGrado.stream().map(trabajo -> {
+                        EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[trabajo.getNumeroEstado()];
+                        return TrabajoGradoResponseDto.builder()
+                                        .id(trabajo.getId())
+                                        .estado(estadoEnum.getMensaje())
+                                        .fechaCreacion(trabajo.getFechaCreacion())
+                                        .titulo(trabajo.getTitulo() != null ? trabajo.getTitulo()
+                                                        : "Título no disponible")
+                                        .numeroEstado(trabajo.getNumeroEstado())
+                                        .build();
+                }).collect(Collectors.toList());
+                return trabajosGradoDto;
         }
 }

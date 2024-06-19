@@ -1,25 +1,22 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1;
 
-import lombok.*;
 import javax.validation.constraints.NotNull;
+
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SustentacionTrabajoInvestigacionCoordinadorFase1Dto {
+public class EnvioEmailComiteDto {
 
     @NotNull
     private Long idTrabajoGrados;
 
-    @NotNull
-    private String linkFormatoG;
+    @NonNull
+    private String asunto;
 
-    @NotNull
-    private String linkEstudioHojaVidaAcademica;
-
-    @NotNull
-    private EnvioEmailComiteDto envioEmailComiteDto;
-
+    @NonNull
+    private String mensaje;
 }
