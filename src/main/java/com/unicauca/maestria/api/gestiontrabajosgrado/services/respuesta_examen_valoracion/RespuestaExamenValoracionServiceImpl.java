@@ -1,35 +1,23 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.ByteArrayDataSource;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.ExamenValoracionCancelado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
@@ -71,45 +59,30 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         private final ArchivoClientExpertos archivoClientExpertos;
 
         @Autowired
-        private JavaMailSender mailSender;
-
-        @Autowired
-        private SpringTemplateEngine templateEngine;
+        private EnvioCorreos envioCorreos;
 
         @Override
         @Transactional
-        public RespuestaExamenValoracionDto crear(RespuestaExamenValoracionDto respuestaExamenValoracionDto,
+        public RespuestaExamenValoracionDto crear(Long idTrabajoGrado,
+                        RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         BindingResult result) {
+
+                // cambiar a atributo Trabajo de grado, validar el evaluador que sea externo o
+                // interno con su id.
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
 
                 Long numeroNoAprobado = respuestaExamenValoracionRepository
-                                .countByTrabajoGradoIdAndRespuestaNoAprobado(
-                                                respuestaExamenValoracionDto.getIdTrabajoGrados());
+                                .countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado);
 
                 if (numeroNoAprobado < 4) {
 
                         TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                        .findById(respuestaExamenValoracionDto.getIdTrabajoGrados())
+                                        .findById(idTrabajoGrado)
                                         .orElseThrow(() -> new ResourceNotFoundException(
                                                         "TrabajoGrado con id: "
-                                                                        + respuestaExamenValoracionDto
-                                                                                        .getIdTrabajoGrados()
-                                                                        + " No encontrado"));
-
-                        EstudianteResponseDtoAll informacionEstudiantes = archivoClient
-                                        .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
-
-                        // Obtener iniciales del trabajo de grado
-                        String procesoVa = "Respuesta_Examen_Valoracion";
-                        String tituloTrabajoGrado = ConvertString.obtenerIniciales(trabajoGrado.getTitulo());
-
-                        Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
-                        String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
-                        String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
-                        String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_"
-                                        + apellidoEstudiante;
+                                                                        + idTrabajoGrado + " No encontrado"));
 
                         // Mapear DTO a entidad
                         RespuestaExamenValoracion rtaExamenValoracion = respuestaExamenValoracionMapper
@@ -120,26 +93,27 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         // validarEstado(respuestaExamenValoracionDto.getRespuestaExamenValoracion());
                         // trabajoGrado.setNumeroEstado(numEstado);
 
-                        int numEstado = validarEstado(respuestaExamenValoracionDto.getIdTrabajoGrados(),
+                        String rutaArchivo = identificacionArchivo(trabajoGrado);
+
+                        int numEstado = validarEstado(idTrabajoGrado,
                                         rtaExamenValoracion.getRespuestaExamenValoracion());
                         trabajoGrado.setNumeroEstado(numEstado);
 
                         // Guardar la entidad ExamenValoracion
                         rtaExamenValoracion
-                                        .setLinkFormatoB(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                        rtaExamenValoracion.getLinkFormatoB(), nombreCarpeta));
+                                        .setLinkFormatoB(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                        rtaExamenValoracion.getLinkFormatoB()));
                         rtaExamenValoracion
-                                        .setLinkFormatoC(FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                        rtaExamenValoracion.getLinkFormatoC(), nombreCarpeta));
+                                        .setLinkFormatoC(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                        rtaExamenValoracion.getLinkFormatoC()));
                         rtaExamenValoracion.setLinkObservaciones(
-                                        FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                        rtaExamenValoracion.getLinkObservaciones(), nombreCarpeta));
+                                        FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                        rtaExamenValoracion.getLinkObservaciones()));
 
                         List<AnexoRespuestaExamenValoracion> updatedLinkAnexos = new ArrayList<>();
                         for (AnexoRespuestaExamenValoracion linkAnexoDto : respuestaExamenValoracionDto.getAnexos()) {
-                                String updatedAnexo = FilesUtilities.guardarArchivoNew(tituloTrabajoGrado, procesoVa,
-                                                linkAnexoDto.getLinkAnexo(),
-                                                nombreCarpeta);
+                                String updatedAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                linkAnexoDto.getLinkAnexo());
                                 AnexoRespuestaExamenValoracion anexo = new AnexoRespuestaExamenValoracion();
                                 anexo.setLinkAnexo(updatedAnexo);
                                 anexo.setRespuestaExamenValoracion(rtaExamenValoracion);
@@ -152,8 +126,14 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                         enviarCorreoTutorEstudiante(respuestaExamenValoracionDto, trabajoGrado);
 
+                        rtaExamenValoracion.setPermitidoExamen(true);
+
                         RespuestaExamenValoracion examenValoracionRes = respuestaExamenValoracionRepository
                                         .save(rtaExamenValoracion);
+
+                        if (numeroNoAprobado == 3) {
+                                rtaExamenValoracion.setPermitidoExamen(false);
+                        }
 
                         return respuestaExamenValoracionMapper.toDto(examenValoracionRes);
                 } else {
@@ -185,15 +165,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                                         .getIdTrabajoGrados()
                                                                         + " No encontrado"));
 
-                        // Map<String, String> validacionCamposUnicos =
-                        // validacionCampoUnicos(obtenerCamposUnicos(examenValoracionDto),
-                        // null);
-                        //
-                        // if (!validacionCamposUnicos.isEmpty()) {
-                        // throw new FieldUniqueException(validacionCamposUnicos);
-                        // }
-                        //
-
                         trabajoGrado.setNumeroEstado(12);
 
                         ExamenValoracionCancelado examenValoracionCancelado = examenValoracionCanceladoRepository
@@ -217,79 +188,36 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         private boolean enviarCorreoTutorEstudiante(RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         TrabajoGrado trabajoGrado) {
-                try {
-                        ArrayList<String> correos = new ArrayList<>();
-                        Map<String, Object> templateModel = new HashMap<>();
 
-                        // Obtener correo tutor
-                        correos.add(trabajoGrado.getCorreoElectronicoTutor());
+                ArrayList<String> correos = new ArrayList<>();
 
-                        // Obtener correo estudiante
-                        EstudianteResponseDtoAll estudiante = archivoClient
-                                        .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
-                        correos.add(estudiante.getPersona().getCorreoElectronico());
+                correos.add(trabajoGrado.getCorreoElectronicoTutor());
 
-                        // Iterar sobre cada correo electrónico para enviar los mensajes individualmente
-                        for (String correo : correos) {
-                                MimeMessage message = mailSender.createMimeMessage();
-                                MimeMessageHelper helper = new MimeMessageHelper(message, true); // habilitar modo
-                                                                                                 // multipart
+                EstudianteResponseDtoAll estudiante = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+                correos.add(estudiante.getPersona().getCorreoElectronico());
 
-                                // Configurar variables del contexto para la plantilla
-                                // templateModel.put("nombreEvaluador", "Nombre del Evaluador");
-                                templateModel.put("mensaje",
-                                                respuestaExamenValoracionDto.getInformacionEnvioDto()
-                                                                .getMensaje());
+                Map<String, Object> documentosParaEvaluador = new HashMap<>();
 
-                                // Crear el contexto para el motor de plantillas
-                                Context context = new Context();
-                                context.setVariables(templateModel);
-
-                                // Procesar la plantilla de correo electrónico
-                                String html = templateEngine.process("emailTemplate", context);
-
-                                helper.setTo(correo);
-                                helper.setSubject(
-                                                respuestaExamenValoracionDto.getInformacionEnvioDto().getAsunto());
-                                helper.setText(html, true); // Establecer el cuerpo del mensaje HTML
-
-                                // Obtener documentos y adjuntarlos
-                                Map<String, Object> documentosParaEvaluador = new HashMap<>();
-
-                                // Agregar un String manualmente
-                                String[] formatoB = respuestaExamenValoracionDto.getLinkFormatoB().split("-");
-                                documentosParaEvaluador.put("formatoB", formatoB[1]);
-                                String[] formatoC = respuestaExamenValoracionDto.getLinkFormatoC().split("-");
-                                documentosParaEvaluador.put("formatoC", formatoC[1]);
-                                String[] obervaciones = respuestaExamenValoracionDto.getLinkObservaciones().split("-");
-                                documentosParaEvaluador.put("observaciones", obervaciones[1]);
-                                for (int i = 0; i < respuestaExamenValoracionDto.getAnexos().size(); i++) {
-                                        String[] anexo = respuestaExamenValoracionDto.getAnexos().get(i).getLinkAnexo()
-                                                        .split("-");
-                                        documentosParaEvaluador.put("anexo-" + (i + 1), anexo[1]);
-                                }
-
-                                for (Map.Entry<String, Object> entry : documentosParaEvaluador.entrySet()) {
-                                        String nombreDocumento = entry.getKey();
-                                        Object valorDocumento = entry.getValue();
-
-                                        // Manejar los documentos que son cadenas
-                                        String base64Documento = (String) valorDocumento;
-                                        byte[] documentoBytes = Base64.getDecoder().decode(base64Documento);
-                                        ByteArrayDataSource dataSource = new ByteArrayDataSource(documentoBytes,
-                                                        "application/pdf");
-                                        helper.addAttachment(nombreDocumento + ".pdf", dataSource);
-                                }
-
-                                // Enviar el mensaje
-                                mailSender.send(message);
-                        }
-
-                        return true;
-                } catch (MessagingException e) {
-                        e.printStackTrace();
-                        return false;
+                String[] formatoB = respuestaExamenValoracionDto.getLinkFormatoB().split("-");
+                documentosParaEvaluador.put("formatoB", formatoB[1]);
+                String[] formatoC = respuestaExamenValoracionDto.getLinkFormatoC().split("-");
+                documentosParaEvaluador.put("formatoC", formatoC[1]);
+                String[] obervaciones = respuestaExamenValoracionDto.getLinkObservaciones().split("-");
+                documentosParaEvaluador.put("observaciones", obervaciones[1]);
+                for (int i = 0; i < respuestaExamenValoracionDto.getAnexos().size(); i++) {
+                        String[] anexo = respuestaExamenValoracionDto.getAnexos().get(i).getLinkAnexo()
+                                        .split("-");
+                        documentosParaEvaluador.put("anexo-" + (i + 1), anexo[1]);
                 }
+
+                envioCorreos.enviarCorreoConAnexos(correos,
+                                respuestaExamenValoracionDto.getInformacionEnvioDto().getAsunto(),
+                                respuestaExamenValoracionDto.getInformacionEnvioDto()
+                                                .getMensaje(),
+                                documentosParaEvaluador);
+
+                return true;
         }
 
         @Override
@@ -313,7 +241,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 RespuestaExamenValoracionInformacionGeneralDto responseDtoInformacion = new RespuestaExamenValoracionInformacionGeneralDto();
                 ;
 
-                responseDtoInformacion.setIdTrabajoGrado(idTrabajoGrado);
                 responseDtoInformacion.setTituloTrabajoGrado(trabajoGrado.getTitulo());
                 responseDtoInformacion.setIdEvaluadorInterno(docente.getPersona().getId());
                 responseDtoInformacion.setNombreEvaluadorInterno(nombre_docente);
@@ -327,8 +254,8 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idTrabajoGrado) {
-                return respuestaExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado)
+        public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idRespuestaExamen) {
+                return respuestaExamenValoracionRepository.findById(idRespuestaExamen)
                                 .stream()
                                 .map(respuestaExamenValoracionMapper::toDto)
                                 .collect(Collectors.groupingBy(
@@ -338,7 +265,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         }
 
         @Override
-        public RespuestaExamenValoracionDto actualizar(Long id,
+        public RespuestaExamenValoracionDto actualizar(Long idRespuestaExamen,
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         BindingResult result) {
 
@@ -346,58 +273,115 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         throw new FieldErrorException(result);
                 }
 
-                RespuestaExamenValoracion respuestaExamenValoracionTmp = respuestaExamenValoracionRepository
-                                .findById(id).orElseThrow(() -> new ResourceNotFoundException(
-                                                "Respuesta examen de valoracion con id: " + id + " no encontrado"));
+                Boolean cambioDocumento = false;
 
-                // Busca el trabajo de grado
-                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(id).orElseThrow(
-                                () -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id: "
-                                                                + respuestaExamenValoracionTmp.getTrabajoGrado().getId()
+                RespuestaExamenValoracion respuestaExamenValoracionTmp = respuestaExamenValoracionRepository
+                                .findById(idRespuestaExamen).orElseThrow(() -> new ResourceNotFoundException(
+                                                "Respuesta examen de valoracion con id: " + idRespuestaExamen
                                                                 + " no encontrado"));
 
-                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
-                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+                // Busca el trabajo de grado
+                TrabajoGrado trabajoGrado = trabajoGradoRepository
+                                .findById(respuestaExamenValoracionTmp.getTrabajoGrado().getId()).orElseThrow(
+                                                () -> new ResourceNotFoundException(
+                                                                "Trabajo de grado con id: "
+                                                                                + respuestaExamenValoracionTmp
+                                                                                                .getTrabajoGrado()
+                                                                                                .getId()
+                                                                                + " no encontrado"));
 
-                String procesoVa = "Respuesta_Examen_Valoracion";
-                String tituloTrabajoGrado = ConvertString
-                                .obtenerIniciales(respuestaExamenValoracionTmp.getTrabajoGrado().getTitulo());
-                Long idenficiacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
-                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
-                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
-                String nombreCarpeta = idenficiacionEstudiante + "-" + nombreEstudiante + "_" + apellidoEstudiante;
+                String rutaArchivo = identificacionArchivo(trabajoGrado);
 
                 RespuestaExamenValoracion responseExamenValoracion = null;
 
                 if (respuestaExamenValoracionTmp != null) {
                         if (respuestaExamenValoracionDto.getLinkFormatoB()
                                         .compareTo(respuestaExamenValoracionTmp.getLinkFormatoB()) != 0) {
-                                respuestaExamenValoracionDto.setLinkFormatoB(FilesUtilities.guardarArchivoNew(
-                                                tituloTrabajoGrado, procesoVa,
-                                                respuestaExamenValoracionDto.getLinkFormatoB(), nombreCarpeta));
+                                respuestaExamenValoracionDto.setLinkFormatoB(FilesUtilities.guardarArchivoNew2(
+                                                rutaArchivo,
+                                                respuestaExamenValoracionDto.getLinkFormatoB()));
                                 FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkFormatoB());
+                                cambioDocumento = true;
                         }
                         if (respuestaExamenValoracionDto.getLinkFormatoC()
                                         .compareTo(respuestaExamenValoracionTmp.getLinkFormatoC()) != 0) {
-                                respuestaExamenValoracionDto.setLinkFormatoC(FilesUtilities.guardarArchivoNew(
-                                                tituloTrabajoGrado, procesoVa,
-                                                respuestaExamenValoracionDto.getLinkFormatoC(), nombreCarpeta));
+                                respuestaExamenValoracionDto.setLinkFormatoC(FilesUtilities.guardarArchivoNew2(
+                                                rutaArchivo,
+                                                respuestaExamenValoracionDto.getLinkFormatoC()));
                                 FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkFormatoC());
+                                cambioDocumento = true;
                         }
                         if (respuestaExamenValoracionDto.getLinkObservaciones()
                                         .compareTo(respuestaExamenValoracionTmp.getLinkObservaciones()) != 0) {
-                                respuestaExamenValoracionDto.setLinkObservaciones(FilesUtilities.guardarArchivoNew(
-                                                tituloTrabajoGrado, procesoVa,
-                                                respuestaExamenValoracionDto.getLinkObservaciones(), nombreCarpeta));
+                                respuestaExamenValoracionDto.setLinkObservaciones(FilesUtilities.guardarArchivoNew2(
+                                                rutaArchivo,
+                                                respuestaExamenValoracionDto.getLinkObservaciones()));
                                 FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkObservaciones());
+                                cambioDocumento = true;
                         }
-                        // Repetir esto
+
+                        actualizarAnexos(respuestaExamenValoracionTmp, respuestaExamenValoracionDto.getAnexos(),
+                                        rutaArchivo, cambioDocumento, trabajoGrado, respuestaExamenValoracionDto);
+
                         updateRtaExamenValoracionValues(respuestaExamenValoracionTmp, respuestaExamenValoracionDto);
                         responseExamenValoracion = respuestaExamenValoracionRepository
                                         .save(respuestaExamenValoracionTmp);
                 }
                 return respuestaExamenValoracionMapper.toDto(responseExamenValoracion);
+        }
+
+        private void actualizarAnexos(RespuestaExamenValoracion examenValoracionTmp,
+                        List<AnexoRespuestaExamenValoracion> anexosDto, String rutaArchivo, Boolean cambioDocumento,
+                        TrabajoGrado trabajoGrado, RespuestaExamenValoracionDto respuestaExamenValoracionDto) {
+
+                List<AnexoRespuestaExamenValoracion> anexosExistentes = examenValoracionTmp.getAnexos();
+                Map<Long, AnexoRespuestaExamenValoracion> anexosExistentesMap = anexosExistentes.stream()
+                                .collect(Collectors.toMap(AnexoRespuestaExamenValoracion::getId, Function.identity()));
+
+                // Eliminar los anexos que ya no están en el DTO
+                for (Iterator<AnexoRespuestaExamenValoracion> it = anexosExistentes.iterator(); it.hasNext();) {
+                        AnexoRespuestaExamenValoracion anexoExistente = it.next();
+                        if (anexosDto.stream().noneMatch(
+                                        anexoDto -> anexoDto.getId() != null
+                                                        && anexoDto.getId().equals(anexoExistente.getId()))) {
+                                FilesUtilities.deleteFileExample(anexoExistente.getLinkAnexo());
+                                it.remove();
+                        }
+                }
+
+                // Agregar o actualizar los anexos del DTO
+                for (AnexoRespuestaExamenValoracion anexoDto : anexosDto) {
+                        if (anexoDto.getId() == null) {
+                                // Nuevo anexo
+                                anexoDto.setLinkAnexo(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                anexoDto.getLinkAnexo()));
+                                anexoDto.setRespuestaExamenValoracion(examenValoracionTmp);
+                                anexosExistentes.add(anexoDto);
+                        } else {
+                                // Anexo existente, actualizar si es necesario
+                                AnexoRespuestaExamenValoracion anexoExistente = anexosExistentesMap
+                                                .get(anexoDto.getId());
+                                if (anexoExistente != null
+                                                && !anexoExistente.getLinkAnexo().equals(anexoDto.getLinkAnexo())) {
+                                        FilesUtilities.deleteFileExample(anexoExistente.getLinkAnexo());
+                                        anexoExistente.setLinkAnexo(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                        anexoDto.getLinkAnexo()));
+                                }
+                        }
+                        cambioDocumento = true;
+                }
+
+                // if (cambioDocumento) {
+                // InformacionEnvioDto informacionEnvioDto = new InformacionEnvioDto();
+                // informacionEnvioDto.setAsunto("Modificacion documentos enviados por el
+                // evaluador");
+                // informacionEnvioDto.setMensaje(
+                // "Se realizaron modificaciones a los documentos enviados por el evbaluador,
+                // por favor revisarlos.");
+                // respuestaExamenValoracionDto.setInformacionEnvioDto(informacionEnvioDto);
+                // enviarCorreoTutorEstudiante(respuestaExamenValoracionDto, trabajoGrado);
+                // }
+
         }
 
         @Override
@@ -494,6 +478,26 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 break;
                 }
                 return numEstado;
+        }
+
+        private String identificacionArchivo(TrabajoGrado trabajoGrado) {
+                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+
+                String procesoVa = "Respuesta_Examen_Valoracion";
+
+                LocalDate fechaActual = LocalDate.now();
+                int anio = fechaActual.getYear();
+                int mes = fechaActual.getMonthValue();
+
+                Long identificacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
+                String informacionEstudiante = identificacionEstudiante + "-" + nombreEstudiante + "_"
+                                + apellidoEstudiante;
+                String rutaCarpeta = anio + "/" + mes + "/" + informacionEstudiante + "/" + procesoVa;
+
+                return rutaCarpeta;
         }
 
 }

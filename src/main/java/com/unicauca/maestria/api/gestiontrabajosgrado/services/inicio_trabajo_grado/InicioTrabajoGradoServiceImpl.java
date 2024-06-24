@@ -195,21 +195,4 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 
 	}
 
-	public void sendEmail(String dirigidoA, String mensaje, Map<String, Object> templateModel)
-			throws MessagingException {
-		MimeMessage message = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message);
-
-		Context context = new Context();
-		context.setVariables(templateModel);
-
-		String html = templateEngine.process("emailTemplate", context);
-
-		helper.setTo(dirigidoA);
-		helper.setSubject(mensaje);
-		helper.setText(html, true);
-
-		mailSender.send(message);
-	}
-
 }

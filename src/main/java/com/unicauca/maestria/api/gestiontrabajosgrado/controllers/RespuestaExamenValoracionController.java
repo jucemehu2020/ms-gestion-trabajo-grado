@@ -27,58 +27,65 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class RespuestaExamenValoracionController {
 
-    private final RespuestaExamenValoracionService respuestaExamenValoracion;
+        private final RespuestaExamenValoracionService respuestaExamenValoracion;
 
-    @PostMapping
-    public ResponseEntity<RespuestaExamenValoracionDto> crear(
-            @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion,
-            BindingResult result) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(respuestaExamenValoracion.crear(examenValoracion, result));
-    }
+        @PostMapping("/{idTrabajoGrado}")
+        public ResponseEntity<RespuestaExamenValoracionDto> crear(@PathVariable Long idTrabajoGrado,
+                        @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(respuestaExamenValoracion.crear(idTrabajoGrado, examenValoracion, result));
+        }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Map<String, List<RespuestaExamenValoracionDto>>> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.buscarPorId(id));
-    }
+        @GetMapping("/{idRespuestaExamen}")
+        public ResponseEntity<Map<String, List<RespuestaExamenValoracionDto>>> buscarPorId(
+                        @PathVariable Long idRespuestaExamen) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion.buscarPorId(idRespuestaExamen));
+        }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<RespuestaExamenValoracionDto> actualizar(@PathVariable Long id,
-            @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion, BindingResult result) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(respuestaExamenValoracion.actualizar(id, examenValoracion, result));
-    }
+        @PutMapping("/{idRespuestaExamen}")
+        public ResponseEntity<RespuestaExamenValoracionDto> actualizar(@PathVariable Long idRespuestaExamen,
+                        @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion, BindingResult result) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(respuestaExamenValoracion.actualizar(idRespuestaExamen, examenValoracion,
+                                                result));
+        }
 
-    @PostMapping("/descargarDocumento")
-    public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo, BindingResult resulto) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(respuestaExamenValoracion.descargarArchivo(rutaArchivo));
-    }
+        @PostMapping("/descargarDocumento")
+        public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo,
+                        BindingResult resulto) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion.descargarArchivo(rutaArchivo));
+        }
 
-    @PostMapping("/insertarInformacionCancelado")
-    public ResponseEntity<ExamenValoracionCanceladoDto> insertarInformacionCancelado(
-            @Valid @RequestBody ExamenValoracionCanceladoDto examenValoracionCanceladoDto, BindingResult result) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(respuestaExamenValoracion.insertarInformacionCancelado(examenValoracionCanceladoDto, result));
-    }
+        @PostMapping("/insertarInformacionCancelado")
+        public ResponseEntity<ExamenValoracionCanceladoDto> insertarInformacionCancelado(
+                        @Valid @RequestBody ExamenValoracionCanceladoDto examenValoracionCanceladoDto,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion
+                                                .insertarInformacionCancelado(examenValoracionCanceladoDto, result));
+        }
 
-    @GetMapping("/validarNumeroNoAprobado/{idTrabajoGrado}")
-    public ResponseEntity<?> validarNumeroNoAprobado(@PathVariable Long idTrabajoGrado) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(respuestaExamenValoracion.validarNumeroNoAprobado(idTrabajoGrado));
-    }
+        @GetMapping("/validarNumeroNoAprobado/{idTrabajoGrado}")
+        public ResponseEntity<?> validarNumeroNoAprobado(@PathVariable Long idTrabajoGrado) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion.validarNumeroNoAprobado(idTrabajoGrado));
+        }
 
-    @GetMapping("/obtenerDocumentosParaEnviarCorreo/{idRespuestaExamenValoracion}")
-    public ResponseEntity<ObtenerDocumentosParaEnvioCorreoDto> obtenerDocumentosParaEnviarCorreo(
-            @PathVariable Long idRespuestaExamenValoracion) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(respuestaExamenValoracion.obtenerDocumentosParaEnviarCorreo(idRespuestaExamenValoracion));
-    }
+        @GetMapping("/obtenerDocumentosParaEnviarCorreo/{idRespuestaExamenValoracion}")
+        public ResponseEntity<ObtenerDocumentosParaEnvioCorreoDto> obtenerDocumentosParaEnviarCorreo(
+                        @PathVariable Long idRespuestaExamenValoracion) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion
+                                                .obtenerDocumentosParaEnviarCorreo(idRespuestaExamenValoracion));
+        }
 
-    @GetMapping("/listarEstadosRespuestaExamenValoracion/{numeroEstado}")
-    public ResponseEntity<List<TrabajoGradoResponseDto>> listarEstadosRespuestaExamenValoracion(
-            @PathVariable Integer numeroEstado) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(respuestaExamenValoracion.listarEstadosRespuestaExamenValoracion(numeroEstado));
-    }
+        @GetMapping("/listarEstadosRespuestaExamenValoracion/{numeroEstado}")
+        public ResponseEntity<List<TrabajoGradoResponseDto>> listarEstadosRespuestaExamenValoracion(
+                        @PathVariable Integer numeroEstado) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion.listarEstadosRespuestaExamenValoracion(numeroEstado));
+        }
 }

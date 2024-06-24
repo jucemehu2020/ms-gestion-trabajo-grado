@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
 @Entity
@@ -31,6 +32,7 @@ public class RespuestaExamenValoracion {
     private String linkObservaciones;
 
     @OneToMany(mappedBy = "respuestaExamenValoracion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<AnexoRespuestaExamenValoracion> anexos;
 
     private String respuestaExamenValoracion;

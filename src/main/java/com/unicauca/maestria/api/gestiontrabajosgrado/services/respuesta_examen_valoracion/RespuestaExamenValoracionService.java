@@ -14,7 +14,8 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valo
 
 public interface RespuestaExamenValoracionService {
 
-        public RespuestaExamenValoracionDto crear(RespuestaExamenValoracionDto respuestaExamenValoracion,
+        public RespuestaExamenValoracionDto crear(Long idTrabajoGrado,
+                        RespuestaExamenValoracionDto respuestaExamenValoracion,
                         BindingResult result);
 
         public ExamenValoracionCanceladoDto insertarInformacionCancelado(
@@ -23,9 +24,9 @@ public interface RespuestaExamenValoracionService {
 
         public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idTrabajoGrado);
 
-        public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idTrabajoGrado);
+        public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idRespuestaExamen);
 
-        public RespuestaExamenValoracionDto actualizar(Long id,
+        public RespuestaExamenValoracionDto actualizar(Long idRespuestaExamen,
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         BindingResult result);
 

@@ -5,10 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 
 @Getter
 @Setter
@@ -18,9 +16,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.
 public class RespuestaExamenValoracionDto {
 
     private Long idRespuestaExamenValoracion;
-
-    @NotNull
-    private Long idTrabajoGrados;
 
     @NotBlank
     private String linkFormatoB;
@@ -46,9 +41,8 @@ public class RespuestaExamenValoracionDto {
 
     private Boolean permitidoExamen;
 
-    private TrabajoGradoResponseDto trabajoGrado;
+    //private TrabajoGradoResponseDto trabajoGrado2;
 
-    @NotNull
     private InformacionEnvioDto informacionEnvioDto;
 
 }

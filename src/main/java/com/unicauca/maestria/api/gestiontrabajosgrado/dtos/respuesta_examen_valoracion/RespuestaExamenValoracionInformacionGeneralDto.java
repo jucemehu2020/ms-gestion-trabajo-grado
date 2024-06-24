@@ -8,8 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class RespuestaExamenValoracionInformacionGeneralDto {
-    
-    private Long idTrabajoGrado;
 
     private String tituloTrabajoGrado;
 
