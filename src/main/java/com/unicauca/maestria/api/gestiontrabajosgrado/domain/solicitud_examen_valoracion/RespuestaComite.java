@@ -22,7 +22,7 @@ public class RespuestaComite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAnexoExamenValoracion;
 
-    private String conceptoComite;
+    private Boolean conceptoComite;
 
     private String numeroActa;
 

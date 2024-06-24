@@ -17,8 +17,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_va
 @Builder
 public class SolicitudExamenValoracionDocenteDto {
 
-    private Long idTrabajoGrados; 
-
     @NotNull
     private String titulo;
 
@@ -34,8 +32,8 @@ public class SolicitudExamenValoracionDocenteDto {
     private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();
 
     @NotNull
-    private String idEvaluadorInterno;
+    private Long idEvaluadorInterno;
 
     @NotNull
-    private String idEvaluadorExterno;
+    private Long idEvaluadorExterno;
 }

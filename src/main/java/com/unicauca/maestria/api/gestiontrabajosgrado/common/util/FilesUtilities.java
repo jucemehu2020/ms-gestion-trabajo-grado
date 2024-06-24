@@ -62,7 +62,40 @@ public class FilesUtilities {
             String fechaFormateada = formatoFecha.format(fechaActual);
 
             String rutaCarpeta = "./files/" + tituloTG + "/" + procesoVa + "/" + nombre + "/" + fechaFormateada;
-            String rutaArchivo = rutaCarpeta + "/" + generateUniqueFileName() + "-" +partesBase64[0];
+            String rutaArchivo = rutaCarpeta + "/" + generateUniqueFileName() + "-" + partesBase64[0];
+            File carpeta = new File(rutaCarpeta);
+            OutputStream out = null;
+            if (!carpeta.exists()) {
+                if (carpeta.mkdirs()) {
+                    out = new FileOutputStream(rutaArchivo);
+                    out.write(archivoBytes);
+                    out.close();
+                    return rutaArchivo;
+                }
+            } else {
+                out = new FileOutputStream(rutaArchivo);
+                out.write(archivoBytes);
+                out.close();
+                return rutaArchivo;
+            }
+            return "Error al guardar el archivo";
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String guardarArchivoNew2(String ruta, String archivoBase64) {
+        try {
+            String[] partesBase64 = archivoBase64.split("-");
+            byte[] archivoBytes = Base64.getDecoder().decode(partesBase64[1]);
+            Date fechaActual = new Date();
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yy");
+            String fechaFormateada = formatoFecha.format(fechaActual);
+
+            String rutaCarpeta = "./files/" + ruta + "/" + fechaFormateada;
+            String rutaArchivo = rutaCarpeta + "/" + generateUniqueFileName() + "-" + partesBase64[0];
             File carpeta = new File(rutaCarpeta);
             OutputStream out = null;
             if (!carpeta.exists()) {

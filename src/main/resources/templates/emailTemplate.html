@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>Correo de Ejemplo</title>
-</head>
-<body>
+  </head>
+  <body>
+    <p th:text="${mensaje_saludo}">Buenos dias / Buenas tardes / Buenas noches</p>
+    <br />
     <p th:text="${mensaje}">Mensaje por defecto</p>
-</body>
+  </body>
 </html>

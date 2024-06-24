@@ -20,6 +20,6 @@ public class SolicitudExamenValoracionDocenteResponseDto {
     private String linkFormatoD;
     private String linkFormatoE;
     private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();
-    private String idEvaluadorInterno;
-    private String idEvaluadorExterno;
+    private Long idEvaluadorInterno;
+    private Long idEvaluadorExterno;
 }

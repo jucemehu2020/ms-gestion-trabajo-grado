@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion;
+package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

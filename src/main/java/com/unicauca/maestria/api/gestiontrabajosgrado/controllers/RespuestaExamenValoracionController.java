@@ -37,13 +37,6 @@ public class RespuestaExamenValoracionController {
                 .body(respuestaExamenValoracion.crear(examenValoracion, result));
     }
 
-    // @GetMapping("/listarInformacionGeneral/{id}")
-    // public ResponseEntity<RespuestaExamenValoracionInformacionGeneralDto>
-    // listarInformacionGeneral(@PathVariable Long id) {
-    // return
-    // ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.listarInformacionGeneral(id));
-    // }
-
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, List<RespuestaExamenValoracionDto>>> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.buscarPorId(id));

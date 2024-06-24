@@ -4,18 +4,16 @@ import java.util.List;
 
 import org.springframework.validation.BindingResult;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.DocenteInfoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.ExpertoInfoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.DatosFormatoBResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailCorrecionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.ObtenerDocumentosParaEvaluadorDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorFase1Dto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorFase2Dto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.SolicitudExamenValoracionCoordinadorResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionCoordinadorFase1Dto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.DatosFormatoBResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.ObtenerDocumentosParaEvaluadorDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2Dto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseListDto;
@@ -30,14 +28,15 @@ public interface SolicitudExamenValoracionService {
 
         public ExpertoInfoDto obtenerExperto(Long id);
 
-        public SolicitudExamenValoracionDocenteResponseDto insertarInformacionDocente(
+        public SolicitudExamenValoracionDocenteResponseDto insertarInformacionDocente(Long idTrabajoGrado,
                         SolicitudExamenValoracionDocenteDto informacionDocente, BindingResult result);
 
-        public SolicitudExamenValoracionCoordinadorFase1Dto insertarInformacionCoordinadorFase1(
+        public SolicitudExamenValoracionResponseFase1Dto insertarInformacionCoordinadorFase1(Long idExamenValoracion,
                         SolicitudExamenValoracionCoordinadorFase1Dto examenValoracionDto,
                         BindingResult result);
 
         public SolicitudExamenValoracionCoordinadorResponseDto insertarInformacionCoordinadorFase2(
+                        Long idExamenValoracion,
                         SolicitudExamenValoracionCoordinadorFase2Dto informacionDocente, BindingResult result);
 
         // public SolicitudExamenValoracionResponseDto
@@ -45,7 +44,10 @@ public interface SolicitudExamenValoracionService {
 
         public SolicitudExamenValoracionDocenteResponseListDto listarInformacionDocente(Long idTrabajoGrado);
 
-        public SolicitudExamenValoracionResponseDto listarInformacionCoordinador(Long idTrabajoGrado);
+        public SolicitudExamenValoracionResponseFase1Dto listarInformacionCoordinadorFase1(Long idExamenValoracion);
+
+        public SolicitudExamenValoracionCoordinadorResponseDto listarInformacionCoordinadorFase2(
+                        Long idExamenValoracion);
 
         // public SolicitudExamenValoracionResponseDto actualizar(Long id,
         // SolicitudExamenValoracionDto examenValoracionDto, BindingResult result);
@@ -53,18 +55,19 @@ public interface SolicitudExamenValoracionService {
         public SolicitudExamenValoracionDocenteResponseDto actualizarInformacionDocente(Long id,
                         SolicitudExamenValoracionDocenteDto examenValoracionDto, BindingResult result);
 
-        public SolicitudExamenValoracionCoordinadorResponseDto actualizarInformacionCoordinador(Long id,
+        public SolicitudExamenValoracionCoordinadorResponseDto actualizarInformacionCoordinadorFase2(Long id,
                         SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto, BindingResult result);
 
         public String descargarArchivo(RutaArchivoDto rutaArchivo);
-
-        public Boolean enviarCorreoElectronicoCorrecion(EnvioEmailCorrecionDto envioEmailCorrecionDto,
-                        BindingResult result);
 
         public DatosFormatoBResponseDto obtenerInformacionFormatoB(Long idTrabajoGrado);
 
         public ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluador(Long idExamenValoracion);
 
         public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado);
+
+        public SolicitudExamenValoracionResponseFase1Dto actualizarInformacionCoordinadoFase1(Long id,
+                        SolicitudExamenValoracionCoordinadorFase1Dto examenValoracionFase1CoordinadorDto,
+                        BindingResult result);
 
 }

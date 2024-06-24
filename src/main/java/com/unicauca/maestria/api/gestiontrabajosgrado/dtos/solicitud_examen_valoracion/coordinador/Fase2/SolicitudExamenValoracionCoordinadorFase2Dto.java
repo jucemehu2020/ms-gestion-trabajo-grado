@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador;
+package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2;
 
 import lombok.*;
 import java.time.LocalDate;
@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComite;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailDto;
 
 @Getter
 @Setter
@@ -16,12 +16,9 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_va
 public class SolicitudExamenValoracionCoordinadorFase2Dto {
 
     @NotNull
-    private Long idTrabajoGrados;
+    private List<RespuestaComiteDto> actaFechaRespuestaComite;
 
     @NotNull
-    private List<RespuestaComite> actaFechaRespuestaComite;
-
-    @NonNull
     private EnvioEmailDto envioEmailDto;
 
     private String linkOficioDirigidoEvaluadores;

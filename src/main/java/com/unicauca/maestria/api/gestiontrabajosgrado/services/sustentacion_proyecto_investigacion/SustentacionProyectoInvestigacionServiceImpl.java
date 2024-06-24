@@ -251,8 +251,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         Map<String, Object> templateModel = new HashMap<>();
 
                         MimeMessage message = mailSender.createMimeMessage();
-                        MimeMessageHelper helper = new MimeMessageHelper(message, true); // habilitar modo
-                                                                                         // multipart
+                        MimeMessageHelper helper = new MimeMessageHelper(message, true); 
 
                         // Configurar variables del contexto para la plantilla
                         // templateModel.put("nombreEvaluador", "Nombre del Evaluador");

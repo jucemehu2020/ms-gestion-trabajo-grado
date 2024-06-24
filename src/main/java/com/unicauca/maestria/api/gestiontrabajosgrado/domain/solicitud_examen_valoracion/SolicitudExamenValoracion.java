@@ -38,11 +38,11 @@ public class SolicitudExamenValoracion {
     @JsonManagedReference
     private List<AnexoSolicitudExamenValoracion> anexos;
 
-    private String idEvaluadorInterno;
+    private Long idEvaluadorInterno;
 
-    private String idEvaluadorExterno;
+    private Long idEvaluadorExterno;
 
-    private String conceptoCoordinadorDocumentos;
+    private Boolean conceptoCoordinadorDocumentos;
 
     @OneToMany(mappedBy = "solicitudExamenValoracion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

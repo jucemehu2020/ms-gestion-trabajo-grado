@@ -1,6 +1,7 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador;
+package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +13,7 @@ import lombok.Data;
 public class SolicitudExamenValoracionCoordinadorResponseDto {
 
     private Long idExamenValoracion;
-    private String actaAprobacionExamen;
-    private LocalDate fechaActa;
+    private List<RespuestaComiteDto> actaFechaRespuestaComite;
     private String linkOficioDirigidoEvaluadores;
     private LocalDate fechaMaximaEvaluacion;
 }

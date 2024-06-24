@@ -36,10 +36,10 @@ public class SolicitudExamenValoracionDto {
     private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();;
 
     @NotNull
-    private String idEvaluadorInterno;
+    private Long idEvaluadorInterno;
 
     @NotNull
-    private String idEvaluadorExterno;
+    private Long idEvaluadorExterno;
 
     @NotNull
     private String actaAprobacionExamen;

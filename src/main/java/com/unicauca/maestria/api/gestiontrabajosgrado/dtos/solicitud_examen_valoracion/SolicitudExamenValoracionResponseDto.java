@@ -25,7 +25,7 @@ public class SolicitudExamenValoracionResponseDto {
     private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();;
     private Map<String, String> evaluadorInterno;
     private Map<String, String> evaluadorExterno;
-    private String conceptoCoordinadorDocumentos;
+    private Boolean conceptoCoordinadorDocumentos;
     private List<RespuestaComite> actaFechaRespuestaComite = new ArrayList<>();;
     private String linkOficioDirigidoEvaluadores;
     private LocalDate fechaMaximaEvaluacion;

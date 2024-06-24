@@ -304,10 +304,10 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 .findByIdTrabajoGradoId(idTrabajoGrado);
 
                 DocenteResponseDto docente = archivoClient
-                                .obtenerDocentePorId(Long.parseLong(responseDto.get().getIdEvaluadorInterno()));
+                                .obtenerDocentePorId(responseDto.get().getIdEvaluadorInterno());
                 String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
                 ExpertoResponseDto experto = archivoClientExpertos
-                                .obtenerExpertoPorId(Long.parseLong(responseDto.get().getIdEvaluadorExterno()));
+                                .obtenerExpertoPorId(responseDto.get().getIdEvaluadorExterno());
                 String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
 
                 RespuestaExamenValoracionInformacionGeneralDto responseDtoInformacion = new RespuestaExamenValoracionInformacionGeneralDto();
