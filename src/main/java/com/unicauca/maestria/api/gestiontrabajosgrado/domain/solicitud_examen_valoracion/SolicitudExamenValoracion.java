@@ -46,7 +46,7 @@ public class SolicitudExamenValoracion {
 
     @OneToMany(mappedBy = "solicitudExamenValoracion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<RespuestaComite> actaFechaRespuestaComite;
+    private List<RespuestaComiteExamenValoracion> actaFechaRespuestaComite;
 
     private String linkOficioDirigidoEvaluadores;
 

@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2;
+package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RespuestaComiteDto {
+public class RespuestaComiteGeneracionResolucionDto {
 
     private Long idAnexoExamenValoracion;
     private Boolean conceptoComite;

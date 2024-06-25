@@ -13,7 +13,7 @@ import lombok.Data;
 public class SolicitudExamenValoracionCoordinadorResponseDto {
 
     private Long idExamenValoracion;
-    private List<RespuestaComiteDto> actaFechaRespuestaComite;
+    private List<RespuestaComiteExamenValoracionDto> actaFechaRespuestaComite;
     private String linkOficioDirigidoEvaluadores;
     private LocalDate fechaMaximaEvaluacion;
 }

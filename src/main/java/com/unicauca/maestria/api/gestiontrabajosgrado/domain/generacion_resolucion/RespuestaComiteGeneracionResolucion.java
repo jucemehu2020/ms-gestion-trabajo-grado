@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion;
+package com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,17 +10,17 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "respuesta_comite_solicitud_examen_valoracion")
+@Table(name = "respuesta_comite_generacion_resolucion")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RespuestaComite {
+public class RespuestaComiteGeneracionResolucion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idAnexoExamenValoracion;
+    private Long idRespuestaComiteGeneracionResolucion;
 
     private Boolean conceptoComite;
 
@@ -29,7 +29,7 @@ public class RespuestaComite {
     private String fechaActa;
 
     @ManyToOne
-    @JoinColumn(name = "id_examen_valoracion")
+    @JoinColumn(name = "id_generacion_resolucion")
     @JsonBackReference
-    private SolicitudExamenValoracion solicitudExamenValoracion;
+    private GeneracionResolucion generacionResolucion;
 }

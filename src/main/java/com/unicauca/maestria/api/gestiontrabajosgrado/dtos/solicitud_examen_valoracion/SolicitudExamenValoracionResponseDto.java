@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComite;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
 
 import lombok.*;
 
@@ -26,7 +26,7 @@ public class SolicitudExamenValoracionResponseDto {
     private Map<String, String> evaluadorInterno;
     private Map<String, String> evaluadorExterno;
     private Boolean conceptoCoordinadorDocumentos;
-    private List<RespuestaComite> actaFechaRespuestaComite = new ArrayList<>();;
+    private List<RespuestaComiteExamenValoracion> actaFechaRespuestaComite = new ArrayList<>();;
     private String linkOficioDirigidoEvaluadores;
     private LocalDate fechaMaximaEvaluacion;
 }

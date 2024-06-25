@@ -18,7 +18,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComite;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
@@ -307,7 +307,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto) {
 
 		// Crear una nueva instancia de RespuestaComite
-		RespuestaComite respuestaComite = RespuestaComite.builder()
+		RespuestaComiteExamenValoracion respuestaComite = RespuestaComiteExamenValoracion.builder()
 				.conceptoComite(examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite())
 				.numeroActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getNumeroActa())
 				.fechaActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getFechaActa().toString())
@@ -567,9 +567,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		String rutaArchivo = identificacionArchivo(trabajoGrado);
 
 		SolicitudExamenValoracion responseExamenValoracion = null;
-		List<RespuestaComite> respuestaComiteList = solicitudExamenValoracionRepository
+		List<RespuestaComiteExamenValoracion> respuestaComiteList = solicitudExamenValoracionRepository
 				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracionTmp.getIdExamenValoracion());
-		RespuestaComite ultimoRegistro = respuestaComiteList.isEmpty() ? null : respuestaComiteList.get(0);
+		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteList.isEmpty() ? null : respuestaComiteList.get(0);
 
 		if (ultimoRegistro != null
 				&& ultimoRegistro.getConceptoComite() != examenValoracionDto.getActaFechaRespuestaComite().get(0)
@@ -618,9 +618,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	private void updateExamenValoracionCoordinadorValues(SolicitudExamenValoracion examenValoracion,
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto, TrabajoGrado trabajoGrado) {
 
-		List<RespuestaComite> respuestaComiteList = solicitudExamenValoracionRepository
+		List<RespuestaComiteExamenValoracion> respuestaComiteList = solicitudExamenValoracionRepository
 				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracion.getIdExamenValoracion());
-		RespuestaComite ultimoRegistro = respuestaComiteList.isEmpty() ? null : respuestaComiteList.get(0);
+		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteList.isEmpty() ? null : respuestaComiteList.get(0);
 
 		if (ultimoRegistro != null) {
 			// Actualizar los valores de ultimoRegistro
@@ -628,7 +628,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			ultimoRegistro.setFechaActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getFechaActa());
 
 			// Actualizar la lista actaFechaRespuestaComite de examenValoracion
-			RespuestaComite actaFechaRespuestaComite = respuestaComiteSolicitudRepository
+			RespuestaComiteExamenValoracion actaFechaRespuestaComite = respuestaComiteSolicitudRepository
 					.findFirstByOrderByIdAnexoExamenValoracionDesc();
 
 			actaFechaRespuestaComite

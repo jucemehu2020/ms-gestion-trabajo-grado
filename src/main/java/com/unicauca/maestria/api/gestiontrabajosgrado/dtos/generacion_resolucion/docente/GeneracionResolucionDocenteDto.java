@@ -9,9 +9,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder
 public class GeneracionResolucionDocenteDto {
-    
-    @NotNull
-    private Long idTrabajoGrados;
 
     @NotNull
     private String director;

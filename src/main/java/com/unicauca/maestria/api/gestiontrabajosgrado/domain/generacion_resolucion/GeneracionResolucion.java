@@ -1,7 +1,9 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
 import lombok.AllArgsConstructor;
@@ -39,9 +41,9 @@ public class GeneracionResolucion {
     private Boolean conceptoDocumentosCoordinador;
 
     // Coordinador - Fase 2
-    private String numeroActaSolicitudComite;
-
-    private LocalDate fechaActaSolicitudComite;
+    @OneToMany(mappedBy = "generacionResolucion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<RespuestaComiteGeneracionResolucion> actaFechaRespuestaComite;
 
     private String linkSolicitudConsejoFacultad;
 

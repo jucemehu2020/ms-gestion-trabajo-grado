@@ -10,9 +10,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder
 public class GeneracionResolucionCoordinadorFase3Dto {
-    
-    @NotNull
-    private Long idTrabajoGrados;
 
     @NotNull
     private String numeroActaConsejoFacultad;

@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador;
+package com.unicauca.maestria.api.gestiontrabajosgrado.dtos;
 
 import lombok.*;
 

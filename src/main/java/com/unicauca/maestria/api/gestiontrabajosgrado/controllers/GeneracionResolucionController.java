@@ -48,46 +48,47 @@ public class GeneracionResolucionController {
                 return ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.listarDirectorAndCodirector());
         }
 
-        // @PostMapping
-        // public ResponseEntity<GeneracionResolucionDto> crear(
-        // @Valid @RequestBody GeneracionResolucionDto generacionResolucionDto,
-        // BindingResult result) {
-        // return ResponseEntity.status(HttpStatus.CREATED)
-        // .body(generacionResolucion.crear(generacionResolucionDto, result));
-        // }
-
-        @PostMapping("/insertarInformacionDocente")
+        @PostMapping("/insertarInformacionDocente/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionDocenteResponseDto> insertarInformacionDocente(
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionDocenteDto generacionResolucionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(generacionResolucion.insertarInformacionDocente(generacionResolucionDto, result));
+                                .body(generacionResolucion.insertarInformacionDocente(idTrabajoGrado,
+                                                generacionResolucionDto, result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadorFase2")
+        @PostMapping("/insertarInformacionCoordinadorFase1")
+        public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> insertarInformacionCoordinadorFase1(
+                        @Valid @RequestBody GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(generacionResolucion
+                                                .insertarInformacionCoordinadorFase1(
+                                                                generacionResolucionCoordinadorFase1Dto, result));
+        }
+
+        @PostMapping("/insertarInformacionCoordinadorFase2/{idGeneracionResolucion}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase2ResponseDto> insertarInformacionCoordinadorFase2(
+                        @PathVariable Long idGeneracionResolucion,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(generacionResolucion.insertarInformacionCoordinadorFase2(generacionResolucionDto,
+                                .body(generacionResolucion.insertarInformacionCoordinadorFase2(idGeneracionResolucion,
+                                                generacionResolucionDto,
                                                 result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadorFase3")
+        @PostMapping("/insertarInformacionCoordinadorFase3/{idGeneracionResolucion}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase3ResponseDto> insertarInformacionCoordinadorFase3(
+                        @PathVariable Long idGeneracionResolucion,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(generacionResolucion.insertarInformacionCoordinadorFase3(generacionResolucionDto,
+                                .body(generacionResolucion.insertarInformacionCoordinadorFase3(idGeneracionResolucion,
+                                                generacionResolucionDto,
                                                 result));
         }
-
-        // @GetMapping("/{id}")
-        // public ResponseEntity<GeneracionResolucionDto> buscarPorId(@PathVariable Long
-        // id) {
-        // return
-        // ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.buscarPorId(id));
-        // }
 
         @GetMapping("/listarInformacionDocente/{id}")
         public ResponseEntity<GeneracionResolucionDocenteResponseDto> listarInformacionDocente(
@@ -109,14 +110,49 @@ public class GeneracionResolucionController {
                                 .body(generacionResolucion.listarInformacionCoordinadorFase3(id));
         }
 
-        // @PutMapping("/{id}")
-        // public ResponseEntity<GeneracionResolucionDto> actualizar(@PathVariable Long
-        // id,
-        // @Valid @RequestBody GeneracionResolucionDto generacionResolucionDto,
-        // BindingResult result) {
-        // return ResponseEntity.status(HttpStatus.CREATED)
-        // .body(generacionResolucion.actualizar(id, generacionResolucionDto, result));
-        // }
+        @PostMapping("/actualizarInformacionDocente/{idGeneracionResolucion}")
+        public ResponseEntity<GeneracionResolucionDocenteResponseDto> actualizarInformacionDocente(
+                        @PathVariable Long idGeneracionResolucion,
+                        @Valid @RequestBody GeneracionResolucionDocenteDto generacionResolucionDto,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(generacionResolucion.actualizarInformacionDocente(idGeneracionResolucion,
+                                                generacionResolucionDto,
+                                                result));
+        }
+
+        @PostMapping("/actualizarInformacionCoordinadorFase1/{idGeneracionResolucion}")
+        public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> actualizarInformacionCoordinadorFase1(
+                        @PathVariable Long idGeneracionResolucion,
+                        @Valid @RequestBody GeneracionResolucionCoordinadorFase1Dto generacionResolucionDto,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(generacionResolucion.actualizarInformacionCoordinadorFase1(idGeneracionResolucion,
+                                                generacionResolucionDto,
+                                                result));
+        }
+
+        @PostMapping("/actualizarInformacionCoordinadorFase2/{idGeneracionResolucion}")
+        public ResponseEntity<GeneracionResolucionCoordinadorFase2ResponseDto> actualizarInformacionCoordinadorFase2(
+                        @PathVariable Long idGeneracionResolucion,
+                        @Valid @RequestBody GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(generacionResolucion.actualizarInformacionCoordinadorFase2(idGeneracionResolucion,
+                                                generacionResolucionDto,
+                                                result));
+        }
+
+        @PostMapping("/actualizarInformacionCoordinadorFase3/{idGeneracionResolucion}")
+        public ResponseEntity<GeneracionResolucionCoordinadorFase3ResponseDto> actualizarInformacionCoordinadorFase3(
+                        @PathVariable Long idGeneracionResolucion,
+                        @Valid @RequestBody GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(generacionResolucion.actualizarInformacionCoordinadorFase3(idGeneracionResolucion,
+                                                generacionResolucionDto,
+                                                result));
+        }
 
         @PostMapping("/descargarDocumento")
         public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo) {
@@ -124,35 +160,11 @@ public class GeneracionResolucionController {
                                 .body(generacionResolucion.descargarArchivo(rutaArchivo));
         }
 
-        @PostMapping("/insertarInformacionCoordinadorFase1")
-        public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> insertarInformacionCoordinadorFase1(
-                        @Valid @RequestBody GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto,
-                        BindingResult result) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(generacionResolucion
-                                                .insertarInformacionCoordinadorFase1(
-                                                                generacionResolucionCoordinadorFase1Dto, result));
-        }
-
         @GetMapping("/obtenerDocumentosParaEnviarAlComite/{idGeneracionResolucion}")
         public ResponseEntity<ObtenerDocumentosParaEnvioDto> obtenerDocumentosParaEnviarAlComite(
                         @PathVariable Long idGeneracionResolucion) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(generacionResolucion.obtenerDocumentosParaEnviarAlComite(idGeneracionResolucion));
-        }
-
-        @PostMapping("/enviarCorreoComite")
-        public ResponseEntity<InformacionEnvioComiteDto> enviarCorreoComite(
-                        @Valid @RequestBody InformacionEnvioComiteDto informacionEnvioComiteDto) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(generacionResolucion.enviarCorreoComite(informacionEnvioComiteDto));
-        }
-
-        @PostMapping("/enviarCorreoCorrecion")
-        public ResponseEntity<EnvioEmailCorrecionesDto> enviarCorreoCorrecion(
-                        @Valid @RequestBody EnvioEmailCorrecionesDto envioEmailCorrecionesDto) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(generacionResolucion.enviarCorreoCorrecion(envioEmailCorrecionesDto));
         }
 
         @GetMapping("/listarEstadosExamenValoracion/{numeroEstado}")

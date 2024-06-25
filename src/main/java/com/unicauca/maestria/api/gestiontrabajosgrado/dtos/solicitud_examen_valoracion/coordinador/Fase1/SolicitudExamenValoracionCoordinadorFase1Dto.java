@@ -2,7 +2,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_val
 
 import javax.validation.constraints.NotNull;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.DocumentosEnvioComiteDto;
 
 import lombok.AllArgsConstructor;

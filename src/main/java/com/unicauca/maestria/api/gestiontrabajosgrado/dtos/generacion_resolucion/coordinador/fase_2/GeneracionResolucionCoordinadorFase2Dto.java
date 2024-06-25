@@ -1,10 +1,11 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2;
 
-import java.time.LocalDate;
+import java.util.List;
+
 import lombok.*;
 import javax.validation.constraints.NotNull;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.EnvioEmailCorrecionesDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
 @Getter
 @Setter
@@ -12,20 +13,14 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion
 @AllArgsConstructor
 @Builder
 public class GeneracionResolucionCoordinadorFase2Dto {
-    
-    @NotNull
-    private Long idTrabajoGrados;
 
     @NotNull
-    private String numeroActaSolicitudComite;
-
-    @NotNull
-    private LocalDate fechaActaSolicitudComite;
+    private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
 
     @NotNull
     private String linkSolicitudConsejoFacultad;
 
     @NotNull
-    private EnvioEmailCorrecionesDto envioEmailCorrecionesDto;
+    private EnvioEmailDto envioEmailDto;
 
 }

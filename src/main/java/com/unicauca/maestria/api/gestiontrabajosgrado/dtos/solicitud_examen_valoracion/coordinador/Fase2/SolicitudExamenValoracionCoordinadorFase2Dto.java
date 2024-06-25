@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.EnvioEmailDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 public class SolicitudExamenValoracionCoordinadorFase2Dto {
 
     @NotNull
-    private List<RespuestaComiteDto> actaFechaRespuestaComite;
+    private List<RespuestaComiteExamenValoracionDto> actaFechaRespuestaComite;
 
     @NotNull
     private EnvioEmailDto envioEmailDto;
