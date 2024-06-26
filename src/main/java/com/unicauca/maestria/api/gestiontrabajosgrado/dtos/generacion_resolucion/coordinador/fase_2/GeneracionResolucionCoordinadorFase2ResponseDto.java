@@ -1,6 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2;
 
-import java.time.LocalDate;
+import java.util.List;
+
 import lombok.*;
 
 @Getter
@@ -9,10 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class GeneracionResolucionCoordinadorFase2ResponseDto {
-    
+
     private Long idGeneracionResolucion;
-    private String numeroActaSolicitudComite;
-    private LocalDate fechaActaSolicitudComite;
+    private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
     private String linkSolicitudConsejoFacultad;
 
 }

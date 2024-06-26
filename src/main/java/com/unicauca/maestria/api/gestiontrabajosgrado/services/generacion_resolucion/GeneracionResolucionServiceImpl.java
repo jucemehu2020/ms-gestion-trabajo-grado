@@ -1,42 +1,26 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.generacion_resolucion;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.ByteArrayDataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.RespuestaComiteGeneracionResolucion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
@@ -135,21 +119,24 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 trabajoGrado.setNumeroEstado(13);
 
                 // Guardar la entidad ExamenValoracion
-                generarResolucion.setLinkAnteproyectoFinal(
-                                FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                generarResolucion.getLinkAnteproyectoFinal()));
-                generarResolucion
-                                .setLinkSolicitudComite(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                generarResolucion.getLinkSolicitudComite()));
+                generarResolucion.setLinkAnteproyectoFinal(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                generarResolucion.getLinkAnteproyectoFinal()));
+                generarResolucion.setLinkSolicitudComite(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                generarResolucion.getLinkSolicitudComite()));
 
                 GeneracionResolucion generarResolucionRes = generacionResolucionRepository.save(generarResolucion);
 
-                return generacionResolucionResponseMapper.toDocenteDto(generarResolucionRes);
+                GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = generacionResolucionResponseMapper
+                                .toDocenteDto(generarResolucionRes);
+                generacionResolucionDocenteResponseDto.setTitulo(trabajoGrado.getTitulo());
+
+                return generacionResolucionDocenteResponseDto;
         }
 
         @Override
         @Transactional
         public GeneracionResolucionCoordinadorFase1ResponseDto insertarInformacionCoordinadorFase1(
+                        Long idGeneracionResolucion,
                         GeneracionResolucionCoordinadorFase1Dto generacionResolucionDto,
                         BindingResult result) {
 
@@ -159,22 +146,29 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 ArrayList<String> correos = new ArrayList<>();
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(generacionResolucionDto.getIdTrabajoGrados())
+                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                                .findById(idGeneracionResolucion)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "TrabajoGrado con id: " + generacionResolucionDto.getIdTrabajoGrados()
-                                                                + " No encontrado"));
+                                                "Generacion de resolucion con id: "
+                                                                + idGeneracionResolucion
+                                                                + " no encontrado"));
 
-                GeneracionResolucion generacionResolucion = generacionResolucionRepository
-                                .findByTrabajoGradoId(generacionResolucionDto.getIdTrabajoGrados());
+                TrabajoGrado trabajoGrado = trabajoGradoRepository
+                                .findById(generacionResolucionTmp.getIdTrabajoGrado().getId())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "TrabajoGrado con id: "
+                                                                + generacionResolucionTmp.getIdTrabajoGrado().getId()
+                                                                + " No encontrado"));
 
                 if (generacionResolucionDto.getConceptoDocumentosCoordinador()) {
                         correos.add(Constants.correoComite);
                         Map<String, Object> documentosEnvioComiteDto = generacionResolucionDto
                                         .getObtenerDocumentosParaEnvioDto()
                                         .getDocumentos();
-                        envioCorreos.enviarCorreoConAnexos(correos, generacionResolucionDto.getEnvioEmail().getAsunto(),
-                                        generacionResolucionDto.getEnvioEmail().getMensaje(), documentosEnvioComiteDto);
+                        envioCorreos.enviarCorreoConAnexos(correos,
+                                        generacionResolucionDto.getEnvioEmailDto().getAsunto(),
+                                        generacionResolucionDto.getEnvioEmailDto().getMensaje(),
+                                        documentosEnvioComiteDto);
                         trabajoGrado.setNumeroEstado(15);
 
                 } else {
@@ -183,16 +177,16 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         correos.add(estudiante.getPersona().getCorreoElectronico());
                         correos.add(trabajoGrado.getCorreoElectronicoTutor());
                         envioCorreos.enviarCorreosCorrecion(correos,
-                                        generacionResolucionDto.getEnvioEmail().getAsunto(),
-                                        generacionResolucionDto.getEnvioEmail().getMensaje());
+                                        generacionResolucionDto.getEnvioEmailDto().getAsunto(),
+                                        generacionResolucionDto.getEnvioEmailDto().getMensaje());
                         trabajoGrado.setNumeroEstado(14);
                 }
 
-                generacionResolucion.setConceptoDocumentosCoordinador(
+                generacionResolucionTmp.setConceptoDocumentosCoordinador(
                                 generacionResolucionDto.getConceptoDocumentosCoordinador());
 
                 GeneracionResolucion generarResolucionRes = generacionResolucionRepository
-                                .save(generacionResolucion);
+                                .save(generacionResolucionTmp);
 
                 return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generarResolucionRes);
         }
@@ -242,14 +236,15 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 GeneracionResolucion generarResolucion = generacionResolucionMapper.toEntity(generacionResolucionDto);
 
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()) {
+                        correos.add(Constants.correoConsejo);
                         Map<String, Object> documentosParaConsejo = new HashMap<>();
                         String[] solicitudConsejoFacultad = generacionResolucionDto
                                         .getLinkSolicitudConsejoFacultad()
                                         .split("-");
                         documentosParaConsejo.put("Solicitud_Consejo_Facultad", solicitudConsejoFacultad[1]);
                         envioCorreos.enviarCorreoConAnexos(correos,
-                                        generacionResolucionDto.getEnvioEmailDto().getAsunto(),
-                                        generacionResolucionDto.getEnvioEmailDto().getMensaje(),
+                                        generacionResolucionDto.getEnvioEmail().getAsunto(),
+                                        generacionResolucionDto.getEnvioEmail().getMensaje(),
                                         documentosParaConsejo);
                         String rutaArchivo = identificacionArchivo(trabajoGrado);
                         generarResolucion.setLinkSolicitudConsejoFacultad(
@@ -262,8 +257,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         correos.add(estudiante.getPersona().getCorreoElectronico());
                         correos.add(trabajoGrado.getCorreoElectronicoTutor());
                         envioCorreos.enviarCorreosCorrecion(correos,
-                                        generacionResolucionDto.getEnvioEmailDto().getAsunto(),
-                                        generacionResolucionDto.getEnvioEmailDto().getMensaje());
+                                        generacionResolucionDto.getEnvioEmail().getAsunto(),
+                                        generacionResolucionDto.getEnvioEmail().getMensaje());
                         trabajoGrado.setNumeroEstado(16);
                 }
 
@@ -343,34 +338,60 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
         @Override
         @Transactional(readOnly = true)
-        public GeneracionResolucionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado) {
-                Optional<GeneracionResolucion> responseDto = generacionResolucionRepository
-                                .findByIdTrabajoGradoId(idTrabajoGrado);
-                if (responseDto.isPresent()) {
-                        return generacionResolucionResponseMapper.toDocenteDto(responseDto.get());
-                } else {
-                        return null;
-                }
+        public GeneracionResolucionDocenteResponseDto listarInformacionDocente(Long idGeneracionResolucion) {
+                GeneracionResolucion responseDto = generacionResolucionRepository
+                                .findById(idGeneracionResolucion)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Generacion de resolucion con id: "
+                                                                + idGeneracionResolucion
+                                                                + " no encontrado"));
+
+                Optional<TrabajoGrado> trabajoGrado = trabajoGradoRepository
+                                .findById(responseDto.getIdTrabajoGrado().getId());
+
+                GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = generacionResolucionResponseMapper
+                                .toDocenteDto(responseDto);
+
+                generacionResolucionDocenteResponseDto.setTitulo(trabajoGrado.get().getTitulo());
+                return generacionResolucionDocenteResponseDto;
         }
 
         @Override
         @Transactional(readOnly = true)
-        public GeneracionResolucionCoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(Long idTrabajoGrado) {
-                return generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
-                                .stream()
-                                .map(generacionResolucionResponseMapper::toCoordinadorFase2Dto)
-                                .findFirst()
-                                .orElse(null);
+        public GeneracionResolucionCoordinadorFase1ResponseDto listarInformacionCoordinadorFase1(
+                        Long idGeneracionResolucion) {
+                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                                .findById(idGeneracionResolucion)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Generacion de resolucion con id: " + idGeneracionResolucion
+                                                                + " no encontrado"));
+
+                return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generacionResolucionTmp);
+        }
+
+        @Transactional(readOnly = true)
+        public GeneracionResolucionCoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(
+                        Long idGeneracionResolucion) {
+                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                                .findById(idGeneracionResolucion)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Generacion de resolucion con id: " + idGeneracionResolucion
+                                                                + " no encontrado"));
+
+                return generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucionTmp);
         }
 
         @Override
         @Transactional(readOnly = true)
-        public GeneracionResolucionCoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(Long idTrabajoGrado) {
-                return generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado)
-                                .stream()
-                                .map(generacionResolucionResponseMapper::toCoordinadorFase3Dto)
-                                .findFirst()
-                                .orElse(null);
+        public GeneracionResolucionCoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(
+                        Long idGeneracionResolucion) {
+                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                                .findById(idGeneracionResolucion)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Generacion de resolucion con id: " + idGeneracionResolucion
+                                                                + " no encontrado"));
+
+                return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionTmp);
         }
 
         @Override
@@ -418,7 +439,12 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                         trabajoGrado);
                         generacionResolucion = generacionResolucionRepository.save(generacionResolucionOld);
                 }
-                return generacionResolucionResponseMapper.toDocenteDto(generacionResolucion);
+
+                GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = generacionResolucionResponseMapper
+                                .toDocenteDto(generacionResolucion);
+                generacionResolucionDocenteResponseDto.setTitulo(trabajoGrado.getTitulo());
+
+                return generacionResolucionDocenteResponseDto;
         }
 
         // Funciones privadas
@@ -446,9 +472,42 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 .orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id: " + id
                                                 + " no encontrado"));
 
+                TrabajoGrado trabajoGrado = trabajoGradoRepository
+                                .findById(generacionResolucionOld.getIdTrabajoGrado().getId())
+                                .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id: "
+                                                + generacionResolucionOld.getIdTrabajoGrado().getId()
+                                                + " no encontrado"));
+
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
 
-                generacionResolucion.setConceptoDocumentosCoordinador(
+                ArrayList<String> correos = new ArrayList<>();
+
+                if (generacionResolucionDocenteDto.getConceptoDocumentosCoordinador() != generacionResolucionOld
+                                .getConceptoDocumentosCoordinador()) {
+                        // Si pasa de aprobado a no aprobado
+                        if (!generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()) {
+                                EstudianteResponseDtoAll estudiante = archivoClient
+                                                .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+                                correos.add(estudiante.getPersona().getCorreoElectronico());
+                                correos.add(trabajoGrado.getCorreoElectronicoTutor());
+                                envioCorreos.enviarCorreosCorrecion(correos,
+                                                generacionResolucionDocenteDto.getEnvioEmailDto().getAsunto(),
+                                                generacionResolucionDocenteDto.getEnvioEmailDto().getMensaje());
+                                trabajoGrado.setNumeroEstado(22);
+                        } else {
+                                correos.add(Constants.correoComite);
+                                Map<String, Object> documentosEnvioComiteDto = generacionResolucionDocenteDto
+                                                .getObtenerDocumentosParaEnvioDto()
+                                                .getDocumentos();
+                                envioCorreos.enviarCorreoConAnexos(correos,
+                                                generacionResolucionDocenteDto.getEnvioEmailDto().getAsunto(),
+                                                generacionResolucionDocenteDto.getEnvioEmailDto().getMensaje(),
+                                                documentosEnvioComiteDto);
+                                trabajoGrado.setNumeroEstado(21);
+                        }
+                }
+
+                generacionResolucionOld.setConceptoDocumentosCoordinador(
                                 generacionResolucionDocenteDto.getConceptoDocumentosCoordinador());
 
                 generacionResolucion = generacionResolucionRepository.save(generacionResolucionOld);
@@ -496,8 +555,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 correos.add(estudiante.getPersona().getCorreoElectronico());
                                 correos.add(trabajoGrado.getCorreoElectronicoTutor());
                                 envioCorreos.enviarCorreosCorrecion(correos,
-                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmailDto().getAsunto(),
-                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmailDto()
+                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmail().getAsunto(),
+                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmail()
                                                                 .getMensaje());
                                 trabajoGrado.setNumeroEstado(4);
                         } else {
@@ -508,8 +567,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 .split("-");
                                 documentosParaConsejo.put("Solicitud_Consejo_Facultad", solicitudConsejoFacultad[1]);
                                 envioCorreos.enviarCorreoConAnexos(correos,
-                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmailDto().getAsunto(),
-                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmailDto().getMensaje(),
+                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmail().getAsunto(),
+                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmail().getMensaje(),
                                                 documentosParaConsejo);
                                 generacionResolucionCoordinadorFase1Dto
                                                 .setLinkSolicitudConsejoFacultad(FilesUtilities.guardarArchivoNew2(

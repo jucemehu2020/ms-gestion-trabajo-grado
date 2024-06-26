@@ -21,4 +21,7 @@ public interface GeneracionResolucionRepository extends JpaRepository<Generacion
 
     @Query("SELECT rc FROM GeneracionResolucion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.idGeneracionResolucion = :id ORDER BY rc.id DESC")
     List<RespuestaComiteGeneracionResolucion> findRespuestaComiteByGeneracionResolucionId(@Param("id") Long id);
+
+    @Query("SELECT sev.idGeneracionResolucion FROM GeneracionResolucion sev WHERE sev.idTrabajoGrado.id = ?1")
+    public Long findIdGeneracionResolucionByTrabajoGradoId(Long trabajoGradoId);
 }

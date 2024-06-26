@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EventosIdsDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_grado.InicioTrabajoGradoService;
 
@@ -58,6 +59,11 @@ public class InicioTrabajoGradoController {
     public ResponseEntity<?> eliminarTrabajoGrado(@PathVariable Long id) {
         inicioTrabajoGradoService.eliminarTrabajoGrado(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/obtenerIdsEventos/{idTrabajoGrado}")
+    public ResponseEntity<EventosIdsDto> obtenerIdsEventos(@PathVariable Long idTrabajoGrado) {
+        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.obtenerIdsEventos(idTrabajoGrado));
     }
 
 }

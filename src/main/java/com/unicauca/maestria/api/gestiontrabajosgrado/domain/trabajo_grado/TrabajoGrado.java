@@ -53,7 +53,7 @@ public class TrabajoGrado {
     @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
     private SolicitudExamenValoracion examenValoracion;
 
-    @OneToMany(mappedBy = "trabajoGrado", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "idTrabajoGrado", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RespuestaExamenValoracion> respuestaExamenValoracion;
 
     @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)

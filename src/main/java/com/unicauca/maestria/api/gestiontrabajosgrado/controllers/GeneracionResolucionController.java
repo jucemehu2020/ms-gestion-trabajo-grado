@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,13 +57,15 @@ public class GeneracionResolucionController {
                                                 generacionResolucionDto, result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadorFase1")
+        @PostMapping("/insertarInformacionCoordinadorFase1/{idGeneracionResolucion}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> insertarInformacionCoordinadorFase1(
+                        @PathVariable Long idGeneracionResolucion,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(generacionResolucion
                                                 .insertarInformacionCoordinadorFase1(
+                                                                idGeneracionResolucion,
                                                                 generacionResolucionCoordinadorFase1Dto, result));
         }
 
@@ -88,10 +91,18 @@ public class GeneracionResolucionController {
                                                 result));
         }
 
-        @GetMapping("/listarInformacionDocente/{id}")
+        @GetMapping("/listarInformacionDocente/{idGeneracionResolucion}")
         public ResponseEntity<GeneracionResolucionDocenteResponseDto> listarInformacionDocente(
+                        @PathVariable Long idGeneracionResolucion) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(generacionResolucion.listarInformacionDocente(idGeneracionResolucion));
+        }
+
+        @GetMapping("/listarInformacionCoordinadorFase1/{id}")
+        public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> listarInformacionCoordinadorFase1(
                         @PathVariable Long id) {
-                return ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.listarInformacionDocente(id));
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(generacionResolucion.listarInformacionCoordinadorFase1(id));
         }
 
         @GetMapping("/listarInformacionCoordinadorFase2/{id}")
@@ -108,7 +119,7 @@ public class GeneracionResolucionController {
                                 .body(generacionResolucion.listarInformacionCoordinadorFase3(id));
         }
 
-        @PostMapping("/actualizarInformacionDocente/{idGeneracionResolucion}")
+        @PutMapping("/actualizarInformacionDocente/{idGeneracionResolucion}")
         public ResponseEntity<GeneracionResolucionDocenteResponseDto> actualizarInformacionDocente(
                         @PathVariable Long idGeneracionResolucion,
                         @Valid @RequestBody GeneracionResolucionDocenteDto generacionResolucionDto,
@@ -119,7 +130,7 @@ public class GeneracionResolucionController {
                                                 result));
         }
 
-        @PostMapping("/actualizarInformacionCoordinadorFase1/{idGeneracionResolucion}")
+        @PutMapping("/actualizarInformacionCoordinadorFase1/{idGeneracionResolucion}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> actualizarInformacionCoordinadorFase1(
                         @PathVariable Long idGeneracionResolucion,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase1Dto generacionResolucionDto,
@@ -130,7 +141,7 @@ public class GeneracionResolucionController {
                                                 result));
         }
 
-        @PostMapping("/actualizarInformacionCoordinadorFase2/{idGeneracionResolucion}")
+        @PutMapping("/actualizarInformacionCoordinadorFase2/{idGeneracionResolucion}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase2ResponseDto> actualizarInformacionCoordinadorFase2(
                         @PathVariable Long idGeneracionResolucion,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto,
@@ -141,7 +152,7 @@ public class GeneracionResolucionController {
                                                 result));
         }
 
-        @PostMapping("/actualizarInformacionCoordinadorFase3/{idGeneracionResolucion}")
+        @PutMapping("/actualizarInformacionCoordinadorFase3/{idGeneracionResolucion}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase3ResponseDto> actualizarInformacionCoordinadorFase3(
                         @PathVariable Long idGeneracionResolucion,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto,

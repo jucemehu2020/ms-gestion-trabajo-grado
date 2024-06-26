@@ -17,10 +17,9 @@ public class GeneracionResolucionCoordinadorFase2Dto {
     @NotNull
     private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
 
-    @NotNull
     private String linkSolicitudConsejoFacultad;
 
     @NotNull
-    private EnvioEmailDto envioEmailDto;
+    private EnvioEmailDto envioEmail;
 
 }

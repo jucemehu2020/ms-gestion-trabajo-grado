@@ -13,13 +13,10 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 public class GeneracionResolucionCoordinadorFase1Dto {
 
     @NotNull
-    private Long idTrabajoGrados;
-
-    @NotNull
     private Boolean conceptoDocumentosCoordinador;
 
     @NotNull
-    private EnvioEmailDto envioEmail;
+    private EnvioEmailDto envioEmailDto;
 
     private ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto;
 

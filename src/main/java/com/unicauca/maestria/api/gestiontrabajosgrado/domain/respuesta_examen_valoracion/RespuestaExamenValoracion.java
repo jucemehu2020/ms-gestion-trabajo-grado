@@ -47,6 +47,6 @@ public class RespuestaExamenValoracion {
 
     @ManyToOne
     @JoinColumn(name = "id_trabajo_grado")
-    private TrabajoGrado trabajoGrado;
+    private TrabajoGrado idTrabajoGrado;
 
 }

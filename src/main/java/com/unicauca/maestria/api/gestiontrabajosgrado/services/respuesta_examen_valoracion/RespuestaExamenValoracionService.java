@@ -22,7 +22,7 @@ public interface RespuestaExamenValoracionService {
                         ExamenValoracionCanceladoDto examenValoracionCanceladoDto,
                         BindingResult result);
 
-        public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idTrabajoGrado);
+        public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idRespuestaExamen);
 
         public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idRespuestaExamen);
 

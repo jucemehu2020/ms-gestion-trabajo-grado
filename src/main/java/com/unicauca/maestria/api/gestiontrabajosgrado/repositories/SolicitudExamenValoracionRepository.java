@@ -29,4 +29,7 @@ public interface SolicitudExamenValoracionRepository extends JpaRepository<Solic
     @Query("SELECT CASE WHEN COUNT(sev) > 0 THEN TRUE ELSE FALSE END FROM SolicitudExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
     public boolean existsByTrabajoGradoId(Long trabajoGradoId);
 
+    @Query("SELECT sev.idExamenValoracion FROM SolicitudExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
+    public Long findIdExamenValoracionByTrabajoGradoId(Long trabajoGradoId);
+
 }

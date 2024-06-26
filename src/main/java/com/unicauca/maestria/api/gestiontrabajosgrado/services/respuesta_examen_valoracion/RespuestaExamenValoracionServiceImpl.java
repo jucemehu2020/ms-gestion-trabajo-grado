@@ -122,7 +122,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         rtaExamenValoracion.setAnexos(updatedLinkAnexos);
 
                         // Se asigna al trabajo de grado
-                        rtaExamenValoracion.setTrabajoGrado(trabajoGrado);
+                        rtaExamenValoracion.setIdTrabajoGrado(trabajoGrado);
 
                         enviarCorreoTutorEstudiante(respuestaExamenValoracionDto, trabajoGrado);
 
@@ -222,14 +222,25 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idTrabajoGrado) {
+        public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idRespuestaExamen) {
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado).orElseThrow(
-                                () -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
+                RespuestaExamenValoracion respuestaExamenValoracionTmp = respuestaExamenValoracionRepository
+                                .findById(idRespuestaExamen).orElseThrow(() -> new ResourceNotFoundException(
+                                                "Respuesta examen de valoracion con id: " + idRespuestaExamen
+                                                                + " no encontrado"));
+
+                // Busca el trabajo de grado
+                TrabajoGrado trabajoGrado = trabajoGradoRepository
+                                .findById(respuestaExamenValoracionTmp.getIdTrabajoGrado().getId()).orElseThrow(
+                                                () -> new ResourceNotFoundException(
+                                                                "Trabajo de grado con id: "
+                                                                                + respuestaExamenValoracionTmp
+                                                                                                .getIdTrabajoGrado()
+                                                                                                .getId()
+                                                                                + " no encontrado"));
 
                 Optional<SolicitudExamenValoracion> responseDto = solicitudExamenValoracionRepository
-                                .findByIdTrabajoGradoId(idTrabajoGrado);
+                                .findByIdTrabajoGradoId(respuestaExamenValoracionTmp.getIdTrabajoGrado().getId());
 
                 DocenteResponseDto docente = archivoClient
                                 .obtenerDocentePorId(responseDto.get().getIdEvaluadorInterno());
@@ -245,7 +256,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 responseDtoInformacion.setIdEvaluadorInterno(docente.getPersona().getId());
                 responseDtoInformacion.setNombreEvaluadorInterno(nombre_docente);
                 responseDtoInformacion.setUniversidadEvaluadorInterno("Universidad del Cauca");
-                responseDtoInformacion.setIdEvaluadorExterno(idTrabajoGrado);
+                responseDtoInformacion.setIdEvaluadorExterno(experto.getPersona().getId());
                 responseDtoInformacion.setNombreEvaluadorExterno(nombre_experto);
                 responseDtoInformacion.setUniversidadEvaluadorExterno(experto.getUniversidad());
 
@@ -282,11 +293,11 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                 // Busca el trabajo de grado
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(respuestaExamenValoracionTmp.getTrabajoGrado().getId()).orElseThrow(
+                                .findById(respuestaExamenValoracionTmp.getIdTrabajoGrado().getId()).orElseThrow(
                                                 () -> new ResourceNotFoundException(
                                                                 "Trabajo de grado con id: "
                                                                                 + respuestaExamenValoracionTmp
-                                                                                                .getTrabajoGrado()
+                                                                                                .getIdTrabajoGrado()
                                                                                                 .getId()
                                                                                 + " no encontrado"));
 

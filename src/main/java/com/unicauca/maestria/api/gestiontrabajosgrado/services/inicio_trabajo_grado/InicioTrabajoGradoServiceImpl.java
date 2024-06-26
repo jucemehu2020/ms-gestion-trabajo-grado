@@ -25,10 +25,15 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.Traba
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EventosIdsDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapperImpl;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.GeneracionResolucionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SustentacionProyectoInvestigacionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 
 import io.jsonwebtoken.Claims;
@@ -44,11 +49,11 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	private final ArchivoClient archivoClient;
 	private final ArchivoClientLogin archivoClientLogin;
 
-	@Autowired
-	private JavaMailSender mailSender;
-
-	@Autowired
-	private SpringTemplateEngine templateEngine;
+	// Eventos
+	private final SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
+	private final RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
+	private final GeneracionResolucionRepository generacionResolucionRepository;
+	private final SustentacionProyectoInvestigacionRepository sustentacionProyectoInvestigacionRepository;
 
 	@Autowired
 	private JwtUtil jwtTokenProvider;
@@ -79,7 +84,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		// () -> new ResourceNotFoundException("Estudiante con id: " + idEstudiante + "
 		// No encontrado"));
 		EstudianteResponseDtoAll informacionEstudiantes = archivoClient.obtenerInformacionEstudiante(idEstudiante);
-		//hacer aqui si no existe estudiante
+		// hacer aqui si no existe estudiante
 
 		// Obtener la lista de trabajos de grado del estudiante desde el repositorio
 		List<TrabajoGrado> trabajosGrado = trabajoGradoRepository.findByEstudianteId(idEstudiante);
@@ -152,11 +157,9 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		// No encontrado"));
 
 		String usuario = jwtTokenProvider.getUserNameFromJwtToken(token);
-		System.out.println("Usuario::: " + usuario);
 		String respuestaLogin = archivoClientLogin.obtenerCorreo(usuario);
 		JSONObject jsonObject = new JSONObject(respuestaLogin);
 		String correoElectronico = jsonObject.getString("message");
-		System.out.println("correoElectronico::: " + correoElectronico);
 
 		// Crear el objeto TrabajoGrado
 		TrabajoGrado trabajoGradoConvert = new TrabajoGrado();
@@ -190,9 +193,36 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(
 						() -> new ResourceNotFoundException(
-								"Tarabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
+								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 		trabajoGradoRepository.deleteById(idTrabajoGrado);
 
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public EventosIdsDto obtenerIdsEventos(Long idTrabajoGrado) {
+
+		trabajoGradoRepository.findById(idTrabajoGrado)
+				.orElseThrow(
+						() -> new ResourceNotFoundException(
+								"Tarabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
+
+		Long idSolicitudExamenvaloracion = solicitudExamenValoracionRepository
+				.findIdExamenValoracionByTrabajoGradoId(idTrabajoGrado);
+		List<Long> idRespuestaExamenvaloracion = respuestaExamenValoracionRepository
+				.findIdRespuestaExamenValoracionByTrabajoGradoId(idTrabajoGrado);
+		Long idGeneracionResolucion = generacionResolucionRepository
+				.findIdGeneracionResolucionByTrabajoGradoId(idTrabajoGrado);
+		Long idSustentacion = sustentacionProyectoInvestigacionRepository
+				.findIdSustentacionTrabajoInvestigacionByTrabajoGradoId(idTrabajoGrado);
+
+		EventosIdsDto eventosIdsDto = new EventosIdsDto();
+		eventosIdsDto.setIdSolicitudExamenValoracion(idSolicitudExamenvaloracion);
+		eventosIdsDto.setIdRespuestaExamenValoracion(idRespuestaExamenvaloracion);
+		eventosIdsDto.setIdGeneracionResolucion(idGeneracionResolucion);
+		eventosIdsDto.setIdSustentacion(idSustentacion);
+
+		return eventosIdsDto;
 	}
 
 }

@@ -4,20 +4,23 @@ import java.util.List;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EventosIdsDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 
 public interface InicioTrabajoGradoService {
 
-    List<EstudianteInfoDto> obtenerEstudiantes();
+    public List<EstudianteInfoDto> obtenerEstudiantes();
 
-    EstudianteResponseDto buscarEstadoEstudiantePor(Long id);
+    public EstudianteResponseDto buscarEstadoEstudiantePor(Long id);
 
-    EstudianteInfoDto obtenerInformacionEstudiante(Long id);
+    public EstudianteInfoDto obtenerInformacionEstudiante(Long id);
 
-    TrabajoGradoResponseDto buscarTrabajoGrado(Long id);
+    public TrabajoGradoResponseDto buscarTrabajoGrado(Long id);
 
-    TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante, String token);
+    public TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante, String token);
 
-    void eliminarTrabajoGrado(Long idTrabajoGrado);
+    public void eliminarTrabajoGrado(Long idTrabajoGrado);
+
+    public EventosIdsDto obtenerIdsEventos(Long idTrabajoGrado);
 
 }

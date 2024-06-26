@@ -13,7 +13,6 @@ import lombok.Setter;
 @Builder
 public class RespuestaComiteGeneracionResolucionDto {
 
-    private Long idAnexoExamenValoracion;
     private Boolean conceptoComite;
     private String numeroActa;
     private String fechaActa;
