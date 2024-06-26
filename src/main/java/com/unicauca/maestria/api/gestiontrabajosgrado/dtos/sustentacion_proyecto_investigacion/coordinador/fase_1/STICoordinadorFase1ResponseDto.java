@@ -10,9 +10,6 @@ import lombok.*;
 public class STICoordinadorFase1ResponseDto {
 
     private Long idSustentacionTI; 
-    private String linkFormatoF;
-    private String urlDocumentacion;
-    private String linkFormatoG;
-    private String linkEstudioHojaVidaAcademica;
+    private Boolean conceptoCoordinador;
 
 }

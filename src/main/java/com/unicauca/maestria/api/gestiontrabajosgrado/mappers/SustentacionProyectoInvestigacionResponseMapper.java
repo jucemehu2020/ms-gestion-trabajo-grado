@@ -12,6 +12,8 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.SustentacionTrabajoInvestigacionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_3.STICoordinadorFase3ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_3.SustentacionTrabajoInvestigacionCoordinadorFase3Dto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_4.STICoordinadorFase4ResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_4.SustentacionTrabajoInvestigacionCoordinadorFase4Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteDto;
@@ -47,5 +49,11 @@ public interface SustentacionProyectoInvestigacionResponseMapper
         SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase3Dto dto);
 
         STICoordinadorFase3ResponseDto toCoordinadorFase3Dto(
+                        SustentacionTrabajoInvestigacion entity);
+
+        // Coordinador Fase 4
+        SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase4Dto dto);
+
+        STICoordinadorFase4ResponseDto toCoordinadorFase4Dto(
                         SustentacionTrabajoInvestigacion entity);
 }

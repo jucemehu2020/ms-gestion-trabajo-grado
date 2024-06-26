@@ -11,19 +11,10 @@ import lombok.*;
 public class STICoordinadorFase3ResponseDto {
 
     private Long idSustentacionTI;
-    private String linkFormatoF;
-    private String urlDocumentacion;
-    private String linkFormatoG;
-    private String linkEstudioHojaVidaAcademica;
-    private String juradoExterno;
-    private String juradoInterno;
-    private String numeroActa;
-    private LocalDate fechaActa;
-    private String linkFormatoH;
-    private String linkFormatoI;
-    private String linkActaSustentacionPublica;
-    private Boolean respuestaSustentacion;
-    private String numeroActaFinal;
-    private LocalDate fechaActaFinal;
+    private Boolean juradosAceptados;
+    private String numeroActaConsejo;
+    private LocalDate fechaActaConsejo;
+    private String idJuradoInterno;
+    private String idJuradoExterno;
 
 }

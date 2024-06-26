@@ -6,13 +6,14 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.SustentacionTrabajoInvestigacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.STICoordinadorFase2ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.SustentacionTrabajoInvestigacionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_3.STICoordinadorFase3ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_3.SustentacionTrabajoInvestigacionCoordinadorFase3Dto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_4.STICoordinadorFase4ResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_4.SustentacionTrabajoInvestigacionCoordinadorFase4Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteDto;
@@ -20,31 +21,35 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 
 public interface SustentacionProyectoInvestigacionService {
 
-        // public SustentacionTrabajoInvestigacionDto
-        // crear(SustentacionTrabajoInvestigacionDto oficio,
-        // BindingResult result);
-
         public SustentacionTrabajoInvestigacionDocenteResponseDto insertarInformacionDocente(
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,
                         BindingResult result);
 
         public STICoordinadorFase1ResponseDto insertarInformacionCoordinadoFase1(
+                        Long idSustentacion,
                         SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
                         BindingResult result);
 
         public STICoordinadorFase2ResponseDto insertarInformacionCoordinadoFase2(
+                        Long idSustentacion,
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
                         BindingResult result);
 
-        public SustentacionTrabajoInvestigacionEstudianteResponseDto insertarInformacionEstudiante(
-                        SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
-                        BindingResult result);
-
         public STICoordinadorFase3ResponseDto insertarInformacionCoordinadoFase3(
+                        Long idSustentacion,
                         SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
                         BindingResult result);
 
-        // public SustentacionTrabajoInvestigacionDto buscarPorId(Long idTrabajoGrado);
+        public SustentacionTrabajoInvestigacionEstudianteResponseDto insertarInformacionEstudiante(
+                        Long idSustentacion,
+                        SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
+                        BindingResult result);
+
+        public STICoordinadorFase4ResponseDto insertarInformacionCoordinadoFase4(
+                        Long idSustentacion,
+                        SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
+                        BindingResult result);
 
         public SustentacionTrabajoInvestigacionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado);
 
@@ -54,19 +59,47 @@ public interface SustentacionProyectoInvestigacionService {
         public STICoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(
                         Long idTrabajoGrado);
 
-        public SustentacionTrabajoInvestigacionEstudianteResponseDto listarInformacionEstudiante(Long idTrabajoGrado);
-
         public STICoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(
                         Long idTrabajoGrado);
 
-        // public SustentacionTrabajoInvestigacionDto listarInformacionCoordinador(Long idTrabajoGrado);
+        public SustentacionTrabajoInvestigacionEstudianteResponseDto listarInformacionEstudiante(Long idTrabajoGrado);
 
-        // public SustentacionTrabajoInvestigacionDto actualizar(Long id,
-        //                 SustentacionTrabajoInvestigacionDto examenValoracionDto, BindingResult result);
+        public STICoordinadorFase4ResponseDto listarInformacionCoordinadorFase4(
+                        Long idTrabajoGrado);
 
         public String descargarArchivo(RutaArchivoDto rutaArchivo);
 
         public Boolean verificarEgresado(Long idTrabajoGrado);
 
         public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado);
+
+        public SustentacionTrabajoInvestigacionDocenteResponseDto actualizarInformacionDocente(
+                        Long idSustentacion,
+                        SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,
+                        BindingResult result);
+
+        public STICoordinadorFase1ResponseDto actualizarInformacionCoordinadoFase1(
+                        Long idSustentacion,
+                        SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
+                        BindingResult result);
+
+        public STICoordinadorFase2ResponseDto actualizarInformacionCoordinadoFase2(
+                        Long idSustentacion,
+                        SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
+                        BindingResult result);
+
+        public STICoordinadorFase3ResponseDto actualizarInformacionCoordinadoFase3(
+                        Long idSustentacion,
+                        SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
+                        BindingResult result);
+
+        public SustentacionTrabajoInvestigacionEstudianteResponseDto actualizarInformacionEstudiante(
+                        Long idSustentacion,
+                        SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
+                        BindingResult result);
+
+        public STICoordinadorFase4ResponseDto actualizarInformacionCoordinadoFase4(
+                        Long idSustentacion,
+                        SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
+                        BindingResult result);
 }

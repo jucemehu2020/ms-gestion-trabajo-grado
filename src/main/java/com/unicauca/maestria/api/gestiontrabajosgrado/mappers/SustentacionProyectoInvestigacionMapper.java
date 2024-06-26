@@ -8,6 +8,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.SustentacionTrabajoInvestigacionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_3.SustentacionTrabajoInvestigacionCoordinadorFase3Dto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_4.SustentacionTrabajoInvestigacionCoordinadorFase4Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteDto;
 
@@ -30,15 +31,20 @@ public interface SustentacionProyectoInvestigacionMapper
 
     SustentacionTrabajoInvestigacionCoordinadorFase2Dto toCoordinaforFase2Dto(SustentacionTrabajoInvestigacion entity);
 
+    // Coordinador Fase 3
+    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase3Dto comiteDto);
+
+    SustentacionTrabajoInvestigacionCoordinadorFase3Dto toCoordinaforFase3Dto(SustentacionTrabajoInvestigacion entity);
+
     // Estudiante
     SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionEstudianteDto comiteDto);
 
     SustentacionTrabajoInvestigacionEstudianteDto toEstudianteDto(SustentacionTrabajoInvestigacion entity);
 
     // Coordinador Fase 3
-    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase3Dto comiteDto);
+    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase4Dto comiteDto);
 
-    SustentacionTrabajoInvestigacionCoordinadorFase3Dto toCoordinaforFase3Dto(SustentacionTrabajoInvestigacion entity);
+    SustentacionTrabajoInvestigacionCoordinadorFase4Dto toCoordinaforFase4Dto(SustentacionTrabajoInvestigacion entity);
 
     SolicitudExamenValoracionResponseDto toDto(SolicitudExamenValoracionResponseDto entity);
 }

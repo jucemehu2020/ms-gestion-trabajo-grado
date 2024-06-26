@@ -1,8 +1,12 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2;
 
-import java.time.LocalDate;
+import java.util.List;
+
 import lombok.*;
 import javax.validation.constraints.NotNull;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2.RespuestaComiteGeneracionResolucionDto;
 
 @Getter
 @Setter
@@ -12,21 +16,15 @@ import javax.validation.constraints.NotNull;
 public class SustentacionTrabajoInvestigacionCoordinadorFase2Dto {
 
     @NotNull
-    private Long idTrabajoGrados; 
+    private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
 
     @NotNull
-    private Boolean juradosAceptados;
-    
-    @Builder.Default
-    private String idJuradoInterno = "Sin cambios";
-
-    @Builder.Default
-    private String idJuradoExterno = "Sin cambios";
+    private String linkEstudioHojaVidaAcademica;
 
     @NotNull
-    private String numeroActa;
+    private String linkFormatoG;
 
     @NotNull
-    private LocalDate fechaActa;
+    private EnvioEmailDto envioEmailDto;
 
 }

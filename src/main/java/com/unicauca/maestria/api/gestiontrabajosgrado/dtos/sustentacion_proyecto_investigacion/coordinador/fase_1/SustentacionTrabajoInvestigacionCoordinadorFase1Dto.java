@@ -3,6 +3,8 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyect
 import lombok.*;
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,15 +13,11 @@ import javax.validation.constraints.NotNull;
 public class SustentacionTrabajoInvestigacionCoordinadorFase1Dto {
 
     @NotNull
-    private Long idTrabajoGrados;
+    private Boolean conceptoCoordinador;
 
     @NotNull
-    private String linkFormatoG;
+    private EnvioEmailDto envioEmailDto;
 
-    @NotNull
-    private String linkEstudioHojaVidaAcademica;
-
-    @NotNull
-    private EnvioEmailComiteDto envioEmailComiteDto;
+    private ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto;
 
 }

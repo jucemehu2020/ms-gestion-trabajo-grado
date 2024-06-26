@@ -569,7 +569,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		SolicitudExamenValoracion responseExamenValoracion = null;
 		List<RespuestaComiteExamenValoracion> respuestaComiteList = solicitudExamenValoracionRepository
 				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracionTmp.getIdExamenValoracion());
-		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteList.isEmpty() ? null : respuestaComiteList.get(0);
+		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteList.isEmpty() ? null
+				: respuestaComiteList.get(0);
 
 		if (ultimoRegistro != null
 				&& ultimoRegistro.getConceptoComite() != examenValoracionDto.getActaFechaRespuestaComite().get(0)
@@ -620,7 +621,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		List<RespuestaComiteExamenValoracion> respuestaComiteList = solicitudExamenValoracionRepository
 				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracion.getIdExamenValoracion());
-		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteList.isEmpty() ? null : respuestaComiteList.get(0);
+		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteList.isEmpty() ? null
+				: respuestaComiteList.get(0);
 
 		if (ultimoRegistro != null) {
 			// Actualizar los valores de ultimoRegistro

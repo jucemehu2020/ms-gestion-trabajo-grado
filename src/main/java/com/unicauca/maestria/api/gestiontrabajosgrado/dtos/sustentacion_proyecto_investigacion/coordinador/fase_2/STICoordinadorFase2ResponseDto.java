@@ -1,7 +1,6 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2;
 
-import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 
 import lombok.*;
 
@@ -13,13 +12,8 @@ import lombok.*;
 public class STICoordinadorFase2ResponseDto {
 
     private Long idSustentacionTI;
-    private String linkFormatoF;
-    private String urlDocumentacion;
-    private String linkFormatoG;
+    private List<RespuestaComiteSustentacionDto> actaFechaRespuestaComite;
     private String linkEstudioHojaVidaAcademica;
-    private Map<String, String> juradoInterno;
-    private Map<String, String> juradoExterno;
-    private String numeroActa;
-    private LocalDate fechaActa;
+    private String linkFormatoG;
 
 }

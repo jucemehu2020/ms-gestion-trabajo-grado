@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import lombok.*;
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,21 +14,20 @@ import javax.validation.constraints.NotNull;
 public class SustentacionTrabajoInvestigacionCoordinadorFase3Dto {
 
     @NotNull
-    private Long idTrabajoGrados; 
+    private Boolean juradosAceptados;
 
     @NotNull
-    private String linkActaSustentacionPublica;
+    private String numeroActaConsejo;
 
     @NotNull
-    private Boolean respuestaSustentacion;
+    private LocalDate fechaActaConsejo;
 
-    @NotNull
-    private String linkEstudioHojaVidaAcademicaGrado;
+    @Builder.Default
+    private String idJuradoInterno = "Sin cambios";
 
-    @NotNull
-    private String numeroActaFinal;
+    @Builder.Default
+    private String idJuradoExterno = "Sin cambios";
 
-    @NotNull
-    private LocalDate fechaActaFinal;
+    private EnvioEmailDto envioEmailDto;
 
 }

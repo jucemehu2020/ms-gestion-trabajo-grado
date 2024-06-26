@@ -28,6 +28,8 @@ public class SustentacionTrabajoInvestigacionDto {
     @NotNull
     private Long idJuradoExterno;
 
+    private Boolean conceptoCoordinador;
+
     @NotBlank
     private String linkFormatoG;
 
@@ -38,10 +40,10 @@ public class SustentacionTrabajoInvestigacionDto {
     private Boolean juradosAceptados;
 
     @NotBlank
-    private String numeroActa;
+    private String numeroActaConsejo;
 
     @NotNull
-    private LocalDate fechaActa;
+    private LocalDate fechaActaConsejo;
 
     @NotBlank
     private String linkFormatoH;

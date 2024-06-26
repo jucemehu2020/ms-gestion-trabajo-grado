@@ -1,7 +1,9 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
 import lombok.AllArgsConstructor;
@@ -22,8 +24,9 @@ import javax.persistence.*;
 public class SustentacionTrabajoInvestigacion {
 
     @Id
+    @Column(name = "id_sustentacion_trabajo_investigacion")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idSustentacionTI;
+    private Long idSustentacionTrabajoInvestigacion;
 
     private String linkFormatoF;
 
@@ -33,15 +36,21 @@ public class SustentacionTrabajoInvestigacion {
 
     private Long idJuradoExterno;
 
+    private Boolean conceptoCoordinador;
+
+    @OneToMany(mappedBy = "sustentacionTrabajoInvestigacion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<RespuestaComiteSustentacion> actaFechaRespuestaComite;
+
     private String linkFormatoG;
 
     private String linkEstudioHojaVidaAcademica;
 
     private Boolean juradosAceptados;
 
-    private String numeroActa;
+    private String numeroActaConsejo;
 
-    private LocalDate fechaActa;
+    private LocalDate fechaActaConsejo;
 
     private String linkFormatoH;
 
@@ -49,7 +58,7 @@ public class SustentacionTrabajoInvestigacion {
 
     private String linkActaSustentacionPublica;
 
-    private Boolean respuestaSustentacion;
+    private String respuestaSustentacion;
 
     private String linkEstudioHojaVidaAcademicaGrado;
 
