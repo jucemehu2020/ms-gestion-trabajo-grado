@@ -197,7 +197,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 	@Override
 	@Transactional
-	public SolicitudExamenValoracionResponseFase1Dto insertarInformacionCoordinadorFase1(Long idExamenValoracion,
+	public SolicitudExamenValoracionResponseFase1Dto insertarInformacionCoordinadorFase1(Long idTrabajoGrado,
 			SolicitudExamenValoracionCoordinadorFase1Dto examenValoracionDto,
 			BindingResult result) {
 
@@ -207,14 +207,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		ArrayList<String> correos = new ArrayList<>();
 
-		SolicitudExamenValoracion examenValoracion = solicitudExamenValoracionRepository
-				.findById(idExamenValoracion).orElseThrow(
-						() -> new ResourceNotFoundException(
-								"Examen de valoracion con id: " + idExamenValoracion + "no encontrado"));
-
-		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(examenValoracion.getIdTrabajoGrado().getId())
+		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
-						"TrabajoGrado con id: " + examenValoracion.getIdTrabajoGrado().getId() + " No encontrado"));
+						"TrabajoGrado con id: " + idTrabajoGrado + " No encontrado"));
+
+		SolicitudExamenValoracion examenValoracion = solicitudExamenValoracionRepository
+				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion())
+				.orElseThrow(() -> new ResourceNotFoundException(
+						"Examen de valoracion con id: " + idTrabajoGrado + " No encontrado"));
 
 		if (examenValoracionDto.getConceptoCoordinadorDocumentos()) {
 			correos.add(Constants.correoComite);
@@ -243,7 +243,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 	@Override
 	@Transactional
-	public SolicitudExamenValoracionCoordinadorResponseDto insertarInformacionCoordinadorFase2(Long idExamenValoracion,
+	public SolicitudExamenValoracionCoordinadorResponseDto insertarInformacionCoordinadorFase2(Long idTrabajoGrado,
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto,
 			BindingResult result) {
 		if (result.hasErrors()) {
@@ -252,14 +252,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		ArrayList<String> correos = new ArrayList<>();
 
-		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
-				.findById(idExamenValoracion).orElseThrow(
-						() -> new ResourceNotFoundException(
-								"Examen de valoracion con id: " + idExamenValoracion + "no encontrado"));
-
-		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(examenValoracionTmp.getIdTrabajoGrado().getId())
+		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
-						"TrabajoGrado con id: " + examenValoracionTmp.getIdTrabajoGrado().getId() + " No encontrado"));
+						"TrabajoGrado con id: " + idTrabajoGrado + " No encontrado"));
+
+		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
+				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion())
+				.orElseThrow(() -> new ResourceNotFoundException(
+						"Examen de valoracion con id: " + idTrabajoGrado + " No encontrado"));
 
 		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()) {
 			DocenteResponseDto docente = archivoClient
@@ -379,43 +379,47 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 	@Override
 	@Transactional(readOnly = true)
-	public SolicitudExamenValoracionResponseFase1Dto listarInformacionCoordinadorFase1(Long idExamenValoracion) {
-		Optional<SolicitudExamenValoracion> entityOptional = solicitudExamenValoracionRepository
-				.findById(idExamenValoracion);
+	public SolicitudExamenValoracionResponseFase1Dto listarInformacionCoordinadorFase1(Long idTrabajoGrado) {
+		SolicitudExamenValoracion entityOptional = solicitudExamenValoracionRepository
+				.findByIdTrabajoGradoId(idTrabajoGrado).orElseThrow(
+						() -> new ResourceNotFoundException(
+								"Trabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
 
 		SolicitudExamenValoracionResponseFase1Dto responseDto = examenValoracionResponseMapper
-				.toCoordinadorFase1Dto(entityOptional.get());
+				.toCoordinadorFase1Dto(entityOptional);
 
 		return responseDto;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public SolicitudExamenValoracionCoordinadorResponseDto listarInformacionCoordinadorFase2(Long idExamenValoracion) {
+	public SolicitudExamenValoracionCoordinadorResponseDto listarInformacionCoordinadorFase2(Long idTrabajoGrado) {
 		SolicitudExamenValoracion solicitudExamenValoracion = solicitudExamenValoracionRepository
-				.findById(idExamenValoracion).orElseThrow(
+				.findByIdTrabajoGradoId(idTrabajoGrado).orElseThrow(
 						() -> new ResourceNotFoundException(
-								"Examen de valoracion con id: " + idExamenValoracion + " no encontrado"));
+								"Trabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
 
 		return examenValoracionResponseMapper.toCoordinadorFase2Dto(solicitudExamenValoracion);
 	}
 
 	@Override
-	public SolicitudExamenValoracionDocenteResponseDto actualizarInformacionDocente(Long id,
+	public SolicitudExamenValoracionDocenteResponseDto actualizarInformacionDocente(Long idTrabajoGrado,
 			SolicitudExamenValoracionDocenteDto examenValoracionDto, BindingResult result) {
 
 		if (result.hasErrors()) {
 			throw new FieldErrorException(result);
 		}
 
-		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("Examen de valoracion con id: " + id + " no encontrado"));
-
 		// Busca el trabajo de grado
-		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(examenValoracionTmp.getIdTrabajoGrado().getId())
+		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(
 						() -> new ResourceNotFoundException("Trabajo de grado con id: "
-								+ examenValoracionTmp.getIdTrabajoGrado().getId() + " no encontrado"));
+								+ idTrabajoGrado + " no encontrado"));
+
+		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
+				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()).orElseThrow(
+						() -> new ResourceNotFoundException("Examen de valoracion con id: "
+								+ trabajoGrado.getExamenValoracion().getIdExamenValoracion() + " no encontrado"));
 
 		// EstudianteResponseDtoAll informacionEstudiantes = archivoClient
 		// .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
@@ -507,17 +511,19 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	}
 
 	@Override
-	public SolicitudExamenValoracionResponseFase1Dto actualizarInformacionCoordinadoFase1(Long id,
+	public SolicitudExamenValoracionResponseFase1Dto actualizarInformacionCoordinadoFase1(Long idTrabajoGrado,
 			SolicitudExamenValoracionCoordinadorFase1Dto examenValoracionFase1CoordinadorDto, BindingResult result) {
 
-		SolicitudExamenValoracion examenValoracionOld = solicitudExamenValoracionRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("Examen de valoracion con id: " + id + "no encontrado"));
-
 		// Busca el trabajo de grado
-		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(examenValoracionOld.getIdTrabajoGrado().getId())
+		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(
 						() -> new ResourceNotFoundException("Trabajo de grado con id: "
-								+ examenValoracionOld.getIdTrabajoGrado().getId() + " no encontrado"));
+								+ idTrabajoGrado + " no encontrado"));
+
+		SolicitudExamenValoracion examenValoracionOld = solicitudExamenValoracionRepository
+				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()).orElseThrow(
+						() -> new ResourceNotFoundException("Examen de valoracion con id: "
+								+ trabajoGrado.getExamenValoracion().getIdExamenValoracion() + "no encontrado"));
 
 		if (examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos() != examenValoracionOld
 				.getConceptoCoordinadorDocumentos()) {
@@ -554,15 +560,17 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	}
 
 	@Override
-	public SolicitudExamenValoracionCoordinadorResponseDto actualizarInformacionCoordinadorFase2(Long id,
+	public SolicitudExamenValoracionCoordinadorResponseDto actualizarInformacionCoordinadorFase2(Long idTrabajoGrado,
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto, BindingResult result) {
 
-		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("Examen de valoracion con id: " + id + " no encontrado"));
-
-		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(examenValoracionTmp.getIdTrabajoGrado().getId())
+		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id: "
-						+ examenValoracionTmp.getIdTrabajoGrado().getId() + " no encontrado"));
+						+ idTrabajoGrado + " no encontrado"));
+
+		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
+				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()).orElseThrow(
+						() -> new ResourceNotFoundException("Examen de valoracion con id: "
+								+ trabajoGrado.getExamenValoracion().getIdExamenValoracion() + "no encontrado"));
 
 		String rutaArchivo = identificacionArchivo(trabajoGrado);
 
@@ -669,7 +677,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		// Obtener información examen de valoración
 		Optional<SolicitudExamenValoracion> examenValoracion = solicitudExamenValoracionRepository
-				.findByIdTrabajoGradoId(idTrabajoGrado);
+				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion());
 
 		if (!examenValoracion.isPresent()) {
 			throw new ResourceNotFoundException(
@@ -705,12 +713,19 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 	@Override
 	@Transactional(readOnly = true)
-	public ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluador(Long idExamenValoracion) {
+	public ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluador(Long idTrabajoGrado) {
 
-		SolicitudExamenValoracion examenValoracion = solicitudExamenValoracionRepository.findById(idExamenValoracion)
+		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
+				.orElseThrow(() -> new ResourceNotFoundException(
+						"TrabajoGrado con id: " + idTrabajoGrado + " No encontrado"));
+
+		SolicitudExamenValoracion examenValoracion = solicitudExamenValoracionRepository
+				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion())
 				.orElseThrow(
 						() -> new ResourceNotFoundException(
-								"Examen de valoracion con id: " + idExamenValoracion + " no encontrado"));
+								"Examen de valoracion con id: "
+										+ trabajoGrado.getExamenValoracion().getIdExamenValoracion()
+										+ " no encontrado"));
 
 		List<AnexoSolicitudExamenValoracion> anexosSolicitudExamenValoracion = anexosSolicitudExamenValoracionRepository
 				.obtenerAnexosPorId(examenValoracion.getIdExamenValoracion());

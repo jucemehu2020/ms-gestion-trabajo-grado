@@ -13,9 +13,6 @@ import javax.validation.constraints.NotNull;
 public class ExamenValoracionCanceladoDto {
 
     @NotNull
-    private Long idTrabajoGrados;
-
-    @NotNull
     private Boolean estadoFinalizado;
 
     @NotBlank

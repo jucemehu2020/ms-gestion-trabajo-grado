@@ -88,11 +88,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         RespuestaExamenValoracion rtaExamenValoracion = respuestaExamenValoracionMapper
                                         .toEntity(respuestaExamenValoracionDto);
 
-                        // Se cambia el numero de estado
-                        // int numEstado =
-                        // validarEstado(respuestaExamenValoracionDto.getRespuestaExamenValoracion());
-                        // trabajoGrado.setNumeroEstado(numEstado);
-
                         String rutaArchivo = identificacionArchivo(trabajoGrado);
 
                         int numEstado = validarEstado(idTrabajoGrado,
@@ -144,12 +139,12 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         @Override
         @Transactional
         public ExamenValoracionCanceladoDto insertarInformacionCancelado(
+                        Long idTrabajoGrado,
                         ExamenValoracionCanceladoDto examenValoracionCanceladoDto,
                         BindingResult result) {
 
                 Long numeroNoAprobado = respuestaExamenValoracionRepository
-                                .countByTrabajoGradoIdAndRespuestaNoAprobado(
-                                                examenValoracionCanceladoDto.getIdTrabajoGrados());
+                                .countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado);
 
                 if (numeroNoAprobado == 4) {
 
@@ -158,11 +153,10 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         }
 
                         TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                        .findById(examenValoracionCanceladoDto.getIdTrabajoGrados())
+                                        .findById(idTrabajoGrado)
                                         .orElseThrow(() -> new ResourceNotFoundException(
                                                         "TrabajoGrado con id: "
-                                                                        + examenValoracionCanceladoDto
-                                                                                        .getIdTrabajoGrados()
+                                                                        + idTrabajoGrado
                                                                         + " No encontrado"));
 
                         trabajoGrado.setNumeroEstado(12);
@@ -250,7 +244,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
 
                 RespuestaExamenValoracionInformacionGeneralDto responseDtoInformacion = new RespuestaExamenValoracionInformacionGeneralDto();
-                ;
 
                 responseDtoInformacion.setTituloTrabajoGrado(trabajoGrado.getTitulo());
                 responseDtoInformacion.setIdEvaluadorInterno(docente.getPersona().getId());
@@ -265,8 +258,8 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idRespuestaExamen) {
-                return respuestaExamenValoracionRepository.findById(idRespuestaExamen)
+        public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idTrabajoGrado) {
+                return respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado)
                                 .stream()
                                 .map(respuestaExamenValoracionMapper::toDto)
                                 .collect(Collectors.groupingBy(

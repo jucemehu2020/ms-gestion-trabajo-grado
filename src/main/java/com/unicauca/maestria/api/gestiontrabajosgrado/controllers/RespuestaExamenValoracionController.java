@@ -39,16 +39,16 @@ public class RespuestaExamenValoracionController {
 
         @GetMapping("/{idRespuestaExamen}")
         public ResponseEntity<Map<String, List<RespuestaExamenValoracionDto>>> buscarPorId(
-                        @PathVariable Long idRespuestaExamen) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(respuestaExamenValoracion.buscarPorId(idRespuestaExamen));
+                                .body(respuestaExamenValoracion.buscarPorId(idTrabajoGrado));
         }
 
-        @PutMapping("/{idRespuestaExamen}")
-        public ResponseEntity<RespuestaExamenValoracionDto> actualizar(@PathVariable Long idRespuestaExamen,
+        @PutMapping("/{idTrabajoGrado}")
+        public ResponseEntity<RespuestaExamenValoracionDto> actualizar(@PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion, BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(respuestaExamenValoracion.actualizar(idRespuestaExamen, examenValoracion,
+                                .body(respuestaExamenValoracion.actualizar(idTrabajoGrado, examenValoracion,
                                                 result));
         }
 
@@ -59,13 +59,15 @@ public class RespuestaExamenValoracionController {
                                 .body(respuestaExamenValoracion.descargarArchivo(rutaArchivo));
         }
 
-        @PostMapping("/insertarInformacionCancelado")
+        @PostMapping("/insertarInformacionCancelado/{idTrabajoGrado}")
         public ResponseEntity<ExamenValoracionCanceladoDto> insertarInformacionCancelado(
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody ExamenValoracionCanceladoDto examenValoracionCanceladoDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(respuestaExamenValoracion
-                                                .insertarInformacionCancelado(examenValoracionCanceladoDto, result));
+                                                .insertarInformacionCancelado(idTrabajoGrado,
+                                                                examenValoracionCanceladoDto, result));
         }
 
         @GetMapping("/validarNumeroNoAprobado/{idTrabajoGrado}")

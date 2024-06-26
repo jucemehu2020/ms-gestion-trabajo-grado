@@ -136,7 +136,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         @Override
         @Transactional
         public GeneracionResolucionCoordinadorFase1ResponseDto insertarInformacionCoordinadorFase1(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase1Dto generacionResolucionDto,
                         BindingResult result) {
 
@@ -146,19 +146,20 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 ArrayList<String> correos = new ArrayList<>();
 
-                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
-                                .findById(idGeneracionResolucion)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con id: "
-                                                                + idGeneracionResolucion
-                                                                + " no encontrado"));
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(generacionResolucionTmp.getIdTrabajoGrado().getId())
+                                .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "TrabajoGrado con id: "
-                                                                + generacionResolucionTmp.getIdTrabajoGrado().getId()
+                                                                + idTrabajoGrado
                                                                 + " No encontrado"));
+
+                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Generacion de resolucion con id: "
+                                                                + trabajoGrado.getIdGeneracionResolucion()
+                                                                                .getIdGeneracionResolucion()
+                                                                + " no encontrado"));
 
                 if (generacionResolucionDto.getConceptoDocumentosCoordinador()) {
                         correos.add(Constants.correoComite);
@@ -208,7 +209,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         @Override
         @Transactional
         public GeneracionResolucionCoordinadorFase2ResponseDto insertarInformacionCoordinadorFase2(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto,
                         BindingResult result) {
 
@@ -218,19 +219,20 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 ArrayList<String> correos = new ArrayList<>();
 
-                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
-                                .findById(idGeneracionResolucion)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con id: "
-                                                                + idGeneracionResolucion
-                                                                + " no encontrado"));
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(generacionResolucionTmp.getIdTrabajoGrado().getId())
+                                .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "TrabajoGrado con id: "
-                                                                + generacionResolucionTmp.getIdTrabajoGrado().getId()
+                                                                + idTrabajoGrado
                                                                 + " No encontrado"));
+
+                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Generacion de resolucion con id: "
+                                                                + trabajoGrado.getIdGeneracionResolucion()
+                                                                                .getIdGeneracionResolucion()
+                                                                + " no encontrado"));
 
                 // Mapear DTO a entidad
                 GeneracionResolucion generarResolucion = generacionResolucionMapper.toEntity(generacionResolucionDto);
@@ -297,26 +299,27 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         @Override
         @Transactional
         public GeneracionResolucionCoordinadorFase3ResponseDto insertarInformacionCoordinadorFase3(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto,
                         BindingResult result) {
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
 
-                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
-                                .findById(idGeneracionResolucion)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con id: "
-                                                                + idGeneracionResolucion
-                                                                + " no encontrado"));
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(generacionResolucionTmp.getIdTrabajoGrado().getId())
+                                .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "TrabajoGrado con id: "
-                                                                + generacionResolucionTmp.getIdTrabajoGrado().getId()
+                                                                + idTrabajoGrado
                                                                 + " No encontrado"));
+
+                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Generacion de resolucion con id: "
+                                                                + trabajoGrado.getIdGeneracionResolucion()
+                                                                                .getIdGeneracionResolucion()
+                                                                + " no encontrado"));
 
                 trabajoGrado.setNumeroEstado(18);
 
@@ -338,12 +341,12 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
         @Override
         @Transactional(readOnly = true)
-        public GeneracionResolucionDocenteResponseDto listarInformacionDocente(Long idGeneracionResolucion) {
+        public GeneracionResolucionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado) {
                 GeneracionResolucion responseDto = generacionResolucionRepository
-                                .findById(idGeneracionResolucion)
+                                .findByIdTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Generacion de resolucion con id: "
-                                                                + idGeneracionResolucion
+                                                                + idTrabajoGrado
                                                                 + " no encontrado"));
 
                 Optional<TrabajoGrado> trabajoGrado = trabajoGradoRepository
@@ -359,11 +362,11 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         @Override
         @Transactional(readOnly = true)
         public GeneracionResolucionCoordinadorFase1ResponseDto listarInformacionCoordinadorFase1(
-                        Long idGeneracionResolucion) {
+                        Long idTrabajoGrado) {
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
-                                .findById(idGeneracionResolucion)
+                                .findByIdTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con id: " + idGeneracionResolucion
+                                                "Generacion de resolucion con id: " + idTrabajoGrado
                                                                 + " no encontrado"));
 
                 return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generacionResolucionTmp);
@@ -371,11 +374,11 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
         @Transactional(readOnly = true)
         public GeneracionResolucionCoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(
-                        Long idGeneracionResolucion) {
+                        Long idTrabajoGrado) {
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
-                                .findById(idGeneracionResolucion)
+                                .findByIdTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con id: " + idGeneracionResolucion
+                                                "Generacion de resolucion con id: " + idTrabajoGrado
                                                                 + " no encontrado"));
 
                 return generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucionTmp);
@@ -384,18 +387,18 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         @Override
         @Transactional(readOnly = true)
         public GeneracionResolucionCoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(
-                        Long idGeneracionResolucion) {
+                        Long idTrabajoGrado) {
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
-                                .findById(idGeneracionResolucion)
+                                .findByIdTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con id: " + idGeneracionResolucion
+                                                "Generacion de resolucion con id: " + idTrabajoGrado
                                                                 + " no encontrado"));
 
                 return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionTmp);
         }
 
         @Override
-        public GeneracionResolucionDocenteResponseDto actualizarInformacionDocente(Long id,
+        public GeneracionResolucionDocenteResponseDto actualizarInformacionDocente(Long idTrabajoGrado,
                         GeneracionResolucionDocenteDto generacionResolucionDocenteDto,
                         BindingResult result) {
 
@@ -403,15 +406,17 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new FieldErrorException(result);
                 }
 
-                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id: " + id
-                                                + " no encontrado"));
-
                 // Busca el trabajo de grado
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(generacionResolucionOld.getIdTrabajoGrado().getId())
+                                .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id: "
-                                                + generacionResolucionOld.getIdTrabajoGrado().getId()
+                                                + idTrabajoGrado
+                                                + " no encontrado"));
+
+                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
+                                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion())
+                                .orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id: "
+                                                + trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()
                                                 + " no encontrado"));
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
@@ -460,7 +465,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         }
 
         @Override
-        public GeneracionResolucionCoordinadorFase1ResponseDto actualizarInformacionCoordinadorFase1(Long id,
+        public GeneracionResolucionCoordinadorFase1ResponseDto actualizarInformacionCoordinadorFase1(
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase1Dto generacionResolucionDocenteDto,
                         BindingResult result) {
 
@@ -468,14 +474,16 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new FieldErrorException(result);
                 }
 
-                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id: " + id
+                TrabajoGrado trabajoGrado = trabajoGradoRepository
+                                .findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id: "
+                                                + idTrabajoGrado
                                                 + " no encontrado"));
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(generacionResolucionOld.getIdTrabajoGrado().getId())
-                                .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id: "
-                                                + generacionResolucionOld.getIdTrabajoGrado().getId()
+                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
+                                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion())
+                                .orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id: "
+                                                + trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()
                                                 + " no encontrado"));
 
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
@@ -517,21 +525,23 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
         @Override
         public GeneracionResolucionCoordinadorFase2ResponseDto actualizarInformacionCoordinadorFase2(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase1Dto,
                         BindingResult result) {
 
-                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
-                                .findById(idGeneracionResolucion)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Examen de valoracion con id: " + idGeneracionResolucion
-                                                                + " no encontrado"));
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(generacionResolucionOld.getIdTrabajoGrado().getId())
+                                .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id: "
-                                                + generacionResolucionOld.getIdTrabajoGrado().getId()
+                                                + idTrabajoGrado
                                                 + " no encontrado"));
+
+                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
+                                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Examen de valoracion con id: "
+                                                                + trabajoGrado.getIdGeneracionResolucion()
+                                                                                .getIdGeneracionResolucion()
+                                                                + " no encontrado"));
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
 
@@ -639,7 +649,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         }
 
         @Override
-        public GeneracionResolucionCoordinadorFase3ResponseDto actualizarInformacionCoordinadorFase3(Long id,
+        public GeneracionResolucionCoordinadorFase3ResponseDto actualizarInformacionCoordinadorFase3(
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucionCoordinadorFase3Dto,
                         BindingResult result) {
 
@@ -647,9 +658,19 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new FieldErrorException(result);
                 }
 
-                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id: " + id
+                TrabajoGrado trabajoGrado = trabajoGradoRepository
+                                .findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id: "
+                                                + idTrabajoGrado
                                                 + " no encontrado"));
+
+                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
+                                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Examen de valoracion con id: "
+                                                                + trabajoGrado.getIdGeneracionResolucion()
+                                                                                .getIdGeneracionResolucion()
+                                                                + " no encontrado"));
 
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
 

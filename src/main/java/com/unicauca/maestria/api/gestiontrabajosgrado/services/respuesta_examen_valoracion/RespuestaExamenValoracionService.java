@@ -19,6 +19,7 @@ public interface RespuestaExamenValoracionService {
                         BindingResult result);
 
         public ExamenValoracionCanceladoDto insertarInformacionCancelado(
+                        Long idTrabajoGrado,
                         ExamenValoracionCanceladoDto examenValoracionCanceladoDto,
                         BindingResult result);
 
