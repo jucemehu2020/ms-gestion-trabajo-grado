@@ -593,6 +593,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				envioCorreos.enviarCorreosCorrecion(correos,
 						examenValoracionDto.getEnvioEmailDto().getAsunto(),
 						examenValoracionDto.getEnvioEmailDto().getMensaje());
+				//Eliminar documento oficio subido
+				FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkOficioDirigidoEvaluadores());
 				trabajoGrado.setNumeroEstado(4);
 			} else {
 				examenValoracionDto.setLinkOficioDirigidoEvaluadores(FilesUtilities.guardarArchivoNew2(rutaArchivo,

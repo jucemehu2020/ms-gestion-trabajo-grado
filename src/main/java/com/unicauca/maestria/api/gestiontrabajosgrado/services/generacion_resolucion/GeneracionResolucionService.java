@@ -27,51 +27,51 @@ public interface GeneracionResolucionService {
                         BindingResult result);
 
         public GeneracionResolucionCoordinadorFase1ResponseDto insertarInformacionCoordinadorFase1(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase1Dto generacionResolucionDto,
                         BindingResult result);
 
         public GeneracionResolucionCoordinadorFase2ResponseDto insertarInformacionCoordinadorFase2(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucion,
                         BindingResult result);
 
         public GeneracionResolucionCoordinadorFase3ResponseDto insertarInformacionCoordinadorFase3(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucion,
                         BindingResult result);
 
-        public GeneracionResolucionDocenteResponseDto listarInformacionDocente(Long idGeneracionResolucion);
+        public GeneracionResolucionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado);
 
-        public GeneracionResolucionCoordinadorFase1ResponseDto listarInformacionCoordinadorFase1(Long idGeneracionResolucion);
+        public GeneracionResolucionCoordinadorFase1ResponseDto listarInformacionCoordinadorFase1(Long idTrabajoGrado);
 
-        public GeneracionResolucionCoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(Long idGeneracionResolucion);
+        public GeneracionResolucionCoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(Long idTrabajoGrado);
 
-        public GeneracionResolucionCoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(Long idGeneracionResolucion);
+        public GeneracionResolucionCoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(Long idTrabajoGrado);
 
         public String descargarArchivo(RutaArchivoDto rutaArchivo);
 
-        public ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviarAlComite(Long idGeneracionResolucion);
+        public ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviarAlComite(Long idTrabajoGrado);
 
         public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado);
 
         public GeneracionResolucionDocenteResponseDto actualizarInformacionDocente(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionDocenteDto generacionResolucionDocenteDto,
                         BindingResult result);
 
         public GeneracionResolucionCoordinadorFase1ResponseDto actualizarInformacionCoordinadorFase1(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase1Dto generacionResolucionDocenteDto,
                         BindingResult result);
 
         public GeneracionResolucionCoordinadorFase2ResponseDto actualizarInformacionCoordinadorFase2(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase1Dto,
                         BindingResult result);
 
         public GeneracionResolucionCoordinadorFase3ResponseDto actualizarInformacionCoordinadorFase3(
-                        Long idGeneracionResolucion,
+                        Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucionDocenteDto,
                         BindingResult result);
 }

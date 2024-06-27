@@ -28,12 +28,14 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.ObtenerDocumentosParaEnvioCorreoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionInformacionGeneralDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Fase2.ExamenValoracionCanceladoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.ExamenValoracionCanceladoMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenValoracionMapper;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosRespuestaExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.ExamenValoracionCanceladoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
@@ -50,6 +52,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         private final ExamenValoracionCanceladoRepository examenValoracionCanceladoRepository;
         private final AnexosRespuestaExamenValoracionRepository anexosRespuestaExamenValoracionRepository;
         private final RespuestaExamenValoracionMapper respuestaExamenValoracionMapper;
+        private final RespuestaExamenValoracionResponseMapper respuestaExamenValoracionResponseMapper;
         private final ExamenValoracionCanceladoMapper examenValoracionCanceladoMapper;
         private final TrabajoGradoRepository trabajoGradoRepository;
 
@@ -63,7 +66,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional
-        public RespuestaExamenValoracionDto crear(Long idTrabajoGrado,
+        public RespuestaExamenValoracionResponseDto crear(Long idTrabajoGrado,
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         BindingResult result) {
 
@@ -130,7 +133,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 rtaExamenValoracion.setPermitidoExamen(false);
                         }
 
-                        return respuestaExamenValoracionMapper.toDto(examenValoracionRes);
+                        return respuestaExamenValoracionResponseMapper.toDto(examenValoracionRes);
                 } else {
                         throw new InformationException("Ya no es permitido registrar mas respuestas");
                 }
@@ -258,10 +261,10 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idTrabajoGrado) {
-                return respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado)
+        public Map<String, List<RespuestaExamenValoracionResponseDto>> buscarPorId(Long idRespuestaExamen) {
+                return respuestaExamenValoracionRepository.findById(idRespuestaExamen)
                                 .stream()
-                                .map(respuestaExamenValoracionMapper::toDto)
+                                .map(respuestaExamenValoracionResponseMapper::toDto)
                                 .collect(Collectors.groupingBy(
                                                 respuesta -> "Interno".equalsIgnoreCase(respuesta.getTipoEvaluador())
                                                                 ? "evaluador_interno"
@@ -269,7 +272,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         }
 
         @Override
-        public RespuestaExamenValoracionDto actualizar(Long idRespuestaExamen,
+        public RespuestaExamenValoracionResponseDto actualizar(Long idRespuestaExamen,
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         BindingResult result) {
 
@@ -331,7 +334,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         responseExamenValoracion = respuestaExamenValoracionRepository
                                         .save(respuestaExamenValoracionTmp);
                 }
-                return respuestaExamenValoracionMapper.toDto(responseExamenValoracion);
+                return respuestaExamenValoracionResponseMapper.toDto(responseExamenValoracion);
         }
 
         private void actualizarAnexos(RespuestaExamenValoracion examenValoracionTmp,

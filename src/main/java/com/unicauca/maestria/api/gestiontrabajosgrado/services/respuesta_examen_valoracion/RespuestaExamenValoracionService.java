@@ -10,11 +10,12 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.ObtenerDocumentosParaEnvioCorreoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionInformacionGeneralDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Fase2.ExamenValoracionCanceladoDto;
 
 public interface RespuestaExamenValoracionService {
 
-        public RespuestaExamenValoracionDto crear(Long idTrabajoGrado,
+        public RespuestaExamenValoracionResponseDto crear(Long idTrabajoGrado,
                         RespuestaExamenValoracionDto respuestaExamenValoracion,
                         BindingResult result);
 
@@ -23,11 +24,11 @@ public interface RespuestaExamenValoracionService {
                         ExamenValoracionCanceladoDto examenValoracionCanceladoDto,
                         BindingResult result);
 
-        public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idRespuestaExamen);
+        public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idTrabajoGrado);
 
-        public Map<String, List<RespuestaExamenValoracionDto>> buscarPorId(Long idRespuestaExamen);
+        public Map<String, List<RespuestaExamenValoracionResponseDto>> buscarPorId(Long idRespuestaExamen);
 
-        public RespuestaExamenValoracionDto actualizar(Long idRespuestaExamen,
+        public RespuestaExamenValoracionResponseDto actualizar(Long idRespuestaExamen,
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         BindingResult result);
 

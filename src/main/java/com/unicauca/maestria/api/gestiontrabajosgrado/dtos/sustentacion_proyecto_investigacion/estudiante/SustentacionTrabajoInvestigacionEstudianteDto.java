@@ -11,9 +11,6 @@ import javax.validation.constraints.NotNull;
 public class SustentacionTrabajoInvestigacionEstudianteDto {
 
     @NotNull
-    private Long idTrabajoGrados; 
-
-    @NotNull
     private String linkFormatoH;
 
     @NotNull

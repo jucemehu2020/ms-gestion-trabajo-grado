@@ -15,8 +15,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_va
 @Builder
 public class RespuestaExamenValoracionDto {
 
-    private Long idRespuestaExamenValoracion;
-
     @NotBlank
     private String linkFormatoB;
 
@@ -40,8 +38,6 @@ public class RespuestaExamenValoracionDto {
     private String tipoEvaluador;
 
     private Boolean permitidoExamen;
-
-    //private TrabajoGradoResponseDto trabajoGrado2;
 
     private InformacionEnvioDto informacionEnvioDto;
 

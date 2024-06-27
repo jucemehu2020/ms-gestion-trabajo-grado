@@ -18,10 +18,8 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase2Dto {
     @NotNull
     private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
 
-    @NotNull
     private String linkEstudioHojaVidaAcademica;
 
-    @NotNull
     private String linkFormatoG;
 
     @NotNull

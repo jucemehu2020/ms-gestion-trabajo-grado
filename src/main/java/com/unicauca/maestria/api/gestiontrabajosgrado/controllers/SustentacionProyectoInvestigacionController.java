@@ -47,105 +47,109 @@ public class SustentacionProyectoInvestigacionController {
                                                 result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadoFase1/{idSustentacion}")
+        @PostMapping("/insertarInformacionCoordinadoFase1/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase1ResponseDto> insertarInformacionCoordinadoFase1(
-                        @PathVariable Long idSustentacion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(sustentacionProyectoInvestigacion.insertarInformacionCoordinadoFase1(
-                                                idSustentacion,
+                                                idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadoFase2/{idSustentacion}")
+        @PostMapping("/insertarInformacionCoordinadoFase2/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase2ResponseDto> insertarInformacionCoordinadoFase2(
-                        @PathVariable Long idSustentacion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(sustentacionProyectoInvestigacion.insertarInformacionCoordinadoFase2(
-                                                idSustentacion,
+                                                idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadoFase3/{idSustentacion}")
+        @PostMapping("/insertarInformacionCoordinadoFase3/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase3ResponseDto> insertarInformacionCoordinadoFase3(
-                        @PathVariable Long idSustentacion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(sustentacionProyectoInvestigacion.insertarInformacionCoordinadoFase3(
-                                                idSustentacion,
+                                                idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @PostMapping("/insertarInformacionEstudiante/{idSustentacion}")
+        @PostMapping("/insertarInformacionEstudiante/{idTrabajoGrado}")
         public ResponseEntity<SustentacionTrabajoInvestigacionEstudianteResponseDto> insertarInformacionEstudiante(
-                        @PathVariable Long idSustentacion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(sustentacionProyectoInvestigacion.insertarInformacionEstudiante(idSustentacion,
+                                .body(sustentacionProyectoInvestigacion.insertarInformacionEstudiante(idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadoFase4/{idSustentacion}")
+        @PostMapping("/insertarInformacionCoordinadoFase4/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase4ResponseDto> insertarInformacionCoordinadoFase4(
-                        @PathVariable Long idSustentacion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(sustentacionProyectoInvestigacion.insertarInformacionCoordinadoFase4(
-                                                idSustentacion,
+                                                idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @GetMapping("/listarInformacionDocente/{id}")
+        @GetMapping("/listarInformacionDocente/{idTrabajoGrado}")
         public ResponseEntity<SustentacionTrabajoInvestigacionDocenteResponseDto> listarInformacionDocente(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(sustentacionProyectoInvestigacion.listarInformacionDocente(id));
+                                .body(sustentacionProyectoInvestigacion.listarInformacionDocente(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionCoordinadorFase1/{id}")
+        @GetMapping("/listarInformacionCoordinadorFase1/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase1ResponseDto> listarInformacionCoordinadorFase1(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(sustentacionProyectoInvestigacion.listarInformacionCoordinadorFase1(id));
+                                .body(sustentacionProyectoInvestigacion
+                                                .listarInformacionCoordinadorFase1(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionCoordinadorFase2/{id}")
+        @GetMapping("/listarInformacionCoordinadorFase2/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase2ResponseDto> listarInformacionCoordinadorFase2(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(sustentacionProyectoInvestigacion.listarInformacionCoordinadorFase2(id));
+                                .body(sustentacionProyectoInvestigacion
+                                                .listarInformacionCoordinadorFase2(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionCoordinadorFase3/{id}")
+        @GetMapping("/listarInformacionCoordinadorFase3/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase3ResponseDto> listarInformacionCoordinadorFase3(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(sustentacionProyectoInvestigacion.listarInformacionCoordinadorFase3(id));
+                                .body(sustentacionProyectoInvestigacion
+                                                .listarInformacionCoordinadorFase3(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionEstudiante/{id}")
+        @GetMapping("/listarInformacionEstudiante/{idTrabajoGrado}")
         public ResponseEntity<SustentacionTrabajoInvestigacionEstudianteResponseDto> listarInformacionEstudiante(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(sustentacionProyectoInvestigacion.listarInformacionEstudiante(id));
+                                .body(sustentacionProyectoInvestigacion.listarInformacionEstudiante(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionCoordinadorFase4/{id}")
+        @GetMapping("/listarInformacionCoordinadorFase4/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase4ResponseDto> listarInformacionCoordinadorFase4(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(sustentacionProyectoInvestigacion.listarInformacionCoordinadorFase4(id));
+                                .body(sustentacionProyectoInvestigacion
+                                                .listarInformacionCoordinadorFase4(idTrabajoGrado));
         }
 
         @PostMapping("/descargarDocumento")
@@ -168,72 +172,72 @@ public class SustentacionProyectoInvestigacionController {
                                 .body(sustentacionProyectoInvestigacion.listarEstadosExamenValoracion(numeroEstado));
         }
 
-        @PostMapping("/actualizarInformacionDocente/{idSustentacion}")
+        @PutMapping("/actualizarInformacionDocente/{idTrabajoGrado}")
         public ResponseEntity<SustentacionTrabajoInvestigacionDocenteResponseDto> actualizarInformacionDocente(
-                        @PathVariable Long idSustentacion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(sustentacionProyectoInvestigacion.actualizarInformacionDocente(idSustentacion,
+                                .body(sustentacionProyectoInvestigacion.actualizarInformacionDocente(idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @PostMapping("/actualizarInformacionCoordinadoFase1/{idSustentacion}")
+        @PutMapping("/actualizarInformacionCoordinadoFase1/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase1ResponseDto> actualizarInformacionCoordinadoFase1(
-                        @PathVariable Long idSustentacion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(sustentacionProyectoInvestigacion.actualizarInformacionCoordinadoFase1(
-                                                idSustentacion,
+                                                idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @PostMapping("/actualizarInformacionCoordinadoFase2/{idSustentacion}")
+        @PutMapping("/actualizarInformacionCoordinadoFase2/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase2ResponseDto> actualizarInformacionCoordinadoFase2(
-                        @PathVariable Long idSustentacion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(sustentacionProyectoInvestigacion.actualizarInformacionCoordinadoFase2(
-                                                idSustentacion,
+                                                idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @PostMapping("/actualizarInformacionEstudiante/{idSustentacion}")
-        public ResponseEntity<STICoordinadorFase3ResponseDto> actualizarInformacionEstudiante(
-                        @PathVariable Long idSustentacion,
+        @PutMapping("/actualizarInformacionCoordinadoFase3/{idTrabajoGrado}")
+        public ResponseEntity<STICoordinadorFase3ResponseDto> actualizarInformacionCoordinadoFase3(
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(sustentacionProyectoInvestigacion.actualizarInformacionCoordinadoFase3(
-                                                idSustentacion,
+                                .body(sustentacionProyectoInvestigacion.actualizarInformacionCoordinadoFase3(idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @PostMapping("/actualizarInformacionCoordinadoFase3/{idSustentacion}")
-        public ResponseEntity<SustentacionTrabajoInvestigacionEstudianteResponseDto> actualizarInformacionCoordinadoFase3(
-                        @PathVariable Long idSustentacion,
+        @PutMapping("/actualizarInformacionEstudiante/{idTrabajoGrado}")
+        public ResponseEntity<SustentacionTrabajoInvestigacionEstudianteResponseDto> actualizarInformacionEstudiante(
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(sustentacionProyectoInvestigacion.actualizarInformacionEstudiante(idSustentacion,
+                                .body(sustentacionProyectoInvestigacion.actualizarInformacionEstudiante(
+                                                idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }
 
-        @PostMapping("/actualizarInformacionCoordinadoFase4/{idSustentacion}")
+        @PutMapping("/actualizarInformacionCoordinadoFase4/{idTrabajoGrado}")
         public ResponseEntity<STICoordinadorFase4ResponseDto> actualizarInformacionCoordinadoFase4(
-                        @PathVariable Long idSustentacion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(sustentacionProyectoInvestigacion.actualizarInformacionCoordinadoFase4(
-                                                idSustentacion,
+                                                idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }

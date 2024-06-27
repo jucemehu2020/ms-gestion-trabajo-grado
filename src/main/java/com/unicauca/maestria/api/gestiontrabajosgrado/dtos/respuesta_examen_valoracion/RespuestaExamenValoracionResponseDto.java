@@ -23,5 +23,5 @@ public class RespuestaExamenValoracionResponseDto {
     private LocalDate fechaMaximaEntrega;
     private String idEvaluador;
     private String tipoEvaluador;
-    private String observacion;
+    
 }

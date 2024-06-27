@@ -27,27 +27,27 @@ public interface SustentacionProyectoInvestigacionService {
                         BindingResult result);
 
         public STICoordinadorFase1ResponseDto insertarInformacionCoordinadoFase1(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
                         BindingResult result);
 
         public STICoordinadorFase2ResponseDto insertarInformacionCoordinadoFase2(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
                         BindingResult result);
 
         public STICoordinadorFase3ResponseDto insertarInformacionCoordinadoFase3(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
                         BindingResult result);
 
         public SustentacionTrabajoInvestigacionEstudianteResponseDto insertarInformacionEstudiante(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
                         BindingResult result);
 
         public STICoordinadorFase4ResponseDto insertarInformacionCoordinadoFase4(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
                         BindingResult result);
 
@@ -74,32 +74,32 @@ public interface SustentacionProyectoInvestigacionService {
         public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado);
 
         public SustentacionTrabajoInvestigacionDocenteResponseDto actualizarInformacionDocente(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,
                         BindingResult result);
 
         public STICoordinadorFase1ResponseDto actualizarInformacionCoordinadoFase1(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
                         BindingResult result);
 
         public STICoordinadorFase2ResponseDto actualizarInformacionCoordinadoFase2(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
                         BindingResult result);
 
         public STICoordinadorFase3ResponseDto actualizarInformacionCoordinadoFase3(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
                         BindingResult result);
 
         public SustentacionTrabajoInvestigacionEstudianteResponseDto actualizarInformacionEstudiante(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
                         BindingResult result);
 
         public STICoordinadorFase4ResponseDto actualizarInformacionCoordinadoFase4(
-                        Long idSustentacion,
+                        Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
                         BindingResult result);
 }

@@ -31,12 +31,12 @@ public interface SolicitudExamenValoracionService {
         public SolicitudExamenValoracionDocenteResponseDto insertarInformacionDocente(Long idTrabajoGrado,
                         SolicitudExamenValoracionDocenteDto informacionDocente, BindingResult result);
 
-        public SolicitudExamenValoracionResponseFase1Dto insertarInformacionCoordinadorFase1(Long idExamenValoracion,
+        public SolicitudExamenValoracionResponseFase1Dto insertarInformacionCoordinadorFase1(Long idTrabajoGrado,
                         SolicitudExamenValoracionCoordinadorFase1Dto examenValoracionDto,
                         BindingResult result);
 
         public SolicitudExamenValoracionCoordinadorResponseDto insertarInformacionCoordinadorFase2(
-                        Long idExamenValoracion,
+                        Long idTrabajoGrado,
                         SolicitudExamenValoracionCoordinadorFase2Dto informacionDocente, BindingResult result);
 
         // public SolicitudExamenValoracionResponseDto
@@ -44,10 +44,10 @@ public interface SolicitudExamenValoracionService {
 
         public SolicitudExamenValoracionDocenteResponseListDto listarInformacionDocente(Long idTrabajoGrado);
 
-        public SolicitudExamenValoracionResponseFase1Dto listarInformacionCoordinadorFase1(Long idExamenValoracion);
+        public SolicitudExamenValoracionResponseFase1Dto listarInformacionCoordinadorFase1(Long idTrabajoGrado);
 
         public SolicitudExamenValoracionCoordinadorResponseDto listarInformacionCoordinadorFase2(
-                        Long idExamenValoracion);
+                        Long idTrabajoGrado);
 
         // public SolicitudExamenValoracionResponseDto actualizar(Long id,
         // SolicitudExamenValoracionDto examenValoracionDto, BindingResult result);
@@ -62,11 +62,11 @@ public interface SolicitudExamenValoracionService {
 
         public DatosFormatoBResponseDto obtenerInformacionFormatoB(Long idTrabajoGrado);
 
-        public ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluador(Long idExamenValoracion);
+        public ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluador(Long idTrabajoGrado);
 
         public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado);
 
-        public SolicitudExamenValoracionResponseFase1Dto actualizarInformacionCoordinadoFase1(Long id,
+        public SolicitudExamenValoracionResponseFase1Dto actualizarInformacionCoordinadoFase1(Long idTrabajoGrado,
                         SolicitudExamenValoracionCoordinadorFase1Dto examenValoracionFase1CoordinadorDto,
                         BindingResult result);
 

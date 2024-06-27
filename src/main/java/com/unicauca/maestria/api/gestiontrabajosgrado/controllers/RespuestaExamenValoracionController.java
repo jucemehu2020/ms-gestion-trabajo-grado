@@ -15,6 +15,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.ObtenerDocumentosParaEnvioCorreoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Fase2.ExamenValoracionCanceladoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion.RespuestaExamenValoracionService;
 
@@ -30,7 +31,7 @@ public class RespuestaExamenValoracionController {
         private final RespuestaExamenValoracionService respuestaExamenValoracion;
 
         @PostMapping("/{idTrabajoGrado}")
-        public ResponseEntity<RespuestaExamenValoracionDto> crear(@PathVariable Long idTrabajoGrado,
+        public ResponseEntity<RespuestaExamenValoracionResponseDto> crear(@PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
@@ -38,17 +39,17 @@ public class RespuestaExamenValoracionController {
         }
 
         @GetMapping("/{idRespuestaExamen}")
-        public ResponseEntity<Map<String, List<RespuestaExamenValoracionDto>>> buscarPorId(
-                        @PathVariable Long idTrabajoGrado) {
+        public ResponseEntity<Map<String, List<RespuestaExamenValoracionResponseDto>>> buscarPorId(
+                        @PathVariable Long idRespuestaExamen) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(respuestaExamenValoracion.buscarPorId(idTrabajoGrado));
+                                .body(respuestaExamenValoracion.buscarPorId(idRespuestaExamen));
         }
 
-        @PutMapping("/{idTrabajoGrado}")
-        public ResponseEntity<RespuestaExamenValoracionDto> actualizar(@PathVariable Long idTrabajoGrado,
+        @PutMapping("/{idRespuestaExamen}")
+        public ResponseEntity<RespuestaExamenValoracionResponseDto> actualizar(@PathVariable Long idRespuestaExamen,
                         @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion, BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(respuestaExamenValoracion.actualizar(idTrabajoGrado, examenValoracion,
+                                .body(respuestaExamenValoracion.actualizar(idRespuestaExamen, examenValoracion,
                                                 result));
         }
 

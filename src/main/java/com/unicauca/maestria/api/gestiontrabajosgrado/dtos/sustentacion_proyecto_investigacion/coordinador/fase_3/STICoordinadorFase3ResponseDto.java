@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 public class STICoordinadorFase3ResponseDto {
 
-    private Long idSustentacionTI;
+    private Long idSustentacionTrabajoInvestigacion;
     private Boolean juradosAceptados;
     private String numeroActaConsejo;
     private LocalDate fechaActaConsejo;

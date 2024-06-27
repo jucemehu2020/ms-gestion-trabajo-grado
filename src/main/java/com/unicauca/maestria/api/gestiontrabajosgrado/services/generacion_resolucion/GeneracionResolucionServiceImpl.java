@@ -194,10 +194,18 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
         @Override
         @Transactional(readOnly = true)
-        public ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviarAlComite(Long idGeneracionResolucion) {
+        public ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviarAlComite(Long idTrabajoGrado) {
+
+                TrabajoGrado trabajoGrado = trabajoGradoRepository
+                                .findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "TrabajoGrado con id: "
+                                                                + idTrabajoGrado
+                                                                + " No encontrado"));
 
                 GeneracionResolucion generacionResolucion = generacionResolucionRepository
-                                .findByTrabajoGradoId(idGeneracionResolucion);
+                                .findByTrabajoGradoId(
+                                                trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion());
 
                 ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviar = new ObtenerDocumentosParaEnvioDto(
                                 FilesUtilities.recuperarArchivo(generacionResolucion.getLinkAnteproyectoFinal()),
@@ -366,7 +374,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
                                 .findByIdTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con id: " + idTrabajoGrado
+                                                "Trabajo de grado con id: " + idTrabajoGrado
                                                                 + " no encontrado"));
 
                 return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generacionResolucionTmp);
@@ -378,7 +386,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
                                 .findByIdTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con id: " + idTrabajoGrado
+                                                "Trabajo de grado con id: " + idTrabajoGrado
                                                                 + " no encontrado"));
 
                 return generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucionTmp);
@@ -568,9 +576,11 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 generacionResolucionCoordinadorFase1Dto.getEnvioEmail().getAsunto(),
                                                 generacionResolucionCoordinadorFase1Dto.getEnvioEmail()
                                                                 .getMensaje());
+                                FilesUtilities.deleteFileExample(
+                                                generacionResolucionOld.getLinkSolicitudConsejoFacultad());
                                 trabajoGrado.setNumeroEstado(4);
                         } else {
-
+                                correos.add(Constants.correoConsejo);
                                 Map<String, Object> documentosParaConsejo = new HashMap<>();
                                 String[] solicitudConsejoFacultad = generacionResolucionCoordinadorFase1Dto
                                                 .getLinkSolicitudConsejoFacultad()

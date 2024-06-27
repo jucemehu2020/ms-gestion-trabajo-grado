@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.DatosFormatoBResponseDto;
@@ -64,78 +63,78 @@ public class SolicitudExamenValoracionController {
                                                                 result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadorFase1/{idExamenValoracion}")
+        @PostMapping("/insertarInformacionCoordinadorFase1/{idTrabajoGrado}")
         public ResponseEntity<SolicitudExamenValoracionResponseFase1Dto> insertarInformacionCoordinadorFase1(
-                        @PathVariable Long idExamenValoracion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase1Dto informacionCoordinador,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(serviceSolicitudExamenValoracion.insertarInformacionCoordinadorFase1(
-                                                idExamenValoracion,
+                                        idTrabajoGrado,
                                                 informacionCoordinador,
                                                 result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadorFase2/{idExamenValoracion}")
+        @PostMapping("/insertarInformacionCoordinadorFase2/{idTrabajoGrado}")
         public ResponseEntity<SolicitudExamenValoracionCoordinadorResponseDto> insertarInformacionCoordinadorFase2(
-                        @PathVariable Long idExamenValoracion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase2Dto informacionCoordinador,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(serviceSolicitudExamenValoracion.insertarInformacionCoordinadorFase2(
-                                                idExamenValoracion,
+                                        idTrabajoGrado,
                                                 informacionCoordinador,
                                                 result));
         }
 
-        @GetMapping("/listarInformacionDocente/{id}")
+        @GetMapping("/listarInformacionDocente/{idTrabajoGrado}")
         public ResponseEntity<SolicitudExamenValoracionDocenteResponseListDto> listarInformacionDocente(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(serviceSolicitudExamenValoracion.listarInformacionDocente(id));
+                                .body(serviceSolicitudExamenValoracion.listarInformacionDocente(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionCoordinadorFase1/{idExamenValoracion}")
+        @GetMapping("/listarInformacionCoordinadorFase1/{idTrabajoGrado}")
         public ResponseEntity<SolicitudExamenValoracionResponseFase1Dto> listarInformacionCoordinadorFase1(
-                        @PathVariable Long idExamenValoracion) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(serviceSolicitudExamenValoracion
-                                                .listarInformacionCoordinadorFase1(idExamenValoracion));
+                                                .listarInformacionCoordinadorFase1(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionCoordinadorFase2/{id}")
+        @GetMapping("/listarInformacionCoordinadorFase2/{idTrabajoGrado}")
         public ResponseEntity<SolicitudExamenValoracionCoordinadorResponseDto> listarInformacionCoordinadorFase2(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(serviceSolicitudExamenValoracion.listarInformacionCoordinadorFase2(id));
+                                .body(serviceSolicitudExamenValoracion.listarInformacionCoordinadorFase2(idTrabajoGrado));
         }
 
-        @PutMapping("/actualizarInformacionDocente/{id}")
+        @PutMapping("/actualizarInformacionDocente/{idTrabajoGrado}")
         public ResponseEntity<SolicitudExamenValoracionDocenteResponseDto> actualizarInformacionDocente(
-                        @PathVariable Long id, @Valid @RequestBody SolicitudExamenValoracionDocenteDto examenValoracion,
+                        @PathVariable Long idTrabajoGrado, @Valid @RequestBody SolicitudExamenValoracionDocenteDto examenValoracion,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(serviceSolicitudExamenValoracion.actualizarInformacionDocente(id,
+                                .body(serviceSolicitudExamenValoracion.actualizarInformacionDocente(idTrabajoGrado,
                                                 examenValoracion, result));
         }
 
-        @PutMapping("/actualizarInformacionCoordinadorFase1/{id}")
+        @PutMapping("/actualizarInformacionCoordinadorFase1/{idTrabajoGrado}")
         public ResponseEntity<SolicitudExamenValoracionResponseFase1Dto> actualizarInformacionCoordinadorFase1(
-                        @PathVariable Long id,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase1Dto examenValoracion,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(serviceSolicitudExamenValoracion.actualizarInformacionCoordinadoFase1(id,
+                                .body(serviceSolicitudExamenValoracion.actualizarInformacionCoordinadoFase1(idTrabajoGrado,
                                                 examenValoracion, result));
         }
 
-        @PutMapping("/actualizarInformacionCoordinadorFase2/{id}")
+        @PutMapping("/actualizarInformacionCoordinadorFase2/{idTrabajoGrado}")
         public ResponseEntity<SolicitudExamenValoracionCoordinadorResponseDto> actualizarInformacionCoordinadorFase2(
-                        @PathVariable Long id,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase2Dto examenValoracion,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(serviceSolicitudExamenValoracion.actualizarInformacionCoordinadorFase2(id,
+                                .body(serviceSolicitudExamenValoracion.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
                                                 examenValoracion, result));
         }
 

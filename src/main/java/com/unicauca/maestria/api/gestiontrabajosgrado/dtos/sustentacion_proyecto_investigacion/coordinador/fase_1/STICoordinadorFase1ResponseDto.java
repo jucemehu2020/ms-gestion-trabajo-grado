@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class STICoordinadorFase1ResponseDto {
 
-    private Long idSustentacionTI; 
+    private Long idSustentacionTrabajoInvestigacion; 
     private Boolean conceptoCoordinador;
 
 }

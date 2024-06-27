@@ -57,108 +57,108 @@ public class GeneracionResolucionController {
                                                 generacionResolucionDto, result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadorFase1/{idGeneracionResolucion}")
+        @PostMapping("/insertarInformacionCoordinadorFase1/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> insertarInformacionCoordinadorFase1(
-                        @PathVariable Long idGeneracionResolucion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(generacionResolucion
                                                 .insertarInformacionCoordinadorFase1(
-                                                                idGeneracionResolucion,
+                                                        idTrabajoGrado,
                                                                 generacionResolucionCoordinadorFase1Dto, result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadorFase2/{idGeneracionResolucion}")
+        @PostMapping("/insertarInformacionCoordinadorFase2/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase2ResponseDto> insertarInformacionCoordinadorFase2(
-                        @PathVariable Long idGeneracionResolucion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(generacionResolucion.insertarInformacionCoordinadorFase2(idGeneracionResolucion,
+                                .body(generacionResolucion.insertarInformacionCoordinadorFase2(idTrabajoGrado,
                                                 generacionResolucionDto,
                                                 result));
         }
 
-        @PostMapping("/insertarInformacionCoordinadorFase3/{idGeneracionResolucion}")
+        @PostMapping("/insertarInformacionCoordinadorFase3/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase3ResponseDto> insertarInformacionCoordinadorFase3(
-                        @PathVariable Long idGeneracionResolucion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(generacionResolucion.insertarInformacionCoordinadorFase3(idGeneracionResolucion,
+                                .body(generacionResolucion.insertarInformacionCoordinadorFase3(idTrabajoGrado,
                                                 generacionResolucionDto,
                                                 result));
         }
 
-        @GetMapping("/listarInformacionDocente/{idGeneracionResolucion}")
+        @GetMapping("/listarInformacionDocente/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionDocenteResponseDto> listarInformacionDocente(
-                        @PathVariable Long idGeneracionResolucion) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(generacionResolucion.listarInformacionDocente(idGeneracionResolucion));
+                                .body(generacionResolucion.listarInformacionDocente(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionCoordinadorFase1/{id}")
+        @GetMapping("/listarInformacionCoordinadorFase1/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> listarInformacionCoordinadorFase1(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(generacionResolucion.listarInformacionCoordinadorFase1(id));
+                                .body(generacionResolucion.listarInformacionCoordinadorFase1(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionCoordinadorFase2/{id}")
+        @GetMapping("/listarInformacionCoordinadorFase2/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase2ResponseDto> listarInformacionCoordinadorFase2(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(generacionResolucion.listarInformacionCoordinadorFase2(id));
+                                .body(generacionResolucion.listarInformacionCoordinadorFase2(idTrabajoGrado));
         }
 
-        @GetMapping("/listarInformacionCoordinadorFase3/{id}")
+        @GetMapping("/listarInformacionCoordinadorFase3/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase3ResponseDto> listarInformacionCoordinadorFase3(
-                        @PathVariable Long id) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(generacionResolucion.listarInformacionCoordinadorFase3(id));
+                                .body(generacionResolucion.listarInformacionCoordinadorFase3(idTrabajoGrado));
         }
 
-        @PutMapping("/actualizarInformacionDocente/{idGeneracionResolucion}")
+        @PutMapping("/actualizarInformacionDocente/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionDocenteResponseDto> actualizarInformacionDocente(
-                        @PathVariable Long idGeneracionResolucion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionDocenteDto generacionResolucionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(generacionResolucion.actualizarInformacionDocente(idGeneracionResolucion,
+                                .body(generacionResolucion.actualizarInformacionDocente(idTrabajoGrado,
                                                 generacionResolucionDto,
                                                 result));
         }
 
-        @PutMapping("/actualizarInformacionCoordinadorFase1/{idGeneracionResolucion}")
+        @PutMapping("/actualizarInformacionCoordinadorFase1/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> actualizarInformacionCoordinadorFase1(
-                        @PathVariable Long idGeneracionResolucion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase1Dto generacionResolucionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(generacionResolucion.actualizarInformacionCoordinadorFase1(idGeneracionResolucion,
+                                .body(generacionResolucion.actualizarInformacionCoordinadorFase1(idTrabajoGrado,
                                                 generacionResolucionDto,
                                                 result));
         }
 
-        @PutMapping("/actualizarInformacionCoordinadorFase2/{idGeneracionResolucion}")
+        @PutMapping("/actualizarInformacionCoordinadorFase2/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase2ResponseDto> actualizarInformacionCoordinadorFase2(
-                        @PathVariable Long idGeneracionResolucion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(generacionResolucion.actualizarInformacionCoordinadorFase2(idGeneracionResolucion,
+                                .body(generacionResolucion.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
                                                 generacionResolucionDto,
                                                 result));
         }
 
-        @PutMapping("/actualizarInformacionCoordinadorFase3/{idGeneracionResolucion}")
+        @PutMapping("/actualizarInformacionCoordinadorFase3/{idTrabajoGrado}")
         public ResponseEntity<GeneracionResolucionCoordinadorFase3ResponseDto> actualizarInformacionCoordinadorFase3(
-                        @PathVariable Long idGeneracionResolucion,
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(generacionResolucion.actualizarInformacionCoordinadorFase3(idGeneracionResolucion,
+                                .body(generacionResolucion.actualizarInformacionCoordinadorFase3(idTrabajoGrado,
                                                 generacionResolucionDto,
                                                 result));
         }
