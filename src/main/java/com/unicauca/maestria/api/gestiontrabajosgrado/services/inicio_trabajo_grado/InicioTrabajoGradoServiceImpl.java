@@ -14,6 +14,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.context.Context;
 import org.json.JSONObject;
@@ -24,8 +25,10 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.security.JwtUtil;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.CapturaEstadosDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EventosIdsDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.InformacionTrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapper;
@@ -223,6 +226,32 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		eventosIdsDto.setIdSustentacion(idSustentacion);
 
 		return eventosIdsDto;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<InformacionTrabajoGradoResponseDto> listarEstadosExamenValoracion(CapturaEstadosDto capturaEstadosDto,
+			BindingResult result) {
+		List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findAll();
+
+		List<InformacionTrabajoGradoResponseDto> trabajosGradoDto = listaTrabajoGrado.stream()
+				.filter(trabajo -> capturaEstadosDto.getConsultarEstados().contains(trabajo.getNumeroEstado()))
+				.map(trabajo -> {
+					EstudianteResponseDtoAll estudianteResponseDtoAll = archivoClient
+							.obtenerInformacionEstudiante(trabajo.getIdEstudiante());
+					EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[trabajo.getNumeroEstado()];
+					return InformacionTrabajoGradoResponseDto.builder()
+							.id(trabajo.getId())
+							.identificacion(estudianteResponseDtoAll.getPersona().getIdentificacion())
+							.nombreCompleto(estudianteResponseDtoAll.getPersona().getNombre() + " "
+									+ estudianteResponseDtoAll.getPersona().getApellido())
+							.correoElectronico(estudianteResponseDtoAll.getPersona().getCorreoElectronico())
+							.numeroEstado(trabajo.getNumeroEstado())
+							.estado(estadoEnum.getMensaje())
+							.build();
+				}).collect(Collectors.toList());
+
+		return trabajosGradoDto;
 	}
 
 }

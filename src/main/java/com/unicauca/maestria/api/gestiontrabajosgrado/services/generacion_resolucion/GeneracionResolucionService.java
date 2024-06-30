@@ -53,8 +53,6 @@ public interface GeneracionResolucionService {
 
         public ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviarAlComite(Long idTrabajoGrado);
 
-        public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado);
-
         public GeneracionResolucionDocenteResponseDto actualizarInformacionDocente(
                         Long idTrabajoGrado,
                         GeneracionResolucionDocenteDto generacionResolucionDocenteDto,

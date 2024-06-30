@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.CapturaEstadosDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.InformacionTrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
@@ -63,8 +65,6 @@ public interface SolicitudExamenValoracionService {
         public DatosFormatoBResponseDto obtenerInformacionFormatoB(Long idTrabajoGrado);
 
         public ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluador(Long idTrabajoGrado);
-
-        public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado);
 
         public SolicitudExamenValoracionResponseFase1Dto actualizarInformacionCoordinadoFase1(Long idTrabajoGrado,
                         SolicitudExamenValoracionCoordinadorFase1Dto examenValoracionFase1CoordinadorDto,

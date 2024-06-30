@@ -38,5 +38,4 @@ public interface RespuestaExamenValoracionService {
 
         public ObtenerDocumentosParaEnvioCorreoDto obtenerDocumentosParaEnviarCorreo(Long idRtaExamenValoracion);
 
-        public List<TrabajoGradoResponseDto> listarEstadosRespuestaExamenValoracion(Integer numeroEstado);
 }

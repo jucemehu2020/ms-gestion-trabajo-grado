@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.*;
 
@@ -15,16 +16,16 @@ import lombok.*;
 @Builder
 public class DocumentosEnvioComiteDto {
 
-    @NotBlank
+    @NotNull
     private String b64FormatoA;
 
-    @NotBlank
+    @NotNull
     private String b64FormatoD;
     
-    @NotBlank
+    @NotNull
     private String b64FormatoE;
 
-    @NotBlank
+    @NotNull
     private List<String> b64Anexos;
 
     public Map<String, Object> getDocumentos() {

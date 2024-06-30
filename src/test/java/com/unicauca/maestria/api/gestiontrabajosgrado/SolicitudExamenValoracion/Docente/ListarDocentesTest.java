@@ -1,19 +1,17 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.SolicitudExamenValoracion;
+package com.unicauca.maestria.api.gestiontrabajosgrado.SolicitudExamenValoracion.Docente;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.easymock.EasyMockExtension;
-import org.easymock.Mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
@@ -26,23 +24,23 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteRespon
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.TituloDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ServiceUnavailableException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion.SolicitudExamenValoracionServiceImpl;
 
-import feign.FeignException;
-
-@ExtendWith(EasyMockExtension.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 public class ListarDocentesTest {
+
         @Mock
         private ArchivoClient archivoClient;
 
+        @InjectMocks
         private SolicitudExamenValoracionServiceImpl docenteService;
 
         @BeforeEach
         public void setUp() {
                 docenteService = new SolicitudExamenValoracionServiceImpl(null, null, null, null, null, null,
-                                archivoClient,
-                                null);
+                                archivoClient, null);
         }
 
         @Test
@@ -74,17 +72,14 @@ public class ListarDocentesTest {
                                 .build();
 
                 // Configurar el mock para devolver la lista esperada
-                expect(archivoClient.listarDocentesRes()).andReturn(List.of(docenteResponse));
-
-                // Activar el mock
-                replay(archivoClient);
+                when(archivoClient.listarDocentesRes()).thenReturn(List.of(docenteResponse));
 
                 // Ejecutar el método
                 List<DocenteInfoDto> result = docenteService.listarDocentes();
                 System.out.println("Result: " + result); // Agregar mensaje de depuración
 
                 // Verificar que el método mockeado fue llamado
-                verify(archivoClient);
+                verify(archivoClient).listarDocentesRes();
 
                 // Verificar resultados
                 assertNotNull(result);
@@ -97,9 +92,10 @@ public class ListarDocentesTest {
 
         @Test
         public void testListarDocentes_NoHayDocentes() {
-                expect(archivoClient.listarDocentesRes()).andReturn(Collections.emptyList());
-                replay(archivoClient);
+                // Configurar el mock para devolver una lista vacía
+                when(archivoClient.listarDocentesRes()).thenReturn(Collections.emptyList());
 
+                // Ejecutar el método y verificar que lanza la excepción esperada
                 InformationException thrown = assertThrows(
                                 InformationException.class,
                                 () -> docenteService.listarDocentes(),
@@ -108,30 +104,22 @@ public class ListarDocentesTest {
                 assertTrue(thrown.getMessage().contains("No hay docentes registrados"));
 
                 // Verificar que el método mockeado fue llamado
-                verify(archivoClient);
+                verify(archivoClient).listarDocentesRes();
         }
 
         @Test
-        public void testListarDocentes_ErrorConexion() {
-                // Simula un error 500 utilizando FeignException
-                expect(archivoClient.listarDocentesRes()).andThrow(FeignException.errorStatus("listarDocentesRes",
-                                feign.Response.builder()
-                                                .status(500)
-                                                .reason("Internal Server Error")
-                                                .request(feign.Request.create(feign.Request.HttpMethod.GET, "/docentes",
-                                                                Collections.emptyMap(),
-                                                                null, null, null))
-                                                .build()));
-                replay(archivoClient);
+        void testListarInformacionDocente_ServidorDocenteCaido() {
+                when(archivoClient.listarDocentesRes())
+                                .thenThrow(new ServiceUnavailableException(
+                                                "Servidor externo actualmente fuera de servicio"));
 
-                FeignException thrown = assertThrows(
-                                FeignException.class,
+                ServiceUnavailableException thrown = assertThrows(
+                                ServiceUnavailableException.class,
                                 () -> docenteService.listarDocentes(),
-                                "Expected listarDocentes() to throw, but it didn't");
+                                "Servidor externo actualmente fuera de servicio");
 
-                assertTrue(thrown.getMessage().contains("500"));
-
-                // Verificar que el método mockeado fue llamado
-                verify(archivoClient);
+                assertNotNull(thrown.getMessage());
+                assertTrue(thrown.getMessage().contains("Servidor externo actualmente fuera de servicio"));
         }
+
 }

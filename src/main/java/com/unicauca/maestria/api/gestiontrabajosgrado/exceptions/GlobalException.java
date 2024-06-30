@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Exception {
+public class GlobalException {
 
 	private String mensaje;
 	private HttpStatus estado;

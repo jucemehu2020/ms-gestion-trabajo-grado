@@ -26,7 +26,7 @@ public class SolicitudExamenValoracionDocenteDto {
     @NotNull
     private String linkFormatoD;
 
-    @NotBlank
+    @NotNull
     private String linkFormatoE;
 
     private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();

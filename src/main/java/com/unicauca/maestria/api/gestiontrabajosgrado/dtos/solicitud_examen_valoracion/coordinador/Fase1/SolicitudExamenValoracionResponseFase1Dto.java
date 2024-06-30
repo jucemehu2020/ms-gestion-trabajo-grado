@@ -4,9 +4,10 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class SolicitudExamenValoracionResponseFase1Dto {
-    
+
     private Long idExamenValoracion;
     private Boolean conceptoCoordinadorDocumentos;
 }

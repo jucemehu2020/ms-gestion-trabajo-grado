@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 
-@FeignClient(name = "ms-expertos", url = "http://localhost:8085")
+@FeignClient(name = "ms-expertos", url = "http://localhost:8085", configuration = FeignConfig.class)
 public interface ArchivoClientExpertos {
 
     @GetMapping("/api/expertos")

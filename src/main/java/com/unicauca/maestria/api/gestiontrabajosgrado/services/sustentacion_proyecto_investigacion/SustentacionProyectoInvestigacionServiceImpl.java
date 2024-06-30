@@ -647,25 +647,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 return true;
         }
 
-        @Override
-        @Transactional(readOnly = true)
-        public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado) {
-
-                List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findByNumeroEstado(numeroEstado);
-                List<TrabajoGradoResponseDto> trabajosGradoDto = listaTrabajoGrado.stream().map(trabajo -> {
-                        EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[trabajo.getNumeroEstado()];
-                        return TrabajoGradoResponseDto.builder()
-                                        .id(trabajo.getId())
-                                        .estado(estadoEnum.getMensaje())
-                                        .fechaCreacion(trabajo.getFechaCreacion())
-                                        .titulo(trabajo.getTitulo() != null ? trabajo.getTitulo()
-                                                        : "Título no disponible")
-                                        .numeroEstado(trabajo.getNumeroEstado())
-                                        .build();
-                }).collect(Collectors.toList());
-                return trabajosGradoDto;
-        }
-
         private String identificacionArchivo(TrabajoGrado trabajoGrado) {
                 EstudianteResponseDtoAll informacionEstudiantes = archivoClient
                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());

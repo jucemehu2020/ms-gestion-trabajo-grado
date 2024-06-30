@@ -439,25 +439,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 return obtenerDocumentosParaEnvioCorreoDto;
         }
 
-        @Override
-        @Transactional(readOnly = true)
-        public List<TrabajoGradoResponseDto> listarEstadosRespuestaExamenValoracion(Integer numeroEstado) {
-
-                List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findByNumeroEstado(numeroEstado);
-                List<TrabajoGradoResponseDto> trabajosGradoDto = listaTrabajoGrado.stream().map(trabajo -> {
-                        EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[trabajo.getNumeroEstado()];
-                        return TrabajoGradoResponseDto.builder()
-                                        .id(trabajo.getId())
-                                        .estado(estadoEnum.getMensaje())
-                                        .fechaCreacion(trabajo.getFechaCreacion())
-                                        .titulo(trabajo.getTitulo() != null ? trabajo.getTitulo()
-                                                        : "Título no disponible")
-                                        .numeroEstado(trabajo.getNumeroEstado())
-                                        .build();
-                }).collect(Collectors.toList());
-                return trabajosGradoDto;
-        }
-
         private int validarEstado(Long idTrabajoGrado, String conceptoEvaluador) {
                 Integer numeroEstadoActual = trabajoGradoRepository.obtenerEstadoTrabajoGrado(idTrabajoGrado);
                 int numEstado = 0;

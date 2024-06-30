@@ -84,11 +84,4 @@ public class RespuestaExamenValoracionController {
                                 .body(respuestaExamenValoracion
                                                 .obtenerDocumentosParaEnviarCorreo(idRespuestaExamenValoracion));
         }
-
-        @GetMapping("/listarEstadosRespuestaExamenValoracion/{numeroEstado}")
-        public ResponseEntity<List<TrabajoGradoResponseDto>> listarEstadosRespuestaExamenValoracion(
-                        @PathVariable Integer numeroEstado) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(respuestaExamenValoracion.listarEstadosRespuestaExamenValoracion(numeroEstado));
-        }
 }

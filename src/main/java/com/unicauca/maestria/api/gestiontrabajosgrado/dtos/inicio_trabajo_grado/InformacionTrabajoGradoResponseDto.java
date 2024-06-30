@@ -1,7 +1,5 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado;
 
-import java.util.List;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EstadoTrabajoGrado {
+public class InformacionTrabajoGradoResponseDto {
     private Long id;
+    private Long identificacion;
+    private String nombreCompleto;
+    private String correoElectronico;
+    private Integer numeroEstado;
+    private String estado;
 
-    @NotNull
-    private Boolean estadoTrabajoGrado;
-
-    private List<TrabajoGradoResponseDto> trabajoGrado;
 }

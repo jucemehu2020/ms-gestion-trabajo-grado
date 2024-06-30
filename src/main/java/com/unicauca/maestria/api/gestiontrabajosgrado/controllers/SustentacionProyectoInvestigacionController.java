@@ -165,13 +165,6 @@ public class SustentacionProyectoInvestigacionController {
                                 .body(sustentacionProyectoInvestigacion.verificarEgresado(idTrabajoGrado));
         }
 
-        @GetMapping("/listarEstadosExamenValoracion/{numeroEstado}")
-        public ResponseEntity<List<TrabajoGradoResponseDto>> listarEstadosExamenValoracion(
-                        @PathVariable Integer numeroEstado) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(sustentacionProyectoInvestigacion.listarEstadosExamenValoracion(numeroEstado));
-        }
-
         @PutMapping("/actualizarInformacionDocente/{idTrabajoGrado}")
         public ResponseEntity<SustentacionTrabajoInvestigacionDocenteResponseDto> actualizarInformacionDocente(
                         @PathVariable Long idTrabajoGrado,

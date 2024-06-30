@@ -176,11 +176,4 @@ public class GeneracionResolucionController {
                                 .body(generacionResolucion.obtenerDocumentosParaEnviarAlComite(idGeneracionResolucion));
         }
 
-        @GetMapping("/listarEstadosExamenValoracion/{numeroEstado}")
-        public ResponseEntity<List<TrabajoGradoResponseDto>> listarEstadosExamenValoracion(
-                        @PathVariable Integer numeroEstado) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(generacionResolucion.listarEstadosExamenValoracion(numeroEstado));
-        }
-
 }

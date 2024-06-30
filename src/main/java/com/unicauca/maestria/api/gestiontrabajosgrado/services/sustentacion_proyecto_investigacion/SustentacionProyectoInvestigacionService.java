@@ -71,8 +71,6 @@ public interface SustentacionProyectoInvestigacionService {
 
         public Boolean verificarEgresado(Long idTrabajoGrado);
 
-        public List<TrabajoGradoResponseDto> listarEstadosExamenValoracion(Integer numeroEstado);
-
         public SustentacionTrabajoInvestigacionDocenteResponseDto actualizarInformacionDocente(
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,

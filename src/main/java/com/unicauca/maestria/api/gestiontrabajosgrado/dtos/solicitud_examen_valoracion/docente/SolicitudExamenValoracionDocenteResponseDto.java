@@ -8,9 +8,11 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_va
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class SolicitudExamenValoracionDocenteResponseDto {
 
