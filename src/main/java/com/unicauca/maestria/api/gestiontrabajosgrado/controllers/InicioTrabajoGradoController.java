@@ -2,6 +2,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.controllers;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -9,12 +10,10 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.CapturaEstadosDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EventosIdsDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.InformacionTrabajoGradoResponseDto;
@@ -73,11 +72,15 @@ public class InicioTrabajoGradoController {
 
     @GetMapping("/listarInformacionEstados")
     public ResponseEntity<List<InformacionTrabajoGradoResponseDto>> listarEstadosExamenValoracion(
-            @Valid @RequestBody CapturaEstadosDto capturaEstadosDto,
-            BindingResult result) {
+            @RequestParam ArrayList<Integer> consultarEstados) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(inicioTrabajoGradoService.listarEstadosExamenValoracion(capturaEstadosDto,
-                        result));
+                .body(inicioTrabajoGradoService.listarEstadosExamenValoracion(consultarEstados));
+    }
+
+    @GetMapping("/descargarDocumento")
+    public ResponseEntity<?> descargarArchivo(@Valid @RequestParam String rutaArchivo) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(inicioTrabajoGradoService.descargarArchivo(rutaArchivo));
     }
 
 }

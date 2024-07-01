@@ -4,6 +4,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
@@ -16,14 +17,17 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 public class SolicitudExamenValoracionCoordinadorFase2Dto {
 
     @NotNull
+    @Valid
     private List<RespuestaComiteExamenValoracionDto> actaFechaRespuestaComite;
 
     @NotNull
+    @Valid
     private EnvioEmailDto envioEmailDto;
 
     private String linkOficioDirigidoEvaluadores;
 
     private LocalDate fechaMaximaEvaluacion;
 
+    @Valid
     private InformacionEnvioEvaluadorDto informacionEnvioEvaluador;
 }

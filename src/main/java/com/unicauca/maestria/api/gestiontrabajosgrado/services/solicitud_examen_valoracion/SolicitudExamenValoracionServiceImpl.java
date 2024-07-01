@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
@@ -21,19 +20,15 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_va
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.CapturaEstadosDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.InformacionTrabajoGradoResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.DatosFormatoBResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.ObtenerDocumentosParaEvaluadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2Dto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
@@ -149,7 +144,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
 		if (trabajoGrado.getNumeroEstado() != 0) {
-			throw new InformationException("No es permitido registrar esta solicitud de examen de valoracion");
+			throw new InformationException("No es permitido registrar la informacion");
 		}
 
 		// Valida si el docente y experto existen
@@ -211,16 +206,20 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new InformationException("Envio de atributos no permitido");
 		}
 
-		ArrayList<String> correos = new ArrayList<>();
-
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
-						"TrabajoGrado con id: " + idTrabajoGrado + " No encontrado"));
+						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+		if (trabajoGrado.getNumeroEstado() != 1) {
+			throw new InformationException("No es permitido registrar la informacion");
+		}
 
 		SolicitudExamenValoracion examenValoracion = solicitudExamenValoracionRepository
 				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion())
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Examen de valoracion con id: " + idTrabajoGrado + " No encontrado"));
+
+		ArrayList<String> correos = new ArrayList<>();
 
 		if (examenValoracionDto.getConceptoCoordinadorDocumentos()) {
 			correos.add(Constants.correoComite);
@@ -249,23 +248,36 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 	@Override
 	@Transactional
-	public SolicitudExamenValoracionCoordinadorResponseDto insertarInformacionCoordinadorFase2(Long idTrabajoGrado,
+	public SolicitudExamenValoracionCoordinadorFase2ResponseDto insertarInformacionCoordinadorFase2(Long idTrabajoGrado,
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto,
 			BindingResult result) {
+
 		if (result.hasErrors()) {
 			throw new FieldErrorException(result);
 		}
 
-		ArrayList<String> correos = new ArrayList<>();
+		if (!examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+				&& examenValoracionDto.getLinkOficioDirigidoEvaluadores() != null
+				&& examenValoracionDto.getFechaMaximaEvaluacion() != null
+				&& examenValoracionDto.getInformacionEnvioEvaluador() != null) {
+			throw new InformationException("Envio de atributos no permitido");
+		}
 
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
-						"TrabajoGrado con id: " + idTrabajoGrado + " No encontrado"));
+						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+		if (trabajoGrado.getNumeroEstado() != 3) {
+			throw new InformationException("No es permitido registrar la informacion");
+		}
 
 		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
 				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion())
 				.orElseThrow(() -> new ResourceNotFoundException(
-						"Examen de valoracion con id: " + idTrabajoGrado + " No encontrado"));
+						"Examen de valoracion con id " + trabajoGrado.getExamenValoracion().getIdExamenValoracion()
+								+ " no encontrado"));
+
+		ArrayList<String> correos = new ArrayList<>();
 
 		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()) {
 			DocenteResponseDto docente = archivoClient
@@ -316,7 +328,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		RespuestaComiteExamenValoracion respuestaComite = RespuestaComiteExamenValoracion.builder()
 				.conceptoComite(examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite())
 				.numeroActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getNumeroActa())
-				.fechaActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getFechaActa().toString())
+				.fechaActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getFechaActa())
 				.solicitudExamenValoracion(examenValoracion)
 				.build();
 
@@ -345,6 +357,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.obtenerDocentePorId(solicitudExamenValoracion.getIdEvaluadorInterno());
 		String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
 		Map<String, String> evaluadorInternoMap = new HashMap<>();
+		evaluadorInternoMap.put("id", docente.getId().toString());
 		evaluadorInternoMap.put("nombres", nombre_docente);
 		evaluadorInternoMap.put("universidad", "Universidad del Cauca");
 		evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
@@ -354,6 +367,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.obtenerExpertoPorId(solicitudExamenValoracion.getIdEvaluadorExterno());
 		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
 		Map<String, String> evaluadorExternoMap = new HashMap<>();
+		evaluadorInternoMap.put("id", experto.getId().toString());
 		evaluadorExternoMap.put("nombres", nombre_experto);
 		evaluadorExternoMap.put("universidad", experto.getUniversidad());
 		evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
@@ -384,24 +398,34 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	@Override
 	@Transactional(readOnly = true)
 	public SolicitudExamenValoracionResponseFase1Dto listarInformacionCoordinadorFase1(Long idTrabajoGrado) {
-		SolicitudExamenValoracion entityOptional = solicitudExamenValoracionRepository
+		SolicitudExamenValoracion solicitudExamenValoracion = solicitudExamenValoracionRepository
 				.findByIdTrabajoGradoId(idTrabajoGrado).orElseThrow(
 						() -> new ResourceNotFoundException(
-								"Trabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
+								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-		SolicitudExamenValoracionResponseFase1Dto responseDto = examenValoracionResponseMapper
-				.toCoordinadorFase1Dto(entityOptional);
+		if (solicitudExamenValoracion.getConceptoCoordinadorDocumentos() == null) {
+			throw new InformationException("No se han registrado datos");
+		}
 
-		return responseDto;
+		SolicitudExamenValoracionResponseFase1Dto solicitudExamenValoracionResponseFase1Dto = examenValoracionResponseMapper
+				.toCoordinadorFase1Dto(solicitudExamenValoracion);
+
+		return solicitudExamenValoracionResponseFase1Dto;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public SolicitudExamenValoracionCoordinadorResponseDto listarInformacionCoordinadorFase2(Long idTrabajoGrado) {
+	public SolicitudExamenValoracionCoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(Long idTrabajoGrado) {
 		SolicitudExamenValoracion solicitudExamenValoracion = solicitudExamenValoracionRepository
 				.findByIdTrabajoGradoId(idTrabajoGrado).orElseThrow(
 						() -> new ResourceNotFoundException(
-								"Trabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
+								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+		if (solicitudExamenValoracion.getActaFechaRespuestaComite() == null
+				&& solicitudExamenValoracion.getLinkOficioDirigidoEvaluadores() == null
+				&& solicitudExamenValoracion.getFechaMaximaEvaluacion() == null) {
+			throw new InformationException("No se han registrado datos");
+		}
 
 		return examenValoracionResponseMapper.toCoordinadorFase2Dto(solicitudExamenValoracion);
 	}
@@ -422,7 +446,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		if (trabajoGrado.getNumeroEstado() != 1 && trabajoGrado.getNumeroEstado() != 2
 				&& trabajoGrado.getNumeroEstado() != 4) {
-			throw new InformationException("No es permitido registrar esta solicitud de examen de valoracion");
+			throw new InformationException("No es permitido registrar la informacion");
 		}
 
 		// Valida si el docente y experto existen
@@ -522,14 +546,26 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	}
 
 	@Override
-	public SolicitudExamenValoracionResponseFase1Dto actualizarInformacionCoordinadoFase1(Long idTrabajoGrado,
+	public SolicitudExamenValoracionResponseFase1Dto actualizarInformacionCoordinadorFase1(Long idTrabajoGrado,
 			SolicitudExamenValoracionCoordinadorFase1Dto examenValoracionFase1CoordinadorDto, BindingResult result) {
 
-		// Busca el trabajo de grado
+		if (result.hasErrors()) {
+			throw new FieldErrorException(result);
+		}
+
+		if (!examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()
+				&& examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite() != null) {
+			throw new InformationException("Envio de atributos no permitido");
+		}
+
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(
-						() -> new ResourceNotFoundException("Trabajo de grado con id: "
+						() -> new ResourceNotFoundException("Trabajo de grado con id "
 								+ idTrabajoGrado + " no encontrado"));
+
+		if (trabajoGrado.getNumeroEstado() != 2 && trabajoGrado.getNumeroEstado() != 3) {
+			throw new InformationException("No es permitido registrar la informacion");
+		}
 
 		SolicitudExamenValoracion examenValoracionOld = solicitudExamenValoracionRepository
 				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()).orElseThrow(
@@ -571,17 +607,33 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	}
 
 	@Override
-	public SolicitudExamenValoracionCoordinadorResponseDto actualizarInformacionCoordinadorFase2(Long idTrabajoGrado,
+	public SolicitudExamenValoracionCoordinadorFase2ResponseDto actualizarInformacionCoordinadorFase2(
+			Long idTrabajoGrado,
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto, BindingResult result) {
 
+		if (result.hasErrors()) {
+			throw new FieldErrorException(result);
+		}
+
+		if (!examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+				&& examenValoracionDto.getLinkOficioDirigidoEvaluadores() != null
+				&& examenValoracionDto.getFechaMaximaEvaluacion() != null
+				&& examenValoracionDto.getInformacionEnvioEvaluador() != null) {
+			throw new InformationException("Envio de atributos no permitido");
+		}
+
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
-				.orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id: "
+				.orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
 						+ idTrabajoGrado + " no encontrado"));
+
+		if (trabajoGrado.getNumeroEstado() != 4 && trabajoGrado.getNumeroEstado() != 5) {
+			throw new InformationException("No es permitido registrar la informacion");
+		}
 
 		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
 				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()).orElseThrow(
-						() -> new ResourceNotFoundException("Examen de valoracion con id: "
-								+ trabajoGrado.getExamenValoracion().getIdExamenValoracion() + "no encontrado"));
+						() -> new ResourceNotFoundException("Examen de valoracion con id "
+								+ trabajoGrado.getExamenValoracion().getIdExamenValoracion() + " no encontrado"));
 
 		String rutaArchivo = identificacionArchivo(trabajoGrado);
 
@@ -667,12 +719,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 			respuestaComiteSolicitudRepository.save(actaFechaRespuestaComite);
 		}
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public String descargarArchivo(RutaArchivoDto rutaArchivo) {
-		return FilesUtilities.recuperarArchivo(rutaArchivo.getRutaArchivo());
 	}
 
 	@Override

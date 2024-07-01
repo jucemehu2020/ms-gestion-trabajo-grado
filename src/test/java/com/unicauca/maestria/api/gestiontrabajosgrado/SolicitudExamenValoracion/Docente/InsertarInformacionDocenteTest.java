@@ -240,7 +240,7 @@ public class InsertarInformacionDocenteTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar esta solicitud";
+                String expectedMessage = "No es permitido registrar la informacion";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }

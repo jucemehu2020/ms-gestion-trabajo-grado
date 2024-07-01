@@ -1,11 +1,9 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_grado;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.validation.BindingResult;
-
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.CapturaEstadosDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EventosIdsDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.InformacionTrabajoGradoResponseDto;
@@ -27,7 +25,8 @@ public interface InicioTrabajoGradoService {
 
     public EventosIdsDto obtenerIdsEventos(Long idTrabajoGrado);
 
-    public List<InformacionTrabajoGradoResponseDto> listarEstadosExamenValoracion(CapturaEstadosDto capturaEstadosDto,
-            BindingResult result);
+    public List<InformacionTrabajoGradoResponseDto> listarEstadosExamenValoracion(ArrayList<Integer> capturaEstadosDto);
+
+    public String descargarArchivo(String rutaArchivo);
 
 }

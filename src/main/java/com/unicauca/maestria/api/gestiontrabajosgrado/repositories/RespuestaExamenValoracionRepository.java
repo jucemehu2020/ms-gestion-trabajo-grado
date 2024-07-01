@@ -10,7 +10,8 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_va
 
 public interface RespuestaExamenValoracionRepository extends JpaRepository<RespuestaExamenValoracion, Long> {
 
-    List<RespuestaExamenValoracion> findByIdTrabajoGrado(Long idTrabajoGradoId);
+    @Query("SELECT r FROM RespuestaExamenValoracion r WHERE r.idTrabajoGrado.id = :idTrabajoGrado")
+    List<RespuestaExamenValoracion> findByIdTrabajoGrado(@Param("idTrabajoGrado") Long idTrabajoGrado);
 
     @Query("SELECT COUNT(r) FROM RespuestaExamenValoracion r WHERE r.idTrabajoGrado.id = :idTrabajoGrado AND r.respuestaExamenValoracion = 'No aprobado'")
     Long countByTrabajoGradoIdAndRespuestaNoAprobado(@Param("idTrabajoGrado") Long idTrabajoGrado);

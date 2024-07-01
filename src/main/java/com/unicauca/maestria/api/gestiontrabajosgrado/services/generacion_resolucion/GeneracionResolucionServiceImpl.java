@@ -15,14 +15,12 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.RespuestaComiteGeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
@@ -36,7 +34,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_3.GeneracionResolucionCoordinadorFase3ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.GeneracionResolucionMapper;
@@ -692,12 +689,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 generacionResolucion = generacionResolucionRepository.save(generacionResolucionOld);
 
                 return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucion);
-        }
-
-        @Override
-        @Transactional(readOnly = true)
-        public String descargarArchivo(RutaArchivoDto rutaArchivo) {
-                return FilesUtilities.recuperarArchivo(rutaArchivo.getRutaArchivo());
         }
 
         private String identificacionArchivo(TrabajoGrado trabajoGrado) {

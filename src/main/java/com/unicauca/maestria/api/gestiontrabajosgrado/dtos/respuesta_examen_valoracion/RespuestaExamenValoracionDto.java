@@ -4,9 +4,10 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
 @Getter
 @Setter
@@ -24,7 +25,8 @@ public class RespuestaExamenValoracionDto {
     @NotBlank
     private String linkObservaciones;
 
-    private List<AnexoRespuestaExamenValoracion> anexos;
+    @Valid
+    private List<AnexoRespuestaExamenValoracionDto> anexos;
 
     @NotBlank
     private String respuestaExamenValoracion;
@@ -32,13 +34,14 @@ public class RespuestaExamenValoracionDto {
     private LocalDate fechaMaximaEntrega;
 
     @NonNull
-    private String idEvaluador;
+    private Long idEvaluador;
 
     @NonNull
     private String tipoEvaluador;
 
     private Boolean permitidoExamen;
 
-    private InformacionEnvioDto informacionEnvioDto;
+    @Valid
+    private EnvioEmailDto envioEmail;
 
 }

@@ -5,11 +5,8 @@ import java.util.Map;
 
 import org.springframework.validation.BindingResult;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.ObtenerDocumentosParaEnvioCorreoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionInformacionGeneralDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Fase2.ExamenValoracionCanceladoDto;
 
@@ -24,15 +21,11 @@ public interface RespuestaExamenValoracionService {
                         ExamenValoracionCanceladoDto examenValoracionCanceladoDto,
                         BindingResult result);
 
-        public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idTrabajoGrado);
-
-        public Map<String, List<RespuestaExamenValoracionResponseDto>> buscarPorId(Long idRespuestaExamen);
+        public Map<String, List<RespuestaExamenValoracionResponseDto>> buscarPorId(Long idTrabajoGrado);
 
         public RespuestaExamenValoracionResponseDto actualizar(Long idRespuestaExamen,
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         BindingResult result);
-
-        public String descargarArchivo(RutaArchivoDto rutaArchivo);
 
         public Long validarNumeroNoAprobado(Long idTrabajoGrado);
 

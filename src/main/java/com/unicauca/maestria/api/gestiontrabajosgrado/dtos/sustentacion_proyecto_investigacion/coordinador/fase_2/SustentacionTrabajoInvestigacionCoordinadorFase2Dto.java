@@ -6,7 +6,6 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2.RespuestaComiteGeneracionResolucionDto;
 
 @Getter
 @Setter
@@ -16,7 +15,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion
 public class SustentacionTrabajoInvestigacionCoordinadorFase2Dto {
 
     @NotNull
-    private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
+    private List<RespuestaComiteSustentacionDto> actaFechaRespuestaComite;
 
     private String linkEstudioHojaVidaAcademica;
 

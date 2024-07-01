@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.validation.BindingResult;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1ResponseDto;
@@ -48,8 +47,6 @@ public interface GeneracionResolucionService {
         public GeneracionResolucionCoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(Long idTrabajoGrado);
 
         public GeneracionResolucionCoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(Long idTrabajoGrado);
-
-        public String descargarArchivo(RutaArchivoDto rutaArchivo);
 
         public ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviarAlComite(Long idTrabajoGrado);
 

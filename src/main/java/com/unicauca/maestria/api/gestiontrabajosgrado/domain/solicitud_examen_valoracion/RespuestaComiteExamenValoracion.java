@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -26,7 +29,7 @@ public class RespuestaComiteExamenValoracion {
 
     private String numeroActa;
 
-    private String fechaActa;
+    private LocalDate fechaActa;
 
     @ManyToOne
     @JoinColumn(name = "id_examen_valoracion")

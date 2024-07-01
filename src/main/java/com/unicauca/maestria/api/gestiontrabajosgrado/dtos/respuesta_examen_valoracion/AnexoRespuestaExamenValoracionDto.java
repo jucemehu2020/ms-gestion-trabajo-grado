@@ -7,7 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InformacionEnvioDto {
-    private String asunto;
-    private String mensaje;
+public class AnexoRespuestaExamenValoracionDto {
+
+    private Long id;
+    private String linkAnexo;
 }

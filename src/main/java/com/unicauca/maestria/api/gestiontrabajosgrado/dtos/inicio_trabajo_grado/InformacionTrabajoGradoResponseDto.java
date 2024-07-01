@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class InformacionTrabajoGradoResponseDto {
+    
     private Long id;
+    private Long estudianteId;
     private Long identificacion;
     private String nombreCompleto;
     private String correoElectronico;

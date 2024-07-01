@@ -12,34 +12,28 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.ExamenValoracionCancelado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.AnexoRespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.ObtenerDocumentosParaEnvioCorreoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionInformacionGeneralDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Fase2.ExamenValoracionCanceladoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoRespuestaExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.ExamenValoracionCanceladoMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosRespuestaExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.ExamenValoracionCanceladoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
-import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -53,11 +47,11 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         private final AnexosRespuestaExamenValoracionRepository anexosRespuestaExamenValoracionRepository;
         private final RespuestaExamenValoracionMapper respuestaExamenValoracionMapper;
         private final RespuestaExamenValoracionResponseMapper respuestaExamenValoracionResponseMapper;
+        private final AnexoRespuestaExamenValoracionMapper anexoRespuestaExamenValoracionMapper;
         private final ExamenValoracionCanceladoMapper examenValoracionCanceladoMapper;
         private final TrabajoGradoRepository trabajoGradoRepository;
 
         // Extras
-        private final SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
         private final ArchivoClient archivoClient;
         private final ArchivoClientExpertos archivoClientExpertos;
 
@@ -70,8 +64,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         BindingResult result) {
 
-                // cambiar a atributo Trabajo de grado, validar el evaluador que sea externo o
-                // interno con su id.
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
@@ -79,64 +71,91 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 Long numeroNoAprobado = respuestaExamenValoracionRepository
                                 .countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado);
 
-                if (numeroNoAprobado < 4) {
-
-                        TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                        .findById(idTrabajoGrado)
-                                        .orElseThrow(() -> new ResourceNotFoundException(
-                                                        "TrabajoGrado con id: "
-                                                                        + idTrabajoGrado + " No encontrado"));
-
-                        // Mapear DTO a entidad
-                        RespuestaExamenValoracion rtaExamenValoracion = respuestaExamenValoracionMapper
-                                        .toEntity(respuestaExamenValoracionDto);
-
-                        String rutaArchivo = identificacionArchivo(trabajoGrado);
-
-                        int numEstado = validarEstado(idTrabajoGrado,
-                                        rtaExamenValoracion.getRespuestaExamenValoracion());
-                        trabajoGrado.setNumeroEstado(numEstado);
-
-                        // Guardar la entidad ExamenValoracion
-                        rtaExamenValoracion
-                                        .setLinkFormatoB(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                        rtaExamenValoracion.getLinkFormatoB()));
-                        rtaExamenValoracion
-                                        .setLinkFormatoC(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                        rtaExamenValoracion.getLinkFormatoC()));
-                        rtaExamenValoracion.setLinkObservaciones(
-                                        FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                        rtaExamenValoracion.getLinkObservaciones()));
-
-                        List<AnexoRespuestaExamenValoracion> updatedLinkAnexos = new ArrayList<>();
-                        for (AnexoRespuestaExamenValoracion linkAnexoDto : respuestaExamenValoracionDto.getAnexos()) {
-                                String updatedAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                linkAnexoDto.getLinkAnexo());
-                                AnexoRespuestaExamenValoracion anexo = new AnexoRespuestaExamenValoracion();
-                                anexo.setLinkAnexo(updatedAnexo);
-                                anexo.setRespuestaExamenValoracion(rtaExamenValoracion);
-                                updatedLinkAnexos.add(anexo);
-                        }
-                        rtaExamenValoracion.setAnexos(updatedLinkAnexos);
-
-                        // Se asigna al trabajo de grado
-                        rtaExamenValoracion.setIdTrabajoGrado(trabajoGrado);
-
-                        enviarCorreoTutorEstudiante(respuestaExamenValoracionDto, trabajoGrado);
-
-                        rtaExamenValoracion.setPermitidoExamen(true);
-
-                        RespuestaExamenValoracion examenValoracionRes = respuestaExamenValoracionRepository
-                                        .save(rtaExamenValoracion);
-
-                        if (numeroNoAprobado == 3) {
-                                rtaExamenValoracion.setPermitidoExamen(false);
-                        }
-
-                        return respuestaExamenValoracionResponseMapper.toDto(examenValoracionRes);
-                } else {
+                if (numeroNoAprobado >= 4) {
                         throw new InformationException("Ya no es permitido registrar mas respuestas");
                 }
+
+                TrabajoGrado trabajoGrado = trabajoGradoRepository
+                                .findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id "
+                                                                + idTrabajoGrado + " no encontrado"));
+
+                if (trabajoGrado.getNumeroEstado() != 5 && trabajoGrado.getNumeroEstado() != 6
+                                && trabajoGrado.getNumeroEstado() != 8 && trabajoGrado.getNumeroEstado() != 9
+                                && trabajoGrado.getNumeroEstado() != 10 && trabajoGrado.getNumeroEstado() != 11) {
+                        throw new InformationException("No es permitido registrar la informacion");
+                }
+
+                if (respuestaExamenValoracionDto.getTipoEvaluador().equals("Interno")) {
+                        archivoClient.obtenerDocentePorId(respuestaExamenValoracionDto.getIdEvaluador());
+                }
+
+                if (respuestaExamenValoracionDto.getTipoEvaluador().equals("Externo")) {
+                        archivoClientExpertos
+                                        .obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador());
+                }
+
+                List<RespuestaExamenValoracion> listaExamenes = respuestaExamenValoracionRepository
+                                .findByIdTrabajoGrado(idTrabajoGrado);
+
+                for (int i = 0; i < listaExamenes.size(); i++) {
+                        if (respuestaExamenValoracionDto.getIdEvaluador() == listaExamenes.get(i).getIdEvaluador() &&
+                                        respuestaExamenValoracionDto.getTipoEvaluador()
+                                                        .equals(listaExamenes.get(i).getTipoEvaluador())
+                                        && listaExamenes.get(i).getRespuestaExamenValoracion().equals("Aprobado")) {
+                                throw new InformationException(
+                                                "El evaluador previamente dio su concepto como APROBADO, no es permitido que realice nuevos registros");
+                        }
+                }
+
+                RespuestaExamenValoracion rtaExamenValoracion = respuestaExamenValoracionMapper
+                                .toEntity(respuestaExamenValoracionDto);
+
+                String rutaArchivo = identificacionArchivo(trabajoGrado);
+
+                int numEstado = validarEstado(idTrabajoGrado,
+                                rtaExamenValoracion.getRespuestaExamenValoracion());
+                trabajoGrado.setNumeroEstado(numEstado);
+
+                // Guardar la entidad ExamenValoracion
+                rtaExamenValoracion
+                                .setLinkFormatoB(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                rtaExamenValoracion.getLinkFormatoB()));
+                rtaExamenValoracion
+                                .setLinkFormatoC(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                rtaExamenValoracion.getLinkFormatoC()));
+                rtaExamenValoracion.setLinkObservaciones(
+                                FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                rtaExamenValoracion.getLinkObservaciones()));
+
+                List<AnexoRespuestaExamenValoracion> updatedLinkAnexos = new ArrayList<>();
+                for (AnexoRespuestaExamenValoracionDto linkAnexoDto : respuestaExamenValoracionDto
+                                .getAnexos()) {
+                        String updatedAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                        linkAnexoDto.getLinkAnexo());
+                        AnexoRespuestaExamenValoracion anexo = new AnexoRespuestaExamenValoracion();
+                        anexo.setLinkAnexo(updatedAnexo);
+                        anexo.setRespuestaExamenValoracion(rtaExamenValoracion);
+                        updatedLinkAnexos.add(anexo);
+                }
+                rtaExamenValoracion.setAnexos(updatedLinkAnexos);
+
+                // Se asigna al trabajo de grado
+                rtaExamenValoracion.setIdTrabajoGrado(trabajoGrado);
+
+                enviarCorreoTutorEstudiante(respuestaExamenValoracionDto, trabajoGrado);
+
+                rtaExamenValoracion.setPermitidoExamen(true);
+
+                RespuestaExamenValoracion examenValoracionRes = respuestaExamenValoracionRepository
+                                .save(rtaExamenValoracion);
+
+                if (numeroNoAprobado == 3) {
+                        rtaExamenValoracion.setPermitidoExamen(false);
+                }
+
+                return respuestaExamenValoracionResponseMapper.toDto(examenValoracionRes);
         }
 
         @Override
@@ -209,9 +228,8 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 }
 
                 envioCorreos.enviarCorreoConAnexos(correos,
-                                respuestaExamenValoracionDto.getInformacionEnvioDto().getAsunto(),
-                                respuestaExamenValoracionDto.getInformacionEnvioDto()
-                                                .getMensaje(),
+                                respuestaExamenValoracionDto.getEnvioEmail().getAsunto(),
+                                respuestaExamenValoracionDto.getEnvioEmail().getMensaje(),
                                 documentosParaEvaluador);
 
                 return true;
@@ -219,50 +237,8 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public RespuestaExamenValoracionInformacionGeneralDto listarInformacionGeneral(Long idRespuestaExamen) {
-
-                RespuestaExamenValoracion respuestaExamenValoracionTmp = respuestaExamenValoracionRepository
-                                .findById(idRespuestaExamen).orElseThrow(() -> new ResourceNotFoundException(
-                                                "Respuesta examen de valoracion con id: " + idRespuestaExamen
-                                                                + " no encontrado"));
-
-                // Busca el trabajo de grado
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(respuestaExamenValoracionTmp.getIdTrabajoGrado().getId()).orElseThrow(
-                                                () -> new ResourceNotFoundException(
-                                                                "Trabajo de grado con id: "
-                                                                                + respuestaExamenValoracionTmp
-                                                                                                .getIdTrabajoGrado()
-                                                                                                .getId()
-                                                                                + " no encontrado"));
-
-                Optional<SolicitudExamenValoracion> responseDto = solicitudExamenValoracionRepository
-                                .findByIdTrabajoGradoId(respuestaExamenValoracionTmp.getIdTrabajoGrado().getId());
-
-                DocenteResponseDto docente = archivoClient
-                                .obtenerDocentePorId(responseDto.get().getIdEvaluadorInterno());
-                String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
-                ExpertoResponseDto experto = archivoClientExpertos
-                                .obtenerExpertoPorId(responseDto.get().getIdEvaluadorExterno());
-                String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
-
-                RespuestaExamenValoracionInformacionGeneralDto responseDtoInformacion = new RespuestaExamenValoracionInformacionGeneralDto();
-
-                responseDtoInformacion.setTituloTrabajoGrado(trabajoGrado.getTitulo());
-                responseDtoInformacion.setIdEvaluadorInterno(docente.getPersona().getId());
-                responseDtoInformacion.setNombreEvaluadorInterno(nombre_docente);
-                responseDtoInformacion.setUniversidadEvaluadorInterno("Universidad del Cauca");
-                responseDtoInformacion.setIdEvaluadorExterno(experto.getPersona().getId());
-                responseDtoInformacion.setNombreEvaluadorExterno(nombre_experto);
-                responseDtoInformacion.setUniversidadEvaluadorExterno(experto.getUniversidad());
-
-                return responseDtoInformacion;
-        }
-
-        @Override
-        @Transactional(readOnly = true)
-        public Map<String, List<RespuestaExamenValoracionResponseDto>> buscarPorId(Long idRespuestaExamen) {
-                return respuestaExamenValoracionRepository.findById(idRespuestaExamen)
+        public Map<String, List<RespuestaExamenValoracionResponseDto>> buscarPorId(Long idTrabajogrado) {
+                return respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajogrado)
                                 .stream()
                                 .map(respuestaExamenValoracionResponseMapper::toDto)
                                 .collect(Collectors.groupingBy(
@@ -327,7 +303,13 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 cambioDocumento = true;
                         }
 
-                        actualizarAnexos(respuestaExamenValoracionTmp, respuestaExamenValoracionDto.getAnexos(),
+                        // Convierte DTOs a Entidades
+                        List<AnexoRespuestaExamenValoracion> anexosEntidades = respuestaExamenValoracionDto.getAnexos()
+                                        .stream()
+                                        .map(anexoDto -> anexoRespuestaExamenValoracionMapper.toEntity(anexoDto))
+                                        .collect(Collectors.toList());
+
+                        actualizarAnexos(respuestaExamenValoracionTmp, anexosEntidades,
                                         rutaArchivo, cambioDocumento, trabajoGrado, respuestaExamenValoracionDto);
 
                         updateRtaExamenValoracionValues(respuestaExamenValoracionTmp, respuestaExamenValoracionDto);
@@ -359,7 +341,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 // Agregar o actualizar los anexos del DTO
                 for (AnexoRespuestaExamenValoracion anexoDto : anexosDto) {
                         if (anexoDto.getId() == null) {
-                                // Nuevo anexo
                                 anexoDto.setLinkAnexo(FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                 anexoDto.getLinkAnexo()));
                                 anexoDto.setRespuestaExamenValoracion(examenValoracionTmp);
@@ -377,24 +358,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         }
                         cambioDocumento = true;
                 }
-
-                // if (cambioDocumento) {
-                // InformacionEnvioDto informacionEnvioDto = new InformacionEnvioDto();
-                // informacionEnvioDto.setAsunto("Modificacion documentos enviados por el
-                // evaluador");
-                // informacionEnvioDto.setMensaje(
-                // "Se realizaron modificaciones a los documentos enviados por el evbaluador,
-                // por favor revisarlos.");
-                // respuestaExamenValoracionDto.setInformacionEnvioDto(informacionEnvioDto);
-                // enviarCorreoTutorEstudiante(respuestaExamenValoracionDto, trabajoGrado);
-                // }
-
-        }
-
-        @Override
-        @Transactional(readOnly = true)
-        public String descargarArchivo(RutaArchivoDto rutaArchivo) {
-                return FilesUtilities.recuperarArchivo(rutaArchivo.getRutaArchivo());
         }
 
         // Funciones privadas

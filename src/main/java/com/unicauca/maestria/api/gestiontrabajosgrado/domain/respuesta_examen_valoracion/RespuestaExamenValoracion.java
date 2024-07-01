@@ -39,7 +39,7 @@ public class RespuestaExamenValoracion {
 
     private LocalDate fechaMaximaEntrega;
 
-    private String idEvaluador;
+    private Long idEvaluador;
 
     private String tipoEvaluador;
 

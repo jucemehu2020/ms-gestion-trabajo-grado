@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
@@ -150,13 +149,6 @@ public class SustentacionProyectoInvestigacionController {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(sustentacionProyectoInvestigacion
                                                 .listarInformacionCoordinadorFase4(idTrabajoGrado));
-        }
-
-        @PostMapping("/descargarDocumento")
-        public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo,
-                        BindingResult resulto) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(sustentacionProyectoInvestigacion.descargarArchivo(rutaArchivo));
         }
 
         @GetMapping("/verificarEgresado/{idEstudiante}")

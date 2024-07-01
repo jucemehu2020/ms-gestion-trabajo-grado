@@ -1,46 +1,34 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_grado;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
-import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.context.Context;
 import org.json.JSONObject;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientLogin;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.EstadoTrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.security.JwtUtil;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.CapturaEstadosDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EventosIdsDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.InformacionTrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapper;
-import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapperImpl;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.GeneracionResolucionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SustentacionProyectoInvestigacionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -230,18 +218,19 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<InformacionTrabajoGradoResponseDto> listarEstadosExamenValoracion(CapturaEstadosDto capturaEstadosDto,
-			BindingResult result) {
+	public List<InformacionTrabajoGradoResponseDto> listarEstadosExamenValoracion(
+			ArrayList<Integer> capturaEstadosDto) {
 		List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findAll();
 
 		List<InformacionTrabajoGradoResponseDto> trabajosGradoDto = listaTrabajoGrado.stream()
-				.filter(trabajo -> capturaEstadosDto.getConsultarEstados().contains(trabajo.getNumeroEstado()))
+				.filter(trabajo -> capturaEstadosDto.contains(trabajo.getNumeroEstado()))
 				.map(trabajo -> {
 					EstudianteResponseDtoAll estudianteResponseDtoAll = archivoClient
 							.obtenerInformacionEstudiante(trabajo.getIdEstudiante());
 					EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[trabajo.getNumeroEstado()];
 					return InformacionTrabajoGradoResponseDto.builder()
 							.id(trabajo.getId())
+							.estudianteId(estudianteResponseDtoAll.getId())
 							.identificacion(estudianteResponseDtoAll.getPersona().getIdentificacion())
 							.nombreCompleto(estudianteResponseDtoAll.getPersona().getNombre() + " "
 									+ estudianteResponseDtoAll.getPersona().getApellido())
@@ -252,6 +241,12 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 				}).collect(Collectors.toList());
 
 		return trabajosGradoDto;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public String descargarArchivo(String rutaArchivo) {
+		return FilesUtilities.recuperarArchivo(rutaArchivo);
 	}
 
 }

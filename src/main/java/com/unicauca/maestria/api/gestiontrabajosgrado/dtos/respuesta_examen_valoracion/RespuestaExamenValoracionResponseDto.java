@@ -5,8 +5,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,10 +16,10 @@ public class RespuestaExamenValoracionResponseDto {
     private String linkFormatoB;
     private String linkFormatoC;
     private String linkObservaciones;
-    private List<AnexoRespuestaExamenValoracion> anexos;
+    private List<AnexoRespuestaExamenValoracionDto> anexos;
     private String respuestaExamenValoracion;
     private LocalDate fechaMaximaEntrega;
-    private String idEvaluador;
+    private Long idEvaluador;
     private String tipoEvaluador;
     
 }

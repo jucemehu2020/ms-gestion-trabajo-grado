@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.RutaArchivoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.ObtenerDocumentosParaEnvioCorreoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
@@ -38,11 +36,11 @@ public class RespuestaExamenValoracionController {
                                 .body(respuestaExamenValoracion.crear(idTrabajoGrado, examenValoracion, result));
         }
 
-        @GetMapping("/{idRespuestaExamen}")
+        @GetMapping("/{idTrabajoGrado}")
         public ResponseEntity<Map<String, List<RespuestaExamenValoracionResponseDto>>> buscarPorId(
-                        @PathVariable Long idRespuestaExamen) {
+                        @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(respuestaExamenValoracion.buscarPorId(idRespuestaExamen));
+                                .body(respuestaExamenValoracion.buscarPorId(idTrabajoGrado));
         }
 
         @PutMapping("/{idRespuestaExamen}")
@@ -51,13 +49,6 @@ public class RespuestaExamenValoracionController {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(respuestaExamenValoracion.actualizar(idRespuestaExamen, examenValoracion,
                                                 result));
-        }
-
-        @PostMapping("/descargarDocumento")
-        public ResponseEntity<?> descargarArchivo(@Valid @RequestBody RutaArchivoDto rutaArchivo,
-                        BindingResult resulto) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(respuestaExamenValoracion.descargarArchivo(rutaArchivo));
         }
 
         @PostMapping("/insertarInformacionCancelado/{idTrabajoGrado}")
