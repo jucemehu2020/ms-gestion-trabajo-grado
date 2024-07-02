@@ -5,6 +5,9 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.ConceptoRespuesta;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,9 +20,9 @@ public class RespuestaExamenValoracionResponseDto {
     private String linkFormatoC;
     private String linkObservaciones;
     private List<AnexoRespuestaExamenValoracionDto> anexos;
-    private String respuestaExamenValoracion;
+    private ConceptoRespuesta respuestaExamenValoracion;
     private LocalDate fechaMaximaEntrega;
     private Long idEvaluador;
-    private String tipoEvaluador;
+    private TipoEvaluador tipoEvaluador;
     
 }

@@ -45,9 +45,9 @@ public class RespuestaExamenValoracionController {
 
         @PutMapping("/{idRespuestaExamen}")
         public ResponseEntity<RespuestaExamenValoracionResponseDto> actualizar(@PathVariable Long idRespuestaExamen,
-                        @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion, BindingResult result) {
+                        @Valid @RequestBody RespuestaExamenValoracionDto respuestaExamenValoracionDto, BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(respuestaExamenValoracion.actualizar(idRespuestaExamen, examenValoracion,
+                                .body(respuestaExamenValoracion.actualizar(idRespuestaExamen, respuestaExamenValoracionDto,
                                                 result));
         }
 

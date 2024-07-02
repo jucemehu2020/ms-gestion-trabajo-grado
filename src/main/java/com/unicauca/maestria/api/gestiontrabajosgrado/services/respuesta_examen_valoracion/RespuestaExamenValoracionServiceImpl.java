@@ -12,6 +12,8 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.ConceptoRespuesta;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
@@ -68,6 +70,11 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         throw new FieldErrorException(result);
                 }
 
+                if (respuestaExamenValoracionDto.getRespuestaExamenValoracion().equals(ConceptoRespuesta.APROBADO)
+                                && respuestaExamenValoracionDto.getFechaMaximaEntrega() != null) {
+                        throw new InformationException("Atributo FECHA MAXIMA no permitido");
+                }
+
                 Long numeroNoAprobado = respuestaExamenValoracionRepository
                                 .countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado);
 
@@ -87,11 +94,11 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
-                if (respuestaExamenValoracionDto.getTipoEvaluador().equals("Interno")) {
+                if (respuestaExamenValoracionDto.getTipoEvaluador().equals(TipoEvaluador.INTERNO)) {
                         archivoClient.obtenerDocentePorId(respuestaExamenValoracionDto.getIdEvaluador());
                 }
 
-                if (respuestaExamenValoracionDto.getTipoEvaluador().equals("Externo")) {
+                if (respuestaExamenValoracionDto.getTipoEvaluador().equals(TipoEvaluador.EXTERNO)) {
                         archivoClientExpertos
                                         .obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador());
                 }
@@ -103,7 +110,8 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         if (respuestaExamenValoracionDto.getIdEvaluador() == listaExamenes.get(i).getIdEvaluador() &&
                                         respuestaExamenValoracionDto.getTipoEvaluador()
                                                         .equals(listaExamenes.get(i).getTipoEvaluador())
-                                        && listaExamenes.get(i).getRespuestaExamenValoracion().equals("Aprobado")) {
+                                        && listaExamenes.get(i).getRespuestaExamenValoracion()
+                                                        .equals(ConceptoRespuesta.APROBADO)) {
                                 throw new InformationException(
                                                 "El evaluador previamente dio su concepto como APROBADO, no es permitido que realice nuevos registros");
                         }
@@ -237,12 +245,23 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         @Transactional(readOnly = true)
-        public Map<String, List<RespuestaExamenValoracionResponseDto>> buscarPorId(Long idTrabajogrado) {
-                return respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajogrado)
-                                .stream()
+        public Map<String, List<RespuestaExamenValoracionResponseDto>> buscarPorId(Long idTrabajoGrado) {
+
+                respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado).orElseThrow(
+                                () -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+                List<RespuestaExamenValoracion> respuestas = respuestaExamenValoracionRepository
+                                .findByIdTrabajoGrado(idTrabajoGrado);
+
+                if (respuestas.isEmpty()) {
+                        throw new InformationException("No se han registrado datos");
+                }
+
+                return respuestas.stream()
                                 .map(respuestaExamenValoracionResponseMapper::toDto)
                                 .collect(Collectors.groupingBy(
-                                                respuesta -> "Interno".equalsIgnoreCase(respuesta.getTipoEvaluador())
+                                                respuesta -> respuesta.getTipoEvaluador() == TipoEvaluador.INTERNO
                                                                 ? "evaluador_interno"
                                                                 : "evaluador_externo"));
         }
@@ -256,14 +275,23 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         throw new FieldErrorException(result);
                 }
 
+                if (respuestaExamenValoracionDto.getRespuestaExamenValoracion().equals(ConceptoRespuesta.APROBADO)
+                                && respuestaExamenValoracionDto.getFechaMaximaEntrega() != null) {
+                        throw new InformationException("Atributo FECHA MAXIMA no permitido");
+                }
                 Boolean cambioDocumento = false;
 
                 RespuestaExamenValoracion respuestaExamenValoracionTmp = respuestaExamenValoracionRepository
                                 .findById(idRespuestaExamen).orElseThrow(() -> new ResourceNotFoundException(
-                                                "Respuesta examen de valoracion con id: " + idRespuestaExamen
+                                                "Respuesta examen de valoracion con id " + idRespuestaExamen
                                                                 + " no encontrado"));
 
-                // Busca el trabajo de grado
+                if (respuestaExamenValoracionTmp.getIdEvaluador() != respuestaExamenValoracionDto.getIdEvaluador()
+                                && respuestaExamenValoracionTmp.getTipoEvaluador() != respuestaExamenValoracionDto
+                                                .getTipoEvaluador()) {
+                        throw new InformationException("Los datos del evaluador no corresponden");
+                }
+
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(respuestaExamenValoracionTmp.getIdTrabajoGrado().getId()).orElseThrow(
                                                 () -> new ResourceNotFoundException(
@@ -273,49 +301,63 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                                                 .getId()
                                                                                 + " no encontrado"));
 
+                if (trabajoGrado.getNumeroEstado() != 6 && trabajoGrado.getNumeroEstado() != 7
+                                && trabajoGrado.getNumeroEstado() != 8 && trabajoGrado.getNumeroEstado() != 9
+                                && trabajoGrado.getNumeroEstado() != 10 && trabajoGrado.getNumeroEstado() != 11) {
+                        throw new InformationException("No es permitido registrar la informacion");
+                }
+
+                if (respuestaExamenValoracionDto.getTipoEvaluador().equals(TipoEvaluador.INTERNO)) {
+                        archivoClient.obtenerDocentePorId(respuestaExamenValoracionDto.getIdEvaluador());
+                }
+
+                if (respuestaExamenValoracionDto.getTipoEvaluador().equals(TipoEvaluador.EXTERNO)) {
+                        archivoClientExpertos
+                                        .obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador());
+                }
+
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
 
-                RespuestaExamenValoracion responseExamenValoracion = null;
+                enviarCorreoTutorEstudiante(respuestaExamenValoracionDto, trabajoGrado);
 
-                if (respuestaExamenValoracionTmp != null) {
-                        if (respuestaExamenValoracionDto.getLinkFormatoB()
-                                        .compareTo(respuestaExamenValoracionTmp.getLinkFormatoB()) != 0) {
-                                respuestaExamenValoracionDto.setLinkFormatoB(FilesUtilities.guardarArchivoNew2(
-                                                rutaArchivo,
-                                                respuestaExamenValoracionDto.getLinkFormatoB()));
-                                FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkFormatoB());
-                                cambioDocumento = true;
-                        }
-                        if (respuestaExamenValoracionDto.getLinkFormatoC()
-                                        .compareTo(respuestaExamenValoracionTmp.getLinkFormatoC()) != 0) {
-                                respuestaExamenValoracionDto.setLinkFormatoC(FilesUtilities.guardarArchivoNew2(
-                                                rutaArchivo,
-                                                respuestaExamenValoracionDto.getLinkFormatoC()));
-                                FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkFormatoC());
-                                cambioDocumento = true;
-                        }
-                        if (respuestaExamenValoracionDto.getLinkObservaciones()
-                                        .compareTo(respuestaExamenValoracionTmp.getLinkObservaciones()) != 0) {
-                                respuestaExamenValoracionDto.setLinkObservaciones(FilesUtilities.guardarArchivoNew2(
-                                                rutaArchivo,
-                                                respuestaExamenValoracionDto.getLinkObservaciones()));
-                                FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkObservaciones());
-                                cambioDocumento = true;
-                        }
-
-                        // Convierte DTOs a Entidades
-                        List<AnexoRespuestaExamenValoracion> anexosEntidades = respuestaExamenValoracionDto.getAnexos()
-                                        .stream()
-                                        .map(anexoDto -> anexoRespuestaExamenValoracionMapper.toEntity(anexoDto))
-                                        .collect(Collectors.toList());
-
-                        actualizarAnexos(respuestaExamenValoracionTmp, anexosEntidades,
-                                        rutaArchivo, cambioDocumento, trabajoGrado, respuestaExamenValoracionDto);
-
-                        updateRtaExamenValoracionValues(respuestaExamenValoracionTmp, respuestaExamenValoracionDto);
-                        responseExamenValoracion = respuestaExamenValoracionRepository
-                                        .save(respuestaExamenValoracionTmp);
+                if (respuestaExamenValoracionDto.getLinkFormatoB()
+                                .compareTo(respuestaExamenValoracionTmp.getLinkFormatoB()) != 0) {
+                        respuestaExamenValoracionDto.setLinkFormatoB(FilesUtilities.guardarArchivoNew2(
+                                        rutaArchivo,
+                                        respuestaExamenValoracionDto.getLinkFormatoB()));
+                        FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkFormatoB());
+                        cambioDocumento = true;
                 }
+                if (respuestaExamenValoracionDto.getLinkFormatoC()
+                                .compareTo(respuestaExamenValoracionTmp.getLinkFormatoC()) != 0) {
+                        respuestaExamenValoracionDto.setLinkFormatoC(FilesUtilities.guardarArchivoNew2(
+                                        rutaArchivo,
+                                        respuestaExamenValoracionDto.getLinkFormatoC()));
+                        FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkFormatoC());
+                        cambioDocumento = true;
+                }
+                if (respuestaExamenValoracionDto.getLinkObservaciones()
+                                .compareTo(respuestaExamenValoracionTmp.getLinkObservaciones()) != 0) {
+                        respuestaExamenValoracionDto.setLinkObservaciones(FilesUtilities.guardarArchivoNew2(
+                                        rutaArchivo,
+                                        respuestaExamenValoracionDto.getLinkObservaciones()));
+                        FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkObservaciones());
+                        cambioDocumento = true;
+                }
+
+                // Convierte DTOs a Entidades
+                List<AnexoRespuestaExamenValoracion> anexosEntidades = respuestaExamenValoracionDto.getAnexos()
+                                .stream()
+                                .map(anexoDto -> anexoRespuestaExamenValoracionMapper.toEntity(anexoDto))
+                                .collect(Collectors.toList());
+
+                actualizarAnexos(respuestaExamenValoracionTmp, anexosEntidades,
+                                rutaArchivo, cambioDocumento, trabajoGrado, respuestaExamenValoracionDto);
+
+                updateRtaExamenValoracionValues(respuestaExamenValoracionTmp, respuestaExamenValoracionDto);
+
+                RespuestaExamenValoracion responseExamenValoracion = respuestaExamenValoracionRepository
+                                .save(respuestaExamenValoracionTmp);
                 return respuestaExamenValoracionResponseMapper.toDto(responseExamenValoracion);
         }
 
@@ -386,7 +428,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 List<AnexoRespuestaExamenValoracion> anexosRtaExamenValoracion = anexosRespuestaExamenValoracionRepository
                                 .obtenerAnexosPorId(rtaExamenValoracion.getIdRespuestaExamenValoracion());
 
-                ArrayList<String> listaAnexos = new ArrayList();
+                ArrayList<String> listaAnexos = new ArrayList<>();
                 for (int documento = 0; documento < anexosRtaExamenValoracion.size(); documento++) {
                         listaAnexos.add(
                                         FilesUtilities.recuperarArchivo(
@@ -402,24 +444,25 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 return obtenerDocumentosParaEnvioCorreoDto;
         }
 
-        private int validarEstado(Long idTrabajoGrado, String conceptoEvaluador) {
+        private int validarEstado(Long idTrabajoGrado, ConceptoRespuesta conceptoEvaluador) {
                 Integer numeroEstadoActual = trabajoGradoRepository.obtenerEstadoTrabajoGrado(idTrabajoGrado);
                 int numEstado = 0;
                 switch (conceptoEvaluador) {
-                        case "No aprobado":
+                        case NO_APROBADO:
                                 if (numeroEstadoActual == 5 || numeroEstadoActual == 6 || numeroEstadoActual == 9) {
                                         numEstado = 8;
                                 } else if (numeroEstadoActual == 8) {
                                         numEstado = 9;
                                 }
                                 break;
-                        case "Aplazado":
+                        case APLAZADO:
                                 if (numeroEstadoActual == 5 || numeroEstadoActual == 6) {
                                         numEstado = 10;
                                 } else if (numeroEstadoActual == 10) {
                                         numEstado = 11;
                                 }
                                 break;
+                        case APROBADO:
                         default:
                                 if (numeroEstadoActual == 5) {
                                         numEstado = 6;

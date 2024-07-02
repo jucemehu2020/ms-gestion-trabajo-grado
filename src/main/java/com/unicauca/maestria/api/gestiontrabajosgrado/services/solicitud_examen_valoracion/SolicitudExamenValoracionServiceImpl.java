@@ -626,7 +626,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
 						+ idTrabajoGrado + " no encontrado"));
 
-		if (trabajoGrado.getNumeroEstado() != 4 && trabajoGrado.getNumeroEstado() != 5) {
+		if (trabajoGrado.getNumeroEstado() != 4 && trabajoGrado.getNumeroEstado() != 5 ) {
 			throw new InformationException("No es permitido registrar la informacion");
 		}
 

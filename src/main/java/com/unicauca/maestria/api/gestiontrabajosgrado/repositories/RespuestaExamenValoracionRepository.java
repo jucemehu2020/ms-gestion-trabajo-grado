@@ -1,6 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +19,7 @@ public interface RespuestaExamenValoracionRepository extends JpaRepository<Respu
 
     @Query("SELECT sev.idRespuestaExamenValoracion FROM RespuestaExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
     public List<Long> findIdRespuestaExamenValoracionByTrabajoGradoId(Long trabajoGradoId);
+
+    public Optional<RespuestaExamenValoracion> findByIdTrabajoGradoId(Long idTrabajoGradoId);
 
 }

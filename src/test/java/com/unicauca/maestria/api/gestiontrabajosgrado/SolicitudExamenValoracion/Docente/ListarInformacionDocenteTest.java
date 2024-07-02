@@ -138,6 +138,7 @@ public class ListarInformacionDocenteTest {
                                 solicitudExamenValoracionDocenteResponseListDto.getLinkFormatoE());
 
                 Map<String, String> docenteEsperado = new HashMap<>();
+                docenteEsperado.put("id", "1");
                 docenteEsperado.put("correo", "dannyad@unicauca.edu.co");
                 docenteEsperado.put("universidad", "Universidad del Cauca");
                 docenteEsperado.put("nombres", "Danny Mage");

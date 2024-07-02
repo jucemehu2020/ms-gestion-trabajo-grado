@@ -5,10 +5,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.context.request.WebRequest;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,17 +62,35 @@ public class GlobalHandlerException {
 		return new ResponseEntity<Object>(exc, estado);
 	}
 
-	@ExceptionHandler(value = {RetryableException.class, ResourceAccessException.class})
-    public ResponseEntity<Object> feignClientExceptionHandler(RuntimeException exception, WebRequest request) {
-        HttpStatus estado = HttpStatus.SERVICE_UNAVAILABLE;
-        GlobalException exc = GlobalException.builder()
-                //.mensaje("No se pudo conectar con el servicio externo: " + exception.getMessage())
+	@ExceptionHandler(value = { RetryableException.class, ResourceAccessException.class })
+	public ResponseEntity<Object> feignClientExceptionHandler(RuntimeException exception, WebRequest request) {
+		HttpStatus estado = HttpStatus.SERVICE_UNAVAILABLE;
+		GlobalException exc = GlobalException.builder()
+				// .mensaje("No se pudo conectar con el servicio externo: " +
+				// exception.getMessage())
 				.mensaje("Servidor externo actualmente fuera de servicio")
-                .estado(estado)
-                .marcaTiempo(LocalDate.now())
-                .descripcionUrl(request.getDescription(false))
-                .build();
-        
-        return new ResponseEntity<Object>(exc, estado);
-    }
+				.estado(estado)
+				.marcaTiempo(LocalDate.now())
+				.descripcionUrl(request.getDescription(false))
+				.build();
+
+		return new ResponseEntity<Object>(exc, estado);
+	}
+
+	@ExceptionHandler(value = { InvalidFormatException.class })
+	public ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, WebRequest request) {
+		HttpStatus estado = HttpStatus.BAD_REQUEST;
+
+		// Convertir los valores del enum a una cadena legible
+		String valoresPermitidos = Stream.of(ex.getTargetType().getEnumConstants())
+				.map(Object::toString)
+				.collect(Collectors.joining(", "));
+
+		Map<String, Object> body = new HashMap<>();
+		body.put("message",
+				"Atributo " + ex.getValue() + " no es valido. Los valores aceptados son: " + valoresPermitidos);
+		body.put("path", request.getDescription(false).substring(4));
+
+		return new ResponseEntity<>(body, estado);
+	}
 }

@@ -6,7 +6,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.ConceptoRespuesta;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
 @Getter
@@ -16,28 +19,28 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 @Builder
 public class RespuestaExamenValoracionDto {
 
-    @NotBlank
+    @NotNull
     private String linkFormatoB;
 
-    @NotBlank
+    @NotNull
     private String linkFormatoC;
 
-    @NotBlank
+    @NotNull
     private String linkObservaciones;
 
     @Valid
     private List<AnexoRespuestaExamenValoracionDto> anexos;
 
-    @NotBlank
-    private String respuestaExamenValoracion;
+    @NotNull
+    private ConceptoRespuesta respuestaExamenValoracion;
 
     private LocalDate fechaMaximaEntrega;
 
-    @NonNull
+    @NotNull
     private Long idEvaluador;
 
-    @NonNull
-    private String tipoEvaluador;
+    @NotNull
+    private TipoEvaluador tipoEvaluador;
 
     private Boolean permitidoExamen;
 

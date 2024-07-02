@@ -11,6 +11,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,8 @@ import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.ConceptoRespuesta;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
@@ -122,9 +126,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Interno");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -143,8 +147,8 @@ public class InsertarInformacionCoordinadorTest {
 
                 RespuestaExamenValoracion respuestaExamenValoracionOld = new RespuestaExamenValoracion();
                 respuestaExamenValoracionOld.setIdEvaluador(1L);
-                respuestaExamenValoracionOld.setTipoEvaluador("Externo");
-                respuestaExamenValoracionOld.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.EXTERNO);
+                respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
 
                 List<RespuestaExamenValoracion> listaExamenes = new ArrayList<>();
                 listaExamenes.add(respuestaExamenValoracionOld);
@@ -158,6 +162,7 @@ public class InsertarInformacionCoordinadorTest {
                                 .build());
 
                 RespuestaExamenValoracion respuestaExamenValoracion = new RespuestaExamenValoracion();
+                respuestaExamenValoracion.setIdRespuestaExamenValoracion(1L);
                 respuestaExamenValoracion.setLinkFormatoB(respuestaExamenValoracionDto.getLinkFormatoB());
                 respuestaExamenValoracion.setLinkFormatoC(respuestaExamenValoracionDto.getLinkFormatoC());
                 respuestaExamenValoracion.setLinkObservaciones(respuestaExamenValoracionDto.getLinkObservaciones());
@@ -190,12 +195,12 @@ public class InsertarInformacionCoordinadorTest {
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosResponseDto = new ArrayList<>();
                 listaAnexosResponseDto.add(AnexoRespuestaExamenValoracionDto.builder()
-                                .linkAnexo(
-                                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-Anexos.txt")
+                                .linkAnexo("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-Anexos.txt")
                                 .build());
 
                 RespuestaExamenValoracionResponseDto respuestaExamenValoracionResponseDto = new RespuestaExamenValoracionResponseDto();
-                respuestaExamenValoracionResponseDto.setIdRespuestaExamenValoracion(idTrabajoGrado);
+                respuestaExamenValoracionResponseDto.setIdRespuestaExamenValoracion(
+                                respuestaExamenValoracion.getIdRespuestaExamenValoracion());
                 respuestaExamenValoracionResponseDto.setLinkFormatoB(
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-formatoB.txt");
                 respuestaExamenValoracionResponseDto.setLinkFormatoC(
@@ -231,11 +236,11 @@ public class InsertarInformacionCoordinadorTest {
                                         resultado.getLinkObservaciones());
                         assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-Anexos.txt",
                                         resultado.getAnexos().get(0).getLinkAnexo());
-                        assertEquals("Aprobado", resultado.getRespuestaExamenValoracion());
+                        assertEquals(ConceptoRespuesta.APROBADO, resultado.getRespuestaExamenValoracion());
                         assertEquals(null,
                                         resultado.getFechaMaximaEntrega());
                         assertEquals(1L, resultado.getIdEvaluador());
-                        assertEquals("Interno", resultado.getTipoEvaluador());
+                        assertEquals(TipoEvaluador.INTERNO, resultado.getTipoEvaluador());
                 }
 
         }
@@ -257,9 +262,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Interno");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 FieldError fieldError = new FieldError("RespuestaExamenValoracionDto", "linkFormatoC",
@@ -299,9 +304,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Interno");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -347,9 +352,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Interno");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -384,9 +389,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(2L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Interno");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -435,9 +440,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(2L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Externo");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.EXTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -486,9 +491,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(2L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Interno");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -538,9 +543,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(2L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Externo");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.EXTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -590,9 +595,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Interno");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -630,9 +635,9 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion("No aprobado");
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.NO_APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
-                respuestaExamenValoracionDto.setTipoEvaluador("Externo");
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.EXTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -651,8 +656,8 @@ public class InsertarInformacionCoordinadorTest {
 
                 RespuestaExamenValoracion respuestaExamenValoracionOld = new RespuestaExamenValoracion();
                 respuestaExamenValoracionOld.setIdEvaluador(1L);
-                respuestaExamenValoracionOld.setTipoEvaluador("Externo");
-                respuestaExamenValoracionOld.setRespuestaExamenValoracion("Aprobado");
+                respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.EXTERNO);
+                respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
 
                 List<RespuestaExamenValoracion> listaExamenes = new ArrayList<>();
                 listaExamenes.add(respuestaExamenValoracionOld);
@@ -671,6 +676,45 @@ public class InsertarInformacionCoordinadorTest {
                 assertTrue(thrown.getMessage().contains(
                                 "El evaluador previamente dio su concepto como APROBADO, no es permitido que realice nuevos registros"));
 
+        }
+
+        @Test
+        void testInsertarInformacionCoordinador_AtributoFechaMaximaNoPermitido() {
+
+                Long idTrabajoGrado = 1L;
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+                List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
+                listaAnexosDto.add(AnexoRespuestaExamenValoracionDto.builder()
+                                .linkAnexo("Anexos.txt-cHJ1ZWJhIGRlIHRleHR")
+                                .build());
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Respuesta evaluadores");
+                envioEmailDto.setMensaje("Envio documentos enviados por el evaluador Mage");
+
+                RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
+                respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
+                respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
+                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
+                respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
+                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
+                respuestaExamenValoracionDto.setIdEvaluador(1L);
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
+                respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado, respuestaExamenValoracionDto,
+                                        result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Atributo FECHA MAXIMA no permitido";
+                assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
 }
