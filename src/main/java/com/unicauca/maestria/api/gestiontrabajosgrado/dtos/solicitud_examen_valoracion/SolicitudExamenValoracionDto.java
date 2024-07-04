@@ -9,7 +9,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.AnexoSolicitudExamenValoracionDto;
 
 @Getter
 @Setter
@@ -33,7 +33,7 @@ public class SolicitudExamenValoracionDto {
     @NotBlank
     private String linkFormatoE;
 
-    private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();;
+    private List<AnexoSolicitudExamenValoracionDto> anexos = new ArrayList<>();;
 
     @NotNull
     private Long idEvaluadorInterno;

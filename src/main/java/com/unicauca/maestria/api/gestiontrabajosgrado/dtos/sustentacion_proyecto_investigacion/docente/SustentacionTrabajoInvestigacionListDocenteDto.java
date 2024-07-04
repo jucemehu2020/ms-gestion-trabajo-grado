@@ -1,5 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente;
 
+import java.util.Map;
+
 import lombok.*;
 
 @Getter
@@ -7,12 +9,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SustentacionTrabajoInvestigacionDocenteResponseDto {
+public class SustentacionTrabajoInvestigacionListDocenteDto {
 
-    private Long idSustentacionTrabajoInvestigacion; 
+    private Long idSustentacionTrabajoInvestigacion;
     private String linkFormatoF;
     private String urlDocumentacion;
-    private Long idJuradoInterno;
-    private Long idJuradoExterno;
+    private Map<String, String> juradoInterno;
+    private Map<String, String> juradoExterno;
 
 }

@@ -29,6 +29,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.AnexoSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
@@ -75,7 +76,7 @@ public class InsertarInformacionDocenteTest {
                                 trabajoGradoRepository,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
-                                anexoSolicitudExamenValoracionMapper, 
+                                anexoSolicitudExamenValoracionMapper,
                                 archivoClient,
                                 archivoClientExpertos);
         }
@@ -154,12 +155,10 @@ public class InsertarInformacionDocenteTest {
                 responseDto.setLinkFormatoE(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoE.txt");
                 responseDto.setAnexos(List.of(
-                                new AnexoSolicitudExamenValoracion(10L,
-                                                "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-Anexos.txt",
-                                                examenValoracion),
-                                new AnexoSolicitudExamenValoracion(11L,
-                                                "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-Anexos2.txt",
-                                                examenValoracion)));
+                                new AnexoSolicitudExamenValoracionDto(10L,
+                                                "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-Anexos.txt"),
+                                new AnexoSolicitudExamenValoracionDto(11L,
+                                                "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-Anexos2.txt")));
                 responseDto.setIdEvaluadorInterno(1L);
                 responseDto.setIdEvaluadorExterno(1L);
 
@@ -177,14 +176,11 @@ public class InsertarInformacionDocenteTest {
                         assertNotNull(resultado);
                         assertEquals(4L, resultado.getIdExamenValoracion());
                         assertEquals("Prueba test", resultado.getTitulo());
-                        assertEquals(
-                                        "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt",
+                        assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt",
                                         resultado.getLinkFormatoA());
-                        assertEquals(
-                                        "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoD.txt",
+                        assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoD.txt",
                                         resultado.getLinkFormatoD());
-                        assertEquals(
-                                        "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoE.txt",
+                        assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoE.txt",
                                         resultado.getLinkFormatoE());
                 }
         }

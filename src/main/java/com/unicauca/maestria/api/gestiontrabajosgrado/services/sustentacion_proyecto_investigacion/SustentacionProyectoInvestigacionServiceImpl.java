@@ -41,6 +41,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_4.SustentacionTrabajoInvestigacionCoordinadorFase4Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionListDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
@@ -51,6 +52,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyec
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSustentacionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SustentacionProyectoInvestigacionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionListDocenteDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -142,10 +144,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "TrabajoGrado con id: " + idTrabajoGrado
-                                                                + " No encontrado"));
-
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                                                "Trabajo de grado con id " + idTrabajoGrado
+                                                                + " no encontrado"));
 
                 // Mapear DTO a entidad
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoIngestigacionMapper
@@ -157,6 +157,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 trabajoGrado.setNumeroEstado(12);
 
+                String rutaArchivo = identificacionArchivo(trabajoGrado);
+
                 // Guardar la entidad SustentacionProyectoInvestigacion
                 sustentacionProyectoInvestigacion.setLinkFormatoF(
                                 FilesUtilities.guardarArchivoNew2(rutaArchivo,
@@ -165,29 +167,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacion);
 
-                // Obtener y construir información del evaluador interno
-                DocenteResponseDto docente = archivoClient
-                                .obtenerDocentePorId(sustentacionDto.getIdJuradoInterno());
-                String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
-                Map<String, String> evaluadorInternoMap = new HashMap<>();
-                evaluadorInternoMap.put("nombres", nombre_docente);
-                evaluadorInternoMap.put("universidad", "Universidad del Cauca");
-                evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
-
-                // Obtener y construir información del evaluador externo
-                ExpertoResponseDto experto = archivoClientExpertos
-                                .obtenerExpertoPorId(sustentacionDto.getIdJuradoExterno());
-                String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
-                Map<String, String> evaluadorExternoMap = new HashMap<>();
-                evaluadorExternoMap.put("nombres", nombre_experto);
-                evaluadorExternoMap.put("universidad", experto.getUniversidad());
-                evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
-
                 SustentacionTrabajoInvestigacionDocenteResponseDto sustentacionResponseDto = sustentacionProyectoInvestigacionResponseMapper
                                 .toDocenteDto(sustentacionProyectoInvestigacionRes);
-
-                sustentacionResponseDto.setJuradoInterno(evaluadorInternoMap);
-                sustentacionResponseDto.setJuradoExterno(evaluadorExternoMap);
 
                 return sustentacionResponseDto;
         }
@@ -560,7 +541,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
         @Override
         @Transactional(readOnly = true)
-        public SustentacionTrabajoInvestigacionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado) {
+        public SustentacionTrabajoInvestigacionListDocenteDto listarInformacionDocente(Long idTrabajoGrado) {
                 TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "TrabajoGrado con id: " + idTrabajoGrado
@@ -593,7 +574,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 evaluadorExternoMap.put("universidad", experto.getUniversidad());
                 evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
 
-                SustentacionTrabajoInvestigacionDocenteResponseDto sustentacionTrabajoInvestigacionDocenteResponseDto = new SustentacionTrabajoInvestigacionDocenteResponseDto();
+                SustentacionTrabajoInvestigacionListDocenteDto sustentacionTrabajoInvestigacionDocenteResponseDto = new SustentacionTrabajoInvestigacionListDocenteDto();
                 sustentacionTrabajoInvestigacionDocenteResponseDto.setIdSustentacionTrabajoInvestigacion(
                                 sustentacionProyectoInvestigacionTmp.getIdSustentacionTrabajoInvestigacion());
                 sustentacionTrabajoInvestigacionDocenteResponseDto
@@ -769,29 +750,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                         .save(sustentacionProyectoInvestigacionTmp);
                 }
 
-                // Obtener y construir información del evaluador interno
-                DocenteResponseDto docente = archivoClient
-                                .obtenerDocentePorId(sustentacionDto.getIdJuradoInterno());
-                String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
-                Map<String, String> evaluadorInternoMap = new HashMap<>();
-                evaluadorInternoMap.put("nombres", nombre_docente);
-                evaluadorInternoMap.put("universidad", "Universidad del Cauca");
-                evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
-
-                // Obtener y construir información del evaluador externo
-                ExpertoResponseDto experto = archivoClientExpertos
-                                .obtenerExpertoPorId(sustentacionDto.getIdJuradoExterno());
-                String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
-                Map<String, String> evaluadorExternoMap = new HashMap<>();
-                evaluadorExternoMap.put("nombres", nombre_experto);
-                evaluadorExternoMap.put("universidad", experto.getUniversidad());
-                evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
-
                 SustentacionTrabajoInvestigacionDocenteResponseDto sustentacionResponseDto = sustentacionProyectoInvestigacionResponseMapper
                                 .toDocenteDto(sustentacionTrabajoInvestigacion);
-
-                sustentacionResponseDto.setJuradoInterno(evaluadorInternoMap);
-                sustentacionResponseDto.setJuradoExterno(evaluadorExternoMap);
 
                 return sustentacionResponseDto;
         }

@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 
 @Getter
 @Setter
@@ -57,7 +58,7 @@ public class SustentacionTrabajoInvestigacionDto {
     private String linkActaSustentacionPublica;
 
     @NotNull
-    private Boolean respuestaSustentacion;
+    private ConceptosVarios respuestaSustentacion;
 
     @NotBlank
     private String linkEstudioHojaVidaAcademicaGrado;
