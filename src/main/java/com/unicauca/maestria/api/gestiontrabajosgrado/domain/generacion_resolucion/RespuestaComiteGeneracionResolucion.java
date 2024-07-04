@@ -5,9 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 
 @Entity
 @Table(name = "respuesta_comite_generacion_resolucion")
@@ -22,11 +26,12 @@ public class RespuestaComiteGeneracionResolucion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRespuestaComiteGeneracionResolucion;
 
-    private Boolean conceptoComite;
+    @Enumerated(EnumType.STRING)
+    private Concepto conceptoComite;
 
     private String numeroActa;
 
-    private String fechaActa;
+    private LocalDate fechaActa;
 
     @ManyToOne
     @JoinColumn(name = "id_generacion_resolucion")

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
 import lombok.AllArgsConstructor;
@@ -38,7 +39,8 @@ public class GeneracionResolucion {
     private String linkSolicitudComite;
 
     // Coordinador - Fase 1
-    private Boolean conceptoDocumentosCoordinador;
+    @Enumerated(EnumType.STRING)
+    private Concepto conceptoDocumentosCoordinador;
 
     // Coordinador - Fase 2
     @OneToMany(mappedBy = "generacionResolucion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

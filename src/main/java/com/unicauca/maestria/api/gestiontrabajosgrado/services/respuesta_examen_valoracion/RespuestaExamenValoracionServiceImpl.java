@@ -12,7 +12,7 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.ConceptoRespuesta;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
@@ -70,7 +70,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         throw new FieldErrorException(result);
                 }
 
-                if (respuestaExamenValoracionDto.getRespuestaExamenValoracion().equals(ConceptoRespuesta.APROBADO)
+                if (respuestaExamenValoracionDto.getRespuestaExamenValoracion().equals(ConceptosVarios.APROBADO)
                                 && respuestaExamenValoracionDto.getFechaMaximaEntrega() != null) {
                         throw new InformationException("Atributo FECHA MAXIMA no permitido");
                 }
@@ -111,7 +111,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                         respuestaExamenValoracionDto.getTipoEvaluador()
                                                         .equals(listaExamenes.get(i).getTipoEvaluador())
                                         && listaExamenes.get(i).getRespuestaExamenValoracion()
-                                                        .equals(ConceptoRespuesta.APROBADO)) {
+                                                        .equals(ConceptosVarios.APROBADO)) {
                                 throw new InformationException(
                                                 "El evaluador previamente dio su concepto como APROBADO, no es permitido que realice nuevos registros");
                         }
@@ -275,7 +275,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         throw new FieldErrorException(result);
                 }
 
-                if (respuestaExamenValoracionDto.getRespuestaExamenValoracion().equals(ConceptoRespuesta.APROBADO)
+                if (respuestaExamenValoracionDto.getRespuestaExamenValoracion().equals(ConceptosVarios.APROBADO)
                                 && respuestaExamenValoracionDto.getFechaMaximaEntrega() != null) {
                         throw new InformationException("Atributo FECHA MAXIMA no permitido");
                 }
@@ -444,7 +444,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 return obtenerDocumentosParaEnvioCorreoDto;
         }
 
-        private int validarEstado(Long idTrabajoGrado, ConceptoRespuesta conceptoEvaluador) {
+        private int validarEstado(Long idTrabajoGrado, ConceptosVarios conceptoEvaluador) {
                 Integer numeroEstadoActual = trabajoGradoRepository.obtenerEstadoTrabajoGrado(idTrabajoGrado);
                 int numEstado = 0;
                 switch (conceptoEvaluador) {

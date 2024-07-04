@@ -1,8 +1,11 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1;
 
 import lombok.*;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
 @Getter
@@ -13,11 +16,13 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 public class SustentacionTrabajoInvestigacionCoordinadorFase1Dto {
 
     @NotNull
-    private Boolean conceptoCoordinador;
+    private ConceptoVerificacion conceptoCoordinador;
 
     @NotNull
-    private EnvioEmailDto envioEmailDto;
+    @Valid
+    private EnvioEmailDto envioEmail;
 
+    @Valid
     private ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto;
 
 }

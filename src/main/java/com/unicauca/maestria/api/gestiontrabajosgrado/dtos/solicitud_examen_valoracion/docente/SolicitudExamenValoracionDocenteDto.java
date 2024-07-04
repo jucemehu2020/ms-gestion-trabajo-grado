@@ -5,10 +5,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 
 @Getter
 @Setter
@@ -29,7 +26,7 @@ public class SolicitudExamenValoracionDocenteDto {
     @NotNull
     private String linkFormatoE;
 
-    private List<AnexoSolicitudExamenValoracion> anexos = new ArrayList<>();
+    private List<AnexoSolicitudExamenValoracionDto> anexos = new ArrayList<>();
 
     @NotNull
     private Long idEvaluadorInterno;

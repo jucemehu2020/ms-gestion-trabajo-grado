@@ -2,6 +2,8 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyect
 
 import java.time.LocalDate;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
+
 import lombok.*;
 
 @Getter
@@ -13,7 +15,7 @@ public class STICoordinadorFase4ResponseDto {
 
     private Long idSustentacionTrabajoInvestigacion;
     private String linkActaSustentacionPublica;
-    private String respuestaSustentacion;
+    private ConceptosVarios respuestaSustentacion;
     private String linkEstudioHojaVidaAcademicaGrado;
     private String numeroActaFinal;
     private LocalDate fechaActaFinal;

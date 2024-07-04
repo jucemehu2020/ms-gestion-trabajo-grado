@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +21,7 @@ public class RespuestaComiteExamenValoracionDto {
 
     private Long idAnexoExamenValoracion;
     @NotNull
-    private Boolean conceptoComite;
+    private Concepto conceptoComite;
     @NotNull
     private String numeroActa;
     @NotNull

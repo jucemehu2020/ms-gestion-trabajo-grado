@@ -6,6 +6,8 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,7 +30,7 @@ public class SustentacionTrabajoInvestigacionDto {
     @NotNull
     private Long idJuradoExterno;
 
-    private Boolean conceptoCoordinador;
+    private ConceptoVerificacion conceptoCoordinador;
 
     @NotBlank
     private String linkFormatoG;
@@ -37,7 +39,7 @@ public class SustentacionTrabajoInvestigacionDto {
     private String linkEstudioHojaVidaAcademica;
 
     @NotNull
-    private Boolean juradosAceptados;
+    private ConceptoVerificacion juradosAceptados;
 
     @NotBlank
     private String numeroActaConsejo;

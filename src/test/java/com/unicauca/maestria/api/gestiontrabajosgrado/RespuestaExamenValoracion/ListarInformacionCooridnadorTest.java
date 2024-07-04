@@ -25,7 +25,7 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.ConceptoRespuesta;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
@@ -110,7 +110,7 @@ public class ListarInformacionCooridnadorTest {
         respuestaExamenValoracion.setLinkObservaciones(
                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt");
         respuestaExamenValoracion.setAnexos(listaAnexos);
-        respuestaExamenValoracion.setRespuestaExamenValoracion(ConceptoRespuesta.APROBADO);
+        respuestaExamenValoracion.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
         respuestaExamenValoracion.setIdEvaluador(1L);
         respuestaExamenValoracion.setTipoEvaluador(TipoEvaluador.EXTERNO);
 
@@ -160,7 +160,7 @@ public class ListarInformacionCooridnadorTest {
                 dto.getLinkObservaciones());
         assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt",
                 dto.getAnexos().get(0).getLinkAnexo());
-        assertEquals(ConceptoRespuesta.APROBADO, dto.getRespuestaExamenValoracion());
+        assertEquals(ConceptosVarios.APROBADO, dto.getRespuestaExamenValoracion());
         assertEquals(null, dto.getFechaMaximaEntrega());
         assertEquals(1L, dto.getIdEvaluador());
         assertEquals(TipoEvaluador.EXTERNO, dto.getTipoEvaluador());

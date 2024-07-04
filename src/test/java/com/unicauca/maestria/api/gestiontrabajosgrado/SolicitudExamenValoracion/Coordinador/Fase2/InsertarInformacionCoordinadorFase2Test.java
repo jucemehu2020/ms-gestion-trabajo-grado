@@ -27,6 +27,7 @@ import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
@@ -44,6 +45,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSolicitudRepository;
@@ -70,9 +72,13 @@ public class InsertarInformacionCoordinadorFase2Test {
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
         @Mock
+        private AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
+        @Mock
         private BindingResult result;
+
         @Mock
         private EnvioCorreos envioCorreos;
+
         @InjectMocks
         private SolicitudExamenValoracionServiceImpl solicitudExamenValoracionService;
 
@@ -86,6 +92,7 @@ public class InsertarInformacionCoordinadorFase2Test {
                                 trabajoGradoRepository,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
+                                anexoSolicitudExamenValoracionMapper,
                                 archivoClient,
                                 archivoClientExpertos);
                 ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
@@ -99,7 +106,7 @@ public class InsertarInformacionCoordinadorFase2Test {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-                respuestaComiteExamenValoracionDto.setConceptoComite(true);
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
                 respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
@@ -253,7 +260,7 @@ public class InsertarInformacionCoordinadorFase2Test {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-                respuestaComiteExamenValoracionDto.setConceptoComite(false);
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.NO_APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
                 respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
@@ -362,7 +369,7 @@ public class InsertarInformacionCoordinadorFase2Test {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-                respuestaComiteExamenValoracionDto.setConceptoComite(false);
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.NO_APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
                 respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
@@ -416,7 +423,7 @@ public class InsertarInformacionCoordinadorFase2Test {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-                respuestaComiteExamenValoracionDto.setConceptoComite(true);
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
                 respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
@@ -477,7 +484,7 @@ public class InsertarInformacionCoordinadorFase2Test {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-                respuestaComiteExamenValoracionDto.setConceptoComite(true);
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
                 respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
@@ -545,7 +552,7 @@ public class InsertarInformacionCoordinadorFase2Test {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-                respuestaComiteExamenValoracionDto.setConceptoComite(true);
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
                 respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 

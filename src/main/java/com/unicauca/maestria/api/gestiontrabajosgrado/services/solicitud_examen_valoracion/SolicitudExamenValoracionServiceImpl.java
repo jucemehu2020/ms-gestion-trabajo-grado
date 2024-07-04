@@ -12,10 +12,13 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
@@ -23,18 +26,21 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.Traba
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.AnexoRespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.DatosFormatoBResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.ObtenerDocumentosParaEvaluadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2ResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.AnexoSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseListDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.*;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosSolicitudExamenValoracionRepository;
@@ -56,6 +62,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	// Mapper
 	private final SolicitudExamenValoracionMapper examenValoracionMapper;
 	private final SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
+	private final AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
 	// Other
 	private final ArchivoClient archivoClient;
 	private final ArchivoClientExpertos archivoClientExpertos;
@@ -174,9 +181,22 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.setLinkFormatoE(
 						FilesUtilities.guardarArchivoNew2(rutaArchivo, examenValoracion.getLinkFormatoE()));
 
+		// List<AnexoSolicitudExamenValoracion> updatedLinkAnexos = new ArrayList<>();
+		// for (AnexoSolicitudExamenValoracion linkAnexoDto :
+		// examenValoracionDto.getAnexos()) {
+		// String updatedAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
+		// linkAnexoDto.getLinkAnexo());
+		// AnexoSolicitudExamenValoracion anexo = new AnexoSolicitudExamenValoracion();
+		// anexo.setLinkAnexo(updatedAnexo);
+		// anexo.setSolicitudExamenValoracion(examenValoracion);
+		// updatedLinkAnexos.add(anexo);
+		// }
+		// examenValoracion.setAnexos(updatedLinkAnexos);
+
 		List<AnexoSolicitudExamenValoracion> updatedLinkAnexos = new ArrayList<>();
-		for (AnexoSolicitudExamenValoracion linkAnexoDto : examenValoracionDto.getAnexos()) {
-			String updatedAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo, linkAnexoDto.getLinkAnexo());
+		for (AnexoSolicitudExamenValoracionDto linkAnexoDto : examenValoracionDto.getAnexos()) {
+			String updatedAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
+					linkAnexoDto.getLinkAnexo());
 			AnexoSolicitudExamenValoracion anexo = new AnexoSolicitudExamenValoracion();
 			anexo.setLinkAnexo(updatedAnexo);
 			anexo.setSolicitudExamenValoracion(examenValoracion);
@@ -201,7 +221,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new FieldErrorException(result);
 		}
 
-		if (!examenValoracionDto.getConceptoCoordinadorDocumentos()
+		if (examenValoracionDto.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.RECHAZADO)
 				&& examenValoracionDto.getDocumentosEnvioComite() != null) {
 			throw new InformationException("Envio de atributos no permitido");
 		}
@@ -221,7 +241,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		ArrayList<String> correos = new ArrayList<>();
 
-		if (examenValoracionDto.getConceptoCoordinadorDocumentos()) {
+		if (examenValoracionDto.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)) {
 			correos.add(Constants.correoComite);
 			Map<String, Object> documentosEnvioComiteDto = examenValoracionDto.getDocumentosEnvioComite()
 					.getDocumentos();
@@ -256,7 +276,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new FieldErrorException(result);
 		}
 
-		if (!examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.NO_APROBADO)
 				&& examenValoracionDto.getLinkOficioDirigidoEvaluadores() != null
 				&& examenValoracionDto.getFechaMaximaEvaluacion() != null
 				&& examenValoracionDto.getInformacionEnvioEvaluador() != null) {
@@ -279,7 +299,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		ArrayList<String> correos = new ArrayList<>();
 
-		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()) {
+		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)) {
 			DocenteResponseDto docente = archivoClient
 					.obtenerDocentePorId(examenValoracionTmp.getIdEvaluadorInterno());
 			correos.add(docente.getPersona().getCorreoElectronico());
@@ -479,7 +499,12 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkFormatoE());
 		}
 
-		actualizarAnexos(examenValoracionTmp, examenValoracionDto.getAnexos(), rutaArchivo);
+		List<AnexoSolicitudExamenValoracion> anexosEntidades = examenValoracionDto.getAnexos()
+				.stream()
+				.map(anexoDto -> anexoSolicitudExamenValoracionMapper.toEntity(anexoDto))
+				.collect(Collectors.toList());
+
+		actualizarAnexos(examenValoracionTmp, anexosEntidades, rutaArchivo);
 
 		updateExamenValoracionDocenteValues(examenValoracionTmp, examenValoracionDto, trabajoGrado);
 		SolicitudExamenValoracion responseExamenValoracion = solicitudExamenValoracionRepository
@@ -553,7 +578,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new FieldErrorException(result);
 		}
 
-		if (!examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()
+		if (examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()
+				.equals(ConceptoVerificacion.RECHAZADO)
 				&& examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite() != null) {
 			throw new InformationException("Envio de atributos no permitido");
 		}
@@ -576,7 +602,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.getConceptoCoordinadorDocumentos()) {
 			ArrayList<String> correos = new ArrayList<>();
 			// Si pasa de aprobado a no aprobado
-			if (!examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()) {
+			if (examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()
+					.equals(ConceptoVerificacion.RECHAZADO)) {
 				EstudianteResponseDtoAll estudiante = archivoClient
 						.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 				correos.add(estudiante.getPersona().getCorreoElectronico());
@@ -615,7 +642,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new FieldErrorException(result);
 		}
 
-		if (!examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.NO_APROBADO)
 				&& examenValoracionDto.getLinkOficioDirigidoEvaluadores() != null
 				&& examenValoracionDto.getFechaMaximaEvaluacion() != null
 				&& examenValoracionDto.getInformacionEnvioEvaluador() != null) {
@@ -626,7 +653,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
 						+ idTrabajoGrado + " no encontrado"));
 
-		if (trabajoGrado.getNumeroEstado() != 4 && trabajoGrado.getNumeroEstado() != 5 ) {
+		if (trabajoGrado.getNumeroEstado() != 4 && trabajoGrado.getNumeroEstado() != 5) {
 			throw new InformationException("No es permitido registrar la informacion");
 		}
 
@@ -648,7 +675,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						.getConceptoComite()) {
 			ArrayList<String> correos = new ArrayList<>();
 			// Si pasa de aprobado a no aprobado
-			if (!examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()) {
+			if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+					.equals(Concepto.NO_APROBADO)) {
 				EstudianteResponseDtoAll estudiante = archivoClient
 						.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 				correos.add(estudiante.getPersona().getCorreoElectronico());
@@ -785,7 +813,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		List<AnexoSolicitudExamenValoracion> anexosSolicitudExamenValoracion = anexosSolicitudExamenValoracionRepository
 				.obtenerAnexosPorId(examenValoracion.getIdExamenValoracion());
 
-		ArrayList<String> listaAnexos = new ArrayList();
+		ArrayList<String> listaAnexos = new ArrayList<>();
 		for (int documento = 0; documento < anexosSolicitudExamenValoracion.size(); documento++) {
 			listaAnexos.add(
 					FilesUtilities.recuperarArchivo(anexosSolicitudExamenValoracion.get(documento).getLinkAnexo()));

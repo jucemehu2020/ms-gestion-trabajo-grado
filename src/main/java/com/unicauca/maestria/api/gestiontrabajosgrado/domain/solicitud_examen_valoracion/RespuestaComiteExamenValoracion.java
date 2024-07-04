@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 
 @Entity
 @Table(name = "respuesta_comite_solicitud_examen_valoracion")
@@ -25,7 +26,7 @@ public class RespuestaComiteExamenValoracion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAnexoExamenValoracion;
 
-    private Boolean conceptoComite;
+    private Concepto conceptoComite;
 
     private String numeroActa;
 

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class DirectorAndCodirectorResponseDto {
+    private Long id;
     private TipoIdentificacion tipoIdentificacion;
     private Long identificacion;
     private String nombre;

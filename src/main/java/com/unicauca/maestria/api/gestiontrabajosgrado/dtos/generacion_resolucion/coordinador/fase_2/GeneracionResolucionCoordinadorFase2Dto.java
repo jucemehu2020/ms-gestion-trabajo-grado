@@ -3,6 +3,8 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucio
 import java.util.List;
 
 import lombok.*;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
@@ -15,11 +17,13 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 public class GeneracionResolucionCoordinadorFase2Dto {
 
     @NotNull
+    @Valid
     private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
 
     private String linkSolicitudConsejoFacultad;
 
     @NotNull
+    @Valid
     private EnvioEmailDto envioEmail;
 
 }

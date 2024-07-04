@@ -24,6 +24,7 @@ import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
@@ -36,6 +37,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSolicitudRepository;
@@ -62,6 +64,8 @@ public class InsertarInformacionCoordinadorFase1Test {
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
         @Mock
+        private AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
+        @Mock
         private BindingResult result;
 
         @Mock
@@ -80,6 +84,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                                 trabajoGradoRepository,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
+                                anexoSolicitudExamenValoracionMapper,
                                 archivoClient,
                                 archivoClientExpertos);
                 ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
@@ -89,7 +94,8 @@ public class InsertarInformacionCoordinadorFase1Test {
         void testInsertarInformacionCoordinadorFase1_RegistroExitosoConceptoTrue() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(true);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Solicitud de revision examen de valoracion");
@@ -131,7 +137,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                                 anyString(), anyMap()))
                                 .thenReturn(true);
 
-                solicitudExamenValoracion.setConceptoCoordinadorDocumentos(true);
+                solicitudExamenValoracion.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
                 when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
                                 .thenReturn(solicitudExamenValoracion);
 
@@ -157,7 +163,8 @@ public class InsertarInformacionCoordinadorFase1Test {
         void testInsertarInformacionCoordinadorFase1_RegistroExitosoConceptoFalse() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(false);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Solicitud de revision examen de valoracion");
@@ -199,7 +206,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                                 anyString()))
                                 .thenReturn(true);
 
-                solicitudExamenValoracion.setConceptoCoordinadorDocumentos(false);
+                solicitudExamenValoracion.setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
                 when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
                                 .thenReturn(solicitudExamenValoracion);
 
@@ -225,7 +232,8 @@ public class InsertarInformacionCoordinadorFase1Test {
         void testInsertarInformacionCoordinadorFase1_RegistroFalloPorFalse() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(false);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Solicitud de revision examen de valoracion");
@@ -260,7 +268,8 @@ public class InsertarInformacionCoordinadorFase1Test {
         void testInsertarInformacionCoordinadorFase1_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(true);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Solicitud de revision examen de valoracion");
@@ -303,7 +312,8 @@ public class InsertarInformacionCoordinadorFase1Test {
         void testInsertarInformacionCoordinadorFase1_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(false);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Solicitud de revision examen de valoracion");
@@ -342,7 +352,8 @@ public class InsertarInformacionCoordinadorFase1Test {
         void testInsertarInformacionCoordinadorFase1_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(false);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Solicitud de revision examen de valoracion");

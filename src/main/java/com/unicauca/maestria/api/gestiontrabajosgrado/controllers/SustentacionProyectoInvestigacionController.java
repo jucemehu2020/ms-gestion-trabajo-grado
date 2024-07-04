@@ -12,7 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.STICoordinadorFase2ResponseDto;
@@ -34,6 +35,26 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proy
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class SustentacionProyectoInvestigacionController {
         private final SustentacionProyectoInvestigacionService sustentacionProyectoInvestigacion;
+
+        @GetMapping("/listarDocentes")
+        public ResponseEntity<List<DocenteInfoDto>> listarDocentes() {
+                return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.listarDocentes());
+        }
+
+        @GetMapping("/listarExpertos")
+        public ResponseEntity<List<ExpertoInfoDto>> listarExpertos() {
+                return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.listarExpertos());
+        }
+
+        @GetMapping("/docente/{id}")
+        public ResponseEntity<DocenteInfoDto> obtenerDocente(@PathVariable Long id) {
+                return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.obtenerDocente(id));
+        }
+
+        @GetMapping("/experto/{id}")
+        public ResponseEntity<ExpertoInfoDto> obtenerExperto(@PathVariable Long id) {
+                return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.obtenerExperto(id));
+        }
 
         @PostMapping("/insertarInformacionDocente/{idTrabajoGrado}")
         public ResponseEntity<SustentacionTrabajoInvestigacionDocenteResponseDto> insertarInformacionDocente(
@@ -198,7 +219,8 @@ public class SustentacionProyectoInvestigacionController {
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(sustentacionProyectoInvestigacion.actualizarInformacionCoordinadoFase3(idTrabajoGrado,
+                                .body(sustentacionProyectoInvestigacion.actualizarInformacionCoordinadoFase3(
+                                                idTrabajoGrado,
                                                 sustentacionDto,
                                                 result));
         }

@@ -1,5 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
+
 import lombok.*;
 
 @Getter
@@ -10,6 +12,6 @@ import lombok.*;
 public class STICoordinadorFase1ResponseDto {
 
     private Long idSustentacionTrabajoInvestigacion; 
-    private Boolean conceptoCoordinador;
+    private ConceptoVerificacion conceptoCoordinador;
 
 }

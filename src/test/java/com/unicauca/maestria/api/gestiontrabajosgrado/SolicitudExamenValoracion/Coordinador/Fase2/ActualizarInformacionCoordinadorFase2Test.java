@@ -27,6 +27,8 @@ import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
@@ -44,6 +46,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSolicitudRepository;
@@ -55,575 +58,582 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 @SpringBootTest
 public class ActualizarInformacionCoordinadorFase2Test {
 
-    @Mock
-    private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
-    @Mock
-    private RespuestaComiteSolicitudRepository respuestaComiteSolicitudRepository;
-    @Mock
-    private TrabajoGradoRepository trabajoGradoRepository;
-    @Mock
-    private ArchivoClient archivoClient;
-    @Mock
-    private ArchivoClientExpertos archivoClientExpertos;
-    @Mock
-    private SolicitudExamenValoracionMapper examenValoracionMapper;
-    @Mock
-    private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
-    @Mock
-    private BindingResult result;
-    @Mock
-    private EnvioCorreos envioCorreos;
-    @InjectMocks
-    private SolicitudExamenValoracionServiceImpl solicitudExamenValoracionService;
+        @Mock
+        private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
+        @Mock
+        private RespuestaComiteSolicitudRepository respuestaComiteSolicitudRepository;
+        @Mock
+        private TrabajoGradoRepository trabajoGradoRepository;
+        @Mock
+        private ArchivoClient archivoClient;
+        @Mock
+        private ArchivoClientExpertos archivoClientExpertos;
+        @Mock
+        private SolicitudExamenValoracionMapper examenValoracionMapper;
+        @Mock
+        private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
+        @Mock
+        private AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
+        @Mock
+        private BindingResult result;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        solicitudExamenValoracionService = new SolicitudExamenValoracionServiceImpl(
-                solicitudExamenValoracionRepository,
-                respuestaComiteSolicitudRepository,
-                null,
-                trabajoGradoRepository,
-                examenValoracionMapper,
-                examenValoracionResponseMapper,
-                archivoClient,
-                archivoClientExpertos);
-        ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
-    }
+        @Mock
+        private EnvioCorreos envioCorreos;
 
-    @Test
-    void testActualizarInformacionCoordinadorFase2_ActualizacionExitosaModificacionTrue() {
+        @InjectMocks
+        private SolicitudExamenValoracionServiceImpl solicitudExamenValoracionService;
 
-        Long idTrabajoGrado = 1L;
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-        respuestaComiteExamenValoracionDto.setConceptoComite(true);
-        respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-        respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
-
-        List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
-        listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
-
-        EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-        envioEmailDto.setAsunto("Envio evaluadores");
-        envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
-
-        ArrayList<String> anexos = new ArrayList<>();
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
-
-        InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
-        informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64Anexos(anexos);
-        informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
-
-        SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
-        solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
-        solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
-        solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
-
-        when(result.hasErrors()).thenReturn(false);
-
-        RespuestaComiteExamenValoracion respuestaComiteExamenValoracionOld = new RespuestaComiteExamenValoracion();
-        respuestaComiteExamenValoracionOld.setIdAnexoExamenValoracion(idTrabajoGrado);
-        respuestaComiteExamenValoracionOld.setConceptoComite(false);
-        respuestaComiteExamenValoracionOld.setNumeroActa("AX1-3445");
-        respuestaComiteExamenValoracionOld.setFechaActa(LocalDate.parse("2023-05-24", formatter));
-
-        List<RespuestaComiteExamenValoracion> listaRespuestaComiteExamenValoracionOld = new ArrayList<>();
-        listaRespuestaComiteExamenValoracionOld.add(respuestaComiteExamenValoracionOld);
-
-        SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
-        solicitudExamenValoracionOld.setIdExamenValoracion(1L);
-        solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
-        solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
-        solicitudExamenValoracionOld.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracionOld);
-
-        TrabajoGrado trabajoGrado = new TrabajoGrado();
-        trabajoGrado.setId(idTrabajoGrado);
-        trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(4);
-        trabajoGrado.setIdEstudiante(123L);
-        trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
-
-        when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
-
-        when(solicitudExamenValoracionRepository
-                .findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()))
-                .thenReturn(Optional.of(solicitudExamenValoracionOld));
-
-        when(solicitudExamenValoracionRepository
-                .findRespuestaComiteBySolicitudExamenValoracionId(solicitudExamenValoracionOld.getIdExamenValoracion()))
-                .thenReturn(listaRespuestaComiteExamenValoracionOld);
-
-        PersonaDto personaDocenteDto = new PersonaDto();
-        personaDocenteDto.getCorreoElectronico();
-
-        DocenteResponseDto docenteResponseDto = new DocenteResponseDto();
-        docenteResponseDto.setPersona(personaDocenteDto);
-
-        when(archivoClient.obtenerDocentePorId(solicitudExamenValoracionOld.getIdEvaluadorInterno()))
-                .thenReturn(docenteResponseDto);
-
-        PersonaDto personaExpertoDto = new PersonaDto();
-        personaExpertoDto.getCorreoElectronico();
-
-        ExpertoResponseDto expertoResponseDto = new ExpertoResponseDto();
-        expertoResponseDto.setPersona(personaExpertoDto);
-
-        when(archivoClientExpertos.obtenerExpertoPorId(solicitudExamenValoracionOld.getIdEvaluadorExterno()))
-                .thenReturn(expertoResponseDto);
-
-        when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
-                .thenReturn(true);
-
-        PersonaDto PersonaEstudianteDto = new PersonaDto();
-        PersonaEstudianteDto.setIdentificacion(123L);
-        PersonaEstudianteDto.setNombre("Juan");
-        PersonaEstudianteDto.setApellido("Meneses");
-
-        EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
-        estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
-
-        when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
-                .thenReturn(estudianteResponseDtoAll);
-
-        try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
-            utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
-                    .thenReturn("path/to/new/file");
+        @BeforeEach
+        void setUp() {
+                MockitoAnnotations.openMocks(this);
+                solicitudExamenValoracionService = new SolicitudExamenValoracionServiceImpl(
+                                solicitudExamenValoracionRepository,
+                                respuestaComiteSolicitudRepository,
+                                null,
+                                trabajoGradoRepository,
+                                examenValoracionMapper,
+                                examenValoracionResponseMapper,
+                                anexoSolicitudExamenValoracionMapper,
+                                archivoClient,
+                                archivoClientExpertos);
+                ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
         }
 
-        RespuestaComiteExamenValoracion respuestaComite = RespuestaComiteExamenValoracion.builder()
-                .conceptoComite(solicitudExamenValoracionCoordinadorFase2Dto
-                        .getActaFechaRespuestaComite().get(0)
-                        .getConceptoComite())
-                .numeroActa(solicitudExamenValoracionCoordinadorFase2Dto.getActaFechaRespuestaComite()
-                        .get(0)
-                        .getNumeroActa())
-                .fechaActa(solicitudExamenValoracionCoordinadorFase2Dto.getActaFechaRespuestaComite()
-                        .get(0)
-                        .getFechaActa())
-                .solicitudExamenValoracion(solicitudExamenValoracionOld)
-                .build();
+        @Test
+        void testActualizarInformacionCoordinadorFase2_ActualizacionExitosaModificacionTrue() {
 
-        List<RespuestaComiteExamenValoracion> listaRespuestaComiteExamenValoracion = new ArrayList<>();
-        listaRespuestaComiteExamenValoracion.add(respuestaComite);
+                Long idTrabajoGrado = 1L;
 
-        SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-        solicitudExamenValoracion.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracion);
-        solicitudExamenValoracion.setLinkOficioDirigidoEvaluadores(
-                solicitudExamenValoracionCoordinadorFase2Dto.getLinkOficioDirigidoEvaluadores());
-        solicitudExamenValoracion
-                .setFechaMaximaEvaluacion(solicitudExamenValoracionCoordinadorFase2Dto
-                        .getFechaMaximaEvaluacion());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        when(respuestaComiteSolicitudRepository.findFirstByOrderByIdAnexoExamenValoracionDesc())
-                .thenReturn(respuestaComite);
+                RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
+                respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
-        when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
-                .thenReturn(solicitudExamenValoracion);
+                List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
+                listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
 
-        SolicitudExamenValoracionCoordinadorFase2ResponseDto solicitudExamenValoracionCoordinadorResponseDto = new SolicitudExamenValoracionCoordinadorFase2ResponseDto();
-        solicitudExamenValoracionCoordinadorResponseDto
-                .setIdExamenValoracion(solicitudExamenValoracionOld.getIdExamenValoracion());
-        solicitudExamenValoracionCoordinadorResponseDto.setActaFechaRespuestaComite(listaRespuestaComite);
-        solicitudExamenValoracionCoordinadorResponseDto.setLinkOficioDirigidoEvaluadores(
-                "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/30-06-24/20240630181114-oficio.txt");
-        solicitudExamenValoracionCoordinadorResponseDto
-                .setFechaMaximaEvaluacion(solicitudExamenValoracionCoordinadorFase2Dto
-                        .getFechaMaximaEvaluacion());
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Envio evaluadores");
+                envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
 
-        when(examenValoracionResponseMapper.toCoordinadorFase2Dto(solicitudExamenValoracion))
-                .thenReturn(solicitudExamenValoracionCoordinadorResponseDto);
+                ArrayList<String> anexos = new ArrayList<>();
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
 
-        SolicitudExamenValoracionCoordinadorFase2ResponseDto resultado = solicitudExamenValoracionService
-                .actualizarInformacionCoordinadorFase2(idTrabajoGrado,
-                        solicitudExamenValoracionCoordinadorFase2Dto,
-                        result);
+                InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
+                informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64Anexos(anexos);
+                informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
 
-        assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdExamenValoracion());
-        assertEquals(true, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
-        assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
-        assertEquals(LocalDate.parse("2023-05-24", formatter),
-                resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
-        assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/30-06-24/20240630181114-oficio.txt",
-                resultado.getLinkOficioDirigidoEvaluadores());
-        assertEquals(LocalDate.parse("2023-05-29", formatter), resultado.getFechaMaximaEvaluacion());
+                SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
+                solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
+                solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
+                solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
 
-    }
+                when(result.hasErrors()).thenReturn(false);
 
-    @Test
-    void testActualizarInformacionCoordinadorFase2_ActualizacionExitosaModificacionFalse() {
+                RespuestaComiteExamenValoracion respuestaComiteExamenValoracionOld = new RespuestaComiteExamenValoracion();
+                respuestaComiteExamenValoracionOld.setIdAnexoExamenValoracion(idTrabajoGrado);
+                respuestaComiteExamenValoracionOld.setConceptoComite(Concepto.NO_APROBADO);
+                respuestaComiteExamenValoracionOld.setNumeroActa("AX1-3445");
+                respuestaComiteExamenValoracionOld.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
-        Long idTrabajoGrado = 1L;
+                List<RespuestaComiteExamenValoracion> listaRespuestaComiteExamenValoracionOld = new ArrayList<>();
+                listaRespuestaComiteExamenValoracionOld.add(respuestaComiteExamenValoracionOld);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
+                solicitudExamenValoracionOld.setIdExamenValoracion(1L);
+                solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
+                solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
+                solicitudExamenValoracionOld.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracionOld);
 
-        RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-        respuestaComiteExamenValoracionDto.setConceptoComite(false);
-        respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-        respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(4);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+                trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
 
-        List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
-        listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
-        EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-        envioEmailDto.setAsunto("Envio evaluadores");
-        envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
+                when(solicitudExamenValoracionRepository
+                                .findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()))
+                                .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
-        SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
-        solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
-        solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
+                when(solicitudExamenValoracionRepository
+                                .findRespuestaComiteBySolicitudExamenValoracionId(
+                                                solicitudExamenValoracionOld.getIdExamenValoracion()))
+                                .thenReturn(listaRespuestaComiteExamenValoracionOld);
 
-        when(result.hasErrors()).thenReturn(false);
+                PersonaDto personaDocenteDto = new PersonaDto();
+                personaDocenteDto.getCorreoElectronico();
 
-        RespuestaComiteExamenValoracion respuestaComiteExamenValoracionOld = new RespuestaComiteExamenValoracion();
-        respuestaComiteExamenValoracionOld.setIdAnexoExamenValoracion(idTrabajoGrado);
-        respuestaComiteExamenValoracionOld.setConceptoComite(true);
-        respuestaComiteExamenValoracionOld.setNumeroActa("AX1-3445");
-        respuestaComiteExamenValoracionOld.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                DocenteResponseDto docenteResponseDto = new DocenteResponseDto();
+                docenteResponseDto.setPersona(personaDocenteDto);
 
-        List<RespuestaComiteExamenValoracion> listaRespuestaComiteExamenValoracionOld = new ArrayList<>();
-        listaRespuestaComiteExamenValoracionOld.add(respuestaComiteExamenValoracionOld);
+                when(archivoClient.obtenerDocentePorId(solicitudExamenValoracionOld.getIdEvaluadorInterno()))
+                                .thenReturn(docenteResponseDto);
 
-        SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
-        solicitudExamenValoracionOld.setIdExamenValoracion(1L);
-        solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
-        solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
-        solicitudExamenValoracionOld.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracionOld);
+                PersonaDto personaExpertoDto = new PersonaDto();
+                personaExpertoDto.getCorreoElectronico();
 
-        TrabajoGrado trabajoGrado = new TrabajoGrado();
-        trabajoGrado.setId(idTrabajoGrado);
-        trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(4);
-        trabajoGrado.setIdEstudiante(123L);
-        trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
+                ExpertoResponseDto expertoResponseDto = new ExpertoResponseDto();
+                expertoResponseDto.setPersona(personaExpertoDto);
 
-        when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+                when(archivoClientExpertos.obtenerExpertoPorId(solicitudExamenValoracionOld.getIdEvaluadorExterno()))
+                                .thenReturn(expertoResponseDto);
 
-        when(solicitudExamenValoracionRepository
-                .findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()))
-                .thenReturn(Optional.of(solicitudExamenValoracionOld));
+                when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
+                                .thenReturn(true);
 
-        when(solicitudExamenValoracionRepository
-                .findRespuestaComiteBySolicitudExamenValoracionId(solicitudExamenValoracionOld.getIdExamenValoracion()))
-                .thenReturn(listaRespuestaComiteExamenValoracionOld);
+                PersonaDto PersonaEstudianteDto = new PersonaDto();
+                PersonaEstudianteDto.setIdentificacion(123L);
+                PersonaEstudianteDto.setNombre("Juan");
+                PersonaEstudianteDto.setApellido("Meneses");
 
-        PersonaDto PersonaEstudianteDto = new PersonaDto();
-        PersonaEstudianteDto.setIdentificacion(123L);
-        PersonaEstudianteDto.setNombre("Juan");
-        PersonaEstudianteDto.setApellido("Meneses");
+                EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
+                estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
 
-        EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
-        estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
+                when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
+                                .thenReturn(estudianteResponseDtoAll);
 
-        when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
-                .thenReturn(estudianteResponseDtoAll);
+                try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
+                        utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
+                                        .thenReturn("path/to/new/file");
+                }
 
-        when(envioCorreos.enviarCorreosCorrecion(any(ArrayList.class), anyString(), anyString()))
-                .thenReturn(true);
+                RespuestaComiteExamenValoracion respuestaComite = RespuestaComiteExamenValoracion.builder()
+                                .conceptoComite(solicitudExamenValoracionCoordinadorFase2Dto
+                                                .getActaFechaRespuestaComite().get(0)
+                                                .getConceptoComite())
+                                .numeroActa(solicitudExamenValoracionCoordinadorFase2Dto.getActaFechaRespuestaComite()
+                                                .get(0)
+                                                .getNumeroActa())
+                                .fechaActa(solicitudExamenValoracionCoordinadorFase2Dto.getActaFechaRespuestaComite()
+                                                .get(0)
+                                                .getFechaActa())
+                                .solicitudExamenValoracion(solicitudExamenValoracionOld)
+                                .build();
 
-        RespuestaComiteExamenValoracion respuestaComite = RespuestaComiteExamenValoracion.builder()
-                .conceptoComite(solicitudExamenValoracionCoordinadorFase2Dto
-                        .getActaFechaRespuestaComite().get(0)
-                        .getConceptoComite())
-                .numeroActa(solicitudExamenValoracionCoordinadorFase2Dto.getActaFechaRespuestaComite()
-                        .get(0)
-                        .getNumeroActa())
-                .fechaActa(solicitudExamenValoracionCoordinadorFase2Dto.getActaFechaRespuestaComite()
-                        .get(0)
-                        .getFechaActa())
-                .solicitudExamenValoracion(solicitudExamenValoracionOld)
-                .build();
+                List<RespuestaComiteExamenValoracion> listaRespuestaComiteExamenValoracion = new ArrayList<>();
+                listaRespuestaComiteExamenValoracion.add(respuestaComite);
 
-        List<RespuestaComiteExamenValoracion> listaRespuestaComiteExamenValoracion = new ArrayList<>();
-        listaRespuestaComiteExamenValoracion.add(respuestaComite);
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
+                solicitudExamenValoracion.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracion);
+                solicitudExamenValoracion.setLinkOficioDirigidoEvaluadores(
+                                solicitudExamenValoracionCoordinadorFase2Dto.getLinkOficioDirigidoEvaluadores());
+                solicitudExamenValoracion
+                                .setFechaMaximaEvaluacion(solicitudExamenValoracionCoordinadorFase2Dto
+                                                .getFechaMaximaEvaluacion());
 
-        SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-        solicitudExamenValoracion.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracion);
+                when(respuestaComiteSolicitudRepository.findFirstByOrderByIdAnexoExamenValoracionDesc())
+                                .thenReturn(respuestaComite);
 
-        when(respuestaComiteSolicitudRepository.findFirstByOrderByIdAnexoExamenValoracionDesc())
-                .thenReturn(respuestaComite);
+                when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
+                                .thenReturn(solicitudExamenValoracion);
 
-        when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
-                .thenReturn(solicitudExamenValoracion);
+                SolicitudExamenValoracionCoordinadorFase2ResponseDto solicitudExamenValoracionCoordinadorResponseDto = new SolicitudExamenValoracionCoordinadorFase2ResponseDto();
+                solicitudExamenValoracionCoordinadorResponseDto
+                                .setIdExamenValoracion(solicitudExamenValoracionOld.getIdExamenValoracion());
+                solicitudExamenValoracionCoordinadorResponseDto.setActaFechaRespuestaComite(listaRespuestaComite);
+                solicitudExamenValoracionCoordinadorResponseDto.setLinkOficioDirigidoEvaluadores(
+                                "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/30-06-24/20240630181114-oficio.txt");
+                solicitudExamenValoracionCoordinadorResponseDto
+                                .setFechaMaximaEvaluacion(solicitudExamenValoracionCoordinadorFase2Dto
+                                                .getFechaMaximaEvaluacion());
 
-        SolicitudExamenValoracionCoordinadorFase2ResponseDto solicitudExamenValoracionCoordinadorResponseDto = new SolicitudExamenValoracionCoordinadorFase2ResponseDto();
-        solicitudExamenValoracionCoordinadorResponseDto
-                .setIdExamenValoracion(solicitudExamenValoracionOld.getIdExamenValoracion());
-        solicitudExamenValoracionCoordinadorResponseDto.setActaFechaRespuestaComite(listaRespuestaComite);
+                when(examenValoracionResponseMapper.toCoordinadorFase2Dto(solicitudExamenValoracion))
+                                .thenReturn(solicitudExamenValoracionCoordinadorResponseDto);
 
-        when(examenValoracionResponseMapper.toCoordinadorFase2Dto(solicitudExamenValoracion))
-                .thenReturn(solicitudExamenValoracionCoordinadorResponseDto);
+                SolicitudExamenValoracionCoordinadorFase2ResponseDto resultado = solicitudExamenValoracionService
+                                .actualizarInformacionCoordinadorFase2(idTrabajoGrado,
+                                                solicitudExamenValoracionCoordinadorFase2Dto,
+                                                result);
 
-        try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
-            utilities.when(() -> FilesUtilities.deleteFileExample(anyString()))
-                    .thenReturn(true);
+                assertNotNull(resultado);
+                assertEquals(1L, resultado.getIdExamenValoracion());
+                assertEquals(true, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
+                assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
+                assertEquals(LocalDate.parse("2023-05-24", formatter),
+                                resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
+                assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/30-06-24/20240630181114-oficio.txt",
+                                resultado.getLinkOficioDirigidoEvaluadores());
+                assertEquals(LocalDate.parse("2023-05-29", formatter), resultado.getFechaMaximaEvaluacion());
 
-            SolicitudExamenValoracionCoordinadorFase2ResponseDto resultado = solicitudExamenValoracionService
-                    .actualizarInformacionCoordinadorFase2(idTrabajoGrado,
-                            solicitudExamenValoracionCoordinadorFase2Dto,
-                            result);
-
-            assertNotNull(resultado);
-            assertEquals(1L, resultado.getIdExamenValoracion());
-            assertEquals(false, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
-            assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
-            assertEquals(LocalDate.parse("2023-05-24", formatter),
-                    resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
-            assertEquals(null, resultado.getLinkOficioDirigidoEvaluadores());
-            assertEquals(null, resultado.getFechaMaximaEvaluacion());
         }
 
-    }
+        @Test
+        void testActualizarInformacionCoordinadorFase2_ActualizacionExitosaModificacionFalse() {
 
-    @Test
-    void testActualizarInformacionCoordinadorFase2_ActualizacionFalloPorFalse() {
+                Long idTrabajoGrado = 1L;
 
-        Long idTrabajoGrado = 1L;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.NO_APROBADO);
+                respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
-        RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-        respuestaComiteExamenValoracionDto.setConceptoComite(false);
-        respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-        respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
+                listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
 
-        List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
-        listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Envio evaluadores");
+                envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
 
-        EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-        envioEmailDto.setAsunto("Envio evaluadores");
-        envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
+                SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
+                solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
+                solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
 
-        ArrayList<String> anexos = new ArrayList<>();
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                when(result.hasErrors()).thenReturn(false);
 
-        InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
-        informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64Anexos(anexos);
-        informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
+                RespuestaComiteExamenValoracion respuestaComiteExamenValoracionOld = new RespuestaComiteExamenValoracion();
+                respuestaComiteExamenValoracionOld.setIdAnexoExamenValoracion(idTrabajoGrado);
+                respuestaComiteExamenValoracionOld.setConceptoComite(Concepto.APROBADO);
+                respuestaComiteExamenValoracionOld.setNumeroActa("AX1-3445");
+                respuestaComiteExamenValoracionOld.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
-        SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
-        solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
-        solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
-        solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
+                List<RespuestaComiteExamenValoracion> listaRespuestaComiteExamenValoracionOld = new ArrayList<>();
+                listaRespuestaComiteExamenValoracionOld.add(respuestaComiteExamenValoracionOld);
 
-        when(result.hasErrors()).thenReturn(false);
+                SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
+                solicitudExamenValoracionOld.setIdExamenValoracion(1L);
+                solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
+                solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
+                solicitudExamenValoracionOld.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracionOld);
 
-        InformationException exception = assertThrows(InformationException.class, () -> {
-            solicitudExamenValoracionService.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
-                    solicitudExamenValoracionCoordinadorFase2Dto,
-                    result);
-        });
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(4);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+                trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
 
-        assertNotNull(exception.getMessage());
-        String expectedMessage = "Envio de atributos no permitido";
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
-        assertTrue(exception.getMessage().contains(expectedMessage));
-    }
+                when(solicitudExamenValoracionRepository
+                                .findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()))
+                                .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
-    @Test
-    void testActualizarInformacionCoordinadorFase2_FaltanAtributos() {
+                when(solicitudExamenValoracionRepository
+                                .findRespuestaComiteBySolicitudExamenValoracionId(
+                                                solicitudExamenValoracionOld.getIdExamenValoracion()))
+                                .thenReturn(listaRespuestaComiteExamenValoracionOld);
 
-        Long idTrabajoGrado = 1L;
+                PersonaDto PersonaEstudianteDto = new PersonaDto();
+                PersonaEstudianteDto.setIdentificacion(123L);
+                PersonaEstudianteDto.setNombre("Juan");
+                PersonaEstudianteDto.setApellido("Meneses");
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
+                estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
 
-        RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-        respuestaComiteExamenValoracionDto.setConceptoComite(true);
-        respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-        respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
+                                .thenReturn(estudianteResponseDtoAll);
 
-        List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
-        listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
+                when(envioCorreos.enviarCorreosCorrecion(any(ArrayList.class), anyString(), anyString()))
+                                .thenReturn(true);
 
-        EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-        envioEmailDto.setAsunto("Envio evaluadores");
-        envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
+                RespuestaComiteExamenValoracion respuestaComite = RespuestaComiteExamenValoracion.builder()
+                                .conceptoComite(solicitudExamenValoracionCoordinadorFase2Dto
+                                                .getActaFechaRespuestaComite().get(0)
+                                                .getConceptoComite())
+                                .numeroActa(solicitudExamenValoracionCoordinadorFase2Dto.getActaFechaRespuestaComite()
+                                                .get(0)
+                                                .getNumeroActa())
+                                .fechaActa(solicitudExamenValoracionCoordinadorFase2Dto.getActaFechaRespuestaComite()
+                                                .get(0)
+                                                .getFechaActa())
+                                .solicitudExamenValoracion(solicitudExamenValoracionOld)
+                                .build();
 
-        ArrayList<String> anexos = new ArrayList<>();
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                List<RespuestaComiteExamenValoracion> listaRespuestaComiteExamenValoracion = new ArrayList<>();
+                listaRespuestaComiteExamenValoracion.add(respuestaComite);
 
-        InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
-        informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64Anexos(anexos);
-        informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
+                solicitudExamenValoracion.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracion);
 
-        SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
-        solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
-        solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
-        solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
+                when(respuestaComiteSolicitudRepository.findFirstByOrderByIdAnexoExamenValoracionDesc())
+                                .thenReturn(respuestaComite);
 
-        FieldError fieldError = new FieldError("SolicitudExamenValoracionCoordinadorResponseDto",
-                "actaFechaRespuestaComite[0].numeroActa",
-                "no debe ser nulo");
-        when(result.hasErrors()).thenReturn(true);
-        when(result.getFieldErrors()).thenReturn(List.of(fieldError));
+                when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
+                                .thenReturn(solicitudExamenValoracion);
 
-        FieldErrorException exception = assertThrows(FieldErrorException.class, () -> {
-            solicitudExamenValoracionService.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
-                    solicitudExamenValoracionCoordinadorFase2Dto,
-                    result);
-        });
+                SolicitudExamenValoracionCoordinadorFase2ResponseDto solicitudExamenValoracionCoordinadorResponseDto = new SolicitudExamenValoracionCoordinadorFase2ResponseDto();
+                solicitudExamenValoracionCoordinadorResponseDto
+                                .setIdExamenValoracion(solicitudExamenValoracionOld.getIdExamenValoracion());
+                solicitudExamenValoracionCoordinadorResponseDto.setActaFechaRespuestaComite(listaRespuestaComite);
 
-        assertNotNull(exception.getResult());
-        List<FieldError> fieldErrors = exception.getResult().getFieldErrors();
-        assertFalse(fieldErrors.isEmpty());
-        String actualMessage = "El campo " + fieldErrors.get(0).getField() + ", "
-                + fieldError.getDefaultMessage();
-        String expectedMessage = "El campo actaFechaRespuestaComite[0].numeroActa, no debe ser nulo";
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
+                when(examenValoracionResponseMapper.toCoordinadorFase2Dto(solicitudExamenValoracion))
+                                .thenReturn(solicitudExamenValoracionCoordinadorResponseDto);
 
-    @Test
-    void testActualizarInformacionCoordinadorFase2_EstadoNoValido() {
+                try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
+                        utilities.when(() -> FilesUtilities.deleteFileExample(anyString()))
+                                        .thenReturn(true);
 
-        Long idTrabajoGrado = 1L;
+                        SolicitudExamenValoracionCoordinadorFase2ResponseDto resultado = solicitudExamenValoracionService
+                                        .actualizarInformacionCoordinadorFase2(idTrabajoGrado,
+                                                        solicitudExamenValoracionCoordinadorFase2Dto,
+                                                        result);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        assertNotNull(resultado);
+                        assertEquals(1L, resultado.getIdExamenValoracion());
+                        assertEquals(false, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
+                        assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
+                        assertEquals(LocalDate.parse("2023-05-24", formatter),
+                                        resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
+                        assertEquals(null, resultado.getLinkOficioDirigidoEvaluadores());
+                        assertEquals(null, resultado.getFechaMaximaEvaluacion());
+                }
 
-        RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-        respuestaComiteExamenValoracionDto.setConceptoComite(true);
-        respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-        respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+        }
 
-        List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
-        listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
+        @Test
+        void testActualizarInformacionCoordinadorFase2_ActualizacionFalloPorFalse() {
 
-        EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-        envioEmailDto.setAsunto("Envio evaluadores");
-        envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
+                Long idTrabajoGrado = 1L;
 
-        ArrayList<String> anexos = new ArrayList<>();
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
-        informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64Anexos(anexos);
-        informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
+                RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.NO_APROBADO);
+                respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
-        SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
-        solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
-        solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
-        solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
+                List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
+                listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
 
-        when(result.hasErrors()).thenReturn(false);
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Envio evaluadores");
+                envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
 
-        SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
-        solicitudExamenValoracionOld.setIdExamenValoracion(1L);
-        solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
-        solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
+                ArrayList<String> anexos = new ArrayList<>();
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
 
-        TrabajoGrado trabajoGrado = new TrabajoGrado();
-        trabajoGrado.setId(idTrabajoGrado);
-        trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(2);
-        trabajoGrado.setIdEstudiante(123L);
-        trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
+                InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
+                informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64Anexos(anexos);
+                informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
 
-        when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+                SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
+                solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
+                solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
+                solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
 
-        InformationException exception = assertThrows(InformationException.class, () -> {
-            solicitudExamenValoracionService.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
-                    solicitudExamenValoracionCoordinadorFase2Dto,
-                    result);
-        });
+                when(result.hasErrors()).thenReturn(false);
 
-        String expectedMessage = "No es permitido registrar la informacion";
-        assertNotNull(exception.getMessage());
-        assertTrue(exception.getMessage().contains(expectedMessage));
-    }
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        solicitudExamenValoracionService.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
+                                        solicitudExamenValoracionCoordinadorFase2Dto,
+                                        result);
+                });
 
-    @Test
-    void testActualizarInformacionCoordinadorFase2_TrabajoGradoNoExiste() {
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Envio de atributos no permitido";
 
-        Long idTrabajoGrado = 2L;
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        @Test
+        void testActualizarInformacionCoordinadorFase2_FaltanAtributos() {
 
-        RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-        respuestaComiteExamenValoracionDto.setConceptoComite(true);
-        respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-        respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                Long idTrabajoGrado = 1L;
 
-        List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
-        listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-        envioEmailDto.setAsunto("Envio evaluadores");
-        envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
+                RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
+                respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 
-        ArrayList<String> anexos = new ArrayList<>();
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
-        anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
+                listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
 
-        InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
-        informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64Anexos(anexos);
-        informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
-        informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Envio evaluadores");
+                envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
 
-        SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
-        solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
-        solicitudExamenValoracionCoordinadorFase2Dto
-                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
-        solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
-        solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
+                ArrayList<String> anexos = new ArrayList<>();
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
 
-        when(result.hasErrors()).thenReturn(false);
+                InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
+                informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64Anexos(anexos);
+                informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
 
-        when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());
+                SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
+                solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
+                solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
+                solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            solicitudExamenValoracionService.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
-                    solicitudExamenValoracionCoordinadorFase2Dto,
-                    result);
-        });
+                FieldError fieldError = new FieldError("SolicitudExamenValoracionCoordinadorResponseDto",
+                                "actaFechaRespuestaComite[0].numeroActa",
+                                "no debe ser nulo");
+                when(result.hasErrors()).thenReturn(true);
+                when(result.getFieldErrors()).thenReturn(List.of(fieldError));
 
-        assertNotNull(exception.getMessage());
-        String expectedMessage = "Trabajo de grado con id 2 no encontrado";
-        assertTrue(exception.getMessage().contains(expectedMessage));
-    }
+                FieldErrorException exception = assertThrows(FieldErrorException.class, () -> {
+                        solicitudExamenValoracionService.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
+                                        solicitudExamenValoracionCoordinadorFase2Dto,
+                                        result);
+                });
+
+                assertNotNull(exception.getResult());
+                List<FieldError> fieldErrors = exception.getResult().getFieldErrors();
+                assertFalse(fieldErrors.isEmpty());
+                String actualMessage = "El campo " + fieldErrors.get(0).getField() + ", "
+                                + fieldError.getDefaultMessage();
+                String expectedMessage = "El campo actaFechaRespuestaComite[0].numeroActa, no debe ser nulo";
+                assertTrue(actualMessage.contains(expectedMessage));
+        }
+
+        @Test
+        void testActualizarInformacionCoordinadorFase2_EstadoNoValido() {
+
+                Long idTrabajoGrado = 1L;
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+                RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
+                respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+
+                List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
+                listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Envio evaluadores");
+                envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
+
+                ArrayList<String> anexos = new ArrayList<>();
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+
+                InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
+                informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64Anexos(anexos);
+                informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
+
+                SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
+                solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
+                solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
+                solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
+                solicitudExamenValoracionOld.setIdExamenValoracion(1L);
+                solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
+                solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
+
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(2);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+                trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
+
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        solicitudExamenValoracionService.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
+                                        solicitudExamenValoracionCoordinadorFase2Dto,
+                                        result);
+                });
+
+                String expectedMessage = "No es permitido registrar la informacion";
+                assertNotNull(exception.getMessage());
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
+
+        @Test
+        void testActualizarInformacionCoordinadorFase2_TrabajoGradoNoExiste() {
+
+                Long idTrabajoGrado = 2L;
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+                RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
+                respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
+                respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+
+                List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
+                listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Envio evaluadores");
+                envioEmailDto.setMensaje("Envio documentos para que por favor los revisen y den respuesta oportuna");
+
+                ArrayList<String> anexos = new ArrayList<>();
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+
+                InformacionEnvioEvaluadorDto informacionEnvioEvaluadorDto = new InformacionEnvioEvaluadorDto();
+                informacionEnvioEvaluadorDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64Anexos(anexos);
+                informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoC("cHJ1ZWJhIGRlIHRleHR");
+
+                SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
+                solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
+                solicitudExamenValoracionCoordinadorFase2Dto
+                                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
+                solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
+                solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());
+
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+                        solicitudExamenValoracionService.actualizarInformacionCoordinadorFase2(idTrabajoGrado,
+                                        solicitudExamenValoracionCoordinadorFase2Dto,
+                                        result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
 }

@@ -28,6 +28,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoRespon
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseListDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ServiceUnavailableException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosSolicitudExamenValoracionRepository;
@@ -54,6 +55,8 @@ public class ListarInformacionDocenteTest {
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
         @Mock
+        private AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
+        @Mock
         private BindingResult result;
 
         @InjectMocks
@@ -68,6 +71,7 @@ public class ListarInformacionDocenteTest {
                                 trabajoGradoRepository,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
+                                anexoSolicitudExamenValoracionMapper,
                                 archivoClient,
                                 archivoClientExpertos);
         }
@@ -127,14 +131,11 @@ public class ListarInformacionDocenteTest {
                 assertNotNull(solicitudExamenValoracionDocenteResponseListDto);
                 assertEquals(1, solicitudExamenValoracionDocenteResponseListDto.getIdExamenValoracion());
                 assertEquals("Prueba", solicitudExamenValoracionDocenteResponseListDto.getTitulo());
-                assertEquals(
-                                "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt",
+                assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt",
                                 solicitudExamenValoracionDocenteResponseListDto.getLinkFormatoA());
-                assertEquals(
-                                "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoD.txt",
+                assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoD.txt",
                                 solicitudExamenValoracionDocenteResponseListDto.getLinkFormatoD());
-                assertEquals(
-                                "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoE.txt",
+                assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoE.txt",
                                 solicitudExamenValoracionDocenteResponseListDto.getLinkFormatoE());
 
                 Map<String, String> docenteEsperado = new HashMap<>();

@@ -22,6 +22,7 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
@@ -29,6 +30,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSolicitudRepository;
@@ -40,41 +42,46 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 @SpringBootTest
 public class ListarInformacionCoordinadorFase2Test {
 
-    @Mock
-    private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
-    @Mock
-    private RespuestaComiteSolicitudRepository respuestaComiteSolicitudRepository;
-    @Mock
-    private TrabajoGradoRepository trabajoGradoRepository;
-    @Mock
-    private ArchivoClient archivoClient;
-    @Mock
-    private ArchivoClientExpertos archivoClientExpertos;
-    @Mock
-    private SolicitudExamenValoracionMapper examenValoracionMapper;
-    @Mock
-    private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
-    @Mock
-    private BindingResult result;
-    @Mock
-    private EnvioCorreos envioCorreos;
-    @InjectMocks
-    private SolicitudExamenValoracionServiceImpl solicitudExamenValoracionService;
+     @Mock
+        private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
+        @Mock
+        private RespuestaComiteSolicitudRepository respuestaComiteSolicitudRepository;
+        @Mock
+        private TrabajoGradoRepository trabajoGradoRepository;
+        @Mock
+        private ArchivoClient archivoClient;
+        @Mock
+        private ArchivoClientExpertos archivoClientExpertos;
+        @Mock
+        private SolicitudExamenValoracionMapper examenValoracionMapper;
+        @Mock
+        private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
+        @Mock
+        private AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
+        @Mock
+        private BindingResult result;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        solicitudExamenValoracionService = new SolicitudExamenValoracionServiceImpl(
-                solicitudExamenValoracionRepository,
-                respuestaComiteSolicitudRepository,
-                null,
-                trabajoGradoRepository,
-                examenValoracionMapper,
-                examenValoracionResponseMapper,
-                archivoClient,
-                archivoClientExpertos);
-        ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
-    }
+        @Mock
+        private EnvioCorreos envioCorreos;
+
+        @InjectMocks
+        private SolicitudExamenValoracionServiceImpl solicitudExamenValoracionService;
+
+        @BeforeEach
+        void setUp() {
+                MockitoAnnotations.openMocks(this);
+                solicitudExamenValoracionService = new SolicitudExamenValoracionServiceImpl(
+                                solicitudExamenValoracionRepository,
+                                respuestaComiteSolicitudRepository,
+                                null,
+                                trabajoGradoRepository,
+                                examenValoracionMapper,
+                                examenValoracionResponseMapper,
+                                anexoSolicitudExamenValoracionMapper,
+                                archivoClient,
+                                archivoClientExpertos);
+                ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
+        }
 
     @Test
     public void testListarInformacionCoordinadoFase2Test_Exito() {
@@ -86,7 +93,7 @@ public class ListarInformacionCoordinadorFase2Test {
         SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
 
         RespuestaComiteExamenValoracion respuestaComite = RespuestaComiteExamenValoracion.builder()
-                .conceptoComite(true)
+                .conceptoComite(Concepto.APROBADO)
                 .numeroActa("AX1-3445")
                 .fechaActa(LocalDate.parse("2023-05-24", formatter))
                 .solicitudExamenValoracion(solicitudExamenValoracionOld)
@@ -106,7 +113,7 @@ public class ListarInformacionCoordinadorFase2Test {
                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
         RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
-        respuestaComiteExamenValoracionDto.setConceptoComite(true);
+        respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
         respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
         respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
 

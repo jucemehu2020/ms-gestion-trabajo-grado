@@ -16,7 +16,8 @@ import org.springframework.validation.BindingResult;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
-
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
@@ -28,6 +29,8 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.egresado.CursoSaveDto
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.egresado.EmpresaSaveDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.STICoordinadorFase2ResponseDto;
@@ -41,6 +44,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionResponseMapper;
@@ -65,6 +69,66 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
         @Autowired
         private EnvioCorreos envioCorreos;
+
+        @Override
+        @Transactional(readOnly = true)
+        public List<DocenteInfoDto> listarDocentes() {
+                List<DocenteResponseDto> listadoDocentes = archivoClient.listarDocentesRes();
+                if (listadoDocentes.size() == 0) {
+                        throw new InformationException("No hay docentes registrados");
+                }
+                List<DocenteInfoDto> docentes = listadoDocentes.stream()
+                                .map(docente -> new DocenteInfoDto(
+                                                docente.getId(),
+                                                docente.getPersona().getNombre(),
+                                                docente.getPersona().getApellido(),
+                                                docente.getPersona().getCorreoElectronico(),
+                                                "Universidad del Cauca"))
+                                .collect(Collectors.toList());
+                return docentes;
+        }
+
+        @Override
+        @Transactional(readOnly = true)
+        public List<ExpertoInfoDto> listarExpertos() {
+                List<ExpertoResponseDto> listadoExperto = archivoClientExpertos.listar();
+                if (listadoExperto.size() == 0) {
+                        throw new InformationException("No hay expertos registrados");
+                }
+                List<ExpertoInfoDto> expertos = listadoExperto.stream()
+                                .map(experto -> new ExpertoInfoDto(
+                                                experto.getId(),
+                                                experto.getPersona().getNombre(),
+                                                experto.getPersona().getApellido(),
+                                                experto.getPersona().getCorreoElectronico(),
+                                                experto.getUniversidad()))
+                                .collect(Collectors.toList());
+                return expertos;
+        }
+
+        @Override
+        @Transactional(readOnly = true)
+        public DocenteInfoDto obtenerDocente(Long id) {
+                DocenteResponseDto docente = archivoClient.obtenerDocentePorId(id);
+                return new DocenteInfoDto(
+                                docente.getId(),
+                                docente.getPersona().getNombre(),
+                                docente.getPersona().getApellido(),
+                                docente.getPersona().getCorreoElectronico(),
+                                docente.getUltimaUniversidad());
+        }
+
+        @Override
+        @Transactional(readOnly = true)
+        public ExpertoInfoDto obtenerExperto(Long id) {
+                ExpertoResponseDto experto = archivoClientExpertos.obtenerExpertoPorId(id);
+                return new ExpertoInfoDto(
+                                experto.getId(),
+                                experto.getPersona().getNombre(),
+                                experto.getPersona().getApellido(),
+                                experto.getPersona().getCorreoElectronico(),
+                                experto.getUniversidad());
+        }
 
         @Override
         @Transactional
@@ -154,14 +218,14 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                                                 .getIdSustentacionTrabajoInvestigacion()
                                                                 + " no encontrado"));
 
-                if (sustentacionDto.getConceptoCoordinador()) {
+                if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
 
                         correos.add(Constants.correoComite);
                         Map<String, Object> documentosEnvioComiteDto = sustentacionDto
                                         .getObtenerDocumentosParaEnvioDto()
                                         .getDocumentos();
-                        envioCorreos.enviarCorreoConAnexos(correos, sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                        sustentacionDto.getEnvioEmailDto().getMensaje(), documentosEnvioComiteDto);
+                        envioCorreos.enviarCorreoConAnexos(correos, sustentacionDto.getEnvioEmail().getAsunto(),
+                                        sustentacionDto.getEnvioEmail().getMensaje(), documentosEnvioComiteDto);
 
                         trabajoGrado.setNumeroEstado(21);
                 } else {
@@ -170,8 +234,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         correos.add(estudiante.getPersona().getCorreoElectronico());
                         correos.add(trabajoGrado.getCorreoElectronicoTutor());
                         envioCorreos.enviarCorreosCorrecion(correos,
-                                        sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                        sustentacionDto.getEnvioEmailDto().getMensaje());
+                                        sustentacionDto.getEnvioEmail().getAsunto(),
+                                        sustentacionDto.getEnvioEmail().getMensaje());
                         trabajoGrado.setNumeroEstado(19);
                 }
 
@@ -214,7 +278,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
 
-                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()) {
+                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+                                .equals(Concepto.APROBADO)) {
                         Map<String, Object> documentosParaConsejo = new HashMap<>();
                         correos.add(Constants.correoComite);
                         String[] solicitudConsejoFacultad = sustentacionDto
@@ -225,8 +290,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                         .getLinkFormatoG()
                                         .split("-");
                         documentosParaConsejo.put("formatoG", formatoG[1]);
-                        envioCorreos.enviarCorreoConAnexos(correos, sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                        sustentacionDto.getEnvioEmailDto().getMensaje(), documentosParaConsejo);
+                        envioCorreos.enviarCorreoConAnexos(correos, sustentacionDto.getEnvioEmail().getAsunto(),
+                                        sustentacionDto.getEnvioEmail().getMensaje(), documentosParaConsejo);
 
                         sustentacionDto.setLinkEstudioHojaVidaAcademica(FilesUtilities.guardarArchivoNew2(
                                         rutaArchivo,
@@ -243,8 +308,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         correos.add(estudiante.getPersona().getCorreoElectronico());
                         correos.add(trabajoGrado.getCorreoElectronicoTutor());
                         envioCorreos.enviarCorreosCorrecion(correos,
-                                        sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                        sustentacionDto.getEnvioEmailDto().getMensaje());
+                                        sustentacionDto.getEnvioEmail().getAsunto(),
+                                        sustentacionDto.getEnvioEmail().getMensaje());
                         trabajoGrado.setNumeroEstado(23);
                 }
 
@@ -331,7 +396,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 ArrayList<String> correos = new ArrayList<>();
 
-                if (!sustentacionDto.getJuradosAceptados()) {
+                if (sustentacionDto.getJuradosAceptados().equals(ConceptoVerificacion.RECHAZADO)) {
                         sustentacionProyectoInvestigacion
                                         .setIdJuradoInterno(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
                         sustentacionProyectoInvestigacion
@@ -342,8 +407,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         correos.add(estudiante.getPersona().getCorreoElectronico());
                         correos.add(trabajoGrado.getCorreoElectronicoTutor());
                         envioCorreos.enviarCorreosCorrecion(correos,
-                                        sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                        sustentacionDto.getEnvioEmailDto().getMensaje());
+                                        sustentacionDto.getEnvioEmail().getAsunto(),
+                                        sustentacionDto.getEnvioEmail().getMensaje());
                 }
                 sustentacionProyectoInvestigacion.setJuradosAceptados(sustentacionDto.getJuradosAceptados());
                 sustentacionProyectoInvestigacion.setNumeroActaConsejo(sustentacionDto.getNumeroActaConsejo());
@@ -776,14 +841,14 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 if (sustentacionDto.getConceptoCoordinador() != sustentacionProyectoInvestigacionTmp
                                 .getConceptoCoordinador()) {
                         // Si pasa de aprobado a no aprobado
-                        if (!sustentacionDto.getConceptoCoordinador()) {
+                        if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.RECHAZADO)) {
                                 EstudianteResponseDtoAll estudiante = archivoClient
                                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
                                 correos.add(estudiante.getPersona().getCorreoElectronico());
                                 correos.add(trabajoGrado.getCorreoElectronicoTutor());
                                 envioCorreos.enviarCorreosCorrecion(correos,
-                                                sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                                sustentacionDto.getEnvioEmailDto().getMensaje());
+                                                sustentacionDto.getEnvioEmail().getAsunto(),
+                                                sustentacionDto.getEnvioEmail().getMensaje());
                                 trabajoGrado.setNumeroEstado(22);
                         } else {
                                 correos.add(Constants.correoComite);
@@ -791,8 +856,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 .getObtenerDocumentosParaEnvioDto()
                                                 .getDocumentos();
                                 envioCorreos.enviarCorreoConAnexos(correos,
-                                                sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                                sustentacionDto.getEnvioEmailDto().getMensaje(),
+                                                sustentacionDto.getEnvioEmail().getAsunto(),
+                                                sustentacionDto.getEnvioEmail().getMensaje(),
                                                 documentosEnvioComiteDto);
                                 trabajoGrado.setNumeroEstado(21);
                         }
@@ -846,14 +911,15 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 .getConceptoComite()) {
                         ArrayList<String> correos = new ArrayList<>();
                         // Si pasa de aprobado a no aprobado
-                        if (!sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()) {
+                        if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+                                        .equals(Concepto.NO_APROBADO)) {
                                 EstudianteResponseDtoAll estudiante = archivoClient
                                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
                                 correos.add(estudiante.getPersona().getCorreoElectronico());
                                 correos.add(trabajoGrado.getCorreoElectronicoTutor());
                                 envioCorreos.enviarCorreosCorrecion(correos,
-                                                sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                                sustentacionDto.getEnvioEmailDto().getMensaje());
+                                                sustentacionDto.getEnvioEmail().getAsunto(),
+                                                sustentacionDto.getEnvioEmail().getMensaje());
                                 FilesUtilities.deleteFileExample(
                                                 sustentacionProyectoInvestigacionOld
                                                                 .getLinkEstudioHojaVidaAcademica());
@@ -875,8 +941,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 .split("-");
                                 documentosParaConsejo.put("formatoG", formatoG[1]);
                                 envioCorreos.enviarCorreoConAnexos(correos,
-                                                sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                                sustentacionDto.getEnvioEmailDto().getMensaje(),
+                                                sustentacionDto.getEnvioEmail().getAsunto(),
+                                                sustentacionDto.getEnvioEmail().getMensaje(),
                                                 documentosParaConsejo);
 
                                 sustentacionDto.setLinkEstudioHojaVidaAcademica(FilesUtilities.guardarArchivoNew2(
@@ -999,7 +1065,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 if (sustentacionProyectoInvestigacionTmp.getJuradosAceptados() != sustentacionDto
                                 .getJuradosAceptados()) {
                         // Si pasa de acepados a no aceptados
-                        if (!sustentacionDto.getJuradosAceptados()) {
+                        if (sustentacionDto.getJuradosAceptados().equals(ConceptoVerificacion.RECHAZADO)) {
                                 sustentacionProyectoInvestigacionTmp
                                                 .setIdJuradoInterno(
                                                                 Long.parseLong(sustentacionDto.getIdJuradoInterno()));
@@ -1012,8 +1078,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 correos.add(estudiante.getPersona().getCorreoElectronico());
                                 correos.add(trabajoGrado.getCorreoElectronicoTutor());
                                 envioCorreos.enviarCorreosCorrecion(correos,
-                                                sustentacionDto.getEnvioEmailDto().getAsunto(),
-                                                sustentacionDto.getEnvioEmailDto().getMensaje());
+                                                sustentacionDto.getEnvioEmail().getAsunto(),
+                                                sustentacionDto.getEnvioEmail().getMensaje());
                         }
                 }
 

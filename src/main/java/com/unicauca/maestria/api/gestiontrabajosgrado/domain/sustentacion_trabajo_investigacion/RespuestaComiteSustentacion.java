@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 
 @Entity
 @Table(name = "respuesta_comite_sustentacion")
@@ -22,7 +23,7 @@ public class RespuestaComiteSustentacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRespuestaComiteSustentacion;
 
-    private Boolean conceptoComite;
+    private Concepto conceptoComite;
 
     private String numeroActa;
 

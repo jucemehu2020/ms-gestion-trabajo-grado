@@ -33,6 +33,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorExcep
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ServiceUnavailableException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
@@ -56,6 +57,8 @@ public class ActualizarInformacionDocenteTest {
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
         @Mock
+        private AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
+        @Mock
         private BindingResult result;
 
         @InjectMocks
@@ -70,9 +73,11 @@ public class ActualizarInformacionDocenteTest {
                                 trabajoGradoRepository,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
+                                anexoSolicitudExamenValoracionMapper, 
                                 archivoClient,
                                 archivoClientExpertos);
         }
+
 
         @Test
         void testActualizarInformacionDocente_RegistroExitoso() {

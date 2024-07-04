@@ -37,6 +37,7 @@ public class ListarExpertosTest {
         @BeforeEach
         public void setUp() {
                 expertoService = new SolicitudExamenValoracionServiceImpl(null, null, null, null, null, null, null,
+                                null,
                                 archivoClientExpertos);
         }
 

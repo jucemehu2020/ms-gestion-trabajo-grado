@@ -3,6 +3,8 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucio
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.*;
 
 @Getter
@@ -12,7 +14,10 @@ import lombok.*;
 @Builder
 public class ObtenerDocumentosParaEnvioDto {
 
+    @NotNull
     private String base64AnteproyectoFinal;
+
+    @NotNull
     private String base64SolicitudComite;
 
     public Map<String, Object> getDocumentos() {

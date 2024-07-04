@@ -18,13 +18,16 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSolicitudRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion.SolicitudExamenValoracionServiceImpl;
@@ -36,6 +39,8 @@ public class ListarInformacionCoordinadoFase1Test {
     @Mock
     private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
     @Mock
+    private RespuestaComiteSolicitudRepository respuestaComiteSolicitudRepository;
+    @Mock
     private TrabajoGradoRepository trabajoGradoRepository;
     @Mock
     private ArchivoClient archivoClient;
@@ -45,6 +50,8 @@ public class ListarInformacionCoordinadoFase1Test {
     private SolicitudExamenValoracionMapper examenValoracionMapper;
     @Mock
     private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
+    @Mock
+    private AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
     @Mock
     private BindingResult result;
 
@@ -59,11 +66,12 @@ public class ListarInformacionCoordinadoFase1Test {
         MockitoAnnotations.openMocks(this);
         solicitudExamenValoracionService = new SolicitudExamenValoracionServiceImpl(
                 solicitudExamenValoracionRepository,
-                null,
+                respuestaComiteSolicitudRepository,
                 null,
                 trabajoGradoRepository,
                 examenValoracionMapper,
                 examenValoracionResponseMapper,
+                anexoSolicitudExamenValoracionMapper,
                 archivoClient,
                 archivoClientExpertos);
         ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
@@ -74,14 +82,14 @@ public class ListarInformacionCoordinadoFase1Test {
 
         Long idTrabajoGrado = 1L;
         SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-        solicitudExamenValoracion.setConceptoCoordinadorDocumentos(true);
+        solicitudExamenValoracion.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
 
         when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
         SolicitudExamenValoracionResponseFase1Dto solicitudExamenValoracionResponseFase1Dto = new SolicitudExamenValoracionResponseFase1Dto();
         solicitudExamenValoracionResponseFase1Dto.setIdExamenValoracion(1L);
-        solicitudExamenValoracionResponseFase1Dto.setConceptoCoordinadorDocumentos(true);
+        solicitudExamenValoracionResponseFase1Dto.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
 
         when(examenValoracionResponseMapper.toCoordinadorFase1Dto(solicitudExamenValoracion))
                 .thenReturn(solicitudExamenValoracionResponseFase1Dto);

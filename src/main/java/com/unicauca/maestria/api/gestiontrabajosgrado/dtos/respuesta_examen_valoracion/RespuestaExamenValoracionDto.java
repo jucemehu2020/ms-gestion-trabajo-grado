@@ -5,10 +5,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.ConceptoRespuesta;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
@@ -32,7 +31,7 @@ public class RespuestaExamenValoracionDto {
     private List<AnexoRespuestaExamenValoracionDto> anexos;
 
     @NotNull
-    private ConceptoRespuesta respuestaExamenValoracion;
+    private ConceptosVarios respuestaExamenValoracion;
 
     private LocalDate fechaMaximaEntrega;
 

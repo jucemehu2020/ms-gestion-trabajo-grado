@@ -1,7 +1,11 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proyecto_investigacion;
 
+import java.util.List;
+
 import org.springframework.validation.BindingResult;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.STICoordinadorFase2ResponseDto;
@@ -16,6 +20,14 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteResponseDto;
 
 public interface SustentacionProyectoInvestigacionService {
+
+        public List<DocenteInfoDto> listarDocentes();
+
+        public List<ExpertoInfoDto> listarExpertos();
+
+        public DocenteInfoDto obtenerDocente(Long id);
+
+        public ExpertoInfoDto obtenerExperto(Long id);
 
         public SustentacionTrabajoInvestigacionDocenteResponseDto insertarInformacionDocente(
                         Long idTrabajoGrado,

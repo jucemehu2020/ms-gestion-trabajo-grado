@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import lombok.*;
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,7 +29,7 @@ public class GeneracionResolucionDto {
     private String linkSolicitudComite;
 
     @NotNull
-    private Boolean conceptoDocumentosCoordinador;
+    private Concepto conceptoDocumentosCoordinador;
 
     @NotNull
     private String numeroActaSolicitudComite;

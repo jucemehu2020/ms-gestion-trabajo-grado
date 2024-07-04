@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 public class GeneracionResolucionDocenteDto {
 
     @NotNull
-    private String director;
+    private Long idDirector;
 
     @NotNull
-    private String codirector;
+    private Long idCodirector;
 
     @NotNull
     private String linkAnteproyectoFinal;

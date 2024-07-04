@@ -10,7 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.ConceptoRespuesta;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
@@ -38,7 +38,7 @@ public class RespuestaExamenValoracion {
     private List<AnexoRespuestaExamenValoracion> anexos;
 
     @Enumerated(EnumType.STRING)
-    private ConceptoRespuesta respuestaExamenValoracion;
+    private ConceptosVarios respuestaExamenValoracion;
 
     private LocalDate fechaMaximaEntrega;
 

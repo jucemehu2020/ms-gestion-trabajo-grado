@@ -1,8 +1,11 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1;
 
 import lombok.*;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
 @Getter
@@ -13,11 +16,13 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 public class GeneracionResolucionCoordinadorFase1Dto {
 
     @NotNull
-    private Boolean conceptoDocumentosCoordinador;
+    private Concepto conceptoDocumentosCoordinador;
 
     @NotNull
-    private EnvioEmailDto envioEmailDto;
+    @Valid
+    private EnvioEmailDto envioEmail;
 
-    private ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto;
+    @Valid
+    private ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvio;
 
 }
