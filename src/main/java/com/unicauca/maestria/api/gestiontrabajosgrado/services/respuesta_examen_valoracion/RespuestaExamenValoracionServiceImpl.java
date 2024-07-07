@@ -245,9 +245,8 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         @Override
         @Transactional(readOnly = true)
         public Map<String, List<RespuestaExamenValoracionResponseDto>> buscarPorId(Long idTrabajoGrado) {
-
-                respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado).orElseThrow(
-                                () -> new ResourceNotFoundException(
+                trabajoGradoRepository.findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
                 List<RespuestaExamenValoracion> respuestas = respuestaExamenValoracionRepository
@@ -257,12 +256,13 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         throw new InformationException("No se han registrado datos");
                 }
 
-                return respuestas.stream()
+                Map<String, List<RespuestaExamenValoracionResponseDto>> respuestasPorTipo = respuestas.stream()
                                 .map(respuestaExamenValoracionResponseMapper::toDto)
                                 .collect(Collectors.groupingBy(
                                                 respuesta -> respuesta.getTipoEvaluador() == TipoEvaluador.INTERNO
                                                                 ? "evaluador_interno"
                                                                 : "evaluador_externo"));
+                return respuestasPorTipo;
         }
 
         @Override
