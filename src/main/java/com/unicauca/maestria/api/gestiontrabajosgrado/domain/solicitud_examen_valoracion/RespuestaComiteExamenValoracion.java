@@ -26,6 +26,7 @@ public class RespuestaComiteExamenValoracion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAnexoExamenValoracion;
 
+    @Enumerated(EnumType.STRING)
     private Concepto conceptoComite;
 
     private String numeroActa;

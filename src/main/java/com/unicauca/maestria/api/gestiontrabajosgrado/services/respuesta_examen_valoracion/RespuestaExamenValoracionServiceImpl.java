@@ -122,8 +122,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
 
-                int numEstado = validarEstado(idTrabajoGrado,
-                                rtaExamenValoracion.getRespuestaExamenValoracion());
+                int numEstado = validarEstado(idTrabajoGrado, rtaExamenValoracion.getRespuestaExamenValoracion());
                 trabajoGrado.setNumeroEstado(numEstado);
 
                 // Guardar la entidad ExamenValoracion
@@ -318,6 +317,10 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
 
+                int numEstado = validarEstado(respuestaExamenValoracionTmp.getIdTrabajoGrado().getId(),
+                                respuestaExamenValoracionDto.getRespuestaExamenValoracion());
+                trabajoGrado.setNumeroEstado(numEstado);
+
                 enviarCorreoTutorEstudiante(respuestaExamenValoracionDto, trabajoGrado);
 
                 if (respuestaExamenValoracionDto.getLinkFormatoB()
@@ -448,26 +451,40 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 Integer numeroEstadoActual = trabajoGradoRepository.obtenerEstadoTrabajoGrado(idTrabajoGrado);
                 int numEstado = 0;
                 switch (conceptoEvaluador) {
+                        case APROBADO:
+                                if (numeroEstadoActual == 5 || numeroEstadoActual == 8 || numeroEstadoActual == 10) {
+                                        numEstado = 6;
+                                } else if (numeroEstadoActual == 6 || numeroEstadoActual == 12
+                                                || numeroEstadoActual == 13) {
+                                        numEstado = 7;
+                                } else if (numeroEstadoActual == 9) {
+                                        numEstado = 12;
+                                } else if (numeroEstadoActual == 5) {
+                                        numEstado = 13;
+                                }
+                                break;
                         case NO_APROBADO:
-                                if (numeroEstadoActual == 5 || numeroEstadoActual == 6 || numeroEstadoActual == 9) {
+                                if (numeroEstadoActual == 5 || numeroEstadoActual == 6 || numeroEstadoActual == 10) {
                                         numEstado = 8;
-                                } else if (numeroEstadoActual == 8) {
+                                } else if (numeroEstadoActual == 8 || numeroEstadoActual == 12
+                                                || numeroEstadoActual == 14) {
                                         numEstado = 9;
+                                } else if (numeroEstadoActual == 7) {
+                                        numEstado = 12;
+                                } else if (numeroEstadoActual == 11) {
+                                        numEstado = 14;
                                 }
                                 break;
                         case APLAZADO:
-                                if (numeroEstadoActual == 5 || numeroEstadoActual == 6) {
+                                if (numeroEstadoActual == 5 || numeroEstadoActual == 6 || numeroEstadoActual == 8) {
                                         numEstado = 10;
-                                } else if (numeroEstadoActual == 10) {
+                                } else if (numeroEstadoActual == 10 || numeroEstadoActual == 13
+                                                || numeroEstadoActual == 14) {
                                         numEstado = 11;
-                                }
-                                break;
-                        case APROBADO:
-                        default:
-                                if (numeroEstadoActual == 5) {
-                                        numEstado = 6;
-                                } else if (numeroEstadoActual == 6) {
-                                        numEstado = 7;
+                                } else if (numeroEstadoActual == 7) {
+                                        numEstado = 13;
+                                } else if (numeroEstadoActual == 9) {
+                                        numEstado = 14;
                                 }
                                 break;
                 }

@@ -23,6 +23,6 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase1Dto {
     private EnvioEmailDto envioEmail;
 
     @Valid
-    private ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto;
+    private ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvio;
 
 }

@@ -48,159 +48,160 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_
 @SpringBootTest
 public class ListarInformacionCooridnadorTest {
 
-    @Mock
-    private RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
-    @Mock
-    private ExamenValoracionCanceladoRepository examenValoracionCanceladoRepository;
-    @Mock
-    private AnexosRespuestaExamenValoracionRepository anexosRespuestaExamenValoracionRepository;
-    @Mock
-    private RespuestaExamenValoracionMapper respuestaExamenValoracionMapper;
-    @Mock
-    private RespuestaExamenValoracionResponseMapper respuestaExamenValoracionResponseMapper;
-    @Mock
-    private AnexoRespuestaExamenValoracionMapper anexoRespuestaExamenValoracionMapper;
-    @Mock
-    private ExamenValoracionCanceladoMapper examenValoracionCanceladoMapper;
-    @Mock
-    private TrabajoGradoRepository trabajoGradoRepository;
-    @Mock
-    private ArchivoClient archivoClient;
-    @Mock
-    private ArchivoClientExpertos archivoClientExpertos;
-    @Mock
-    private BindingResult result;
-    @Mock
-    private EnvioCorreos envioCorreos;
-    @InjectMocks
-    private RespuestaExamenValoracionServiceImpl respuestaExamenValoracionServiceImpl;
+        @Mock
+        private RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
+        @Mock
+        private ExamenValoracionCanceladoRepository examenValoracionCanceladoRepository;
+        @Mock
+        private AnexosRespuestaExamenValoracionRepository anexosRespuestaExamenValoracionRepository;
+        @Mock
+        private RespuestaExamenValoracionMapper respuestaExamenValoracionMapper;
+        @Mock
+        private RespuestaExamenValoracionResponseMapper respuestaExamenValoracionResponseMapper;
+        @Mock
+        private AnexoRespuestaExamenValoracionMapper anexoRespuestaExamenValoracionMapper;
+        @Mock
+        private ExamenValoracionCanceladoMapper examenValoracionCanceladoMapper;
+        @Mock
+        private TrabajoGradoRepository trabajoGradoRepository;
+        @Mock
+        private ArchivoClient archivoClient;
+        @Mock
+        private ArchivoClientExpertos archivoClientExpertos;
+        @Mock
+        private BindingResult result;
+        @Mock
+        private EnvioCorreos envioCorreos;
+        @InjectMocks
+        private RespuestaExamenValoracionServiceImpl respuestaExamenValoracionServiceImpl;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        respuestaExamenValoracionServiceImpl = new RespuestaExamenValoracionServiceImpl(
-                respuestaExamenValoracionRepository,
-                examenValoracionCanceladoRepository,
-                anexosRespuestaExamenValoracionRepository,
-                respuestaExamenValoracionMapper,
-                respuestaExamenValoracionResponseMapper,
-                anexoRespuestaExamenValoracionMapper,
-                examenValoracionCanceladoMapper,
-                trabajoGradoRepository,
-                archivoClient,
-                archivoClientExpertos);
-        ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
-    }
+        @BeforeEach
+        void setUp() {
+                MockitoAnnotations.openMocks(this);
+                respuestaExamenValoracionServiceImpl = new RespuestaExamenValoracionServiceImpl(
+                                respuestaExamenValoracionRepository,
+                                examenValoracionCanceladoRepository,
+                                anexosRespuestaExamenValoracionRepository,
+                                respuestaExamenValoracionMapper,
+                                respuestaExamenValoracionResponseMapper,
+                                anexoRespuestaExamenValoracionMapper,
+                                examenValoracionCanceladoMapper,
+                                trabajoGradoRepository,
+                                archivoClient,
+                                archivoClientExpertos);
+                ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
+        }
 
-    @Test
-    void testListarInformacionCoordinador_Exito() {
-        Long idTrabajoGrado = 1L;
+        @Test
+        void testListarInformacionCoordinador_Exito() {
+                Long idTrabajoGrado = 1L;
 
-        List<AnexoRespuestaExamenValoracion> listaAnexos = new ArrayList<>();
-        listaAnexos.add(AnexoRespuestaExamenValoracion.builder()
-                .linkAnexo(
-                        "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt")
-                .build());
+                List<AnexoRespuestaExamenValoracion> listaAnexos = new ArrayList<>();
+                listaAnexos.add(AnexoRespuestaExamenValoracion.builder()
+                                .linkAnexo(
+                                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt")
+                                .build());
 
-        RespuestaExamenValoracion respuestaExamenValoracion = new RespuestaExamenValoracion();
-        respuestaExamenValoracion.setLinkFormatoB(
-                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt");
-        respuestaExamenValoracion.setLinkFormatoC(
-                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt");
-        respuestaExamenValoracion.setLinkObservaciones(
-                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt");
-        respuestaExamenValoracion.setAnexos(listaAnexos);
-        respuestaExamenValoracion.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
-        respuestaExamenValoracion.setIdEvaluador(1L);
-        respuestaExamenValoracion.setTipoEvaluador(TipoEvaluador.EXTERNO);
+                RespuestaExamenValoracion respuestaExamenValoracion = new RespuestaExamenValoracion();
+                respuestaExamenValoracion.setLinkFormatoB(
+                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt");
+                respuestaExamenValoracion.setLinkFormatoC(
+                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt");
+                respuestaExamenValoracion.setLinkObservaciones(
+                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt");
+                respuestaExamenValoracion.setAnexos(listaAnexos);
+                respuestaExamenValoracion.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
+                respuestaExamenValoracion.setIdEvaluador(1L);
+                respuestaExamenValoracion.setTipoEvaluador(TipoEvaluador.EXTERNO);
 
-        when(respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
-                .thenReturn(Optional.of(new RespuestaExamenValoracion()));
+                when(respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(new RespuestaExamenValoracion()));
 
-        when(respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado))
-                .thenReturn(Collections.singletonList(respuestaExamenValoracion));
+                when(respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado))
+                                .thenReturn(Collections.singletonList(respuestaExamenValoracion));
 
-        List<AnexoRespuestaExamenValoracionDto> listaAnexosResponseDto = new ArrayList<>();
-        listaAnexosResponseDto.add(AnexoRespuestaExamenValoracionDto.builder()
-                .linkAnexo(respuestaExamenValoracion.getAnexos().get(0).getLinkAnexo())
-                .build());
+                List<AnexoRespuestaExamenValoracionDto> listaAnexosResponseDto = new ArrayList<>();
+                listaAnexosResponseDto.add(AnexoRespuestaExamenValoracionDto.builder()
+                                .linkAnexo(respuestaExamenValoracion.getAnexos().get(0).getLinkAnexo())
+                                .build());
 
-        RespuestaExamenValoracionResponseDto respuestaExamenValoracionResponseDto = new RespuestaExamenValoracionResponseDto();
-        respuestaExamenValoracionResponseDto.setIdRespuestaExamenValoracion(idTrabajoGrado);
-        respuestaExamenValoracionResponseDto.setLinkFormatoB(respuestaExamenValoracion.getLinkFormatoB());
-        respuestaExamenValoracionResponseDto.setLinkFormatoC(respuestaExamenValoracion.getLinkFormatoC());
-        respuestaExamenValoracionResponseDto.setLinkObservaciones(respuestaExamenValoracion.getLinkObservaciones());
-        respuestaExamenValoracionResponseDto.setAnexos(listaAnexosResponseDto);
-        respuestaExamenValoracionResponseDto
-                .setRespuestaExamenValoracion(respuestaExamenValoracion.getRespuestaExamenValoracion());
-        respuestaExamenValoracionResponseDto.setFechaMaximaEntrega(respuestaExamenValoracion.getFechaMaximaEntrega());
-        respuestaExamenValoracionResponseDto.setIdEvaluador(respuestaExamenValoracion.getIdEvaluador());
-        respuestaExamenValoracionResponseDto.setTipoEvaluador(respuestaExamenValoracion.getTipoEvaluador());
+                RespuestaExamenValoracionResponseDto respuestaExamenValoracionResponseDto = new RespuestaExamenValoracionResponseDto();
+                respuestaExamenValoracionResponseDto.setIdRespuestaExamenValoracion(idTrabajoGrado);
+                respuestaExamenValoracionResponseDto.setLinkFormatoB(respuestaExamenValoracion.getLinkFormatoB());
+                respuestaExamenValoracionResponseDto.setLinkFormatoC(respuestaExamenValoracion.getLinkFormatoC());
+                respuestaExamenValoracionResponseDto
+                                .setLinkObservaciones(respuestaExamenValoracion.getLinkObservaciones());
+                respuestaExamenValoracionResponseDto.setAnexos(listaAnexosResponseDto);
+                respuestaExamenValoracionResponseDto
+                                .setRespuestaExamenValoracion(respuestaExamenValoracion.getRespuestaExamenValoracion());
+                respuestaExamenValoracionResponseDto
+                                .setFechaMaximaEntrega(respuestaExamenValoracion.getFechaMaximaEntrega());
+                respuestaExamenValoracionResponseDto.setIdEvaluador(respuestaExamenValoracion.getIdEvaluador());
+                respuestaExamenValoracionResponseDto.setTipoEvaluador(respuestaExamenValoracion.getTipoEvaluador());
 
-        when(respuestaExamenValoracionResponseMapper.toDto(respuestaExamenValoracion))
-                .thenReturn(respuestaExamenValoracionResponseDto);
+                when(respuestaExamenValoracionResponseMapper.toDto(respuestaExamenValoracion))
+                                .thenReturn(respuestaExamenValoracionResponseDto);
 
-        Map<String, List<RespuestaExamenValoracionResponseDto>> resultado = respuestaExamenValoracionServiceImpl
-                .buscarPorId(idTrabajoGrado);
+                Map<String, List<RespuestaExamenValoracionResponseDto>> resultado = respuestaExamenValoracionServiceImpl
+                                .buscarPorId(idTrabajoGrado);
 
-        assertNotNull(resultado);
-        assertEquals(1, resultado.size());
-        assertEquals(1, resultado.get("evaluador_externo").size());
-        RespuestaExamenValoracionResponseDto dto = resultado.get("evaluador_externo").get(0);
+                assertNotNull(resultado);
+                assertEquals(1, resultado.size());
+                assertEquals(1, resultado.get("evaluador_externo").size());
+                RespuestaExamenValoracionResponseDto dto = resultado.get("evaluador_externo").get(0);
 
-        assertEquals(1L, dto.getIdRespuestaExamenValoracion());
-        assertEquals(
-                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt",
-                dto.getLinkFormatoB());
-        assertEquals(
-                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt",
-                dto.getLinkFormatoC());
-        assertEquals(
-                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt",
-                dto.getLinkObservaciones());
-        assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt",
-                dto.getAnexos().get(0).getLinkAnexo());
-        assertEquals(ConceptosVarios.APROBADO, dto.getRespuestaExamenValoracion());
-        assertEquals(null, dto.getFechaMaximaEntrega());
-        assertEquals(1L, dto.getIdEvaluador());
-        assertEquals(TipoEvaluador.EXTERNO, dto.getTipoEvaluador());
+                assertEquals(1L, dto.getIdRespuestaExamenValoracion());
+                assertEquals(
+                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt",
+                                dto.getLinkFormatoB());
+                assertEquals(
+                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt",
+                                dto.getLinkFormatoC());
+                assertEquals(
+                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt",
+                                dto.getLinkObservaciones());
+                assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt",
+                                dto.getAnexos().get(0).getLinkAnexo());
+                assertEquals(ConceptosVarios.APROBADO, dto.getRespuestaExamenValoracion());
+                assertEquals(null, dto.getFechaMaximaEntrega());
+                assertEquals(1L, dto.getIdEvaluador());
+                assertEquals(TipoEvaluador.EXTERNO, dto.getTipoEvaluador());
 
-    }
+        }
 
-    @Test
-    void testListarInformacionCoordinador_NoHayRegistro() {
-        Long idTrabajoGrado = 1L;
+        @Test
+        void testListarInformacionCoordinador_NoHayRegistro() {
+                Long idTrabajoGrado = 1L;
 
+                when(respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(new RespuestaExamenValoracion()));
 
-        when(respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
-                .thenReturn(Optional.of(new RespuestaExamenValoracion()));
+                // when(respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado))
+                // .thenReturn(Collections.emptyList());
 
-        when(respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado))
-                .thenReturn(Collections.emptyList());
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        respuestaExamenValoracionServiceImpl.buscarPorId(idTrabajoGrado);
+                });
 
-        InformationException exception = assertThrows(InformationException.class, () -> {
-            respuestaExamenValoracionServiceImpl.buscarPorId(idTrabajoGrado);
-        });
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "No se han registrado datos";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
 
-        assertNotNull(exception.getMessage());
-        String expectedMessage = "No se han registrado datos";
-        assertTrue(exception.getMessage().contains(expectedMessage));
-    }
+        @Test
+        void testListarInformacionCoordinadoFase2Test_TrabajoGradoNoExiste() {
+                Long idTrabajoGrado = 2L;
 
-    @Test
-    void testListarInformacionCoordinadoFase2Test_TrabajoGradoNoExiste() {
-        Long idTrabajoGrado = 2L;
+                when(respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.empty());
 
-        when(respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
-                .thenReturn(Optional.empty());
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+                        respuestaExamenValoracionServiceImpl.buscarPorId(idTrabajoGrado);
+                });
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            respuestaExamenValoracionServiceImpl.buscarPorId(idTrabajoGrado);
-        });
-
-        assertNotNull(exception.getMessage());
-        String expectedMessage = "Trabajo de grado con id 2 no encontrado";
-        assertTrue(exception.getMessage().contains(expectedMessage));
-    }
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
 
 }

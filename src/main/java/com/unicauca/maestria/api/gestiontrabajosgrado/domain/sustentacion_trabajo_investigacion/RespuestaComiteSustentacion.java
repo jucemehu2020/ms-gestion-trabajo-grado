@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -23,11 +26,12 @@ public class RespuestaComiteSustentacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRespuestaComiteSustentacion;
 
+    @Enumerated(EnumType.STRING)
     private Concepto conceptoComite;
 
     private String numeroActa;
 
-    private String fechaActa;
+    private LocalDate fechaActa;
 
     @ManyToOne
     @JoinColumn(name = "id_sustentacion_trabajo_investigacion")

@@ -138,7 +138,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 trabajoGrado.setIdGeneracionResolucion(generarResolucion);
 
                 // Se cambia el numero de estado
-                trabajoGrado.setNumeroEstado(13);
+                trabajoGrado.setNumeroEstado(16);
 
                 // Guardar la entidad ExamenValoracion
                 generarResolucion.setLinkAnteproyectoFinal(FilesUtilities.guardarArchivoNew2(rutaArchivo,
@@ -180,7 +180,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + idTrabajoGrado
                                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 13) {
+                if (trabajoGrado.getNumeroEstado() != 16) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -201,7 +201,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                         generacionResolucionDto.getEnvioEmail().getAsunto(),
                                         generacionResolucionDto.getEnvioEmail().getMensaje(),
                                         documentosEnvioComiteDto);
-                        trabajoGrado.setNumeroEstado(15);
+                        trabajoGrado.setNumeroEstado(18);
 
                 } else {
                         EstudianteResponseDtoAll estudiante = archivoClient
@@ -211,7 +211,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         envioCorreos.enviarCorreosCorrecion(correos,
                                         generacionResolucionDto.getEnvioEmail().getAsunto(),
                                         generacionResolucionDto.getEnvioEmail().getMensaje());
-                        trabajoGrado.setNumeroEstado(14);
+                        trabajoGrado.setNumeroEstado(17);
                 }
 
                 generacionResolucionTmp.setConceptoDocumentosCoordinador(
@@ -271,7 +271,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + idTrabajoGrado
                                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 15) {
+                if (trabajoGrado.getNumeroEstado() != 18) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -309,7 +309,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         generarResolucion.setLinkSolicitudConsejoFacultad(
                                         FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                         generarResolucion.getLinkSolicitudConsejoFacultad()));
-                        trabajoGrado.setNumeroEstado(17);
+                        trabajoGrado.setNumeroEstado(20);
                 } else {
                         EstudianteResponseDtoAll estudiante = archivoClient
                                         .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
@@ -318,7 +318,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         envioCorreos.enviarCorreosCorrecion(correos,
                                         generacionResolucionDto.getEnvioEmail().getAsunto(),
                                         generacionResolucionDto.getEnvioEmail().getMensaje());
-                        trabajoGrado.setNumeroEstado(16);
+                        trabajoGrado.setNumeroEstado(19);
                 }
 
                 agregarInformacionCoordinadorFase2(generacionResolucionTmp, generacionResolucionDto);
@@ -369,7 +369,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + idTrabajoGrado
                                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 17) {
+                if (trabajoGrado.getNumeroEstado() != 20) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -381,7 +381,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                                 .getIdGeneracionResolucion()
                                                                 + " no encontrado"));
 
-                trabajoGrado.setNumeroEstado(18);
+                trabajoGrado.setNumeroEstado(21);
 
                 agregarInformacionCoordinadorFase3(generacionResolucionTmp, generacionResolucionDto);
 
@@ -493,8 +493,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + idTrabajoGrado
                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 13 && trabajoGrado.getNumeroEstado() != 14
-                                && trabajoGrado.getNumeroEstado() != 16) {
+                if (trabajoGrado.getNumeroEstado() != 16 && trabajoGrado.getNumeroEstado() != 17
+                                && trabajoGrado.getNumeroEstado() != 19) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -511,6 +511,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + " no encontrado"));
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
+
+                trabajoGrado.setNumeroEstado(16);
 
                 GeneracionResolucion generacionResolucion = null;
                 if (generacionResolucionOld != null) {
@@ -584,7 +586,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + idTrabajoGrado
                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 14 && trabajoGrado.getNumeroEstado() != 15) {
+                if (trabajoGrado.getNumeroEstado() != 16 && trabajoGrado.getNumeroEstado() != 17
+                                && trabajoGrado.getNumeroEstado() != 18) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -610,7 +613,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 envioCorreos.enviarCorreosCorrecion(correos,
                                                 generacionResolucionDocenteDto.getEnvioEmail().getAsunto(),
                                                 generacionResolucionDocenteDto.getEnvioEmail().getMensaje());
-                                trabajoGrado.setNumeroEstado(22);
+                                trabajoGrado.setNumeroEstado(17);
                         } else {
                                 correos.add(Constants.correoComite);
                                 Map<String, Object> documentosEnvioComiteDto = generacionResolucionDocenteDto
@@ -620,7 +623,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 generacionResolucionDocenteDto.getEnvioEmail().getAsunto(),
                                                 generacionResolucionDocenteDto.getEnvioEmail().getMensaje(),
                                                 documentosEnvioComiteDto);
-                                trabajoGrado.setNumeroEstado(21);
+                                trabajoGrado.setNumeroEstado(18);
                         }
                 }
 
@@ -654,7 +657,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + idTrabajoGrado
                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 16 && trabajoGrado.getNumeroEstado() != 17) {
+                if (trabajoGrado.getNumeroEstado() != 18 && trabajoGrado.getNumeroEstado() != 19
+                                && trabajoGrado.getNumeroEstado() != 20) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -693,7 +697,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 .getMensaje());
                                 FilesUtilities.deleteFileExample(
                                                 generacionResolucionOld.getLinkSolicitudConsejoFacultad());
-                                trabajoGrado.setNumeroEstado(4);
+                                trabajoGrado.setNumeroEstado(19);
                         } else {
                                 correos.add(Constants.correoConsejo);
                                 Map<String, Object> documentosParaConsejo = new HashMap<>();
@@ -710,7 +714,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 rutaArchivo,
                                                                 generacionResolucionCoordinadorFase1Dto
                                                                                 .getLinkSolicitudConsejoFacultad()));
-                                trabajoGrado.setNumeroEstado(5);
+                                trabajoGrado.setNumeroEstado(20);
                         }
                 } else {
                         if (generacionResolucionOld != null) {
@@ -789,7 +793,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + idTrabajoGrado
                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 18) {
+                if (trabajoGrado.getNumeroEstado() != 21) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -800,6 +804,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + trabajoGrado.getIdGeneracionResolucion()
                                                                                 .getIdGeneracionResolucion()
                                                                 + " no encontrado"));
+
+                trabajoGrado.setNumeroEstado(21);
 
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
 

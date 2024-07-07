@@ -1,5 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.common.util;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -8,8 +10,11 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
 
@@ -19,6 +24,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 
 @Component
 public class EnvioCorreos {
@@ -31,16 +38,31 @@ public class EnvioCorreos {
 
     public boolean enviarCorreoConAnexos(ArrayList<String> correos, String asunto, String mensaje,
             Map<String, Object> documentos) {
+        List<String> correosFallidos = new ArrayList<>();
+        Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+
+        // Validar todos los correos antes de enviar
+        for (String correo : correos) {
+            if (!esCorreoValido(correo, emailPattern)) {
+                correosFallidos.add(correo);
+            }
+        }
+
+        if (!correosFallidos.isEmpty()) {
+            System.err.println("Los siguientes correos no son válidos: " + correosFallidos);
+            throw new InformationException("Los siguientes correos no son válidos: " + correosFallidos);
+        }
+
+        // Si todos los correos son válidos, proceder a enviarlos
         try {
             Map<String, Object> templateModel = new HashMap<>();
 
-            // Iterar sobre cada correo electrónico para enviar los mensajes individualmente
             for (String correo : correos) {
                 MimeMessage message = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(message, true); // habilitar modo multipart
 
                 String saludo = obtenerSaludo();
-                
+
                 // Configurar variables del contexto para la plantilla
                 templateModel.put("mensaje_saludo", saludo);
                 templateModel.put("mensaje", mensaje);
@@ -89,6 +111,28 @@ public class EnvioCorreos {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private boolean esCorreoValido(String correo, Pattern emailPattern) {
+        if (correo == null || !emailPattern.matcher(correo).matches()) {
+            return false;
+        }
+
+        try {
+            InternetAddress emailAddr = new InternetAddress(correo);
+            emailAddr.validate();
+        } catch (AddressException ex) {
+            return false;
+        }
+
+        String domain = correo.substring(correo.indexOf("@") + 1);
+        try {
+            InetAddress.getByName(domain);
+        } catch (UnknownHostException e) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean enviarCorreosUnico(String correo, String asunto, String mensaje) {

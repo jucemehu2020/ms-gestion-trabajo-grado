@@ -38,6 +38,7 @@ public class SustentacionTrabajoInvestigacion {
 
     private Long idJuradoExterno;
 
+    @Enumerated(EnumType.STRING)
     private ConceptoVerificacion conceptoCoordinador;
 
     @OneToMany(mappedBy = "sustentacionTrabajoInvestigacion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -48,6 +49,7 @@ public class SustentacionTrabajoInvestigacion {
 
     private String linkEstudioHojaVidaAcademica;
 
+    @Enumerated(EnumType.STRING)
     private ConceptoVerificacion juradosAceptados;
 
     private String numeroActaConsejo;
@@ -60,6 +62,7 @@ public class SustentacionTrabajoInvestigacion {
 
     private String linkActaSustentacionPublica;
 
+    @Enumerated(EnumType.STRING)
     private ConceptosVarios respuestaSustentacion;
 
     private String linkEstudioHojaVidaAcademicaGrado;

@@ -43,6 +43,7 @@ public class SolicitudExamenValoracion {
 
     private Long idEvaluadorExterno;
 
+    @Enumerated(EnumType.STRING)
     private ConceptoVerificacion conceptoCoordinadorDocumentos;
 
     @OneToMany(mappedBy = "solicitudExamenValoracion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

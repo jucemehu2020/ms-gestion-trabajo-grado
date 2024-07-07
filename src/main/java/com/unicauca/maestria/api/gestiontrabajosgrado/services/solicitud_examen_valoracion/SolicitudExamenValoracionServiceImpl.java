@@ -18,7 +18,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
@@ -26,7 +25,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.Traba
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.AnexoRespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.DatosFormatoBResponseDto;
@@ -315,11 +313,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 			// Falta poner el tiempo aqui
 
-			examenValoracionDto
-					.setLinkOficioDirigidoEvaluadores(
-							FilesUtilities
-									.guardarArchivoNew2(rutaArchivo,
-											examenValoracionDto.getLinkOficioDirigidoEvaluadores()));
+			examenValoracionDto.setLinkOficioDirigidoEvaluadores(FilesUtilities
+					.guardarArchivoNew2(rutaArchivo, examenValoracionDto.getLinkOficioDirigidoEvaluadores()));
 
 			trabajoGrado.setNumeroEstado(5);
 		} else {
@@ -524,6 +519,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			FilesUtilities.deleteFolderAndItsContents(tituloTrabajoGrado);
 		}
 
+		// limpiar
+		examenValoracion.setConceptoCoordinadorDocumentos(null);
+
 		trabajoGrado.setTitulo(examenValoracionDto.getTitulo());
 		examenValoracion.setTitulo(examenValoracionDto.getTitulo());
 		examenValoracion.setIdEvaluadorExterno(examenValoracionDto.getIdEvaluadorExterno());
@@ -589,7 +587,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						() -> new ResourceNotFoundException("Trabajo de grado con id "
 								+ idTrabajoGrado + " no encontrado"));
 
-		if (trabajoGrado.getNumeroEstado() != 2 && trabajoGrado.getNumeroEstado() != 3) {
+		if (trabajoGrado.getNumeroEstado() != 1 && trabajoGrado.getNumeroEstado() != 2
+				&& trabajoGrado.getNumeroEstado() != 3) {
 			throw new InformationException("No es permitido registrar la informacion");
 		}
 
@@ -653,7 +652,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
 						+ idTrabajoGrado + " no encontrado"));
 
-		if (trabajoGrado.getNumeroEstado() != 4 && trabajoGrado.getNumeroEstado() != 5) {
+		if (trabajoGrado.getNumeroEstado() != 3 && trabajoGrado.getNumeroEstado() != 4
+				&& trabajoGrado.getNumeroEstado() != 5) {
 			throw new InformationException("No es permitido registrar la informacion");
 		}
 

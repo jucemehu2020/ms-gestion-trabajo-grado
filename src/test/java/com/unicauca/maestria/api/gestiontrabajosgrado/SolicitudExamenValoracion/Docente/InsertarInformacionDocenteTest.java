@@ -257,10 +257,8 @@ public class InsertarInformacionDocenteTest {
                 examenValoracionDto.setIdEvaluadorExterno(1L);
                 examenValoracionDto.setAnexos(new ArrayList<>());
 
-                // Configurar el mock para que devuelva Optional.empty()
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());
 
-                // Lanzar la excepción y verificar el mensaje
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
                         solicitudExamenValoracionService.insertarInformacionDocente(idTrabajoGrado, examenValoracionDto,
                                         result);
