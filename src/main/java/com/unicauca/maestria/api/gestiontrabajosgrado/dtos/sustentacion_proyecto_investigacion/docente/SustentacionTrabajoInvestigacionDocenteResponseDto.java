@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class SustentacionTrabajoInvestigacionDocenteResponseDto {
 
-    private Long idSustentacionTrabajoInvestigacion; 
+    private Long id; 
     private String linkFormatoF;
     private String urlDocumentacion;
     private Long idJuradoInterno;

@@ -116,7 +116,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
+        generacionResolucion.setId(1L);
         generacionResolucion.setActaFechaRespuestaComite(new ArrayList<>());
         generacionResolucion.setLinkSolicitudConsejoFacultad(
                 generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
@@ -132,7 +132,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucion));
 
         when(generacionResolucionMapper.toEntity(generacionResolucionCoordinadorFase2Dto))
@@ -165,7 +165,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
 
         GeneracionResolucionCoordinadorFase2ResponseDto generacionResolucionCoordinadorFase2ResponseDto = new GeneracionResolucionCoordinadorFase2ResponseDto();
         generacionResolucionCoordinadorFase2ResponseDto
-                .setIdGeneracionResolucion(generacionResolucion.getIdGeneracionResolucion());
+                .setId(generacionResolucion.getId());
         generacionResolucionCoordinadorFase2ResponseDto.setActaFechaRespuestaComite(listaRespuestaComiteResponseDto);
         generacionResolucionCoordinadorFase2ResponseDto.setLinkSolicitudConsejoFacultad(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
@@ -182,7 +182,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                             result);
 
             assertNotNull(resultado);
-            assertEquals(1L, resultado.getIdGeneracionResolucion());
+            assertEquals(1L, resultado.getId());
             assertEquals(Concepto.APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
             assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
             assertEquals(LocalDate.parse("2023-05-24", formatter),
@@ -227,7 +227,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         listaRespuestaComite.add(respuestaComiteGeneracionResolucion);
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
+        generacionResolucion.setId(1L);
         generacionResolucion.setActaFechaRespuestaComite(listaRespuestaComite);
         generacionResolucion.setLinkSolicitudConsejoFacultad(
                 generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
@@ -243,7 +243,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucion));
 
         when(generacionResolucionMapper.toEntity(generacionResolucionCoordinadorFase2Dto))
@@ -275,7 +275,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
 
         GeneracionResolucionCoordinadorFase2ResponseDto generacionResolucionCoordinadorFase2ResponseDto = new GeneracionResolucionCoordinadorFase2ResponseDto();
         generacionResolucionCoordinadorFase2ResponseDto
-                .setIdGeneracionResolucion(generacionResolucion.getIdGeneracionResolucion());
+                .setId(generacionResolucion.getId());
         generacionResolucionCoordinadorFase2ResponseDto.setActaFechaRespuestaComite(listaRespuestaComiteResponseDto);
 
         when(generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucion))
@@ -285,7 +285,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 .insertarInformacionCoordinadorFase2(idTrabajoGrado, generacionResolucionCoordinadorFase2Dto, result);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdGeneracionResolucion());
+        assertEquals(1L, resultado.getId());
         assertEquals(Concepto.NO_APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
         assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
         assertEquals(LocalDate.parse("2023-05-24", formatter),
@@ -366,7 +366,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         listaRespuestaComite.add(respuestaComiteGeneracionResolucion);
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
+        generacionResolucion.setId(1L);
         generacionResolucion.setActaFechaRespuestaComite(listaRespuestaComite);
         generacionResolucion.setLinkSolicitudConsejoFacultad(
                 generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
@@ -382,7 +382,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucion));
 
         InformationException exception = assertThrows(InformationException.class, () -> {
@@ -476,7 +476,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         listaRespuestaComite.add(respuestaComiteGeneracionResolucion);
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
+        generacionResolucion.setId(1L);
         generacionResolucion.setActaFechaRespuestaComite(listaRespuestaComite);
         generacionResolucion.setLinkSolicitudConsejoFacultad(
                 generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());

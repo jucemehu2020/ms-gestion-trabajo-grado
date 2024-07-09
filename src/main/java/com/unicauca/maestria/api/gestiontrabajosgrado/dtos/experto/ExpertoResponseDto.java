@@ -17,5 +17,5 @@ public class ExpertoResponseDto {
     
     private PersonaDto persona;
 
-    private String universidad;
+    private String universidadtitexp;
 }

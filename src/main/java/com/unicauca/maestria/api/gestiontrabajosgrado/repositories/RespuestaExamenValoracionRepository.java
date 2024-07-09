@@ -17,7 +17,7 @@ public interface RespuestaExamenValoracionRepository extends JpaRepository<Respu
     @Query("SELECT COUNT(r) FROM RespuestaExamenValoracion r WHERE r.idTrabajoGrado.id = :idTrabajoGrado AND r.respuestaExamenValoracion = 'No aprobado'")
     Long countByTrabajoGradoIdAndRespuestaNoAprobado(@Param("idTrabajoGrado") Long idTrabajoGrado);
 
-    @Query("SELECT sev.idRespuestaExamenValoracion FROM RespuestaExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
+    @Query("SELECT sev.id FROM RespuestaExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
     public List<Long> findIdRespuestaExamenValoracionByTrabajoGradoId(Long trabajoGradoId);
 
     public Optional<RespuestaExamenValoracion> findByIdTrabajoGradoId(Long idTrabajoGradoId);

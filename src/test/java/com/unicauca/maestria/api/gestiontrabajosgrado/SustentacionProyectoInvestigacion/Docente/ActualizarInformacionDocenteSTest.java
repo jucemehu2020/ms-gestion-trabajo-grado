@@ -105,7 +105,7 @@ public class ActualizarInformacionDocenteSTest {
         when(result.hasErrors()).thenReturn(false);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionOld.setId(1L);
         sustentacionTrabajoInvestigacionOld.setLinkFormatoF(
                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
         sustentacionTrabajoInvestigacionOld.setUrlDocumentacion("www.google.com");
@@ -124,7 +124,7 @@ public class ActualizarInformacionDocenteSTest {
 
         when(sustentacionProyectoInvestigacionRepository
                 .findById(
-                        trabajoGrado.getIdSustentacionProyectoInvestigacion().getIdSustentacionTrabajoInvestigacion()))
+                        trabajoGrado.getIdSustentacionProyectoInvestigacion().getId()))
                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -139,7 +139,7 @@ public class ActualizarInformacionDocenteSTest {
                 .thenReturn(estudianteResponseDtoAll);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionNew.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionNew.setId(1L);
         sustentacionTrabajoInvestigacionNew
                 .setLinkFormatoF(sustentacionTrabajoInvestigacionDocenteDto.getLinkFormatoF());
         sustentacionTrabajoInvestigacionNew
@@ -153,7 +153,7 @@ public class ActualizarInformacionDocenteSTest {
                 .thenReturn(sustentacionTrabajoInvestigacionNew);
 
         SustentacionTrabajoInvestigacionDocenteResponseDto sustentacionTrabajoInvestigacionDocenteResponseDto = new SustentacionTrabajoInvestigacionDocenteResponseDto();
-        sustentacionTrabajoInvestigacionDocenteResponseDto.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionDocenteResponseDto.setId(1L);
         sustentacionTrabajoInvestigacionDocenteResponseDto
                 .setLinkFormatoF(
                         "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
@@ -178,7 +178,7 @@ public class ActualizarInformacionDocenteSTest {
                             sustentacionTrabajoInvestigacionDocenteDto, result);
 
             assertNotNull(resultado);
-            assertEquals(1L, resultado.getIdSustentacionTrabajoInvestigacion());
+            assertEquals(1L, resultado.getId());
             assertEquals(
                     "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt",
                     resultado.getLinkFormatoF());
@@ -266,7 +266,7 @@ public class ActualizarInformacionDocenteSTest {
         when(result.hasErrors()).thenReturn(false);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionOld.setId(1L);
         sustentacionTrabajoInvestigacionOld.setLinkFormatoF(
                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
         sustentacionTrabajoInvestigacionOld.setUrlDocumentacion("www.google.com");
@@ -313,7 +313,7 @@ public class ActualizarInformacionDocenteSTest {
         when(result.hasErrors()).thenReturn(false);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionOld.setId(1L);
         sustentacionTrabajoInvestigacionOld.setLinkFormatoF(
                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
         sustentacionTrabajoInvestigacionOld.setUrlDocumentacion("www.google.com");
@@ -359,7 +359,7 @@ public class ActualizarInformacionDocenteSTest {
         when(result.hasErrors()).thenReturn(false);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionOld.setId(1L);
         sustentacionTrabajoInvestigacionOld.setLinkFormatoF(
                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
         sustentacionTrabajoInvestigacionOld.setUrlDocumentacion("www.google.com");
@@ -403,7 +403,7 @@ public class ActualizarInformacionDocenteSTest {
         when(result.hasErrors()).thenReturn(false);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionOld.setId(1L);
         sustentacionTrabajoInvestigacionOld.setLinkFormatoF(
                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
         sustentacionTrabajoInvestigacionOld.setUrlDocumentacion("www.google.com");

@@ -10,6 +10,6 @@ import lombok.*;
 @Builder
 public class SolicitudExamenValoracionResponseFase1Dto {
 
-    private Long idExamenValoracion;
+    private Long id;
     private ConceptoVerificacion conceptoCoordinadorDocumentos;
 }

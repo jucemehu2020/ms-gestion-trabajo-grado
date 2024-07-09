@@ -92,7 +92,7 @@ public class ActualizarInformacionDocenteTest {
                 examenValoracionDto.setAnexos(new ArrayList<>());
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
-                solicitudExamenValoracionOld.setIdExamenValoracion(1L);
+                solicitudExamenValoracionOld.setId(1L);
                 solicitudExamenValoracionOld.setTitulo("Prueba test");
                 solicitudExamenValoracionOld.setLinkFormatoA(
                                 "./files/2024/6/12345678-Juan_Meneses/Solicitud_Examen_Valoracion/29-06-24/20240629163559-formatoA.txt");
@@ -113,7 +113,7 @@ public class ActualizarInformacionDocenteTest {
                 when(result.hasErrors()).thenReturn(false);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()))
+                                .findById(trabajoGrado.getExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 PersonaDto personaDto = new PersonaDto();
@@ -131,7 +131,7 @@ public class ActualizarInformacionDocenteTest {
                                 .thenReturn(solicitudExamenValoracionOld);
 
                 SolicitudExamenValoracionDocenteResponseDto solicitudExamenValoracionDocenteResponseDto = new SolicitudExamenValoracionDocenteResponseDto();
-                solicitudExamenValoracionDocenteResponseDto.setIdExamenValoracion(1L);
+                solicitudExamenValoracionDocenteResponseDto.setId(1L);
                 solicitudExamenValoracionDocenteResponseDto.setTitulo("Cambio nombre");
                 solicitudExamenValoracionDocenteResponseDto.setLinkFormatoA(
                                 "./files/2024/6/12345678-Juan_Meneses/Solicitud_Examen_Valoracion/29-06-24/20240627220507-formatoA.txt");
@@ -155,7 +155,7 @@ public class ActualizarInformacionDocenteTest {
                                         .actualizarInformacionDocente(idTrabajoGrado, examenValoracionDto, result);
 
                         assertNotNull(resultado);
-                        assertEquals(1L, resultado.getIdExamenValoracion());
+                        assertEquals(1L, resultado.getId());
                         assertEquals("Cambio nombre", resultado.getTitulo());
                         assertEquals("./files/2024/6/12345678-Juan_Meneses/Solicitud_Examen_Valoracion/29-06-24/20240627220507-formatoA.txt",
                                         resultado.getLinkFormatoA());

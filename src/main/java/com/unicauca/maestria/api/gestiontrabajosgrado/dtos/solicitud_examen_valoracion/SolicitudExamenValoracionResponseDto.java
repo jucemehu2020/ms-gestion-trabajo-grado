@@ -3,7 +3,6 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_val
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
@@ -18,7 +17,7 @@ import lombok.*;
 @Builder
 public class SolicitudExamenValoracionResponseDto {
 
-    private Long idExamenValoracion;
+    private Long id;
     private String titulo;
     private String linkFormatoA;
     private String linkFormatoD;

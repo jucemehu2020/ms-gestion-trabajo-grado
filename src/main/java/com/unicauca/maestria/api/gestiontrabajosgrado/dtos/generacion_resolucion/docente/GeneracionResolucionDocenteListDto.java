@@ -1,5 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente;
 
+import java.util.Map;
+
 import lombok.*;
 
 @Getter
@@ -7,12 +9,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GeneracionResolucionDocenteResponseDto {
-    
+public class GeneracionResolucionDocenteListDto {
+
     private Long id;
     private String titulo;
-    private Long director;
-    private Long codirector;
+    private Map<String, String> director;
+    private Map<String, String> codirector;
     private String linkAnteproyectoFinal;
     private String linkSolicitudComite;
 

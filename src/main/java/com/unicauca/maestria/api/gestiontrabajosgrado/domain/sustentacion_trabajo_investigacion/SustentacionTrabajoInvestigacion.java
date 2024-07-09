@@ -17,7 +17,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sustentacion_proyecto_investigacion")
+@Table(name = "sustentaciones_proyecto_investigacion")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,9 +26,9 @@ import javax.persistence.*;
 public class SustentacionTrabajoInvestigacion {
 
     @Id
-    @Column(name = "id_sustentacion_trabajo_investigacion")
+    // @Column(name = "id_sustentacion_trabajo_investigacion")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idSustentacionTrabajoInvestigacion;
+    private Long id;
 
     private String linkFormatoF;
 

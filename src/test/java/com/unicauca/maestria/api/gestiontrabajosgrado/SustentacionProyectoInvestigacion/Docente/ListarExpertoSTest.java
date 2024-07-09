@@ -99,7 +99,7 @@ public class ListarExpertoSTest {
         ExpertoResponseDto expertoResponse = ExpertoResponseDto.builder()
                 .id(6L)
                 .persona(persona)
-                .universidad("Universidad de Mexico")
+                .universidadtitexp("Universidad de Mexico")
                 .build();
 
         // Configurar el mock para devolver la lista esperada

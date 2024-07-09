@@ -28,6 +28,7 @@ import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
@@ -97,16 +98,16 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         obtenerDocumentosParaEnvioDto.setBase64SolicitudComite("cHJ1ZWJhIGRlIHRleHR");
 
         GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto = new GeneracionResolucionCoordinadorFase1Dto();
-        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(Concepto.APROBADO);
+        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(ConceptoVerificacion.ACEPTADO);
         generacionResolucionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
         generacionResolucionCoordinadorFase1Dto.setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
 
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
-        generacionResolucion.setDirector("Karla Ramirez");
-        generacionResolucion.setCodirector("Luis Perez");
+        generacionResolucion.setId(1L);
+        generacionResolucion.setDirector(1L);
+        generacionResolucion.setCodirector(1L);
         generacionResolucion.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucion.setLinkSolicitudComite(
@@ -125,7 +126,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucion));
 
         when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
@@ -135,7 +136,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
                 .thenReturn(generacionResolucion);
 
         GeneracionResolucionCoordinadorFase1ResponseDto generacionResolucionCoordinadorFase1ResponseDto = new GeneracionResolucionCoordinadorFase1ResponseDto();
-        generacionResolucionCoordinadorFase1ResponseDto.setIdGeneracionResolucion(1L);
+        generacionResolucionCoordinadorFase1ResponseDto.setId(1L);
         generacionResolucionCoordinadorFase1ResponseDto.setConceptoDocumentosCoordinador(
                 generacionResolucionCoordinadorFase1Dto.getConceptoDocumentosCoordinador());
 
@@ -147,7 +148,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
                         result);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdGeneracionResolucion());
+        assertEquals(1L, resultado.getId());
         assertEquals(Concepto.APROBADO, resultado.getConceptoDocumentosCoordinador());
 
     }
@@ -162,15 +163,15 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         envioEmailDto.setMensaje("Envio documento para revision");
 
         GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto = new GeneracionResolucionCoordinadorFase1Dto();
-        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(Concepto.NO_APROBADO);
+        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(ConceptoVerificacion.RECHAZADO);
         generacionResolucionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
 
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
-        generacionResolucion.setDirector("Karla Ramirez");
-        generacionResolucion.setCodirector("Luis Perez");
+        generacionResolucion.setId(1L);
+        generacionResolucion.setDirector(1L);
+        generacionResolucion.setCodirector(1L);
         generacionResolucion.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucion.setLinkSolicitudComite(
@@ -189,7 +190,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucion));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -212,7 +213,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
                 .thenReturn(generacionResolucion);
 
         GeneracionResolucionCoordinadorFase1ResponseDto generacionResolucionCoordinadorFase1ResponseDto = new GeneracionResolucionCoordinadorFase1ResponseDto();
-        generacionResolucionCoordinadorFase1ResponseDto.setIdGeneracionResolucion(1L);
+        generacionResolucionCoordinadorFase1ResponseDto.setId(1L);
         generacionResolucionCoordinadorFase1ResponseDto.setConceptoDocumentosCoordinador(
                 generacionResolucionCoordinadorFase1Dto.getConceptoDocumentosCoordinador());
 
@@ -224,7 +225,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
                         result);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdGeneracionResolucion());
+        assertEquals(1L, resultado.getId());
         assertEquals(Concepto.NO_APROBADO, resultado.getConceptoDocumentosCoordinador());
 
     }
@@ -243,7 +244,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         obtenerDocumentosParaEnvioDto.setBase64SolicitudComite("cHJ1ZWJhIGRlIHRleHR");
 
         GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto = new GeneracionResolucionCoordinadorFase1Dto();
-        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(Concepto.NO_APROBADO);
+        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(ConceptoVerificacion.RECHAZADO);
         generacionResolucionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
         generacionResolucionCoordinadorFase1Dto.setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
 
@@ -311,16 +312,16 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         obtenerDocumentosParaEnvioDto.setBase64SolicitudComite("cHJ1ZWJhIGRlIHRleHR");
 
         GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto = new GeneracionResolucionCoordinadorFase1Dto();
-        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(Concepto.APROBADO);
+        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(ConceptoVerificacion.ACEPTADO);
         generacionResolucionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
         generacionResolucionCoordinadorFase1Dto.setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
 
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
-        generacionResolucion.setDirector("Karla Ramirez");
-        generacionResolucion.setCodirector("Luis Perez");
+        generacionResolucion.setId(1L);
+        generacionResolucion.setDirector(1L);
+        generacionResolucion.setCodirector(1L);
         generacionResolucion.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucion.setLinkSolicitudComite(
@@ -363,7 +364,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         obtenerDocumentosParaEnvioDto.setBase64SolicitudComite("cHJ1ZWJhIGRlIHRleHR");
 
         GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto = new GeneracionResolucionCoordinadorFase1Dto();
-        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(Concepto.APROBADO);
+        generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(ConceptoVerificacion.ACEPTADO);
         generacionResolucionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
         generacionResolucionCoordinadorFase1Dto.setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
 

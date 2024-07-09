@@ -88,7 +88,7 @@ public class ListarInformacionCoordinadoFase1Test {
                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
         SolicitudExamenValoracionResponseFase1Dto solicitudExamenValoracionResponseFase1Dto = new SolicitudExamenValoracionResponseFase1Dto();
-        solicitudExamenValoracionResponseFase1Dto.setIdExamenValoracion(1L);
+        solicitudExamenValoracionResponseFase1Dto.setId(1L);
         solicitudExamenValoracionResponseFase1Dto.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
 
         when(examenValoracionResponseMapper.toCoordinadorFase1Dto(solicitudExamenValoracion))
@@ -98,7 +98,7 @@ public class ListarInformacionCoordinadoFase1Test {
                 .listarInformacionCoordinadorFase1(idTrabajoGrado);
 
         assertNotNull(SolicitudExamenValoracionResponseFase1Dto);
-        assertEquals(1, SolicitudExamenValoracionResponseFase1Dto.getIdExamenValoracion());
+        assertEquals(1, SolicitudExamenValoracionResponseFase1Dto.getId());
         assertEquals(true, SolicitudExamenValoracionResponseFase1Dto.getConceptoCoordinadorDocumentos());
 
     }

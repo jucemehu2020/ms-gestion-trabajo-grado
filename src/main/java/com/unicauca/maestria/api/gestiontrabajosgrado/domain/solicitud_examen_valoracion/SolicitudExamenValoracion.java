@@ -15,7 +15,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "solicitud_examen_valoracion")
+@Table(name = "solicitudes_examen_valoracion")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,7 +25,7 @@ public class SolicitudExamenValoracion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idExamenValoracion;
+    private Long id;
 
     private String titulo;
 

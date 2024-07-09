@@ -1,6 +1,9 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion;
 
 import java.time.LocalDate;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
+
 import lombok.*;
 
 @Getter
@@ -10,7 +13,7 @@ import lombok.*;
 @Builder
 public class GeneracionResolucionResponseDto {
     
-    private Long idGeneracionResolucion;
+    private Long id;
     private String titulo;
     private String director;
     private String codirector;
@@ -18,6 +21,7 @@ public class GeneracionResolucionResponseDto {
     private LocalDate fechaActa;
     private String linkAnteproyectoAprobado;
     private String linkSolicitudComite;
+    private ConceptoVerificacion conceptoDocumentosCoordinador;
     private String linkSolicitudConcejoFacultad;
     private String numeroResolucionGeneradaCF;
     private LocalDate fechaResolucion;

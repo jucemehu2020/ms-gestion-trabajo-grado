@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class STICoordinadorFase2ResponseDto {
 
-    private Long idSustentacionTrabajoInvestigacion;
+    private Long id;
     private List<RespuestaComiteSustentacionDto> actaFechaRespuestaComite;
     private String linkEstudioHojaVidaAcademica;
     private String linkFormatoG;

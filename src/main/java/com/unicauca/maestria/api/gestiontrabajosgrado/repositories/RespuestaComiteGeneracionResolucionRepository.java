@@ -7,5 +7,5 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resoluci
 public interface RespuestaComiteGeneracionResolucionRepository
         extends JpaRepository<RespuestaComiteGeneracionResolucion, Long> {
 
-    RespuestaComiteGeneracionResolucion findFirstByOrderByIdRespuestaComiteGeneracionResolucionDesc();
+    RespuestaComiteGeneracionResolucion findFirstByOrderByIdDesc();
 }

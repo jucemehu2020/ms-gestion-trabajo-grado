@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AnexosRespuestaExamenValoracionRepository extends JpaRepository<AnexoRespuestaExamenValoracion, Long> {
 
-    @Query("SELECT asev FROM AnexoRespuestaExamenValoracion asev WHERE asev.respuestaExamenValoracion.idRespuestaExamenValoracion = ?1")
+    @Query("SELECT asev FROM AnexoRespuestaExamenValoracion asev WHERE asev.respuestaExamenValoracion.id = ?1")
     List<AnexoRespuestaExamenValoracion> obtenerAnexosPorId(Long idRespuestaExamenValoracion);
 
 }

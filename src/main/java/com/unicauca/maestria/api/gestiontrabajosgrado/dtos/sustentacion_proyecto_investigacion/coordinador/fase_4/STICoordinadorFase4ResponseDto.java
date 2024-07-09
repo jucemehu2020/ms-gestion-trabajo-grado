@@ -13,7 +13,7 @@ import lombok.*;
 @Builder
 public class STICoordinadorFase4ResponseDto {
 
-    private Long idSustentacionTrabajoInvestigacion;
+    private Long id;
     private String linkActaSustentacionPublica;
     private ConceptosVarios respuestaSustentacion;
     private String linkEstudioHojaVidaAcademicaGrado;

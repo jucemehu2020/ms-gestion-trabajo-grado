@@ -20,7 +20,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Validated
 @RestController
 @RequestMapping("/api/respuesta_examen_valoracion")
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })

@@ -126,7 +126,7 @@ public class ListarInformacionCooridnadorTest {
                                 .build());
 
                 RespuestaExamenValoracionResponseDto respuestaExamenValoracionResponseDto = new RespuestaExamenValoracionResponseDto();
-                respuestaExamenValoracionResponseDto.setIdRespuestaExamenValoracion(idTrabajoGrado);
+                respuestaExamenValoracionResponseDto.setId(idTrabajoGrado);
                 respuestaExamenValoracionResponseDto.setLinkFormatoB(respuestaExamenValoracion.getLinkFormatoB());
                 respuestaExamenValoracionResponseDto.setLinkFormatoC(respuestaExamenValoracion.getLinkFormatoC());
                 respuestaExamenValoracionResponseDto
@@ -150,7 +150,7 @@ public class ListarInformacionCooridnadorTest {
                 assertEquals(1, resultado.get("evaluador_externo").size());
                 RespuestaExamenValoracionResponseDto dto = resultado.get("evaluador_externo").get(0);
 
-                assertEquals(1L, dto.getIdRespuestaExamenValoracion());
+                assertEquals(1L, dto.getId());
                 assertEquals(
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt",
                                 dto.getLinkFormatoB());

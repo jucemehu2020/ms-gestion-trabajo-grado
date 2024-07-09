@@ -31,11 +31,11 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabaj
 @Entity
 @Getter
 @Setter
-@Table(name = "trabajo_grado")
+@Table(name = "trabajos_grado")
 public class TrabajoGrado {
 
     @Id
-    @Column(name = "id_trabajo_grado")
+    // @Column(name = "id_trabajo_grado")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

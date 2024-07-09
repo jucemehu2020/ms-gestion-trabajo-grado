@@ -162,7 +162,7 @@ public class InsertarInformacionCoordinadorTest {
                                 .build());
 
                 RespuestaExamenValoracion respuestaExamenValoracion = new RespuestaExamenValoracion();
-                respuestaExamenValoracion.setIdRespuestaExamenValoracion(1L);
+                respuestaExamenValoracion.setId(1L);
                 respuestaExamenValoracion.setLinkFormatoB(respuestaExamenValoracionDto.getLinkFormatoB());
                 respuestaExamenValoracion.setLinkFormatoC(respuestaExamenValoracionDto.getLinkFormatoC());
                 respuestaExamenValoracion.setLinkObservaciones(respuestaExamenValoracionDto.getLinkObservaciones());
@@ -199,8 +199,8 @@ public class InsertarInformacionCoordinadorTest {
                                 .build());
 
                 RespuestaExamenValoracionResponseDto respuestaExamenValoracionResponseDto = new RespuestaExamenValoracionResponseDto();
-                respuestaExamenValoracionResponseDto.setIdRespuestaExamenValoracion(
-                                respuestaExamenValoracion.getIdRespuestaExamenValoracion());
+                respuestaExamenValoracionResponseDto.setId(
+                                respuestaExamenValoracion.getId());
                 respuestaExamenValoracionResponseDto.setLinkFormatoB(
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-formatoB.txt");
                 respuestaExamenValoracionResponseDto.setLinkFormatoC(
@@ -227,7 +227,7 @@ public class InsertarInformacionCoordinadorTest {
                                         respuestaExamenValoracionDto, result);
 
                         assertNotNull(resultado);
-                        assertEquals(1L, resultado.getIdRespuestaExamenValoracion());
+                        assertEquals(1L, resultado.getId());
                         assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-formatoB.txt",
                                         resultado.getLinkFormatoB());
                         assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-formatoC.txt",

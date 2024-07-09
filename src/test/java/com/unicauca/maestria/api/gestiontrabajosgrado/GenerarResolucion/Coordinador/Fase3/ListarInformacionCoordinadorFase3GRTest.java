@@ -78,7 +78,7 @@ public class ListarInformacionCoordinadorFase3GRTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
+        generacionResolucionOld.setId(1L);
         generacionResolucionOld.setNumeroActaConsejoFacultad("b-0432");
         generacionResolucionOld.setFechaActaConsejoFacultad(LocalDate.parse("2023-05-24", formatter));
 
@@ -87,7 +87,7 @@ public class ListarInformacionCoordinadorFase3GRTest {
 
         GeneracionResolucionCoordinadorFase3ResponseDto generacionResolucionCoordinadorFase3ResponseDto = new GeneracionResolucionCoordinadorFase3ResponseDto();
         generacionResolucionCoordinadorFase3ResponseDto
-                .setIdGeneracionResolucion(generacionResolucionOld.getIdGeneracionResolucion());
+                .setId(generacionResolucionOld.getId());
         generacionResolucionCoordinadorFase3ResponseDto
                 .setNumeroActaConsejoFacultad(generacionResolucionOld.getNumeroActaConsejoFacultad());
         generacionResolucionCoordinadorFase3ResponseDto
@@ -100,7 +100,7 @@ public class ListarInformacionCoordinadorFase3GRTest {
                 .listarInformacionCoordinadorFase3(idTrabajoGrado);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdGeneracionResolucion());
+        assertEquals(1L, resultado.getId());
         assertEquals("b-0432", resultado.getNumeroActaConsejoFacultad());
         assertEquals(LocalDate.parse("2023-05-24", formatter), resultado.getFechaActaConsejoFacultad());
     }

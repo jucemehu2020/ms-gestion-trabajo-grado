@@ -6,5 +6,5 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_va
 
 public interface RespuestaComiteSolicitudRepository extends JpaRepository<RespuestaComiteExamenValoracion, Long> {
 
-    RespuestaComiteExamenValoracion findFirstByOrderByIdAnexoExamenValoracionDesc();
+    RespuestaComiteExamenValoracion findFirstByOrderByIdDesc();
 }

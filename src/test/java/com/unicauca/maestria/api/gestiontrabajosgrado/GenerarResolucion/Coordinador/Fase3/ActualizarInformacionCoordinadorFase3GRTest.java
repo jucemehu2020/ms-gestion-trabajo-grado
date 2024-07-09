@@ -90,7 +90,7 @@ public class ActualizarInformacionCoordinadorFase3GRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
+        generacionResolucionOld.setId(1L);
         generacionResolucionOld.setNumeroActaConsejoFacultad("b-0432");
         generacionResolucionOld.setFechaActaConsejoFacultad(LocalDate.parse("2023-05-24", formatter));
 
@@ -105,11 +105,11 @@ public class ActualizarInformacionCoordinadorFase3GRTest {
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         GeneracionResolucion generacionResolucionNew = new GeneracionResolucion();
-        generacionResolucionNew.setIdGeneracionResolucion(1L);
+        generacionResolucionNew.setId(1L);
         generacionResolucionNew
                 .setNumeroActaConsejoFacultad(generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejoFacultad());
         generacionResolucionNew
@@ -120,7 +120,7 @@ public class ActualizarInformacionCoordinadorFase3GRTest {
 
         GeneracionResolucionCoordinadorFase3ResponseDto generacionResolucionCoordinadorFase3ResponseDto = new GeneracionResolucionCoordinadorFase3ResponseDto();
         generacionResolucionCoordinadorFase3ResponseDto
-                .setIdGeneracionResolucion(generacionResolucionNew.getIdGeneracionResolucion());
+                .setId(generacionResolucionNew.getId());
         generacionResolucionCoordinadorFase3ResponseDto
                 .setNumeroActaConsejoFacultad(generacionResolucionNew.getNumeroActaConsejoFacultad());
         generacionResolucionCoordinadorFase3ResponseDto
@@ -134,7 +134,7 @@ public class ActualizarInformacionCoordinadorFase3GRTest {
                         result);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdGeneracionResolucion());
+        assertEquals(1L, resultado.getId());
         assertEquals("b-0433", resultado.getNumeroActaConsejoFacultad());
         assertEquals(LocalDate.parse("2023-05-25", formatter), resultado.getFechaActaConsejoFacultad());
     }
@@ -180,7 +180,7 @@ public class ActualizarInformacionCoordinadorFase3GRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
+        generacionResolucionOld.setId(1L);
         generacionResolucionOld.setNumeroActaConsejoFacultad("b-0432");
         generacionResolucionOld.setFechaActaConsejoFacultad(LocalDate.parse("2023-05-24", formatter));
 

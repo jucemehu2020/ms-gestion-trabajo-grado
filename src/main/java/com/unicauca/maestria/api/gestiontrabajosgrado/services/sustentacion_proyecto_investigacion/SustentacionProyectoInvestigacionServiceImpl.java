@@ -103,7 +103,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 experto.getPersona().getNombre(),
                                                 experto.getPersona().getApellido(),
                                                 experto.getPersona().getCorreoElectronico(),
-                                                experto.getUniversidad()))
+                                                experto.getUniversidadtitexp()))
                                 .collect(Collectors.toList());
                 return expertos;
         }
@@ -129,7 +129,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 experto.getPersona().getNombre(),
                                 experto.getPersona().getApellido(),
                                 experto.getPersona().getCorreoElectronico(),
-                                experto.getUniversidad());
+                                experto.getUniversidadtitexp());
         }
 
         @Override
@@ -202,13 +202,18 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
+                if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)
+                                && sustentacionDto.getObtenerDocumentosParaEnvio() == null) {
+                        throw new InformationException("Atributos incorrectos");
+                }
+
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
@@ -264,13 +269,19 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
+                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)
+                                && sustentacionDto.getLinkEstudioHojaVidaAcademica() == null
+                                && sustentacionDto.getLinkFormatoG() == null) {
+                        throw new InformationException("Atributos incorrectos");
+                }
+
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
@@ -361,9 +372,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "TrabajoGrado con id: "
+                                                "Trabajo de grado con id "
                                                                 + idTrabajoGrado
-                                                                + " No encontrado"));
+                                                                + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 26) {
                         throw new InformationException("No es permitido registrar la informacion");
@@ -371,11 +382,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
+                                                "Sustentacion con id "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 agregarInformacionCoordinadorFase3(sustentacionProyectoInvestigacionTmp, sustentacionDto, trabajoGrado);
@@ -439,11 +450,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
@@ -479,6 +490,14 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new FieldErrorException(result);
                 }
 
+                if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.APROBADO)
+                                && sustentacionDto.getLinkActaSustentacionPublica() == null
+                                && sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado() == null
+                                && sustentacionDto.getNumeroActaFinal() == null
+                                && sustentacionDto.getFechaActaFinal() == null) {
+                        throw new InformationException("Atributos incorrectos");
+                }
+
                 // if (sustentacionDto.getRespuestaSustentacion().equals("No aprobado")
                 // || sustentacionDto.getRespuestaSustentacion().equals("Aplazado")) {
                 // if (!sustentacionDto.validarUnSoloAtributo()) {
@@ -489,7 +508,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "TrabajoGrado con id: "
+                                                "Trabajo de grado con id: "
                                                                 + idTrabajoGrado
                                                                 + " No encontrado"));
 
@@ -509,11 +528,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 // Mapear DTO a entidad
@@ -584,11 +603,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 if (sustentacionProyectoInvestigacionTmp.getLinkFormatoF() == null
@@ -613,12 +632,12 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
                 Map<String, String> evaluadorExternoMap = new HashMap<>();
                 evaluadorExternoMap.put("nombres", nombre_experto);
-                evaluadorExternoMap.put("universidad", experto.getUniversidad());
+                evaluadorExternoMap.put("universidad", experto.getUniversidadtitexp());
                 evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
 
                 SustentacionTrabajoInvestigacionListDocenteDto sustentacionTrabajoInvestigacionDocenteResponseDto = new SustentacionTrabajoInvestigacionListDocenteDto();
                 sustentacionTrabajoInvestigacionDocenteResponseDto.setIdSustentacionTrabajoInvestigacion(
-                                sustentacionProyectoInvestigacionTmp.getIdSustentacionTrabajoInvestigacion());
+                                sustentacionProyectoInvestigacionTmp.getId());
                 sustentacionTrabajoInvestigacionDocenteResponseDto
                                 .setLinkFormatoF(sustentacionProyectoInvestigacionTmp.getLinkFormatoF());
                 sustentacionTrabajoInvestigacionDocenteResponseDto
@@ -667,7 +686,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
                 Map<String, String> evaluadorExternoMap = new HashMap<>();
                 evaluadorExternoMap.put("nombres", nombre_experto);
-                evaluadorExternoMap.put("universidad", experto.getUniversidad());
+                evaluadorExternoMap.put("universidad", experto.getUniversidadtitexp());
                 evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
 
                 // responseDto.setJuradoInterno(evaluadorExternoMap);
@@ -775,11 +794,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
@@ -843,13 +862,18 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
+                if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)
+                                && sustentacionDto.getObtenerDocumentosParaEnvio() == null) {
+                        throw new InformationException("Atributos incorrectos");
+                }
+
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 ArrayList<String> correos = new ArrayList<>();
@@ -897,6 +921,12 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new FieldErrorException(result);
                 }
 
+                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)
+                                && sustentacionDto.getLinkEstudioHojaVidaAcademica() == null
+                                && sustentacionDto.getLinkFormatoG() == null) {
+                        throw new InformationException("Atributos incorrectos");
+                }
+
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -909,11 +939,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionOld = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
@@ -922,7 +952,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 List<RespuestaComiteSustentacion> respuestaComiteList = sustentacionProyectoInvestigacionRepository
                                 .findRespuestaComiteBySustentacionId(
                                                 sustentacionProyectoInvestigacionOld
-                                                                .getIdSustentacionTrabajoInvestigacion());
+                                                                .getId());
                 RespuestaComiteSustentacion ultimoRegistro = respuestaComiteList.isEmpty() ? null
                                 : respuestaComiteList.get(0);
 
@@ -1017,7 +1047,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 List<RespuestaComiteSustentacion> respuestaComiteList = sustentacionProyectoInvestigacionRepository
                                 .findRespuestaComiteBySustentacionId(
                                                 sustentacionTrabajoInvestigacion
-                                                                .getIdSustentacionTrabajoInvestigacion());
+                                                                .getId());
                 RespuestaComiteSustentacion ultimoRegistro = respuestaComiteList.isEmpty() ? null
                                 : respuestaComiteList.get(0);
 
@@ -1032,7 +1062,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                         // Actualizar la lista actaFechaRespuestaComite de examenValoracion
                         RespuestaComiteSustentacion actaFechaRespuestaComite = respuestaComiteSustentacionRepository
-                                        .findFirstByOrderByIdRespuestaComiteSustentacionDesc();
+                                        .findFirstByOrderByIdDesc();
 
                         actaFechaRespuestaComite
                                         .setConceptoComite(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
@@ -1079,11 +1109,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 ArrayList<String> correos = new ArrayList<>();
@@ -1143,11 +1173,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
@@ -1196,6 +1226,14 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new FieldErrorException(result);
                 }
 
+                if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.APROBADO)
+                                && sustentacionDto.getLinkActaSustentacionPublica() == null
+                                && sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado() == null
+                                && sustentacionDto.getNumeroActaFinal() == null
+                                && sustentacionDto.getFechaActaFinal() == null) {
+                        throw new InformationException("Atributos incorrectos");
+                }
+
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -1208,11 +1246,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion())
+                                                .getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Sustentacion con id: "
                                                                 + trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                                                .getIdSustentacionTrabajoInvestigacion()
+                                                                                .getId()
                                                                 + " no encontrado"));
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
 

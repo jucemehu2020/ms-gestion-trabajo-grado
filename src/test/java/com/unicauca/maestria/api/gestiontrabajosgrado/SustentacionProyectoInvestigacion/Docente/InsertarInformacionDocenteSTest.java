@@ -114,7 +114,7 @@ public class InsertarInformacionDocenteSTest {
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacion = new SustentacionTrabajoInvestigacion();
-                sustentacionTrabajoInvestigacion.setIdSustentacionTrabajoInvestigacion(1L);
+                sustentacionTrabajoInvestigacion.setId(1L);
                 sustentacionTrabajoInvestigacion
                                 .setLinkFormatoF(sustentacionTrabajoInvestigacionDocenteDto.getLinkFormatoF());
                 sustentacionTrabajoInvestigacion
@@ -142,7 +142,7 @@ public class InsertarInformacionDocenteSTest {
                                 .thenReturn(sustentacionTrabajoInvestigacion);
 
                 SustentacionTrabajoInvestigacionDocenteResponseDto sustentacionTrabajoInvestigacionDocenteResponseDto = new SustentacionTrabajoInvestigacionDocenteResponseDto();
-                sustentacionTrabajoInvestigacionDocenteResponseDto.setIdSustentacionTrabajoInvestigacion(1L);
+                sustentacionTrabajoInvestigacionDocenteResponseDto.setId(1L);
                 sustentacionTrabajoInvestigacionDocenteResponseDto
                                 .setLinkFormatoF(
                                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
@@ -165,7 +165,7 @@ public class InsertarInformacionDocenteSTest {
                                                         sustentacionTrabajoInvestigacionDocenteDto, result);
 
                         assertNotNull(resultado);
-                        assertEquals(1L, resultado.getIdSustentacionTrabajoInvestigacion());
+                        assertEquals(1L, resultado.getId());
                         assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt",
                                         resultado.getLinkFormatoF());
                         assertEquals("www.google.com", resultado.getUrlDocumentacion());

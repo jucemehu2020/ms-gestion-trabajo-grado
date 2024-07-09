@@ -80,7 +80,7 @@ public class ListarInformacionDocenteTest {
         public void testListarInformacionDocente_Exito() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-                solicitudExamenValoracion.setIdExamenValoracion(1L);
+                solicitudExamenValoracion.setId(1L);
                 solicitudExamenValoracion.setTitulo("Prueba");
                 solicitudExamenValoracion.setLinkFormatoA(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt");
@@ -111,7 +111,7 @@ public class ListarInformacionDocenteTest {
                 ExpertoResponseDto expertoResponseDto = new ExpertoResponseDto();
                 expertoResponseDto.setId(1L);
                 expertoResponseDto.setPersona(personaDto2);
-                expertoResponseDto.setUniversidad("Universidad de Mexico");
+                expertoResponseDto.setUniversidadtitexp("Universidad de Mexico");
 
                 when(archivoClient.obtenerDocentePorId(solicitudExamenValoracion.getIdEvaluadorInterno()))
                                 .thenReturn(docenteResponseDto);
@@ -121,7 +121,7 @@ public class ListarInformacionDocenteTest {
                 List<AnexoSolicitudExamenValoracion> listaAnexos = new ArrayList<>();
 
                 when(anexosSolicitudExamenValoracionRepository
-                                .obtenerAnexosPorId(solicitudExamenValoracion.getIdExamenValoracion()))
+                                .obtenerAnexosPorId(solicitudExamenValoracion.getId()))
                                 .thenReturn(listaAnexos);
 
                 SolicitudExamenValoracionDocenteResponseListDto solicitudExamenValoracionDocenteResponseListDto = solicitudExamenValoracionService
@@ -129,7 +129,7 @@ public class ListarInformacionDocenteTest {
 
                 // Verificar resultados
                 assertNotNull(solicitudExamenValoracionDocenteResponseListDto);
-                assertEquals(1, solicitudExamenValoracionDocenteResponseListDto.getIdExamenValoracion());
+                assertEquals(1, solicitudExamenValoracionDocenteResponseListDto.getId());
                 assertEquals("Prueba", solicitudExamenValoracionDocenteResponseListDto.getTitulo());
                 assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt",
                                 solicitudExamenValoracionDocenteResponseListDto.getLinkFormatoA());
@@ -175,7 +175,7 @@ public class ListarInformacionDocenteTest {
         void testListarInformacionDocente_ServidorDocenteCaido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-                solicitudExamenValoracion.setIdExamenValoracion(1L);
+                solicitudExamenValoracion.setId(1L);
                 solicitudExamenValoracion.setTitulo("Prueba");
                 solicitudExamenValoracion.setLinkFormatoA(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt");
@@ -206,7 +206,7 @@ public class ListarInformacionDocenteTest {
         void testListarInformacionDocente_ServidorExpertoCaido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-                solicitudExamenValoracion.setIdExamenValoracion(1L);
+                solicitudExamenValoracion.setId(1L);
                 solicitudExamenValoracion.setTitulo("Prueba");
                 solicitudExamenValoracion.setLinkFormatoA(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt");

@@ -90,7 +90,7 @@ public class ListarInformacionDocenteSTest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-                sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+                sustentacionTrabajoInvestigacionOld.setId(1L);
                 sustentacionTrabajoInvestigacionOld.setLinkFormatoF(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
                 sustentacionTrabajoInvestigacionOld.setUrlDocumentacion("www.google.com");
@@ -109,7 +109,7 @@ public class ListarInformacionDocenteSTest {
 
                 when(sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion()))
+                                                .getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
                 PersonaDto personaDto1 = new PersonaDto();
@@ -139,7 +139,7 @@ public class ListarInformacionDocenteSTest {
                 ExpertoResponseDto expertoResponseDto = new ExpertoResponseDto();
                 expertoResponseDto.setId(1L);
                 expertoResponseDto.setPersona(personaDto2);
-                expertoResponseDto.setUniversidad("Universidad de Mexico");
+                expertoResponseDto.setUniversidadtitexp("Universidad de Mexico");
 
                 when(archivoClientExpertos
                                 .obtenerExpertoPorId(sustentacionTrabajoInvestigacionOld.getIdJuradoExterno()))
@@ -147,14 +147,14 @@ public class ListarInformacionDocenteSTest {
 
                 Map<String, String> expertoEsperado = new HashMap<>();
                 expertoEsperado.put("correo", expertoResponseDto.getPersona().getCorreoElectronico());
-                expertoEsperado.put("universidad", expertoResponseDto.getUniversidad());
+                expertoEsperado.put("universidad", expertoResponseDto.getUniversidadtitexp());
                 expertoEsperado.put("nombres",
                                 expertoResponseDto.getPersona().getNombre() + " "
                                                 + expertoResponseDto.getPersona().getApellido());
 
                 SustentacionTrabajoInvestigacionListDocenteDto sustentacionTrabajoInvestigacionListDocenteDto = new SustentacionTrabajoInvestigacionListDocenteDto();
                 sustentacionTrabajoInvestigacionListDocenteDto.setIdSustentacionTrabajoInvestigacion(
-                                sustentacionTrabajoInvestigacionOld.getIdSustentacionTrabajoInvestigacion());
+                                sustentacionTrabajoInvestigacionOld.getId());
                 sustentacionTrabajoInvestigacionListDocenteDto
                                 .setLinkFormatoF(sustentacionTrabajoInvestigacionOld.getLinkFormatoF());
                 sustentacionTrabajoInvestigacionListDocenteDto
@@ -181,7 +181,7 @@ public class ListarInformacionDocenteSTest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-                sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+                sustentacionTrabajoInvestigacionOld.setId(1L);
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -195,7 +195,7 @@ public class ListarInformacionDocenteSTest {
 
                 when(sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion()))
+                                                .getId()))
                                 .thenReturn(Optional.of(new SustentacionTrabajoInvestigacion()));
 
                 InformationException exception = assertThrows(InformationException.class, () -> {
@@ -229,7 +229,7 @@ public class ListarInformacionDocenteSTest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-                sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+                sustentacionTrabajoInvestigacionOld.setId(1L);
                 sustentacionTrabajoInvestigacionOld.setLinkFormatoF(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
                 sustentacionTrabajoInvestigacionOld.setUrlDocumentacion("www.google.com");
@@ -252,7 +252,7 @@ public class ListarInformacionDocenteSTest {
 
                 when(sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion()))
+                                                .getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
                 ServiceUnavailableException thrown = assertThrows(
@@ -271,7 +271,7 @@ public class ListarInformacionDocenteSTest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-                sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+                sustentacionTrabajoInvestigacionOld.setId(1L);
                 sustentacionTrabajoInvestigacionOld.setLinkFormatoF(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt");
                 sustentacionTrabajoInvestigacionOld.setUrlDocumentacion("www.google.com");
@@ -290,7 +290,7 @@ public class ListarInformacionDocenteSTest {
 
                 when(sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
-                                                .getIdSustentacionTrabajoInvestigacion()))
+                                                .getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
                 PersonaDto personaDto1 = new PersonaDto();

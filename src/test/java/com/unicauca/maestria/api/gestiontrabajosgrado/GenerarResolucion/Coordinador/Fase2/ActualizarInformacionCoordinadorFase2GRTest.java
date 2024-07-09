@@ -125,7 +125,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
         listaRespuestaComite.add(respuestaComiteGeneracionResolucion);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
+        generacionResolucionOld.setId(1L);
         generacionResolucionOld.setActaFechaRespuestaComite(listaRespuestaComite);
         generacionResolucionOld.setLinkSolicitudConsejoFacultad(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
@@ -141,7 +141,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -156,7 +156,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
                 .thenReturn(estudianteResponseDtoAll);
 
         when(generacionResolucionRepository
-                .findRespuestaComiteByGeneracionResolucionId(generacionResolucionOld.getIdGeneracionResolucion()))
+                .findRespuestaComiteByGeneracionResolucionId(generacionResolucionOld.getId()))
                 .thenReturn(listaRespuestaComite);
 
         when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
@@ -171,13 +171,13 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
         listaRespuestaComiteNew.add(respuestaComiteGeneracionResolucionNew);
 
         GeneracionResolucion generacionResolucionNew = new GeneracionResolucion();
-        generacionResolucionNew.setIdGeneracionResolucion(1L);
+        generacionResolucionNew.setId(1L);
         generacionResolucionNew.setActaFechaRespuestaComite(listaRespuestaComiteNew);
         generacionResolucionNew.setLinkSolicitudConsejoFacultad(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
 
         when(respuestaComiteGeneracionResolucionRepository
-                .findFirstByOrderByIdRespuestaComiteGeneracionResolucionDesc())
+                .findFirstByOrderByIdDesc())
                 .thenReturn(respuestaComiteGeneracionResolucionNew);
 
         when(respuestaComiteGeneracionResolucionRepository.save(any(RespuestaComiteGeneracionResolucion.class)))
@@ -188,7 +188,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
 
         GeneracionResolucionCoordinadorFase2ResponseDto generacionResolucionCoordinadorFase2ResponseDto = new GeneracionResolucionCoordinadorFase2ResponseDto();
         generacionResolucionCoordinadorFase2ResponseDto
-                .setIdGeneracionResolucion(generacionResolucionNew.getIdGeneracionResolucion());
+                .setId(generacionResolucionNew.getId());
         generacionResolucionCoordinadorFase2ResponseDto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
         generacionResolucionCoordinadorFase2ResponseDto.setLinkSolicitudConsejoFacultad(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
@@ -207,7 +207,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
                             result);
 
             assertNotNull(resultado);
-            assertEquals(1L, resultado.getIdGeneracionResolucion());
+            assertEquals(1L, resultado.getId());
             assertEquals(Concepto.APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
             assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
             assertEquals(LocalDate.parse("2023-05-24", formatter),
@@ -252,7 +252,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
         listaRespuestaComite.add(respuestaComiteGeneracionResolucion);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
+        generacionResolucionOld.setId(1L);
         generacionResolucionOld.setActaFechaRespuestaComite(listaRespuestaComite);
         generacionResolucionOld.setLinkSolicitudConsejoFacultad(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
@@ -268,7 +268,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -283,7 +283,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
                 .thenReturn(estudianteResponseDtoAll);
 
         when(generacionResolucionRepository
-                .findRespuestaComiteByGeneracionResolucionId(generacionResolucionOld.getIdGeneracionResolucion()))
+                .findRespuestaComiteByGeneracionResolucionId(generacionResolucionOld.getId()))
                 .thenReturn(listaRespuestaComite);
 
         when(envioCorreos.enviarCorreosCorrecion(any(ArrayList.class), anyString(), anyString())).thenReturn(true);
@@ -297,13 +297,13 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
         listaRespuestaComiteNew.add(respuestaComiteGeneracionResolucionNew);
 
         GeneracionResolucion generacionResolucionNew = new GeneracionResolucion();
-        generacionResolucionNew.setIdGeneracionResolucion(1L);
+        generacionResolucionNew.setId(1L);
         generacionResolucionNew.setActaFechaRespuestaComite(listaRespuestaComiteNew);
         generacionResolucionNew.setLinkSolicitudConsejoFacultad(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
 
         when(respuestaComiteGeneracionResolucionRepository
-                .findFirstByOrderByIdRespuestaComiteGeneracionResolucionDesc())
+                .findFirstByOrderByIdDesc())
                 .thenReturn(respuestaComiteGeneracionResolucionNew);
 
         when(respuestaComiteGeneracionResolucionRepository.save(any(RespuestaComiteGeneracionResolucion.class)))
@@ -314,7 +314,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
 
         GeneracionResolucionCoordinadorFase2ResponseDto generacionResolucionCoordinadorFase2ResponseDto = new GeneracionResolucionCoordinadorFase2ResponseDto();
         generacionResolucionCoordinadorFase2ResponseDto
-                .setIdGeneracionResolucion(generacionResolucionNew.getIdGeneracionResolucion());
+                .setId(generacionResolucionNew.getId());
         generacionResolucionCoordinadorFase2ResponseDto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
 
         when(generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucionNew))
@@ -331,7 +331,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
                             result);
 
             assertNotNull(resultado);
-            assertEquals(1L, resultado.getIdGeneracionResolucion());
+            assertEquals(1L, resultado.getId());
             assertEquals(Concepto.NO_APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
             assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
             assertEquals(LocalDate.parse("2023-05-24", formatter),
@@ -457,7 +457,7 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
         listaRespuestaComite.add(respuestaComiteGeneracionResolucion);
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
+        generacionResolucion.setId(1L);
         generacionResolucion.setActaFechaRespuestaComite(listaRespuestaComite);
         generacionResolucion.setLinkSolicitudConsejoFacultad(
                 generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());

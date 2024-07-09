@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 public class GeneracionResolucionCoordinadorFase3ResponseDto {
     
-    private Long idGeneracionResolucion;
+    private Long id;
     private String numeroActaConsejoFacultad;
     private LocalDate fechaActaConsejoFacultad;
 

@@ -17,7 +17,7 @@ import lombok.Setter;
 @Builder
 public class RespuestaComiteSustentacionDto {
 
-    private Long idRespuestaComiteSustentacion;
+    private Long id;
     private Concepto conceptoComite;
     private String numeroActa;
     private LocalDate fechaActa;

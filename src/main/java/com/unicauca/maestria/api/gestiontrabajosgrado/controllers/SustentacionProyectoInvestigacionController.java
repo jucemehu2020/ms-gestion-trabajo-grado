@@ -30,7 +30,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacionService;
 
 @RequiredArgsConstructor
-@Validated
 @RestController
 @RequestMapping("/api/sustentacion_proyecto_investigacion")
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })

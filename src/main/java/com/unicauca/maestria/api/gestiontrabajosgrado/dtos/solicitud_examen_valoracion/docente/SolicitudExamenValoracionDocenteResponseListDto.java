@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class SolicitudExamenValoracionDocenteResponseListDto{
 
-	private Long idExamenValoracion;
+	private Long id;
     private String titulo;
     private String linkFormatoA;
     private String linkFormatoD;

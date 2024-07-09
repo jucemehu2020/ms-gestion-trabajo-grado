@@ -142,7 +142,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 when(result.hasErrors()).thenReturn(false);
 
                 RespuestaComiteExamenValoracion respuestaComiteExamenValoracionOld = new RespuestaComiteExamenValoracion();
-                respuestaComiteExamenValoracionOld.setIdAnexoExamenValoracion(idTrabajoGrado);
+                respuestaComiteExamenValoracionOld.setId(idTrabajoGrado);
                 respuestaComiteExamenValoracionOld.setConceptoComite(Concepto.NO_APROBADO);
                 respuestaComiteExamenValoracionOld.setNumeroActa("AX1-3445");
                 respuestaComiteExamenValoracionOld.setFechaActa(LocalDate.parse("2023-05-24", formatter));
@@ -151,7 +151,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 listaRespuestaComiteExamenValoracionOld.add(respuestaComiteExamenValoracionOld);
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
-                solicitudExamenValoracionOld.setIdExamenValoracion(1L);
+                solicitudExamenValoracionOld.setId(1L);
                 solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
                 solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
                 solicitudExamenValoracionOld.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracionOld);
@@ -167,12 +167,12 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()))
+                                .findById(trabajoGrado.getExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 when(solicitudExamenValoracionRepository
                                 .findRespuestaComiteBySolicitudExamenValoracionId(
-                                                solicitudExamenValoracionOld.getIdExamenValoracion()))
+                                                solicitudExamenValoracionOld.getId()))
                                 .thenReturn(listaRespuestaComiteExamenValoracionOld);
 
                 PersonaDto personaDocenteDto = new PersonaDto();
@@ -236,7 +236,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                                 .setFechaMaximaEvaluacion(solicitudExamenValoracionCoordinadorFase2Dto
                                                 .getFechaMaximaEvaluacion());
 
-                when(respuestaComiteSolicitudRepository.findFirstByOrderByIdAnexoExamenValoracionDesc())
+                when(respuestaComiteSolicitudRepository.findFirstByOrderByIdDesc())
                                 .thenReturn(respuestaComite);
 
                 when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
@@ -244,7 +244,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
 
                 SolicitudExamenValoracionCoordinadorFase2ResponseDto solicitudExamenValoracionCoordinadorResponseDto = new SolicitudExamenValoracionCoordinadorFase2ResponseDto();
                 solicitudExamenValoracionCoordinadorResponseDto
-                                .setIdExamenValoracion(solicitudExamenValoracionOld.getIdExamenValoracion());
+                                .setId(solicitudExamenValoracionOld.getId());
                 solicitudExamenValoracionCoordinadorResponseDto.setActaFechaRespuestaComite(listaRespuestaComite);
                 solicitudExamenValoracionCoordinadorResponseDto.setLinkOficioDirigidoEvaluadores(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/30-06-24/20240630181114-oficio.txt");
@@ -261,7 +261,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                                                 result);
 
                 assertNotNull(resultado);
-                assertEquals(1L, resultado.getIdExamenValoracion());
+                assertEquals(1L, resultado.getId());
                 assertEquals(true, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
                 assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
                 assertEquals(LocalDate.parse("2023-05-24", formatter),
@@ -298,7 +298,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 when(result.hasErrors()).thenReturn(false);
 
                 RespuestaComiteExamenValoracion respuestaComiteExamenValoracionOld = new RespuestaComiteExamenValoracion();
-                respuestaComiteExamenValoracionOld.setIdAnexoExamenValoracion(idTrabajoGrado);
+                respuestaComiteExamenValoracionOld.setId(idTrabajoGrado);
                 respuestaComiteExamenValoracionOld.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteExamenValoracionOld.setNumeroActa("AX1-3445");
                 respuestaComiteExamenValoracionOld.setFechaActa(LocalDate.parse("2023-05-24", formatter));
@@ -307,7 +307,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 listaRespuestaComiteExamenValoracionOld.add(respuestaComiteExamenValoracionOld);
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
-                solicitudExamenValoracionOld.setIdExamenValoracion(1L);
+                solicitudExamenValoracionOld.setId(1L);
                 solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
                 solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
                 solicitudExamenValoracionOld.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracionOld);
@@ -323,12 +323,12 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()))
+                                .findById(trabajoGrado.getExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 when(solicitudExamenValoracionRepository
                                 .findRespuestaComiteBySolicitudExamenValoracionId(
-                                                solicitudExamenValoracionOld.getIdExamenValoracion()))
+                                                solicitudExamenValoracionOld.getId()))
                                 .thenReturn(listaRespuestaComiteExamenValoracionOld);
 
                 PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -364,7 +364,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
                 solicitudExamenValoracion.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracion);
 
-                when(respuestaComiteSolicitudRepository.findFirstByOrderByIdAnexoExamenValoracionDesc())
+                when(respuestaComiteSolicitudRepository.findFirstByOrderByIdDesc())
                                 .thenReturn(respuestaComite);
 
                 when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
@@ -372,7 +372,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
 
                 SolicitudExamenValoracionCoordinadorFase2ResponseDto solicitudExamenValoracionCoordinadorResponseDto = new SolicitudExamenValoracionCoordinadorFase2ResponseDto();
                 solicitudExamenValoracionCoordinadorResponseDto
-                                .setIdExamenValoracion(solicitudExamenValoracionOld.getIdExamenValoracion());
+                                .setId(solicitudExamenValoracionOld.getId());
                 solicitudExamenValoracionCoordinadorResponseDto.setActaFechaRespuestaComite(listaRespuestaComite);
 
                 when(examenValoracionResponseMapper.toCoordinadorFase2Dto(solicitudExamenValoracion))
@@ -388,7 +388,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                                                         result);
 
                         assertNotNull(resultado);
-                        assertEquals(1L, resultado.getIdExamenValoracion());
+                        assertEquals(1L, resultado.getId());
                         assertEquals(false, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
                         assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
                         assertEquals(LocalDate.parse("2023-05-24", formatter),
@@ -557,7 +557,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 when(result.hasErrors()).thenReturn(false);
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
-                solicitudExamenValoracionOld.setIdExamenValoracion(1L);
+                solicitudExamenValoracionOld.setId(1L);
                 solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
                 solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
 

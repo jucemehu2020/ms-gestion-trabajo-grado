@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1ResponseDto;
@@ -27,14 +29,13 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_3.GeneracionResolucionCoordinadorFase3Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_3.GeneracionResolucionCoordinadorFase3ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteListDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.generacion_resolucion.GeneracionResolucionService;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Validated
 @RestController
 @RequestMapping("/api/generacion_resolucion")
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
@@ -64,7 +65,7 @@ public class GeneracionResolucionController {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(generacionResolucion
                                                 .insertarInformacionCoordinadorFase1(
-                                                        idTrabajoGrado,
+                                                                idTrabajoGrado,
                                                                 generacionResolucionCoordinadorFase1Dto, result));
         }
 
@@ -91,7 +92,7 @@ public class GeneracionResolucionController {
         }
 
         @GetMapping("/listarInformacionDocente/{idTrabajoGrado}")
-        public ResponseEntity<GeneracionResolucionDocenteResponseDto> listarInformacionDocente(
+        public ResponseEntity<GeneracionResolucionDocenteListDto> listarInformacionDocente(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(generacionResolucion.listarInformacionDocente(idTrabajoGrado));
@@ -167,6 +168,12 @@ public class GeneracionResolucionController {
                         @PathVariable Long idGeneracionResolucion) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(generacionResolucion.obtenerDocumentosParaEnviarAlComite(idGeneracionResolucion));
+        }
+
+        @ExceptionHandler(UnrecognizedPropertyException.class)
+        public ResponseEntity<String> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex) {
+                String errorMessage = "Unknown field: " + ex.getPropertyName();
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.AnexoSolicitudExamenValoracionDto;
 
 @Getter
@@ -40,6 +41,9 @@ public class SolicitudExamenValoracionDto {
 
     @NotNull
     private Long idEvaluadorExterno;
+
+    @NotNull
+    private ConceptoVerificacion conceptoCoordinadorDocumentos;
 
     @NotNull
     private String actaAprobacionExamen;

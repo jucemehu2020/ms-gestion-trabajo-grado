@@ -146,7 +146,7 @@ public class InsertarInformacionDocenteTest {
                 when(solicitudExamenValoracionRepository.save(examenValoracion)).thenReturn(examenValoracion);
 
                 SolicitudExamenValoracionDocenteResponseDto responseDto = new SolicitudExamenValoracionDocenteResponseDto();
-                responseDto.setIdExamenValoracion(4L);
+                responseDto.setId(4L);
                 responseDto.setTitulo("Prueba test");
                 responseDto.setLinkFormatoA(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt");
@@ -174,7 +174,7 @@ public class InsertarInformacionDocenteTest {
                                         .insertarInformacionDocente(idTrabajoGrado, examenValoracionDto, result);
 
                         assertNotNull(resultado);
-                        assertEquals(4L, resultado.getIdExamenValoracion());
+                        assertEquals(4L, resultado.getId());
                         assertEquals("Prueba test", resultado.getTitulo());
                         assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoA.txt",
                                         resultado.getLinkFormatoA());

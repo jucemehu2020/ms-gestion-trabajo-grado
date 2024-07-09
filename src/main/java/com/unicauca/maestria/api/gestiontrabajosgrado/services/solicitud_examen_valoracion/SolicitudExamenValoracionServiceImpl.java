@@ -99,7 +99,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						experto.getPersona().getNombre(),
 						experto.getPersona().getApellido(),
 						experto.getPersona().getCorreoElectronico(),
-						experto.getUniversidad()))
+						experto.getUniversidadtitexp()))
 				.collect(Collectors.toList());
 		return expertos;
 	}
@@ -125,7 +125,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				experto.getPersona().getNombre(),
 				experto.getPersona().getApellido(),
 				experto.getPersona().getCorreoElectronico(),
-				experto.getUniversidad());
+				experto.getUniversidadtitexp());
 	}
 
 	@Override
@@ -224,6 +224,11 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new InformationException("Envio de atributos no permitido");
 		}
 
+		if (examenValoracionDto.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)
+				&& examenValoracionDto.getDocumentosEnvioComite() == null) {
+			throw new InformationException("Atributos incorrectos");
+		}
+
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
@@ -233,7 +238,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		SolicitudExamenValoracion examenValoracion = solicitudExamenValoracionRepository
-				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion())
+				.findById(trabajoGrado.getExamenValoracion().getId())
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Examen de valoracion con id: " + idTrabajoGrado + " No encontrado"));
 
@@ -281,6 +286,13 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new InformationException("Envio de atributos no permitido");
 		}
 
+		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO) &&
+				examenValoracionDto.getLinkOficioDirigidoEvaluadores() == null
+				&& examenValoracionDto.getFechaMaximaEvaluacion() == null
+				&& examenValoracionDto.getInformacionEnvioEvaluador() == null) {
+			throw new InformationException("Atributos incorrectos");
+		}
+
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
@@ -290,9 +302,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
-				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion())
+				.findById(trabajoGrado.getExamenValoracion().getId())
 				.orElseThrow(() -> new ResourceNotFoundException(
-						"Examen de valoracion con id " + trabajoGrado.getExamenValoracion().getIdExamenValoracion()
+						"Examen de valoracion con id " + trabajoGrado.getExamenValoracion().getId()
 								+ " no encontrado"));
 
 		ArrayList<String> correos = new ArrayList<>();
@@ -382,21 +394,21 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.obtenerExpertoPorId(solicitudExamenValoracion.getIdEvaluadorExterno());
 		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
 		Map<String, String> evaluadorExternoMap = new HashMap<>();
-		evaluadorInternoMap.put("id", experto.getId().toString());
+		evaluadorExternoMap.put("id", experto.getId().toString());
 		evaluadorExternoMap.put("nombres", nombre_experto);
-		evaluadorExternoMap.put("universidad", experto.getUniversidad());
+		evaluadorExternoMap.put("universidad", experto.getUniversidadtitexp());
 		evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
 
 		// Crear y poblar el nuevo DTO
 		SolicitudExamenValoracionDocenteResponseListDto docenteResponseDto = new SolicitudExamenValoracionDocenteResponseListDto();
-		docenteResponseDto.setIdExamenValoracion(solicitudExamenValoracion.getIdExamenValoracion());
+		docenteResponseDto.setId(solicitudExamenValoracion.getId());
 		docenteResponseDto.setTitulo(solicitudExamenValoracion.getTitulo());
 		docenteResponseDto.setLinkFormatoA(solicitudExamenValoracion.getLinkFormatoA());
 		docenteResponseDto.setLinkFormatoD(solicitudExamenValoracion.getLinkFormatoD());
 		docenteResponseDto.setLinkFormatoE(solicitudExamenValoracion.getLinkFormatoE());
 
 		List<AnexoSolicitudExamenValoracion> anexosSolicitudExamenValoracion = anexosSolicitudExamenValoracionRepository
-				.obtenerAnexosPorId(solicitudExamenValoracion.getIdExamenValoracion());
+				.obtenerAnexosPorId(solicitudExamenValoracion.getId());
 
 		ArrayList<String> listaAnexos = new ArrayList<>();
 		for (AnexoSolicitudExamenValoracion anexo : anexosSolicitudExamenValoracion) {
@@ -469,9 +481,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		archivoClientExpertos.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno());
 
 		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
-				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()).orElseThrow(
+				.findById(trabajoGrado.getExamenValoracion().getId()).orElseThrow(
 						() -> new ResourceNotFoundException("Examen de valoracion con id: "
-								+ trabajoGrado.getExamenValoracion().getIdExamenValoracion() + " no encontrado"));
+								+ trabajoGrado.getExamenValoracion().getId() + " no encontrado"));
 
 		String rutaArchivo = identificacionArchivo(trabajoGrado);
 
@@ -582,6 +594,11 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new InformationException("Envio de atributos no permitido");
 		}
 
+		if (examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)
+				&& examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite() == null) {
+			throw new InformationException("Atributos incorrectos");
+		}
+
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(
 						() -> new ResourceNotFoundException("Trabajo de grado con id "
@@ -593,9 +610,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		SolicitudExamenValoracion examenValoracionOld = solicitudExamenValoracionRepository
-				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()).orElseThrow(
+				.findById(trabajoGrado.getExamenValoracion().getId()).orElseThrow(
 						() -> new ResourceNotFoundException("Examen de valoracion con id: "
-								+ trabajoGrado.getExamenValoracion().getIdExamenValoracion() + "no encontrado"));
+								+ trabajoGrado.getExamenValoracion().getId() + "no encontrado"));
 
 		if (examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos() != examenValoracionOld
 				.getConceptoCoordinadorDocumentos()) {
@@ -648,6 +665,13 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new InformationException("Envio de atributos no permitido");
 		}
 
+		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO) &&
+				examenValoracionDto.getLinkOficioDirigidoEvaluadores() == null
+				&& examenValoracionDto.getFechaMaximaEvaluacion() == null
+				&& examenValoracionDto.getInformacionEnvioEvaluador() == null) {
+			throw new InformationException("Atributos incorrectos");
+		}
+
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
 						+ idTrabajoGrado + " no encontrado"));
@@ -658,15 +682,15 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
-				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()).orElseThrow(
+				.findById(trabajoGrado.getExamenValoracion().getId()).orElseThrow(
 						() -> new ResourceNotFoundException("Examen de valoracion con id "
-								+ trabajoGrado.getExamenValoracion().getIdExamenValoracion() + " no encontrado"));
+								+ trabajoGrado.getExamenValoracion().getId() + " no encontrado"));
 
 		String rutaArchivo = identificacionArchivo(trabajoGrado);
 
 		SolicitudExamenValoracion responseExamenValoracion = null;
 		List<RespuestaComiteExamenValoracion> respuestaComiteList = solicitudExamenValoracionRepository
-				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracionTmp.getIdExamenValoracion());
+				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracionTmp.getId());
 		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteList.isEmpty() ? null
 				: respuestaComiteList.get(0);
 
@@ -721,7 +745,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto, TrabajoGrado trabajoGrado) {
 
 		List<RespuestaComiteExamenValoracion> respuestaComiteList = solicitudExamenValoracionRepository
-				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracion.getIdExamenValoracion());
+				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracion.getId());
 		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteList.isEmpty() ? null
 				: respuestaComiteList.get(0);
 
@@ -732,7 +756,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 			// Actualizar la lista actaFechaRespuestaComite de examenValoracion
 			RespuestaComiteExamenValoracion actaFechaRespuestaComite = respuestaComiteSolicitudRepository
-					.findFirstByOrderByIdAnexoExamenValoracionDesc();
+					.findFirstByOrderByIdDesc();
 
 			actaFechaRespuestaComite
 					.setConceptoComite(examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite());
@@ -764,7 +788,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		// Obtener información examen de valoración
 		Optional<SolicitudExamenValoracion> examenValoracion = solicitudExamenValoracionRepository
-				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion());
+				.findById(trabajoGrado.getExamenValoracion().getId());
 
 		if (!examenValoracion.isPresent()) {
 			throw new ResourceNotFoundException(
@@ -786,7 +810,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
 		Map<String, String> evaluadorExternoMap = new HashMap<>();
 		evaluadorExternoMap.put("nombres", nombre_experto);
-		evaluadorExternoMap.put("universidad", experto.getUniversidad());
+		evaluadorExternoMap.put("universidad", experto.getUniversidadtitexp());
 		evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
 
 		return new DatosFormatoBResponseDto(trabajoGrado.getTitulo(),
@@ -803,15 +827,15 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						"TrabajoGrado con id: " + idTrabajoGrado + " No encontrado"));
 
 		SolicitudExamenValoracion examenValoracion = solicitudExamenValoracionRepository
-				.findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion())
+				.findById(trabajoGrado.getExamenValoracion().getId())
 				.orElseThrow(
 						() -> new ResourceNotFoundException(
 								"Examen de valoracion con id: "
-										+ trabajoGrado.getExamenValoracion().getIdExamenValoracion()
+										+ trabajoGrado.getExamenValoracion().getId()
 										+ " no encontrado"));
 
 		List<AnexoSolicitudExamenValoracion> anexosSolicitudExamenValoracion = anexosSolicitudExamenValoracionRepository
-				.obtenerAnexosPorId(examenValoracion.getIdExamenValoracion());
+				.obtenerAnexosPorId(examenValoracion.getId());
 
 		ArrayList<String> listaAnexos = new ArrayList<>();
 		for (int documento = 0; documento < anexosSolicitudExamenValoracion.size(); documento++) {

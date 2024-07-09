@@ -97,9 +97,9 @@ public class ActualizarInformacionDocenteGRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
-        generacionResolucionOld.setDirector("Karla Ramirez");
-        generacionResolucionOld.setCodirector("Luis Perez");
+        generacionResolucionOld.setId(1L);
+        generacionResolucionOld.setDirector(1L);
+        generacionResolucionOld.setCodirector(1L);
         generacionResolucionOld.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucionOld.setLinkSolicitudComite(
@@ -115,7 +115,7 @@ public class ActualizarInformacionDocenteGRTest {
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         PersonaDto persona1Dto = new PersonaDto();
@@ -158,10 +158,10 @@ public class ActualizarInformacionDocenteGRTest {
                 .thenReturn(generacionResolucionOld);
 
         GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = new GeneracionResolucionDocenteResponseDto();
-        generacionResolucionDocenteResponseDto.setIdGeneracionResolucion(1L);
+        generacionResolucionDocenteResponseDto.setId(1L);
         generacionResolucionDocenteResponseDto.setTitulo("Prueba test");
-        generacionResolucionDocenteResponseDto.setDirector("Karla Ramirez");
-        generacionResolucionDocenteResponseDto.setCodirector("Luis Perez");
+        generacionResolucionOld.setDirector(1L);
+        generacionResolucionOld.setCodirector(1L);
         generacionResolucionDocenteResponseDto.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702194402-linkAnteproyectoAprobado.txt");
         generacionResolucionDocenteResponseDto.setLinkSolicitudComite(
@@ -180,7 +180,7 @@ public class ActualizarInformacionDocenteGRTest {
                     .actualizarInformacionDocente(idTrabajoGrado, generacionResolucionDocenteDto, result);
 
             assertNotNull(resultado);
-            assertEquals(1L, resultado.getIdGeneracionResolucion());
+            assertEquals(1L, resultado.getId());
             assertEquals("Prueba test", resultado.getTitulo());
             assertEquals("Karla Ramirez", resultado.getDirector());
             assertEquals("Luis Perez", resultado.getCodirector());
@@ -237,9 +237,9 @@ public class ActualizarInformacionDocenteGRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
-        generacionResolucionOld.setDirector("Karla Ramirez");
-        generacionResolucionOld.setCodirector("Luis Perez");
+        generacionResolucionOld.setId(1L);
+        generacionResolucionOld.setDirector(1L);
+        generacionResolucionOld.setCodirector(1L);
         generacionResolucionOld.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucionOld.setLinkSolicitudComite(
@@ -281,9 +281,9 @@ public class ActualizarInformacionDocenteGRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
-        generacionResolucionOld.setDirector("Karla Ramirez");
-        generacionResolucionOld.setCodirector("Luis Perez");
+        generacionResolucionOld.setId(1L);
+        generacionResolucionOld.setDirector(1L);
+        generacionResolucionOld.setCodirector(1L);
         generacionResolucionOld.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucionOld.setLinkSolicitudComite(
@@ -299,7 +299,7 @@ public class ActualizarInformacionDocenteGRTest {
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -369,9 +369,9 @@ public class ActualizarInformacionDocenteGRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
-        generacionResolucionOld.setDirector("Karla Ramirez");
-        generacionResolucionOld.setCodirector("Luis Perez");
+        generacionResolucionOld.setId(1L);
+        generacionResolucionOld.setDirector(1L);
+        generacionResolucionOld.setCodirector(1L);
         generacionResolucionOld.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucionOld.setLinkSolicitudComite(
@@ -387,7 +387,7 @@ public class ActualizarInformacionDocenteGRTest {
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -485,9 +485,9 @@ public class ActualizarInformacionDocenteGRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
-        generacionResolucionOld.setDirector("Karla Ramirez");
-        generacionResolucionOld.setCodirector("Luis Perez");
+        generacionResolucionOld.setId(1L);
+        generacionResolucionOld.setDirector(1L);
+        generacionResolucionOld.setCodirector(1L);
         generacionResolucionOld.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucionOld.setLinkSolicitudComite(

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SolicitudExamenValoracionCoordinadorFase2ResponseDto {
 
-    private Long idExamenValoracion;
+    private Long id;
     private List<RespuestaComiteExamenValoracionDto> actaFechaRespuestaComite;
     private String linkOficioDirigidoEvaluadores;
     private LocalDate fechaMaximaEvaluacion;

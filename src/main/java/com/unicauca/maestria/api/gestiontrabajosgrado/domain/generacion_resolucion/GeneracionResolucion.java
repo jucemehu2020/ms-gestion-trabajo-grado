@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "generacion_resolucion")
+@Table(name = "generaciones_resolucion")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,14 +26,14 @@ import javax.persistence.*;
 public class GeneracionResolucion {
 
     @Id
-    @Column(name = "id_generacion_resolucion")
+    // @Column(name = "id_generacion_resolucion")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idGeneracionResolucion;
+    private Long id;
 
     // Docente
-    private String director;
+    private Long director;
 
-    private String codirector;
+    private Long codirector;
 
     private String linkAnteproyectoFinal;
 
@@ -40,7 +41,7 @@ public class GeneracionResolucion {
 
     // Coordinador - Fase 1
     @Enumerated(EnumType.STRING)
-    private Concepto conceptoDocumentosCoordinador;
+    private ConceptoVerificacion conceptoDocumentosCoordinador;
 
     // Coordinador - Fase 2
     @OneToMany(mappedBy = "generacionResolucion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

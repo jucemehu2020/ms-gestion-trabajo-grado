@@ -90,7 +90,7 @@ public class ListarInformacionCoordinadorFase2GRTest {
         listaRespuestaComite.add(respuestaComiteGeneracionResolucion);
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
+        generacionResolucion.setId(1L);
         generacionResolucion.setActaFechaRespuestaComite(listaRespuestaComite);
         generacionResolucion.setLinkSolicitudConsejoFacultad(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
@@ -108,7 +108,7 @@ public class ListarInformacionCoordinadorFase2GRTest {
 
         GeneracionResolucionCoordinadorFase2ResponseDto generacionResolucionCoordinadorFase2ResponseDto = new GeneracionResolucionCoordinadorFase2ResponseDto();
         generacionResolucionCoordinadorFase2ResponseDto
-                .setIdGeneracionResolucion(generacionResolucion.getIdGeneracionResolucion());
+                .setId(generacionResolucion.getId());
         generacionResolucionCoordinadorFase2ResponseDto.setActaFechaRespuestaComite(listaRespuestaComiteResponseDto);
         generacionResolucionCoordinadorFase2ResponseDto.setLinkSolicitudConsejoFacultad(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
@@ -120,7 +120,7 @@ public class ListarInformacionCoordinadorFase2GRTest {
                 .listarInformacionCoordinadorFase2(idTrabajoGrado);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdGeneracionResolucion());
+        assertEquals(1L, resultado.getId());
         assertEquals(Concepto.APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
         assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
         assertEquals(LocalDate.parse("2023-05-24", formatter),

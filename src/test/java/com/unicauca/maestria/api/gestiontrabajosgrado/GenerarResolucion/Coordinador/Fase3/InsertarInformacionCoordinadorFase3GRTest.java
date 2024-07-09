@@ -91,7 +91,7 @@ public class InsertarInformacionCoordinadorFase3GRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
+        generacionResolucionOld.setId(1L);
 
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
@@ -104,11 +104,11 @@ public class InsertarInformacionCoordinadorFase3GRTest {
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getIdGeneracionResolucion()))
+                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         GeneracionResolucion generacionResolucionNew = new GeneracionResolucion();
-        generacionResolucionNew.setIdGeneracionResolucion(1L);
+        generacionResolucionNew.setId(1L);
         generacionResolucionNew
                 .setNumeroActaConsejoFacultad(generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejoFacultad());
         generacionResolucionNew
@@ -119,7 +119,7 @@ public class InsertarInformacionCoordinadorFase3GRTest {
 
         GeneracionResolucionCoordinadorFase3ResponseDto generacionResolucionCoordinadorFase3ResponseDto = new GeneracionResolucionCoordinadorFase3ResponseDto();
         generacionResolucionCoordinadorFase3ResponseDto
-                .setIdGeneracionResolucion(generacionResolucionNew.getIdGeneracionResolucion());
+                .setId(generacionResolucionNew.getId());
         generacionResolucionCoordinadorFase3ResponseDto
                 .setNumeroActaConsejoFacultad(generacionResolucionNew.getNumeroActaConsejoFacultad());
         generacionResolucionCoordinadorFase3ResponseDto
@@ -133,7 +133,7 @@ public class InsertarInformacionCoordinadorFase3GRTest {
                         result);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdGeneracionResolucion());
+        assertEquals(1L, resultado.getId());
         assertEquals("b-0432", resultado.getNumeroActaConsejoFacultad());
         assertEquals(LocalDate.parse("2023-05-24", formatter), resultado.getFechaActaConsejoFacultad());
 
@@ -180,7 +180,7 @@ public class InsertarInformacionCoordinadorFase3GRTest {
         when(result.hasErrors()).thenReturn(false);
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
-        generacionResolucionOld.setIdGeneracionResolucion(1L);
+        generacionResolucionOld.setId(1L);
 
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);

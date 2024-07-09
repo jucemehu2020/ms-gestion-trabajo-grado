@@ -21,9 +21,9 @@ public interface SustentacionProyectoInvestigacionRepository
 
     Optional<SustentacionTrabajoInvestigacion> findByIdTrabajoGradoId(Long idTrabajoGradoId);
 
-    @Query("SELECT rc FROM SustentacionTrabajoInvestigacion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.idSustentacionTrabajoInvestigacion = :id ORDER BY rc.id DESC")
+    @Query("SELECT rc FROM SustentacionTrabajoInvestigacion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.id = :id ORDER BY rc.id DESC")
     List<RespuestaComiteSustentacion> findRespuestaComiteBySustentacionId(@Param("id") Long id);
 
-    @Query("SELECT sev.idSustentacionTrabajoInvestigacion FROM SustentacionTrabajoInvestigacion sev WHERE sev.idTrabajoGrado.id = ?1")
+    @Query("SELECT sev.id FROM SustentacionTrabajoInvestigacion sev WHERE sev.idTrabajoGrado.id = ?1")
     public Long findIdSustentacionTrabajoInvestigacionByTrabajoGradoId(Long trabajoGradoId);
 }

@@ -7,5 +7,5 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabaj
 public interface RespuestaComiteSustentacionRepository
         extends JpaRepository<RespuestaComiteSustentacion, Long> {
 
-    RespuestaComiteSustentacion findFirstByOrderByIdRespuestaComiteSustentacionDesc();
+    RespuestaComiteSustentacion findFirstByOrderByIdDesc();
 }

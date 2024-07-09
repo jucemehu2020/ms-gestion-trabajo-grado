@@ -15,7 +15,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_exa
 @Builder
 public class RespuestaExamenValoracionResponseDto {
     
-    private Long idRespuestaExamenValoracion;
+    private Long id;
     private String linkFormatoB;
     private String linkFormatoC;
     private String linkObservaciones;

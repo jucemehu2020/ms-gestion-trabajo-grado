@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 
 @Entity
-@Table(name = "respuesta_comite_solicitud_examen_valoracion")
+@Table(name = "respuestas_comite_solicitud_examen_valoracion")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,7 +24,7 @@ public class RespuestaComiteExamenValoracion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idAnexoExamenValoracion;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private Concepto conceptoComite;

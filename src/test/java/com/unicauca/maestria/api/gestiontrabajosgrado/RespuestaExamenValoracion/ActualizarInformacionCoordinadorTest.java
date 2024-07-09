@@ -182,7 +182,7 @@ public class ActualizarInformacionCoordinadorTest {
                                 .thenReturn(true);
 
                 RespuestaExamenValoracion respuestaExamenValoracionNew = new RespuestaExamenValoracion();
-                respuestaExamenValoracionNew.setIdRespuestaExamenValoracion(1L);
+                respuestaExamenValoracionNew.setId(1L);
                 respuestaExamenValoracionNew.setLinkFormatoB(
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt");
                 respuestaExamenValoracionNew.setLinkFormatoC(
@@ -202,8 +202,8 @@ public class ActualizarInformacionCoordinadorTest {
 
                 RespuestaExamenValoracionResponseDto respuestaExamenValoracionResponseDto = new RespuestaExamenValoracionResponseDto();
                 respuestaExamenValoracionResponseDto
-                                .setIdRespuestaExamenValoracion(
-                                                respuestaExamenValoracionNew.getIdRespuestaExamenValoracion());
+                                .setId(
+                                                respuestaExamenValoracionNew.getId());
                 respuestaExamenValoracionResponseDto.setLinkFormatoB(
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt");
                 respuestaExamenValoracionResponseDto.setLinkFormatoC(
@@ -234,7 +234,7 @@ public class ActualizarInformacionCoordinadorTest {
                                                         respuestaExamenValoracionDto, result);
 
                         assertNotNull(resultado);
-                        assertEquals(1L, resultado.getIdRespuestaExamenValoracion());
+                        assertEquals(1L, resultado.getId());
                         assertEquals(
                                         "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt",
                                         resultado.getLinkFormatoB());

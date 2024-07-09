@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MsGestionTrabajoGradoApplication<ms-gestion-trabajo-grado>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.unicauca.maestria.api.gestiontrabajosgrado.MsGestionTrabajoGradoApplication",
+            "projectName": "ms-gestion-trabajo-grado",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

@@ -119,7 +119,7 @@ public class InsertarInformacionCoordinadorFase1STest {
         when(result.hasErrors()).thenReturn(false);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionOld.setId(1L);
 
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
@@ -131,14 +131,14 @@ public class InsertarInformacionCoordinadorFase1STest {
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
         when(sustentacionProyectoInvestigacionRepository.findById(
-                trabajoGrado.getIdSustentacionProyectoInvestigacion().getIdSustentacionTrabajoInvestigacion()))
+                trabajoGrado.getIdSustentacionProyectoInvestigacion().getId()))
                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
         when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
                 .thenReturn(true);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionNew.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionNew.setId(1L);
         sustentacionTrabajoInvestigacionNew
                 .setConceptoCoordinador(sustentacionTrabajoInvestigacionCoordinadorFase1Dto.getConceptoCoordinador());
 
@@ -146,8 +146,8 @@ public class InsertarInformacionCoordinadorFase1STest {
                 .thenReturn(sustentacionTrabajoInvestigacionNew);
 
         STICoordinadorFase1ResponseDto stiCoordinadorFase1ResponseDto = new STICoordinadorFase1ResponseDto();
-        stiCoordinadorFase1ResponseDto.setIdSustentacionTrabajoInvestigacion(
-                sustentacionTrabajoInvestigacionNew.getIdSustentacionTrabajoInvestigacion());
+        stiCoordinadorFase1ResponseDto.setId(
+                sustentacionTrabajoInvestigacionNew.getId());
         stiCoordinadorFase1ResponseDto
                 .setConceptoCoordinador(sustentacionTrabajoInvestigacionNew.getConceptoCoordinador());
 
@@ -163,7 +163,7 @@ public class InsertarInformacionCoordinadorFase1STest {
                             sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
 
             assertNotNull(resultado);
-            assertEquals(1L, resultado.getIdSustentacionTrabajoInvestigacion());
+            assertEquals(1L, resultado.getId());
             assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoCoordinador());
         }
 
@@ -184,7 +184,7 @@ public class InsertarInformacionCoordinadorFase1STest {
         when(result.hasErrors()).thenReturn(false);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionOld.setId(1L);
 
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
@@ -196,7 +196,7 @@ public class InsertarInformacionCoordinadorFase1STest {
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
         when(sustentacionProyectoInvestigacionRepository.findById(
-                trabajoGrado.getIdSustentacionProyectoInvestigacion().getIdSustentacionTrabajoInvestigacion()))
+                trabajoGrado.getIdSustentacionProyectoInvestigacion().getId()))
                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -214,7 +214,7 @@ public class InsertarInformacionCoordinadorFase1STest {
                 .thenReturn(true);
 
         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionNew.setIdSustentacionTrabajoInvestigacion(1L);
+        sustentacionTrabajoInvestigacionNew.setId(1L);
         sustentacionTrabajoInvestigacionNew
                 .setConceptoCoordinador(sustentacionTrabajoInvestigacionCoordinadorFase1Dto.getConceptoCoordinador());
 
@@ -222,8 +222,8 @@ public class InsertarInformacionCoordinadorFase1STest {
                 .thenReturn(sustentacionTrabajoInvestigacionNew);
 
         STICoordinadorFase1ResponseDto stiCoordinadorFase1ResponseDto = new STICoordinadorFase1ResponseDto();
-        stiCoordinadorFase1ResponseDto.setIdSustentacionTrabajoInvestigacion(
-                sustentacionTrabajoInvestigacionNew.getIdSustentacionTrabajoInvestigacion());
+        stiCoordinadorFase1ResponseDto.setId(
+                sustentacionTrabajoInvestigacionNew.getId());
         stiCoordinadorFase1ResponseDto
                 .setConceptoCoordinador(sustentacionTrabajoInvestigacionNew.getConceptoCoordinador());
 
@@ -239,7 +239,7 @@ public class InsertarInformacionCoordinadorFase1STest {
                             sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
 
             assertNotNull(resultado);
-            assertEquals(1L, resultado.getIdSustentacionTrabajoInvestigacion());
+            assertEquals(1L, resultado.getId());
             assertEquals(ConceptoVerificacion.RECHAZADO, resultado.getConceptoCoordinador());
         }
     }

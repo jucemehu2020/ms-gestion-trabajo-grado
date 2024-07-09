@@ -19,7 +19,7 @@ import lombok.Setter;
 @Builder
 public class RespuestaComiteExamenValoracionDto {
 
-    private Long idAnexoExamenValoracion;
+    private Long id;
     @NotNull
     private Concepto conceptoComite;
     @NotNull

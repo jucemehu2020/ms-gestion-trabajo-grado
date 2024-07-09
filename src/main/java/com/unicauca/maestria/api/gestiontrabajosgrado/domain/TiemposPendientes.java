@@ -24,5 +24,5 @@ public class TiemposPendientes {
 
     private String fechaLimite;
 
-    private String estado;
+    private Integer estado;
 }

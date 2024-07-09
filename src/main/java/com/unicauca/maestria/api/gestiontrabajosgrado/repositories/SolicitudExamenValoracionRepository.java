@@ -23,13 +23,13 @@ public interface SolicitudExamenValoracionRepository extends JpaRepository<Solic
 
     public Optional<SolicitudExamenValoracion> findByIdTrabajoGradoId(Long idTrabajoGradoId);
 
-    @Query("SELECT rc FROM SolicitudExamenValoracion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.idExamenValoracion = :id ORDER BY rc.id DESC")
+    @Query("SELECT rc FROM SolicitudExamenValoracion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.id = :id ORDER BY rc.id DESC")
     List<RespuestaComiteExamenValoracion> findRespuestaComiteBySolicitudExamenValoracionId(@Param("id") Long id);
 
     @Query("SELECT CASE WHEN COUNT(sev) > 0 THEN TRUE ELSE FALSE END FROM SolicitudExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
     public boolean existsByTrabajoGradoId(Long trabajoGradoId);
 
-    @Query("SELECT sev.idExamenValoracion FROM SolicitudExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
+    @Query("SELECT sev.id FROM SolicitudExamenValoracion sev WHERE sev.idTrabajoGrado.id = ?1")
     public Long findIdExamenValoracionByTrabajoGradoId(Long trabajoGradoId);
 
 }

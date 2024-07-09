@@ -103,7 +103,7 @@ public class ListarInformacionCoordinadorFase2Test {
         listaRespuestaComiteExamenValoracion.add(respuestaComite);
 
         SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-        solicitudExamenValoracion.setIdExamenValoracion(1L);
+        solicitudExamenValoracion.setId(1L);
         solicitudExamenValoracion.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracion);
         solicitudExamenValoracion.setLinkOficioDirigidoEvaluadores(
                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/30-06-24/20240630181114-oficio.txt");
@@ -122,7 +122,7 @@ public class ListarInformacionCoordinadorFase2Test {
 
         SolicitudExamenValoracionCoordinadorFase2ResponseDto solicitudExamenValoracionCoordinadorResponseDto = new SolicitudExamenValoracionCoordinadorFase2ResponseDto();
         solicitudExamenValoracionCoordinadorResponseDto
-                .setIdExamenValoracion(1L);
+                .setId(1L);
         solicitudExamenValoracionCoordinadorResponseDto.setActaFechaRespuestaComite(listaRespuestaComite);
         solicitudExamenValoracionCoordinadorResponseDto.setLinkOficioDirigidoEvaluadores(
                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/30-06-24/20240630181114-oficio.txt");
@@ -136,7 +136,7 @@ public class ListarInformacionCoordinadorFase2Test {
                 .listarInformacionCoordinadorFase2(idTrabajoGrado);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdExamenValoracion());
+        assertEquals(1L, resultado.getId());
         assertEquals(true, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
         assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
         assertEquals(LocalDate.parse("2023-05-24", formatter),

@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class GeneracionResolucionCoordinadorFase2ResponseDto {
 
-    private Long idGeneracionResolucion;
+    private Long id;
     private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
     private String linkSolicitudConsejoFacultad;
 

@@ -143,8 +143,8 @@ public class InsertarInformacionDocenteTest {
                                 .thenReturn(estudianteResponseDtoAll);
 
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-                generacionResolucion.setDirector("Karla Ramirez");
-                generacionResolucion.setCodirector("Luis Perez");
+                generacionResolucion.setDirector(1L);
+                generacionResolucion.setCodirector(1L);
                 generacionResolucion.setLinkAnteproyectoFinal(
                                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
                 generacionResolucion.setLinkSolicitudComite(
@@ -156,10 +156,10 @@ public class InsertarInformacionDocenteTest {
                                 .thenReturn(generacionResolucion);
 
                 GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = new GeneracionResolucionDocenteResponseDto();
-                generacionResolucionDocenteResponseDto.setIdGeneracionResolucion(1L);
+                generacionResolucionDocenteResponseDto.setId(1L);
                 generacionResolucionDocenteResponseDto.setTitulo("Prueba test");
-                generacionResolucionDocenteResponseDto.setDirector("Karla Ramirez");
-                generacionResolucionDocenteResponseDto.setCodirector("Luis Perez");
+                generacionResolucion.setDirector(1L);
+                generacionResolucion.setCodirector(1L);
                 generacionResolucionDocenteResponseDto.setLinkAnteproyectoFinal(
                                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
                 generacionResolucionDocenteResponseDto.setLinkSolicitudComite(
@@ -177,7 +177,7 @@ public class InsertarInformacionDocenteTest {
                                                         result);
 
                         assertNotNull(resultado);
-                        assertEquals(1L, resultado.getIdGeneracionResolucion());
+                        assertEquals(1L, resultado.getId());
                         assertEquals("Prueba test", resultado.getTitulo());
                         assertEquals("Karla Ramirez", resultado.getDirector());
                         assertEquals("Luis Perez", resultado.getCodirector());

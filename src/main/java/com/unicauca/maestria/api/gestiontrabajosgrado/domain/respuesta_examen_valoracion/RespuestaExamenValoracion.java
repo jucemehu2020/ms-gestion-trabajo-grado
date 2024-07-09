@@ -15,7 +15,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_exa
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
 @Entity
-@Table(name = "respuesta_examen_valoracion")
+@Table(name = "respuestas_examen_valoracion")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,7 +25,7 @@ public class RespuestaExamenValoracion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idRespuestaExamenValoracion;
+    private Long id;
 
     private String linkFormatoB;
 

@@ -13,6 +13,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_3.GeneracionResolucionCoordinadorFase3Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_3.GeneracionResolucionCoordinadorFase3ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteListDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 
@@ -40,7 +41,7 @@ public interface GeneracionResolucionService {
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucion,
                         BindingResult result);
 
-        public GeneracionResolucionDocenteResponseDto listarInformacionDocente(Long idTrabajoGrado);
+        public GeneracionResolucionDocenteListDto listarInformacionDocente(Long idTrabajoGrado);
 
         public GeneracionResolucionCoordinadorFase1ResponseDto listarInformacionCoordinadorFase1(Long idTrabajoGrado);
 

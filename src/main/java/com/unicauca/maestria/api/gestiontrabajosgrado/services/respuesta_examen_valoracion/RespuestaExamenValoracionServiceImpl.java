@@ -429,7 +429,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                 + " no encontrado"));
 
                 List<AnexoRespuestaExamenValoracion> anexosRtaExamenValoracion = anexosRespuestaExamenValoracionRepository
-                                .obtenerAnexosPorId(rtaExamenValoracion.getIdRespuestaExamenValoracion());
+                                .obtenerAnexosPorId(rtaExamenValoracion.getId());
 
                 ArrayList<String> listaAnexos = new ArrayList<>();
                 for (int documento = 0; documento < anexosRtaExamenValoracion.size(); documento++) {

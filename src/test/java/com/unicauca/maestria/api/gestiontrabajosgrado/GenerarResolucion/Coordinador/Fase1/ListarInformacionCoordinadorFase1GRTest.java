@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1ResponseDto;
@@ -75,21 +76,21 @@ public class ListarInformacionCoordinadorFase1GRTest {
         Long idTrabajoGrado = 1L;
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-        generacionResolucion.setIdGeneracionResolucion(1L);
-        generacionResolucion.setDirector("Karla Ramirez");
-        generacionResolucion.setCodirector("Luis Perez");
+        generacionResolucion.setId(1L);
+        generacionResolucion.setDirector(1L);
+        generacionResolucion.setCodirector(1L);
         generacionResolucion.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucion.setLinkSolicitudComite(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudComite.txt");
-        generacionResolucion.setConceptoDocumentosCoordinador(Concepto.APROBADO);
+        generacionResolucion.setConceptoDocumentosCoordinador(ConceptoVerificacion.ACEPTADO);
 
         when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(generacionResolucion));
 
         GeneracionResolucionCoordinadorFase1ResponseDto generacionResolucionCoordinadorFase1ResponseDto = new GeneracionResolucionCoordinadorFase1ResponseDto();
         generacionResolucionCoordinadorFase1ResponseDto
-                .setIdGeneracionResolucion(generacionResolucion.getIdGeneracionResolucion());
+                .setId(generacionResolucion.getId());
         generacionResolucionCoordinadorFase1ResponseDto.setConceptoDocumentosCoordinador(
                 generacionResolucion.getConceptoDocumentosCoordinador());
 
@@ -100,7 +101,7 @@ public class ListarInformacionCoordinadorFase1GRTest {
                 .listarInformacionCoordinadorFase1(idTrabajoGrado);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdGeneracionResolucion());
+        assertEquals(1L, resultado.getId());
         assertEquals(Concepto.APROBADO, resultado.getConceptoDocumentosCoordinador());
 
     }

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SolicitudExamenValoracionDocenteResponseDto {
 
-    private Long idExamenValoracion;
+    private Long id;
     private String titulo;
     private String linkFormatoA;
     private String linkFormatoD;

@@ -12,9 +12,9 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.egresado.EmpresaSaveD
 @FeignClient(name = "ms-gestion-egresados", url = "http://localhost:8084")
 public interface ArchivoClientEgresados {
 
-    @GetMapping("/api/curso/listarCursos/{id}")
+    @GetMapping("/api/curso/listarCursosDictados/{id}")
     public List<CursoSaveDto> obtenerCursosPorIdEstudiante(@PathVariable Long id);
 
-    @GetMapping("/api/empresa/listarEmpresa/{id}")
+    @GetMapping("/api/empresa/listarEmpresas/{id}")
     public List<EmpresaSaveDto> obtenerEmpresasPorIdEstudiante(@PathVariable Long id);
 }

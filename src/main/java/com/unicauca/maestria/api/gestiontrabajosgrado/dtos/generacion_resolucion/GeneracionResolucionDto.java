@@ -5,6 +5,7 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 
 @Getter
 @Setter
@@ -29,7 +30,7 @@ public class GeneracionResolucionDto {
     private String linkSolicitudComite;
 
     @NotNull
-    private Concepto conceptoDocumentosCoordinador;
+    private ConceptoVerificacion conceptoDocumentosCoordinador;
 
     @NotNull
     private String numeroActaSolicitudComite;

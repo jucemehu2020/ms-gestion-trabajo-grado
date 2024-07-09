@@ -114,7 +114,7 @@ public class InsertarInformacionCoordinadorFase1Test {
 
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(documentosEnvioComiteDto);
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-                solicitudExamenValoracion.setIdExamenValoracion(1L);
+                solicitudExamenValoracion.setId(1L);
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -129,7 +129,7 @@ public class InsertarInformacionCoordinadorFase1Test {
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()))
+                                .findById(trabajoGrado.getExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class),
@@ -142,7 +142,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                                 .thenReturn(solicitudExamenValoracion);
 
                 SolicitudExamenValoracionResponseFase1Dto solicitudExamenValoracionResponseFase1Dto = new SolicitudExamenValoracionResponseFase1Dto();
-                solicitudExamenValoracionResponseFase1Dto.setIdExamenValoracion(1L);
+                solicitudExamenValoracionResponseFase1Dto.setId(1L);
                 solicitudExamenValoracionResponseFase1Dto.setConceptoCoordinadorDocumentos(
                                 solicitudExamenValoracionCoordinadorFase1Dto.getConceptoCoordinadorDocumentos());
 
@@ -155,7 +155,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                                                 result);
 
                 assertNotNull(resultado);
-                assertEquals(1L, resultado.getIdExamenValoracion());
+                assertEquals(1L, resultado.getId());
                 assertEquals(true, resultado.getConceptoCoordinadorDocumentos());
         }
 
@@ -174,7 +174,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(null);
 
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-                solicitudExamenValoracion.setIdExamenValoracion(1L);
+                solicitudExamenValoracion.setId(1L);
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -189,7 +189,7 @@ public class InsertarInformacionCoordinadorFase1Test {
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getIdExamenValoracion()))
+                                .findById(trabajoGrado.getExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 PersonaDto personaDto = new PersonaDto();
@@ -211,7 +211,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                                 .thenReturn(solicitudExamenValoracion);
 
                 SolicitudExamenValoracionResponseFase1Dto solicitudExamenValoracionResponseFase1Dto = new SolicitudExamenValoracionResponseFase1Dto();
-                solicitudExamenValoracionResponseFase1Dto.setIdExamenValoracion(1L);
+                solicitudExamenValoracionResponseFase1Dto.setId(1L);
                 solicitudExamenValoracionResponseFase1Dto.setConceptoCoordinadorDocumentos(
                                 solicitudExamenValoracionCoordinadorFase1Dto.getConceptoCoordinadorDocumentos());
 
@@ -224,7 +224,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                                                 result);
 
                 assertNotNull(resultado);
-                assertEquals(1L, resultado.getIdExamenValoracion());
+                assertEquals(1L, resultado.getId());
                 assertEquals(false, resultado.getConceptoCoordinadorDocumentos());
         }
 
@@ -323,7 +323,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(null);
 
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-                solicitudExamenValoracion.setIdExamenValoracion(1L);
+                solicitudExamenValoracion.setId(1L);
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -363,7 +363,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(null);
 
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-                solicitudExamenValoracion.setIdExamenValoracion(1L);
+                solicitudExamenValoracion.setId(1L);
 
                 when(result.hasErrors()).thenReturn(false);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());

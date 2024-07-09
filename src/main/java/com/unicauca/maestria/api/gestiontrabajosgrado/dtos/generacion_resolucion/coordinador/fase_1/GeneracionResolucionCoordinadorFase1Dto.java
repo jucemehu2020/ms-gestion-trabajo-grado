@@ -5,7 +5,7 @@ import lombok.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
 @Getter
@@ -16,7 +16,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 public class GeneracionResolucionCoordinadorFase1Dto {
 
     @NotNull
-    private Concepto conceptoDocumentosCoordinador;
+    private ConceptoVerificacion conceptoDocumentosCoordinador;
 
     @NotNull
     @Valid
