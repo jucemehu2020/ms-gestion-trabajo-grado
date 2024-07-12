@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
+
 @Entity
 @Table(name = "examenes_valoracion_cancelado")
 @Getter
@@ -20,10 +22,10 @@ public class ExamenValoracionCancelado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long idRespuestaExamenValoracion;
-
-    private Boolean estadoFinalizado;
-
     private String observacion;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_trabajo_grado")
+    private TrabajoGrado trabajoGrado;
 
 }

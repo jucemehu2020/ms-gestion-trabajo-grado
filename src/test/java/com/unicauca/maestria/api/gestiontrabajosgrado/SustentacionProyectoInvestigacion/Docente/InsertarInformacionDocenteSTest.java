@@ -84,6 +84,7 @@ public class InsertarInformacionDocenteSTest {
                                 sustentacionProyectoInvestigacionResponseMapper,
                                 respuestaComiteSustentacionRepository,
                                 trabajoGradoRepository,
+                                null,
                                 archivoClient,
                                 archivoClientExpertos,
                                 archivoClientEgresados);

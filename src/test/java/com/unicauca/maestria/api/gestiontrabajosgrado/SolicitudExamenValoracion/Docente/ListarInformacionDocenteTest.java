@@ -69,6 +69,7 @@ public class ListarInformacionDocenteTest {
                                 null,
                                 anexosSolicitudExamenValoracionRepository,
                                 trabajoGradoRepository,
+                                null,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
@@ -91,7 +92,7 @@ public class ListarInformacionDocenteTest {
                 solicitudExamenValoracion.setIdEvaluadorInterno(1L);
                 solicitudExamenValoracion.setIdEvaluadorExterno(1L);
 
-                when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
                 PersonaDto personaDto1 = new PersonaDto();
@@ -158,7 +159,7 @@ public class ListarInformacionDocenteTest {
         void testListarInformacionDocente_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
-                when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenThrow(new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
@@ -186,7 +187,7 @@ public class ListarInformacionDocenteTest {
                 solicitudExamenValoracion.setIdEvaluadorInterno(1L);
                 solicitudExamenValoracion.setIdEvaluadorExterno(1L);
 
-                when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
                 when(archivoClient.obtenerDocentePorId(solicitudExamenValoracion.getIdEvaluadorInterno()))
@@ -217,7 +218,7 @@ public class ListarInformacionDocenteTest {
                 solicitudExamenValoracion.setIdEvaluadorInterno(1L);
                 solicitudExamenValoracion.setIdEvaluadorExterno(1L);
 
-                when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
                 PersonaDto personaDto1 = new PersonaDto();

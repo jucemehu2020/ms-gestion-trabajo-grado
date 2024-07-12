@@ -121,12 +121,12 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         trabajoGrado.setNumeroEstado(7);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdGeneracionResolucion(generacionResolucion);
+        trabajoGrado.setGeneracionResolucion(generacionResolucion);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
+                .findById(trabajoGrado.getGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucion));
 
         when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
@@ -185,12 +185,12 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         trabajoGrado.setNumeroEstado(7);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdGeneracionResolucion(generacionResolucion);
+        trabajoGrado.setGeneracionResolucion(generacionResolucion);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
+                .findById(trabajoGrado.getGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucion));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -335,7 +335,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         trabajoGrado.setNumeroEstado(11);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdGeneracionResolucion(generacionResolucion);
+        trabajoGrado.setGeneracionResolucion(generacionResolucion);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 

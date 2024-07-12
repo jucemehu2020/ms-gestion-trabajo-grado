@@ -89,12 +89,12 @@ public class ListarInformacionDocenteGRTest {
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucion.setLinkSolicitudComite(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudComite.txt");
-        generacionResolucion.setIdTrabajoGrado(trabajoGrado);
+        generacionResolucion.setTrabajoGrado(trabajoGrado);
 
-        when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(generacionResolucion));
 
-        when(trabajoGradoRepository.findById(generacionResolucion.getIdTrabajoGrado().getId()))
+        when(trabajoGradoRepository.findById(generacionResolucion.getTrabajoGrado().getId()))
                 .thenReturn(Optional.of(trabajoGrado));
 
         GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = new GeneracionResolucionDocenteResponseDto();
@@ -133,7 +133,7 @@ public class ListarInformacionDocenteGRTest {
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
 
-        when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(generacionResolucion));
 
         InformationException exception = assertThrows(InformationException.class, () -> {
@@ -149,7 +149,7 @@ public class ListarInformacionDocenteGRTest {
     void testListarInformacionDocenteGRTest_TrabajoGradoNoExiste() {
         Long idTrabajoGrado = 2L;
 
-        when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {

@@ -12,7 +12,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valo
 
 public interface RespuestaExamenValoracionService {
 
-        public RespuestaExamenValoracionResponseDto crear(Long idTrabajoGrado,
+        public RespuestaExamenValoracionResponseDto insertarInformacion(Long idTrabajoGrado,
                         RespuestaExamenValoracionDto respuestaExamenValoracion,
                         BindingResult result);
 
@@ -30,5 +30,7 @@ public interface RespuestaExamenValoracionService {
         public Long validarNumeroNoAprobado(Long idTrabajoGrado);
 
         public ObtenerDocumentosParaEnvioCorreoDto obtenerDocumentosParaEnviarCorreo(Long idRtaExamenValoracion);
+
+        public Boolean evaluadorNoRespondio(Long idTrabajoGrado);
 
 }

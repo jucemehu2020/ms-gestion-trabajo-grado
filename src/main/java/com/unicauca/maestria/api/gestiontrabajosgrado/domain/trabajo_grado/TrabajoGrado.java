@@ -19,7 +19,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.FetchType;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.ExamenValoracionCancelado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
@@ -35,7 +38,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabaj
 public class TrabajoGrado {
 
     @Id
-    // @Column(name = "id_trabajo_grado")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -50,16 +52,21 @@ public class TrabajoGrado {
 
     private String correoElectronicoTutor;
 
-    @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
-    private SolicitudExamenValoracion examenValoracion;
+    @OneToOne(mappedBy = "trabajoGrado", cascade = CascadeType.ALL)
+    private SolicitudExamenValoracion solicitudExamenValoracion;
 
-    @OneToMany(mappedBy = "idTrabajoGrado", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trabajoGrado", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RespuestaExamenValoracion> respuestaExamenValoracion;
 
-    @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
-    private GeneracionResolucion idGeneracionResolucion;
+    @OneToOne(mappedBy = "trabajoGrado", cascade = CascadeType.ALL)
+    private GeneracionResolucion generacionResolucion;
 
-    @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
-    private SustentacionTrabajoInvestigacion idSustentacionProyectoInvestigacion;
+    @OneToOne(mappedBy = "trabajoGrado", cascade = CascadeType.ALL)
+    private SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion;
 
+    @OneToMany(mappedBy = "trabajoGrado", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TiemposPendientes> tiemposPendientes;
+
+    @OneToOne(mappedBy = "trabajoGrado", cascade = CascadeType.ALL)
+    private ExamenValoracionCancelado examenValoracionCancelado;
 }

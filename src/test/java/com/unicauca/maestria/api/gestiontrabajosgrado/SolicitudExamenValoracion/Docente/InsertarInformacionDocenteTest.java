@@ -74,6 +74,7 @@ public class InsertarInformacionDocenteTest {
                                 null,
                                 null,
                                 trabajoGradoRepository,
+                                null,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
@@ -129,7 +130,7 @@ public class InsertarInformacionDocenteTest {
                 examenValoracion.setLinkFormatoE("formatoE.txt-cHJ1ZWJhIGRlIHRleHR");
                 examenValoracion.setIdEvaluadorInterno(1L);
                 examenValoracion.setIdEvaluadorExterno(1L);
-                examenValoracion.setIdTrabajoGrado(trabajoGrado);
+                examenValoracion.setTrabajoGrado(trabajoGrado);
 
                 AnexoSolicitudExamenValoracion anexo1 = new AnexoSolicitudExamenValoracion();
                 anexo1.setId(10L);

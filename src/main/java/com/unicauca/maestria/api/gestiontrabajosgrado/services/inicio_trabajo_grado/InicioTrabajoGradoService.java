@@ -29,4 +29,6 @@ public interface InicioTrabajoGradoService {
 
     public String descargarArchivo(String rutaArchivo);
 
+    public Boolean cancelarTrabajoGrado(Long idTrabajoGrado);
+
 }

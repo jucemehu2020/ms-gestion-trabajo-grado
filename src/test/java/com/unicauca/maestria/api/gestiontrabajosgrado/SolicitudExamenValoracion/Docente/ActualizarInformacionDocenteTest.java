@@ -71,6 +71,7 @@ public class ActualizarInformacionDocenteTest {
                                 null,
                                 null,
                                 trabajoGradoRepository,
+                                null,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper, 
@@ -108,12 +109,12 @@ public class ActualizarInformacionDocenteTest {
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setNumeroEstado(1);
                 trabajoGrado.setIdEstudiante(123L);
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracionOld);
 
                 when(result.hasErrors()).thenReturn(false);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getId()))
+                                .findById(trabajoGrado.getSolicitudExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 PersonaDto personaDto = new PersonaDto();

@@ -30,6 +30,5 @@ public class EstudianteResponseDtoAll {
 	private InformacionMaestriaActual informacionMaestria;
 	private List<ProrrogaDto> prorrogas;
 	private List<ReingresoDto> reingresos;
-	private Integer estadoTrabajoGrado;
 	private List<TrabajoGradoResponseDto> trabajoGrado;
 }

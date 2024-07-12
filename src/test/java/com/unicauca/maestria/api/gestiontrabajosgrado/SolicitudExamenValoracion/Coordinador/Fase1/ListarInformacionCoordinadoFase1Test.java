@@ -69,6 +69,7 @@ public class ListarInformacionCoordinadoFase1Test {
                 respuestaComiteSolicitudRepository,
                 null,
                 trabajoGradoRepository,
+                null,
                 examenValoracionMapper,
                 examenValoracionResponseMapper,
                 anexoSolicitudExamenValoracionMapper,
@@ -84,7 +85,7 @@ public class ListarInformacionCoordinadoFase1Test {
         SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
         solicitudExamenValoracion.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
 
-        when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
         SolicitudExamenValoracionResponseFase1Dto solicitudExamenValoracionResponseFase1Dto = new SolicitudExamenValoracionResponseFase1Dto();
@@ -99,7 +100,7 @@ public class ListarInformacionCoordinadoFase1Test {
 
         assertNotNull(SolicitudExamenValoracionResponseFase1Dto);
         assertEquals(1, SolicitudExamenValoracionResponseFase1Dto.getId());
-        assertEquals(true, SolicitudExamenValoracionResponseFase1Dto.getConceptoCoordinadorDocumentos());
+        assertEquals(ConceptoVerificacion.ACEPTADO, SolicitudExamenValoracionResponseFase1Dto.getConceptoCoordinadorDocumentos());
 
     }
 
@@ -108,7 +109,7 @@ public class ListarInformacionCoordinadoFase1Test {
         Long idTrabajoGrado = 1L;
         SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
 
-        when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
         InformationException exception = assertThrows(InformationException.class, () -> {
@@ -124,7 +125,7 @@ public class ListarInformacionCoordinadoFase1Test {
     void testListarInformacionCoordinadoFase1Test_TrabajoGradoNoExiste() {
         Long idTrabajoGrado = 2L;
 
-        when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {

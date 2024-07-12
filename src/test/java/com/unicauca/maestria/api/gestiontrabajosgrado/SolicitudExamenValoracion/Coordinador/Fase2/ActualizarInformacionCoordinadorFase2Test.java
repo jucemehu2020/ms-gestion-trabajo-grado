@@ -91,6 +91,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                                 respuestaComiteSolicitudRepository,
                                 null,
                                 trabajoGradoRepository,
+                                null,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
@@ -162,12 +163,12 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 trabajoGrado.setNumeroEstado(4);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracionOld);
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getId()))
+                                .findById(trabajoGrado.getSolicitudExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 when(solicitudExamenValoracionRepository
@@ -318,12 +319,12 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 trabajoGrado.setNumeroEstado(4);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracionOld);
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getId()))
+                                .findById(trabajoGrado.getSolicitudExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 when(solicitudExamenValoracionRepository
@@ -567,7 +568,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 trabajoGrado.setNumeroEstado(2);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracionOld);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracionOld);
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 

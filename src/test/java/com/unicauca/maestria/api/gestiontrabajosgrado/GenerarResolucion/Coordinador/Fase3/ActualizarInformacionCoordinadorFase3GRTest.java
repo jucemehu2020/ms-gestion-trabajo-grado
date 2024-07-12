@@ -100,12 +100,12 @@ public class ActualizarInformacionCoordinadorFase3GRTest {
         trabajoGrado.setNumeroEstado(18);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdGeneracionResolucion(generacionResolucionOld);
+        trabajoGrado.setGeneracionResolucion(generacionResolucionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
+                .findById(trabajoGrado.getGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         GeneracionResolucion generacionResolucionNew = new GeneracionResolucion();
@@ -190,7 +190,7 @@ public class ActualizarInformacionCoordinadorFase3GRTest {
         trabajoGrado.setNumeroEstado(17);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdGeneracionResolucion(generacionResolucionOld);
+        trabajoGrado.setGeneracionResolucion(generacionResolucionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 

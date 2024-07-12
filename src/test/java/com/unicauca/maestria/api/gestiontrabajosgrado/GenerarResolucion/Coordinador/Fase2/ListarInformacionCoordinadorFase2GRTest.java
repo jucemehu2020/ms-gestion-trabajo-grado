@@ -95,7 +95,7 @@ public class ListarInformacionCoordinadorFase2GRTest {
         generacionResolucion.setLinkSolicitudConsejoFacultad(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
 
-        when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(generacionResolucion));
 
         RespuestaComiteGeneracionResolucionDto respuestaComiteGeneracionResolucionResponseDto = new RespuestaComiteGeneracionResolucionDto();
@@ -136,7 +136,7 @@ public class ListarInformacionCoordinadorFase2GRTest {
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
 
-        when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(generacionResolucion));
 
         InformationException exception = assertThrows(InformationException.class, () -> {
@@ -152,7 +152,7 @@ public class ListarInformacionCoordinadorFase2GRTest {
     void ListarInformacionCoordinadorFase2GRTest_TrabajoGradoNoExiste() {
         Long idTrabajoGrado = 2L;
 
-        when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {

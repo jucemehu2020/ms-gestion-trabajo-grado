@@ -73,6 +73,6 @@ public class SustentacionTrabajoInvestigacion {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_trabajo_grado")
-    private TrabajoGrado idTrabajoGrado;
+    private TrabajoGrado trabajoGrado;
 
 }

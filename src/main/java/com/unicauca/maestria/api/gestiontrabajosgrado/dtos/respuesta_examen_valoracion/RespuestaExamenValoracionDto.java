@@ -33,15 +33,13 @@ public class RespuestaExamenValoracionDto {
     @NotNull
     private ConceptosVarios respuestaExamenValoracion;
 
-    private LocalDate fechaMaximaEntrega;
-
     @NotNull
     private Long idEvaluador;
 
     @NotNull
     private TipoEvaluador tipoEvaluador;
 
-    private Boolean permitidoExamen;
+    // private Boolean permitidoExamen;
 
     @Valid
     private EnvioEmailDto envioEmail;

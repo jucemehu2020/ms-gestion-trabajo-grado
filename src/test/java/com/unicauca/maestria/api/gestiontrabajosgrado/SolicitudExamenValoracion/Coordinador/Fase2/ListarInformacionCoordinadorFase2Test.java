@@ -75,6 +75,7 @@ public class ListarInformacionCoordinadorFase2Test {
                                 respuestaComiteSolicitudRepository,
                                 null,
                                 trabajoGradoRepository,
+                                null,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
@@ -109,7 +110,7 @@ public class ListarInformacionCoordinadorFase2Test {
                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/30-06-24/20240630181114-oficio.txt");
         solicitudExamenValoracion.setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
 
-        when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
         RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
@@ -153,7 +154,7 @@ public class ListarInformacionCoordinadorFase2Test {
         Long idTrabajoGrado = 1L;
         SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
 
-        when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(solicitudExamenValoracion));
 
         InformationException exception = assertThrows(InformationException.class, () -> {
@@ -169,7 +170,7 @@ public class ListarInformacionCoordinadorFase2Test {
     void testListarInformacionCoordinadoFase2Test_TrabajoGradoNoExiste() {
         Long idTrabajoGrado = 2L;
 
-        when(solicitudExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {

@@ -87,6 +87,8 @@ public class ListarInformacionCooridnadorTest {
                                 anexoRespuestaExamenValoracionMapper,
                                 examenValoracionCanceladoMapper,
                                 trabajoGradoRepository,
+                                null,
+                                null,
                                 archivoClient,
                                 archivoClientExpertos);
                 ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
@@ -114,10 +116,13 @@ public class ListarInformacionCooridnadorTest {
                 respuestaExamenValoracion.setIdEvaluador(1L);
                 respuestaExamenValoracion.setTipoEvaluador(TipoEvaluador.EXTERNO);
 
-                when(respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
-                                .thenReturn(Optional.of(new RespuestaExamenValoracion()));
+                List<RespuestaExamenValoracion> lista = new ArrayList<>();
+                lista.add(respuestaExamenValoracion);
 
-                when(respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado))
+                when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
+                                .thenReturn(lista);
+
+                when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
                                 .thenReturn(Collections.singletonList(respuestaExamenValoracion));
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosResponseDto = new ArrayList<>();
@@ -173,8 +178,10 @@ public class ListarInformacionCooridnadorTest {
         void testListarInformacionCoordinador_NoHayRegistro() {
                 Long idTrabajoGrado = 1L;
 
-                when(respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
-                                .thenReturn(Optional.of(new RespuestaExamenValoracion()));
+                List<RespuestaExamenValoracion> lista = new ArrayList<>();
+
+                when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
+                                .thenReturn(lista);
 
                 // when(respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado))
                 // .thenReturn(Collections.emptyList());
@@ -192,8 +199,10 @@ public class ListarInformacionCooridnadorTest {
         void testListarInformacionCoordinadoFase2Test_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
-                when(respuestaExamenValoracionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
-                                .thenReturn(Optional.empty());
+                List<RespuestaExamenValoracion> lista = new ArrayList<>();
+
+                when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
+                                .thenReturn(lista);
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
                         respuestaExamenValoracionServiceImpl.buscarPorId(idTrabajoGrado);

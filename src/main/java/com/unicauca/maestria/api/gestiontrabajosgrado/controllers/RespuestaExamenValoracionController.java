@@ -28,11 +28,13 @@ public class RespuestaExamenValoracionController {
         private final RespuestaExamenValoracionService respuestaExamenValoracion;
 
         @PostMapping("/{idTrabajoGrado}")
-        public ResponseEntity<RespuestaExamenValoracionResponseDto> crear(@PathVariable Long idTrabajoGrado,
+        public ResponseEntity<RespuestaExamenValoracionResponseDto> insertarInformacion(
+                        @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion,
                         BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(respuestaExamenValoracion.crear(idTrabajoGrado, examenValoracion, result));
+                                .body(respuestaExamenValoracion.insertarInformacion(idTrabajoGrado, examenValoracion,
+                                                result));
         }
 
         @GetMapping("/{idTrabajoGrado}")
@@ -44,9 +46,11 @@ public class RespuestaExamenValoracionController {
 
         @PutMapping("/{idRespuestaExamen}")
         public ResponseEntity<RespuestaExamenValoracionResponseDto> actualizar(@PathVariable Long idRespuestaExamen,
-                        @Valid @RequestBody RespuestaExamenValoracionDto respuestaExamenValoracionDto, BindingResult result) {
+                        @Valid @RequestBody RespuestaExamenValoracionDto respuestaExamenValoracionDto,
+                        BindingResult result) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(respuestaExamenValoracion.actualizar(idRespuestaExamen, respuestaExamenValoracionDto,
+                                .body(respuestaExamenValoracion.actualizar(idRespuestaExamen,
+                                                respuestaExamenValoracionDto,
                                                 result));
         }
 
@@ -73,5 +77,11 @@ public class RespuestaExamenValoracionController {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(respuestaExamenValoracion
                                                 .obtenerDocumentosParaEnviarCorreo(idRespuestaExamenValoracion));
+        }
+
+        @GetMapping("/evaluadorNoRespondio/{idTrabajoGrado}")
+        public ResponseEntity<?> evaluadorNoRespondio(@PathVariable Long idTrabajoGrado) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion.evaluadorNoRespondio(idTrabajoGrado));
         }
 }

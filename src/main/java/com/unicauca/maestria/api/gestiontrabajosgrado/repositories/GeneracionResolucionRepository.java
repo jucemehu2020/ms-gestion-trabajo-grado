@@ -11,17 +11,17 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resoluci
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.RespuestaComiteGeneracionResolucion;
 
 public interface GeneracionResolucionRepository extends JpaRepository<GeneracionResolucion, Long> {
-    @Query("SELECT COUNT(sev) FROM GeneracionResolucion sev WHERE sev.idTrabajoGrado.id = ?1")
+    @Query("SELECT COUNT(sev) FROM GeneracionResolucion sev WHERE sev.trabajoGrado.id = ?1")
     public int countByTrabajoGradoId(Long trabajoGradoId);
 
-    Optional<GeneracionResolucion> findByIdTrabajoGradoId(Long idTrabajoGradoId);
+    Optional<GeneracionResolucion> findByTrabajoGradoId(Long idTrabajoGradoId);
 
-    @Query("SELECT sev FROM GeneracionResolucion sev WHERE sev.idTrabajoGrado.id = ?1")
-    public GeneracionResolucion findByTrabajoGradoId(Long trabajoGradoId);
+    // @Query("SELECT sev FROM GeneracionResolucion sev WHERE sev.trabajoGrado.id = ?1")
+    // public GeneracionResolucion findByTrabajoGradoId(Long trabajoGradoId);
 
     @Query("SELECT rc FROM GeneracionResolucion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.id = :id ORDER BY rc.id DESC")
     List<RespuestaComiteGeneracionResolucion> findRespuestaComiteByGeneracionResolucionId(@Param("id") Long id);
 
-    @Query("SELECT sev.id FROM GeneracionResolucion sev WHERE sev.idTrabajoGrado.id = ?1")
+    @Query("SELECT sev.id FROM GeneracionResolucion sev WHERE sev.trabajoGrado.id = ?1")
     public Long findIdGeneracionResolucionByTrabajoGradoId(Long trabajoGradoId);
 }

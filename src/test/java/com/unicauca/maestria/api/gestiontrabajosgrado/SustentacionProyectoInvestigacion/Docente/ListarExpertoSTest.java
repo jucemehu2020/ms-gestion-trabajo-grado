@@ -75,6 +75,7 @@ public class ListarExpertoSTest {
                 sustentacionProyectoInvestigacionResponseMapper,
                 respuestaComiteSustentacionRepository,
                 trabajoGradoRepository,
+                null,
                 archivoClient,
                 archivoClientExpertos,
                 archivoClientEgresados);

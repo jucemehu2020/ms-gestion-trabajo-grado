@@ -82,7 +82,7 @@ public class ListarInformacionCoordinadorFase3GRTest {
         generacionResolucionOld.setNumeroActaConsejoFacultad("b-0432");
         generacionResolucionOld.setFechaActaConsejoFacultad(LocalDate.parse("2023-05-24", formatter));
 
-        when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         GeneracionResolucionCoordinadorFase3ResponseDto generacionResolucionCoordinadorFase3ResponseDto = new GeneracionResolucionCoordinadorFase3ResponseDto();
@@ -111,7 +111,7 @@ public class ListarInformacionCoordinadorFase3GRTest {
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
 
-        when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(generacionResolucion));
 
         InformationException exception = assertThrows(InformationException.class, () -> {
@@ -127,7 +127,7 @@ public class ListarInformacionCoordinadorFase3GRTest {
     void ListarInformacionCoordinadorFase3GRTest_TrabajoGradoNoExiste() {
         Long idTrabajoGrado = 2L;
 
-        when(generacionResolucionRepository.findByIdTrabajoGradoId(idTrabajoGrado))
+        when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {

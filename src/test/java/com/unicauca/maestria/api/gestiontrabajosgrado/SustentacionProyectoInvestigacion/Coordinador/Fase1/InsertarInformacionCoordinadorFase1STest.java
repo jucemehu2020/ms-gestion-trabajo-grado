@@ -43,11 +43,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ServiceUnavailableException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSustentacionRepository;
@@ -91,6 +87,7 @@ public class InsertarInformacionCoordinadorFase1STest {
                 sustentacionProyectoInvestigacionResponseMapper,
                 respuestaComiteSustentacionRepository,
                 trabajoGradoRepository,
+                null,
                 archivoClient,
                 archivoClientExpertos,
                 archivoClientEgresados);
@@ -127,11 +124,11 @@ public class InsertarInformacionCoordinadorFase1STest {
         trabajoGrado.setNumeroEstado(18);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+        trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
         when(sustentacionProyectoInvestigacionRepository.findById(
-                trabajoGrado.getIdSustentacionProyectoInvestigacion().getId()))
+                trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
         when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
@@ -192,11 +189,11 @@ public class InsertarInformacionCoordinadorFase1STest {
         trabajoGrado.setNumeroEstado(18);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+        trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
         when(sustentacionProyectoInvestigacionRepository.findById(
-                trabajoGrado.getIdSustentacionProyectoInvestigacion().getId()))
+                trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();

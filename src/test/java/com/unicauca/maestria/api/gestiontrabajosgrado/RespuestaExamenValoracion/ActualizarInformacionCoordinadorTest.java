@@ -100,6 +100,8 @@ public class ActualizarInformacionCoordinadorTest {
                                 anexoRespuestaExamenValoracionMapper,
                                 examenValoracionCanceladoMapper,
                                 trabajoGradoRepository,
+                                null,
+                                null,
                                 archivoClient,
                                 archivoClientExpertos);
                 ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
@@ -128,7 +130,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -159,12 +160,12 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
                 respuestaExamenValoracionOld.setIdEvaluador(1L);
                 respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.INTERNO);
-                respuestaExamenValoracionOld.setIdTrabajoGrado(trabajoGrado);
+                respuestaExamenValoracionOld.setTrabajoGrado(trabajoGrado);
 
                 when(respuestaExamenValoracionRepository.findById(idRespuestaExamen))
                                 .thenReturn(Optional.of(respuestaExamenValoracionOld));
 
-                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getIdTrabajoGrado().getId()))
+                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
                 PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -267,7 +268,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -307,7 +307,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -332,12 +331,12 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
                 respuestaExamenValoracionOld.setIdEvaluador(1L);
                 respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.INTERNO);
-                respuestaExamenValoracionOld.setIdTrabajoGrado(trabajoGrado);
+                respuestaExamenValoracionOld.setTrabajoGrado(trabajoGrado);
 
                 when(respuestaExamenValoracionRepository.findById(idRespuestaExamen))
                                 .thenReturn(Optional.of(respuestaExamenValoracionOld));
 
-                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getIdTrabajoGrado().getId()))
+                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
                 InformationException exception = assertThrows(InformationException.class, () -> {
@@ -366,7 +365,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -403,7 +401,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -428,7 +425,7 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionOld.setIdEvaluador(2L);
                 respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.EXTERNO);
-                respuestaExamenValoracionOld.setIdTrabajoGrado(trabajoGrado);
+                respuestaExamenValoracionOld.setTrabajoGrado(trabajoGrado);
 
                 when(respuestaExamenValoracionRepository.findById(idRespuestaExamen))
                                 .thenReturn(Optional.of(respuestaExamenValoracionOld));
@@ -460,7 +457,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(2L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -485,12 +481,12 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionOld.setIdEvaluador(1L);
                 respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.INTERNO);
-                respuestaExamenValoracionOld.setIdTrabajoGrado(trabajoGrado);
+                respuestaExamenValoracionOld.setTrabajoGrado(trabajoGrado);
 
                 when(respuestaExamenValoracionRepository.findById(idRespuestaExamen))
                                 .thenReturn(Optional.of(respuestaExamenValoracionOld));
 
-                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getIdTrabajoGrado().getId()))
+                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
                 when(archivoClient.obtenerDocentePorId(respuestaExamenValoracionDto.getIdEvaluador()))
@@ -523,7 +519,7 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
+
                 respuestaExamenValoracionDto.setIdEvaluador(2L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.EXTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -548,12 +544,12 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionOld.setIdEvaluador(1L);
                 respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.EXTERNO);
-                respuestaExamenValoracionOld.setIdTrabajoGrado(trabajoGrado);
+                respuestaExamenValoracionOld.setTrabajoGrado(trabajoGrado);
 
                 when(respuestaExamenValoracionRepository.findById(idRespuestaExamen))
                                 .thenReturn(Optional.of(respuestaExamenValoracionOld));
 
-                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getIdTrabajoGrado().getId()))
+                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
                 when(archivoClientExpertos.obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador()))
@@ -586,7 +582,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -611,12 +606,12 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionOld.setIdEvaluador(1L);
                 respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.INTERNO);
-                respuestaExamenValoracionOld.setIdTrabajoGrado(trabajoGrado);
+                respuestaExamenValoracionOld.setTrabajoGrado(trabajoGrado);
 
                 when(respuestaExamenValoracionRepository.findById(idRespuestaExamen))
                                 .thenReturn(Optional.of(respuestaExamenValoracionOld));
 
-                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getIdTrabajoGrado().getId()))
+                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
                 when(archivoClient.obtenerDocentePorId(respuestaExamenValoracionDto.getIdEvaluador()))
@@ -650,7 +645,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.EXTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -675,12 +669,12 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionOld.setIdEvaluador(1L);
                 respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.EXTERNO);
-                respuestaExamenValoracionOld.setIdTrabajoGrado(trabajoGrado);
+                respuestaExamenValoracionOld.setTrabajoGrado(trabajoGrado);
 
                 when(respuestaExamenValoracionRepository.findById(idRespuestaExamen))
                                 .thenReturn(Optional.of(respuestaExamenValoracionOld));
 
-                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getIdTrabajoGrado().getId()))
+                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
                 when(archivoClientExpertos.obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador()))
@@ -715,7 +709,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);

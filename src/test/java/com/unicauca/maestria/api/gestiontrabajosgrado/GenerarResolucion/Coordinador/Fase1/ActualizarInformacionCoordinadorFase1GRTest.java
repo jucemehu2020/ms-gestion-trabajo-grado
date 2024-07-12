@@ -113,12 +113,12 @@ public class ActualizarInformacionCoordinadorFase1GRTest {
         trabajoGrado.setNumeroEstado(14);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdGeneracionResolucion(generacionResolucionOld);
+        trabajoGrado.setGeneracionResolucion(generacionResolucionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
+                .findById(trabajoGrado.getGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
@@ -170,12 +170,12 @@ public class ActualizarInformacionCoordinadorFase1GRTest {
         trabajoGrado.setNumeroEstado(14);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdGeneracionResolucion(generacionResolucionOld);
+        trabajoGrado.setGeneracionResolucion(generacionResolucionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(generacionResolucionRepository
-                .findById(trabajoGrado.getIdGeneracionResolucion().getId()))
+                .findById(trabajoGrado.getGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucionOld));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -313,7 +313,7 @@ public class ActualizarInformacionCoordinadorFase1GRTest {
         trabajoGrado.setNumeroEstado(11);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdGeneracionResolucion(generacionResolucion);
+        trabajoGrado.setGeneracionResolucion(generacionResolucion);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
@@ -358,7 +358,7 @@ public class ActualizarInformacionCoordinadorFase1GRTest {
         trabajoGrado.setNumeroEstado(7);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdGeneracionResolucion(generacionResolucion);
+        trabajoGrado.setGeneracionResolucion(generacionResolucion);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());
 

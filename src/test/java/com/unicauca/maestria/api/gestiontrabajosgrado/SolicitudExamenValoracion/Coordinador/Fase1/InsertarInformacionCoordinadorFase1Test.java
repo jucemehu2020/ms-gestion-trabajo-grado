@@ -82,6 +82,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                                 respuestaComiteSolicitudRepository,
                                 null,
                                 trabajoGradoRepository,
+                                null,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
@@ -122,14 +123,14 @@ public class InsertarInformacionCoordinadorFase1Test {
                 trabajoGrado.setNumeroEstado(1);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracion);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracion);
 
                 when(result.hasErrors()).thenReturn(false);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getId()))
+                                .findById(trabajoGrado.getSolicitudExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class),
@@ -156,7 +157,7 @@ public class InsertarInformacionCoordinadorFase1Test {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals(true, resultado.getConceptoCoordinadorDocumentos());
+                assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoCoordinadorDocumentos());
         }
 
         @Test
@@ -182,14 +183,14 @@ public class InsertarInformacionCoordinadorFase1Test {
                 trabajoGrado.setNumeroEstado(1);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracion);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracion);
 
                 when(result.hasErrors()).thenReturn(false);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getId()))
+                                .findById(trabajoGrado.getSolicitudExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 PersonaDto personaDto = new PersonaDto();
@@ -225,7 +226,7 @@ public class InsertarInformacionCoordinadorFase1Test {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals(false, resultado.getConceptoCoordinadorDocumentos());
+                assertEquals(ConceptoVerificacion.RECHAZADO, resultado.getConceptoCoordinadorDocumentos());
         }
 
         @Test
@@ -331,7 +332,7 @@ public class InsertarInformacionCoordinadorFase1Test {
                 trabajoGrado.setNumeroEstado(2);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracion);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracion);
 
                 when(result.hasErrors()).thenReturn(false);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));

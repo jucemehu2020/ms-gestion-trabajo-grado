@@ -83,4 +83,10 @@ public class InicioTrabajoGradoController {
                 .body(inicioTrabajoGradoService.descargarArchivo(rutaArchivo));
     }
 
+    @GetMapping("/cancelarTrabajoGrado/{idTrabajoGrado}")
+    public ResponseEntity<?> cancelarTrabajoGrado(@PathVariable Long idTrabajoGrado) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(inicioTrabajoGradoService.cancelarTrabajoGrado(idTrabajoGrado));
+    }
+
 }

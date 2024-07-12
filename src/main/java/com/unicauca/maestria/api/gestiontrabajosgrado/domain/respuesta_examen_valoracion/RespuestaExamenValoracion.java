@@ -47,10 +47,8 @@ public class RespuestaExamenValoracion {
     @Enumerated(EnumType.STRING)
     private TipoEvaluador tipoEvaluador;
 
-    private Boolean permitidoExamen;
-
     @ManyToOne
     @JoinColumn(name = "id_trabajo_grado")
-    private TrabajoGrado idTrabajoGrado;
+    private TrabajoGrado trabajoGrado;
 
 }

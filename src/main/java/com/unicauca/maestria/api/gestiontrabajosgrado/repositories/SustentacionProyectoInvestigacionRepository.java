@@ -13,17 +13,17 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabaj
 public interface SustentacionProyectoInvestigacionRepository
         extends JpaRepository<SustentacionTrabajoInvestigacion, Long> {
 
-    @Query("SELECT COUNT(sev) FROM SustentacionTrabajoInvestigacion sev WHERE sev.idTrabajoGrado.id = ?1")
+    @Query("SELECT COUNT(sev) FROM SustentacionTrabajoInvestigacion sev WHERE sev.trabajoGrado.id = ?1")
     public int countByTrabajoGradoId(Long trabajoGradoId);
 
-    @Query("SELECT sev FROM SustentacionTrabajoInvestigacion sev WHERE sev.idTrabajoGrado.id = ?1")
-    public SustentacionTrabajoInvestigacion findByTrabajoGradoId(Long trabajoGradoId);
+    // @Query("SELECT sev FROM SustentacionTrabajoInvestigacion sev WHERE sev.trabajoGrado.id = ?1")
+    // public SustentacionTrabajoInvestigacion findByTrabajoGradoId(Long trabajoGradoId);
 
-    Optional<SustentacionTrabajoInvestigacion> findByIdTrabajoGradoId(Long idTrabajoGradoId);
+    Optional<SustentacionTrabajoInvestigacion> findByTrabajoGradoId(Long idTrabajoGradoId);
 
     @Query("SELECT rc FROM SustentacionTrabajoInvestigacion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.id = :id ORDER BY rc.id DESC")
     List<RespuestaComiteSustentacion> findRespuestaComiteBySustentacionId(@Param("id") Long id);
 
-    @Query("SELECT sev.id FROM SustentacionTrabajoInvestigacion sev WHERE sev.idTrabajoGrado.id = ?1")
+    @Query("SELECT sev.id FROM SustentacionTrabajoInvestigacion sev WHERE sev.trabajoGrado.id = ?1")
     public Long findIdSustentacionTrabajoInvestigacionByTrabajoGradoId(Long trabajoGradoId);
 }

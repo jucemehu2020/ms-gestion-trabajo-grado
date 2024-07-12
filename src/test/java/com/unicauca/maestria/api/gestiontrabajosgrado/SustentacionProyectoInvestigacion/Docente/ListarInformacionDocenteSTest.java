@@ -77,6 +77,7 @@ public class ListarInformacionDocenteSTest {
                                 sustentacionProyectoInvestigacionResponseMapper,
                                 respuestaComiteSustentacionRepository,
                                 trabajoGradoRepository,
+                                null,
                                 archivoClient,
                                 archivoClientExpertos,
                                 archivoClientEgresados);
@@ -103,12 +104,12 @@ public class ListarInformacionDocenteSTest {
                 trabajoGrado.setNumeroEstado(18);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 when(sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
                                                 .getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
@@ -189,12 +190,12 @@ public class ListarInformacionDocenteSTest {
                 trabajoGrado.setNumeroEstado(18);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 when(sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
                                                 .getId()))
                                 .thenReturn(Optional.of(new SustentacionTrabajoInvestigacion()));
 
@@ -242,7 +243,7 @@ public class ListarInformacionDocenteSTest {
                 trabajoGrado.setNumeroEstado(18);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
@@ -251,7 +252,7 @@ public class ListarInformacionDocenteSTest {
                                                 "Servidor externo actualmente fuera de servicio"));
 
                 when(sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
                                                 .getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
@@ -284,12 +285,12 @@ public class ListarInformacionDocenteSTest {
                 trabajoGrado.setNumeroEstado(18);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 when(sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getIdSustentacionProyectoInvestigacion()
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
                                                 .getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 

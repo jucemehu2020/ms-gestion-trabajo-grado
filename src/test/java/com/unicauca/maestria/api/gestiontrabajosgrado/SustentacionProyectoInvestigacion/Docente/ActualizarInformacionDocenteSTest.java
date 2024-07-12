@@ -84,6 +84,7 @@ public class ActualizarInformacionDocenteSTest {
                 sustentacionProyectoInvestigacionResponseMapper,
                 respuestaComiteSustentacionRepository,
                 trabajoGradoRepository,
+                null,
                 archivoClient,
                 archivoClientExpertos,
                 archivoClientEgresados);
@@ -118,13 +119,13 @@ public class ActualizarInformacionDocenteSTest {
         trabajoGrado.setNumeroEstado(19);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+        trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
         when(sustentacionProyectoInvestigacionRepository
                 .findById(
-                        trabajoGrado.getIdSustentacionProyectoInvestigacion().getId()))
+                        trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
@@ -279,7 +280,7 @@ public class ActualizarInformacionDocenteSTest {
         trabajoGrado.setNumeroEstado(19);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+        trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
@@ -326,7 +327,7 @@ public class ActualizarInformacionDocenteSTest {
         trabajoGrado.setNumeroEstado(19);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+        trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
@@ -372,7 +373,7 @@ public class ActualizarInformacionDocenteSTest {
         trabajoGrado.setNumeroEstado(19);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+        trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
@@ -416,7 +417,7 @@ public class ActualizarInformacionDocenteSTest {
         trabajoGrado.setNumeroEstado(19);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setIdSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+        trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
         when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 

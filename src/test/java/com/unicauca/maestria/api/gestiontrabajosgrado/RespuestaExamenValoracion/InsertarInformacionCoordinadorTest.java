@@ -11,8 +11,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -102,6 +100,8 @@ public class InsertarInformacionCoordinadorTest {
                                 anexoRespuestaExamenValoracionMapper,
                                 examenValoracionCanceladoMapper,
                                 trabajoGradoRepository,
+                                null,
+                                null,
                                 archivoClient,
                                 archivoClientExpertos);
                 ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
@@ -153,7 +153,7 @@ public class InsertarInformacionCoordinadorTest {
                 List<RespuestaExamenValoracion> listaExamenes = new ArrayList<>();
                 listaExamenes.add(respuestaExamenValoracionOld);
 
-                when(respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado))
+                when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
                                 .thenReturn(listaExamenes);
 
                 List<AnexoRespuestaExamenValoracion> listaAnexos = new ArrayList<>();
@@ -222,7 +222,7 @@ public class InsertarInformacionCoordinadorTest {
                         utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
                                         .thenReturn("path/to/new/file");
 
-                        RespuestaExamenValoracionResponseDto resultado = respuestaExamenValoracionServiceImpl.crear(
+                        RespuestaExamenValoracionResponseDto resultado = respuestaExamenValoracionServiceImpl.insertarInformacion(
                                         idTrabajoGrado,
                                         respuestaExamenValoracionDto, result);
 
@@ -273,7 +273,7 @@ public class InsertarInformacionCoordinadorTest {
                 when(result.getFieldErrors()).thenReturn(List.of(fieldError));
 
                 FieldErrorException exception = assertThrows(FieldErrorException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -324,7 +324,7 @@ public class InsertarInformacionCoordinadorTest {
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 InformationException exception = assertThrows(InformationException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -362,7 +362,7 @@ public class InsertarInformacionCoordinadorTest {
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -413,7 +413,7 @@ public class InsertarInformacionCoordinadorTest {
                                                 + respuestaExamenValoracionDto.getIdEvaluador() + " no encontrado"));
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -464,7 +464,7 @@ public class InsertarInformacionCoordinadorTest {
                                                 + respuestaExamenValoracionDto.getIdEvaluador() + " no encontrado"));
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -516,7 +516,7 @@ public class InsertarInformacionCoordinadorTest {
 
                 ServiceUnavailableException thrown = assertThrows(
                                 ServiceUnavailableException.class,
-                                () -> respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado,
+                                () -> respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
                                                 respuestaExamenValoracionDto,
                                                 result),
                                 "Servidor externo actualmente fuera de servicio");
@@ -568,7 +568,7 @@ public class InsertarInformacionCoordinadorTest {
 
                 ServiceUnavailableException thrown = assertThrows(
                                 ServiceUnavailableException.class,
-                                () -> respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado,
+                                () -> respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
                                                 respuestaExamenValoracionDto,
                                                 result),
                                 "Servidor externo actualmente fuera de servicio");
@@ -607,7 +607,7 @@ public class InsertarInformacionCoordinadorTest {
 
                 InformationException thrown = assertThrows(
                                 InformationException.class,
-                                () -> respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado,
+                                () -> respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
                                                 respuestaExamenValoracionDto,
                                                 result),
                                 "Ya no es permitido registrar mas respuestas");
@@ -662,12 +662,12 @@ public class InsertarInformacionCoordinadorTest {
                 List<RespuestaExamenValoracion> listaExamenes = new ArrayList<>();
                 listaExamenes.add(respuestaExamenValoracionOld);
 
-                when(respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado))
+                when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
                                 .thenReturn(listaExamenes);
 
                 InformationException thrown = assertThrows(
                                 InformationException.class,
-                                () -> respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado,
+                                () -> respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
                                                 respuestaExamenValoracionDto,
                                                 result),
                                 "El evaluador previamente dio su concepto como APROBADO, no es permitido que realice nuevos registros");
@@ -682,8 +682,6 @@ public class InsertarInformacionCoordinadorTest {
         void testInsertarInformacionCoordinador_AtributoFechaMaximaNoPermitido() {
 
                 Long idTrabajoGrado = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
                 listaAnexosDto.add(AnexoRespuestaExamenValoracionDto.builder()
@@ -700,7 +698,6 @@ public class InsertarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
-                respuestaExamenValoracionDto.setFechaMaximaEntrega(LocalDate.parse("2023-05-29", formatter));
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
                 respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
@@ -708,7 +705,7 @@ public class InsertarInformacionCoordinadorTest {
                 when(result.hasErrors()).thenReturn(false);
 
                 InformationException exception = assertThrows(InformationException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.crear(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
                                         result);
                 });
 

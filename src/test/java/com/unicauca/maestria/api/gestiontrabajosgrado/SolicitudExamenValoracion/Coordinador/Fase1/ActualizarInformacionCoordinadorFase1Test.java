@@ -82,6 +82,7 @@ public class ActualizarInformacionCoordinadorFase1Test {
                                 respuestaComiteSolicitudRepository,
                                 null,
                                 trabajoGradoRepository,
+                                null,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
@@ -124,13 +125,13 @@ public class ActualizarInformacionCoordinadorFase1Test {
                 trabajoGrado.setNumeroEstado(2);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracion);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracion);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
                 solicitudExamenValoracionOld.setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getId()))
+                                .findById(trabajoGrado.getSolicitudExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class),
@@ -183,13 +184,13 @@ public class ActualizarInformacionCoordinadorFase1Test {
                 trabajoGrado.setNumeroEstado(2);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracion);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracion);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 SolicitudExamenValoracion solicitudExamenValoracionOld = new SolicitudExamenValoracion();
                 solicitudExamenValoracionOld.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
                 when(solicitudExamenValoracionRepository
-                                .findById(trabajoGrado.getExamenValoracion().getId()))
+                                .findById(trabajoGrado.getSolicitudExamenValoracion().getId()))
                                 .thenReturn(Optional.of(solicitudExamenValoracionOld));
 
                 PersonaDto personaDto = new PersonaDto();
@@ -337,7 +338,7 @@ public class ActualizarInformacionCoordinadorFase1Test {
                 trabajoGrado.setNumeroEstado(1);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setExamenValoracion(solicitudExamenValoracion);
+                trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracion);
 
                 when(result.hasErrors()).thenReturn(false);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
