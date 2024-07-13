@@ -98,7 +98,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 .findByTrabajoGradoId(idTrabajoGrado);
                 if (solicitudExamenValoracion.get().getIdEvaluadorInterno() != respuestaExamenValoracionDto
                                 .getIdEvaluador()
-                                || solicitudExamenValoracion.get()
+                                && solicitudExamenValoracion.get()
                                                 .getIdEvaluadorExterno() != respuestaExamenValoracionDto
                                                                 .getIdEvaluador()) {
                         throw new InformationException(

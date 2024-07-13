@@ -303,10 +303,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         }
                 }
 
-                // Mapear DTO a entidad
-                // GeneracionResolucion generarResolucion =
-                // generacionResolucionMapper.toEntity(generacionResolucionDto);
-
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)) {
                         correos.add(Constants.correoConsejo);
@@ -485,7 +481,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 "Trabajo de grado con id " + idTrabajoGrado
                                                                 + " no encontrado"));
 
-                if (generacionResolucionTmp.getActaFechaRespuestaComite().isEmpty()
+                if (generacionResolucionTmp.getActaFechaRespuestaComite() == null
                                 && generacionResolucionTmp.getLinkSolicitudConsejoFacultad() == null) {
                         throw new InformationException("No se han registrado datos");
                 }

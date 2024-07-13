@@ -84,7 +84,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocenteTestTest_RegistroExitoso() {
+        void InsertarInformacionDocenteTest_RegistroExitoso() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -144,7 +144,7 @@ public class InsertarInformacionDocenteTest {
 
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
                 generacionResolucion.setDirector(1L);
-                generacionResolucion.setCodirector(1L);
+                generacionResolucion.setCodirector(2L);
                 generacionResolucion.setLinkAnteproyectoFinal(
                                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
                 generacionResolucion.setLinkSolicitudComite(
@@ -158,8 +158,8 @@ public class InsertarInformacionDocenteTest {
                 GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = new GeneracionResolucionDocenteResponseDto();
                 generacionResolucionDocenteResponseDto.setId(1L);
                 generacionResolucionDocenteResponseDto.setTitulo("Prueba test");
-                generacionResolucion.setDirector(1L);
-                generacionResolucion.setCodirector(1L);
+                generacionResolucionDocenteResponseDto.setDirector(1L);
+                generacionResolucionDocenteResponseDto.setCodirector(2L);
                 generacionResolucionDocenteResponseDto.setLinkAnteproyectoFinal(
                                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
                 generacionResolucionDocenteResponseDto.setLinkSolicitudComite(
@@ -179,8 +179,8 @@ public class InsertarInformacionDocenteTest {
                         assertNotNull(resultado);
                         assertEquals(1L, resultado.getId());
                         assertEquals("Prueba test", resultado.getTitulo());
-                        assertEquals("Karla Ramirez", resultado.getDirector());
-                        assertEquals("Luis Perez", resultado.getCodirector());
+                        assertEquals(1L, resultado.getDirector());
+                        assertEquals(2L, resultado.getCodirector());
                         assertEquals(
                                         "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt",
                                         resultado.getLinkAnteproyectoFinal());
@@ -191,7 +191,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocenteTest_FaltanAtributos() {
+        void InsertarInformacionDocenteTest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -222,7 +222,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocenteTest_EstadoNoValido() {
+        void InsertarInformacionDocenteTest_EstadoNoValido() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -258,7 +258,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_DirectorNoExiste() {
+        void InsertarInformacionDocenteTest_DirectorNoExiste() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -300,12 +300,12 @@ public class InsertarInformacionDocenteTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "Docentes con id 1 no encontrado";
+                String expectedMessage = "Docentes con id 3 no encontrado";
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
         @Test
-        void testInsertarInformacionDocente_CoDirectorNoExiste() {
+        void InsertarInformacionDocenteTest_CoDirectorNoExiste() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -366,7 +366,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_TrabajoGradoNoExiste() {
+        void InsertarInformacionDocenteTest_TrabajoGradoNoExiste() {
 
                 Long idTrabajoGrado = 2L;
 
@@ -393,7 +393,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_IgualDirectorCodirector() {
+        void InsertarInformacionDocenteTest_IgualDirectorCodirector() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -408,7 +408,7 @@ public class InsertarInformacionDocenteTest {
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(13);
+                trabajoGrado.setNumeroEstado(7);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
 

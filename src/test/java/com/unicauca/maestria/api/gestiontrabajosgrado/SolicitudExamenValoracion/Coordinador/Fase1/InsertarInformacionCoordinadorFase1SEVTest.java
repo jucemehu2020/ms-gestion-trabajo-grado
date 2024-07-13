@@ -47,7 +47,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class InsertarInformacionCoordinadorFase1Test {
+public class InsertarInformacionCoordinadorFase1SEVTest {
 
         @Mock
         private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
@@ -92,7 +92,7 @@ public class InsertarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase1_RegistroExitosoConceptoTrue() {
+        void InsertarInformacionCoordinadorFase1SEVTest_RegistroExitosoConceptoTrue() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
                 solicitudExamenValoracionCoordinadorFase1Dto
@@ -161,7 +161,7 @@ public class InsertarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase1_RegistroExitosoConceptoFalse() {
+        void InsertarInformacionCoordinadorFase1SEVTest_RegistroExitosoConceptoFalse() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
                 solicitudExamenValoracionCoordinadorFase1Dto
@@ -230,7 +230,7 @@ public class InsertarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase1_RegistroFalloPorFalse() {
+        void InsertarInformacionCoordinadorFase1SEVTest_RegistroFalloPorFalse() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
                 solicitudExamenValoracionCoordinadorFase1Dto
@@ -266,7 +266,7 @@ public class InsertarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase1_FaltanAtributos() {
+        void InsertarInformacionCoordinadorFase1SEVTest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
                 solicitudExamenValoracionCoordinadorFase1Dto
@@ -310,7 +310,7 @@ public class InsertarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase1_EstadoNoValido() {
+        void InsertarInformacionCoordinadorFase1SEVTest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
                 solicitudExamenValoracionCoordinadorFase1Dto
@@ -350,7 +350,7 @@ public class InsertarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase1_TrabajoGradoNoExiste() {
+        void InsertarInformacionCoordinadorFase1SEVTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
                 solicitudExamenValoracionCoordinadorFase1Dto

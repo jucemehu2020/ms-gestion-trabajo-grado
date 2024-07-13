@@ -42,7 +42,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ActualizarInformacionDocenteTest {
+public class ActualizarInformacionDocenteSEVTest {
 
         @Mock
         private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
@@ -81,7 +81,7 @@ public class ActualizarInformacionDocenteTest {
 
 
         @Test
-        void testActualizarInformacionDocente_RegistroExitoso() {
+        void ActualizarInformacionDocenteSEVTest_RegistroExitoso() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Cambio nombre");
@@ -170,7 +170,7 @@ public class ActualizarInformacionDocenteTest {
         }
 
         @Test
-        void testActualizarInformacionDocente_FaltanAtributos() {
+        void ActualizarInformacionDocenteSEVTest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -202,7 +202,7 @@ public class ActualizarInformacionDocenteTest {
         }
 
         @Test
-        void testActualizarInformacionDocente_EstadoNoValido() {
+        void ActualizarInformacionDocenteSEVTest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -233,7 +233,7 @@ public class ActualizarInformacionDocenteTest {
         }
 
         @Test
-        void testActualizarInformacionDocente_TrabajoGradoNoExiste() {
+        void ActualizarInformacionDocenteSEVTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -260,7 +260,7 @@ public class ActualizarInformacionDocenteTest {
         }
 
         @Test
-        void testActualizarInformacionDocente_DocenteNoExiste() {
+        void ActualizarInformacionDocenteSEVTest_DocenteNoExiste() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -296,7 +296,7 @@ public class ActualizarInformacionDocenteTest {
         }
 
         @Test
-        void testActualizarInformacionDocente_ExpertoNoExiste() {
+        void ActualizarInformacionDocenteSEVTest_ExpertoNoExiste() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -335,7 +335,7 @@ public class ActualizarInformacionDocenteTest {
         }
 
         @Test
-        void testActualizarInformacionDocente_ServidorDocenteCaido() {
+        void ActualizarInformacionDocenteSEVTest_ServidorDocenteCaido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -370,7 +370,7 @@ public class ActualizarInformacionDocenteTest {
         }
 
         @Test
-        void testActualizarInformacionDocente_ServidorExpertoCaido() {
+        void ActualizarInformacionDocenteSEVTest_ServidorExpertoCaido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");

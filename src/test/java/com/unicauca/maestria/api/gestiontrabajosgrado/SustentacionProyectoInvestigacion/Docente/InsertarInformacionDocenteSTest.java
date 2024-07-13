@@ -45,6 +45,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyec
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSustentacionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SustentacionProyectoInvestigacionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TiemposPendientesRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacionServiceImpl;
 
@@ -62,6 +63,8 @@ public class InsertarInformacionDocenteSTest {
         private RespuestaComiteSustentacionRepository respuestaComiteSustentacionRepository;
         @Mock
         private TrabajoGradoRepository trabajoGradoRepository;
+        @Mock
+        private TiemposPendientesRepository tiemposPendientesRepository;
         @Mock
         private ArchivoClient archivoClient;
         @Mock
@@ -84,7 +87,7 @@ public class InsertarInformacionDocenteSTest {
                                 sustentacionProyectoInvestigacionResponseMapper,
                                 respuestaComiteSustentacionRepository,
                                 trabajoGradoRepository,
-                                null,
+                                tiemposPendientesRepository,
                                 archivoClient,
                                 archivoClientExpertos,
                                 archivoClientEgresados);
@@ -108,7 +111,7 @@ public class InsertarInformacionDocenteSTest {
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(18);
+                trabajoGrado.setNumeroEstado(23);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
 
@@ -254,7 +257,7 @@ public class InsertarInformacionDocenteSTest {
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(18);
+                trabajoGrado.setNumeroEstado(23);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
 
@@ -291,7 +294,7 @@ public class InsertarInformacionDocenteSTest {
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(18);
+                trabajoGrado.setNumeroEstado(23);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
 
@@ -328,7 +331,7 @@ public class InsertarInformacionDocenteSTest {
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(18);
+                trabajoGrado.setNumeroEstado(23);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
 
@@ -364,7 +367,7 @@ public class InsertarInformacionDocenteSTest {
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(18);
+                trabajoGrado.setNumeroEstado(23);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
 

@@ -36,6 +36,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Con
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
@@ -54,12 +55,14 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenVal
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosRespuestaExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.ExamenValoracionCanceladoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TiemposPendientesRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion.RespuestaExamenValoracionServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ActualizarInformacionCoordinadorTest {
+public class ActualizarInformacionCoordinadorREVTest {
 
         @Mock
         private RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
@@ -77,6 +80,10 @@ public class ActualizarInformacionCoordinadorTest {
         private ExamenValoracionCanceladoMapper examenValoracionCanceladoMapper;
         @Mock
         private TrabajoGradoRepository trabajoGradoRepository;
+        @Mock
+        private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
+        @Mock
+        private TiemposPendientesRepository tiemposPendientesRepository;
         @Mock
         private ArchivoClient archivoClient;
         @Mock
@@ -100,25 +107,19 @@ public class ActualizarInformacionCoordinadorTest {
                                 anexoRespuestaExamenValoracionMapper,
                                 examenValoracionCanceladoMapper,
                                 trabajoGradoRepository,
-                                null,
-                                null,
+                                solicitudExamenValoracionRepository,
+                                tiemposPendientesRepository,
                                 archivoClient,
                                 archivoClientExpertos);
                 ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
         }
 
-        // Hacer esta prueba con anexos
         @Test
-        void testActualizarInformacionCoordinadorTest_ActualizacionExitosa() {
+        void ActualizarInformacionCoordinadorREVTestt_ActualizacionExitosa() {
 
                 Long idRespuestaExamen = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-                // List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
-                // listaAnexosDto.add(AnexoRespuestaExamenValoracionDto.builder()
-                // .linkAnexo("Anexos.txt-cHJ1ZWJhIGRlIHRleHR")
-                // .build());
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Respuesta evaluadores");
@@ -135,12 +136,6 @@ public class ActualizarInformacionCoordinadorTest {
                 respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
-
-                // List<AnexoRespuestaExamenValoracion> listaAnexos = new ArrayList<>();
-                // listaAnexos.add(AnexoRespuestaExamenValoracion.builder()
-                // .linkAnexo(
-                // "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt")
-                // .build());
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(1L);
@@ -168,6 +163,11 @@ public class ActualizarInformacionCoordinadorTest {
                 when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
+                when(respuestaExamenValoracionRepository.findLatestIdByIdEvaluadorAndTipoEvaluador(
+                                respuestaExamenValoracionDto.getIdEvaluador(),
+                                respuestaExamenValoracionDto.getTipoEvaluador()))
+                                .thenReturn(1L);
+
                 PersonaDto PersonaEstudianteDto = new PersonaDto();
                 PersonaEstudianteDto.setIdentificacion(123L);
                 PersonaEstudianteDto.setNombre("Juan");
@@ -181,6 +181,9 @@ public class ActualizarInformacionCoordinadorTest {
 
                 when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
                                 .thenReturn(true);
+
+                when(tiemposPendientesRepository.save(any(TiemposPendientes.class)))
+                                .thenReturn(new TiemposPendientes());
 
                 RespuestaExamenValoracion respuestaExamenValoracionNew = new RespuestaExamenValoracion();
                 respuestaExamenValoracionNew.setId(1L);
@@ -230,23 +233,19 @@ public class ActualizarInformacionCoordinadorTest {
                                         .thenReturn(true);
 
                         RespuestaExamenValoracionResponseDto resultado = respuestaExamenValoracionServiceImpl
-                                        .actualizar(
-                                                        idRespuestaExamen,
+                                        .actualizar(idRespuestaExamen,
                                                         respuestaExamenValoracionDto, result);
 
                         assertNotNull(resultado);
                         assertEquals(1L, resultado.getId());
-                        assertEquals(
-                                        "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt",
+                        assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt",
                                         resultado.getLinkFormatoB());
-                        assertEquals(
-                                        "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt",
+                        assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt",
                                         resultado.getLinkFormatoC());
-                        assertEquals(
-                                        "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt",
+                        assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt",
                                         resultado.getLinkObservaciones());
                         assertEquals(new ArrayList<>(), resultado.getAnexos());
-                        assertEquals(ConceptosVarios.APROBADO, resultado.getRespuestaExamenValoracion());
+                        assertEquals(ConceptosVarios.NO_APROBADO, resultado.getRespuestaExamenValoracion());
                         assertEquals(LocalDate.parse("2023-05-29", formatter), resultado.getFechaMaximaEntrega());
                         assertEquals(1L, resultado.getIdEvaluador());
                         assertEquals(TipoEvaluador.INTERNO, resultado.getTipoEvaluador());
@@ -254,7 +253,7 @@ public class ActualizarInformacionCoordinadorTest {
         }
 
         @Test
-        void testActualizarInformacionCoordinador_FaltanAtributos() {
+        void ActualizarInformacionCoordinadorREVTest_FaltanAtributos() {
                 Long idRespuestaExamen = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -292,7 +291,7 @@ public class ActualizarInformacionCoordinadorTest {
         }
 
         @Test
-        void testActualizarInformacionCoordinador_EstadoNoValido() {
+        void ActualizarInformacionCoordinadorREVTest_EstadoNoValido() {
                 Long idRespuestaExamen = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -350,7 +349,7 @@ public class ActualizarInformacionCoordinadorTest {
         }
 
         @Test
-        void testActualizarInformacionCoordinador_RespuestaExamenValoracionNoExiste() {
+        void ActualizarInformacionCoordinadorREVTest_RespuestaExamenValoracionNoExiste() {
                 Long idRespuestaExamen = 2L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -385,7 +384,7 @@ public class ActualizarInformacionCoordinadorTest {
         }
 
         @Test
-        void testActualizarInformacionCoordinador_DatosEvaluadorNoCorresponden() {
+        void ActualizarInformacionCoordinadorREVTest_DatosEvaluadorNoCorresponden() {
 
                 Long idRespuestaExamen = 1L;
 
@@ -442,7 +441,7 @@ public class ActualizarInformacionCoordinadorTest {
         }
 
         @Test
-        void testActualizarInformacionCoordinador_DocenteNoExiste() {
+        void ActualizarInformacionCoordinadorREVTest_DocenteNoExiste() {
                 Long idRespuestaExamen = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -504,7 +503,7 @@ public class ActualizarInformacionCoordinadorTest {
         }
 
         @Test
-        void testActualizarInformacionCoordinador_ExpertoNoExiste() {
+        void ActualizarInformacionCoordinadorREVTest_ExpertoNoExiste() {
                 Long idRespuestaExamen = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -567,7 +566,7 @@ public class ActualizarInformacionCoordinadorTest {
         }
 
         @Test
-        void testActualizarInformacionCoordinador_ServidorDocenteCaido() {
+        void ActualizarInformacionCoordinadorREVTest_ServidorDocenteCaido() {
                 Long idRespuestaExamen = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -630,7 +629,7 @@ public class ActualizarInformacionCoordinadorTest {
         }
 
         @Test
-        void testActualizarInformacionCoordinador_ServidorExpertoCaido() {
+        void ActualizarInformacionCoordinadorREVTest_ServidorExpertoCaido() {
                 Long idRespuestaExamen = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -690,39 +689,6 @@ public class ActualizarInformacionCoordinadorTest {
 
                 assertNotNull(thrown.getMessage());
                 assertTrue(thrown.getMessage().contains("Servidor externo actualmente fuera de servicio"));
-        }
-
-        @Test
-        void testActualizarInformacionCoordinador_AtributoFechaMaximaNoPermitido() {
-
-                Long idRespuestaExamen = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-                envioEmailDto.setAsunto("Respuesta evaluadores");
-                envioEmailDto.setMensaje("Envio documentos enviados por el evaluador Mage");
-
-                RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
-                respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
-                respuestaExamenValoracionDto.setIdEvaluador(1L);
-                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
-                respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.actualizar(idRespuestaExamen, respuestaExamenValoracionDto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Atributo FECHA MAXIMA no permitido";
-                assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
 }

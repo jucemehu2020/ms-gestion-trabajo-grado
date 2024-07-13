@@ -40,7 +40,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ListarInformacionCoordinadorFase2Test {
+public class ListarInformacionCoordinadorFase2SEVTest {
 
      @Mock
         private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
@@ -85,7 +85,7 @@ public class ListarInformacionCoordinadorFase2Test {
         }
 
     @Test
-    public void testListarInformacionCoordinadoFase2Test_Exito() {
+    public void ListarInformacionCoordinadorFase2SEVTest_Exito() {
 
         Long idTrabajoGrado = 1L;
 
@@ -138,7 +138,7 @@ public class ListarInformacionCoordinadorFase2Test {
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
-        assertEquals(true, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
+        assertEquals(Concepto.APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
         assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
         assertEquals(LocalDate.parse("2023-05-24", formatter),
                 resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
@@ -149,7 +149,7 @@ public class ListarInformacionCoordinadorFase2Test {
     }
 
     @Test
-    void testListarInformacionCoordinadoFase2Test_SinRegistro() {
+    void ListarInformacionCoordinadorFase2SEVTest_SinRegistro() {
 
         Long idTrabajoGrado = 1L;
         SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
@@ -167,7 +167,7 @@ public class ListarInformacionCoordinadorFase2Test {
     }
 
     @Test
-    void testListarInformacionCoordinadoFase2Test_TrabajoGradoNoExiste() {
+    void ListarInformacionCoordinadorFase2SEVTest_TrabajoGradoNoExiste() {
         Long idTrabajoGrado = 2L;
 
         when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))

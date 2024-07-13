@@ -47,7 +47,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ActualizarInformacionCoordinadorFase1Test {
+public class ActualizarInformacionCoordinadorFase1SEVTest {
 
         @Mock
         private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
@@ -92,7 +92,7 @@ public class ActualizarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testActualizarInformacionCoordinadorFase1Test_ActualizacionExitosaModificacionTrue() {
+        void ActualizarInformacionCoordinadorFase1SEVTest_ActualizacionExitosaModificacionTrue() {
                 Long idTrabajoGrado = 1L;
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
@@ -111,7 +111,8 @@ public class ActualizarInformacionCoordinadorFase1Test {
                 documentosEnvioComiteDto.setB64Anexos(anexos);
 
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
                 solicitudExamenValoracionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(documentosEnvioComiteDto);
 
@@ -157,11 +158,11 @@ public class ActualizarInformacionCoordinadorFase1Test {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals(true, resultado.getConceptoCoordinadorDocumentos());
+                assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoCoordinadorDocumentos());
         }
 
         @Test
-        void testActualizarInformacionCoordinadorFase1Test_ActualizacionExitosaModificacionFalse() {
+        void ActualizarInformacionCoordinadorFase1SEVTest_ActualizacionExitosaModificacionFalse() {
                 Long idTrabajoGrado = 1L;
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
@@ -170,7 +171,8 @@ public class ActualizarInformacionCoordinadorFase1Test {
                                 "Solicito comedidamente revisar el anteproyecto en el apartado de Introduccion");
 
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
                 solicitudExamenValoracionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -222,11 +224,11 @@ public class ActualizarInformacionCoordinadorFase1Test {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals(false, resultado.getConceptoCoordinadorDocumentos());
+                assertEquals(ConceptoVerificacion.RECHAZADO, resultado.getConceptoCoordinadorDocumentos());
         }
 
         @Test
-        void testActualizarInformacionCoordinadorFase1_ActualizarFalloPorFalse() {
+        void ActualizarInformacionCoordinadorFase1SEVTest_ActualizarFalloPorFalse() {
                 Long idTrabajoGrado = 1L;
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
@@ -245,7 +247,8 @@ public class ActualizarInformacionCoordinadorFase1Test {
                 documentosEnvioComiteDto.setB64Anexos(anexos);
 
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
                 solicitudExamenValoracionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(documentosEnvioComiteDto);
 
@@ -262,7 +265,7 @@ public class ActualizarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testActualizarInformacionCoordinadorFase1_FaltanAtributos() {
+        void ActualizarInformacionCoordinadorFase1SEVTest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
@@ -280,7 +283,8 @@ public class ActualizarInformacionCoordinadorFase1Test {
                 documentosEnvioComiteDto.setB64Anexos(anexos);
 
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
                 solicitudExamenValoracionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(documentosEnvioComiteDto);
 
@@ -307,7 +311,7 @@ public class ActualizarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testActualizarInformacionCoordinadorFase1_EstadoNoValido() {
+        void ActualizarInformacionCoordinadorFase1SEVTest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
@@ -325,7 +329,8 @@ public class ActualizarInformacionCoordinadorFase1Test {
                 documentosEnvioComiteDto.setB64Anexos(anexos);
 
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
                 solicitudExamenValoracionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(documentosEnvioComiteDto);
 
@@ -335,7 +340,7 @@ public class ActualizarInformacionCoordinadorFase1Test {
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(1);
+                trabajoGrado.setNumeroEstado(0);
                 trabajoGrado.setIdEstudiante(123L);
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
                 trabajoGrado.setSolicitudExamenValoracion(solicitudExamenValoracion);
@@ -356,7 +361,7 @@ public class ActualizarInformacionCoordinadorFase1Test {
         }
 
         @Test
-        void testActualizarInformacionCoordinadorFase1_TrabajoGradoNoExiste() {
+        void ActualizarInformacionCoordinadorFase1SEVTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
@@ -374,7 +379,8 @@ public class ActualizarInformacionCoordinadorFase1Test {
                 documentosEnvioComiteDto.setB64Anexos(anexos);
 
                 SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto.setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
                 solicitudExamenValoracionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(documentosEnvioComiteDto);
 

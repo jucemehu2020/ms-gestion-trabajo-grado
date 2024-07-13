@@ -97,7 +97,7 @@ public class ActualizarInformacionCoordinadorFase3GRTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(18);
+        trabajoGrado.setNumeroEstado(21);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setGeneracionResolucion(generacionResolucionOld);

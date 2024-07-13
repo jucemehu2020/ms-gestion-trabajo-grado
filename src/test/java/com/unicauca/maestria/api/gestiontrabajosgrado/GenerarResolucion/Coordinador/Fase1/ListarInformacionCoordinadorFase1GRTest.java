@@ -71,7 +71,7 @@ public class ListarInformacionCoordinadorFase1GRTest {
     }
 
     @Test
-    void listarInformacionCoordinadorFase1GRTest_Exito() {
+    void ListarInformacionCoordinadorFase1GRTest_Exito() {
 
         Long idTrabajoGrado = 1L;
 
@@ -102,12 +102,12 @@ public class ListarInformacionCoordinadorFase1GRTest {
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
-        assertEquals(Concepto.APROBADO, resultado.getConceptoDocumentosCoordinador());
+        assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoDocumentosCoordinador());
 
     }
 
     @Test
-    void listarInformacionCoordinadorFase1GRTest_NoHayDatos() {
+    void ListarInformacionCoordinadorFase1GRTest_NoHayDatos() {
         Long idTrabajoGrado = 1L;
 
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
@@ -125,7 +125,7 @@ public class ListarInformacionCoordinadorFase1GRTest {
     }
 
     @Test
-    void listarInformacionCoordinadorFase1GRTest_TrabajoGradoNoExiste() {
+    void ListarInformacionCoordinadorFase1GRTest_TrabajoGradoNoExiste() {
         Long idTrabajoGrado = 2L;
 
         when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))

@@ -45,7 +45,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class InsertarInformacionDocenteTest {
+public class InsertarInformacionDocenteSEVTest {
 
         @Mock
         private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
@@ -83,7 +83,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_RegistroExitoso() {
+        void InsertarInformacionDocenteSEVTest_RegistroExitoso() {
                 // Configuración de datos y mocks
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
@@ -187,7 +187,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_FaltanAtributos() {
+        void InsertarInformacionDocenteSEVTest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -217,7 +217,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_EstadoNoValido() {
+        void InsertarInformacionDocenteSEVTest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -247,7 +247,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_TrabajoGradoNoExiste() {
+        void InsertarInformacionDocenteSEVTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -271,7 +271,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_SolicitudExamenValoracionYaCreada() {
+        void InsertarInformacionDocenteSEVTest_SolicitudExamenValoracionYaCreada() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -301,7 +301,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_DocenteNoExiste() {
+        void InsertarInformacionDocenteSEVTest_DocenteNoExiste() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -337,7 +337,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_ExpertoNoExiste() {
+        void InsertarInformacionDocenteSEVTest_ExpertoNoExiste() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -376,7 +376,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_ServidorDocenteCaido() {
+        void InsertarInformacionDocenteSEVTest_ServidorDocenteCaido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -412,7 +412,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testInsertarInformacionDocente_ServidorExpertoCaido() {
+        void InsertarInformacionDocenteSEVTest_ServidorExpertoCaido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");

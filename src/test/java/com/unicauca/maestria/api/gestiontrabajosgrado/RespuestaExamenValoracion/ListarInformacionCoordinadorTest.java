@@ -30,6 +30,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_exa
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.AnexoRespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
@@ -46,7 +47,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ListarInformacionCooridnadorTest {
+public class ListarInformacionCoordinadorTest {
 
         @Mock
         private RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
@@ -95,13 +96,12 @@ public class ListarInformacionCooridnadorTest {
         }
 
         @Test
-        void testListarInformacionCoordinador_Exito() {
+        void ListarInformacionCoordinadorTest_Exito() {
                 Long idTrabajoGrado = 1L;
 
                 List<AnexoRespuestaExamenValoracion> listaAnexos = new ArrayList<>();
                 listaAnexos.add(AnexoRespuestaExamenValoracion.builder()
-                                .linkAnexo(
-                                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt")
+                                .linkAnexo("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt")
                                 .build());
 
                 RespuestaExamenValoracion respuestaExamenValoracion = new RespuestaExamenValoracion();
@@ -119,8 +119,8 @@ public class ListarInformacionCooridnadorTest {
                 List<RespuestaExamenValoracion> lista = new ArrayList<>();
                 lista.add(respuestaExamenValoracion);
 
-                when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
-                                .thenReturn(lista);
+                when(trabajoGradoRepository.findById(idTrabajoGrado))
+                                .thenReturn(Optional.of(new TrabajoGrado()));
 
                 when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
                                 .thenReturn(Collections.singletonList(respuestaExamenValoracion));
@@ -156,14 +156,11 @@ public class ListarInformacionCooridnadorTest {
                 RespuestaExamenValoracionResponseDto dto = resultado.get("evaluador_externo").get(0);
 
                 assertEquals(1L, dto.getId());
-                assertEquals(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt",
+                assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt",
                                 dto.getLinkFormatoB());
-                assertEquals(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt",
+                assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt",
                                 dto.getLinkFormatoC());
-                assertEquals(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt",
+                assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt",
                                 dto.getLinkObservaciones());
                 assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt",
                                 dto.getAnexos().get(0).getLinkAnexo());
@@ -175,16 +172,16 @@ public class ListarInformacionCooridnadorTest {
         }
 
         @Test
-        void testListarInformacionCoordinador_NoHayRegistro() {
+        void ListarInformacionCoordinadorTest_NoHayRegistro() {
                 Long idTrabajoGrado = 1L;
 
                 List<RespuestaExamenValoracion> lista = new ArrayList<>();
 
+                when(trabajoGradoRepository.findById(idTrabajoGrado))
+                                .thenReturn(Optional.of(new TrabajoGrado()));
+
                 when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
                                 .thenReturn(lista);
-
-                // when(respuestaExamenValoracionRepository.findByIdTrabajoGrado(idTrabajoGrado))
-                // .thenReturn(Collections.emptyList());
 
                 InformationException exception = assertThrows(InformationException.class, () -> {
                         respuestaExamenValoracionServiceImpl.buscarPorId(idTrabajoGrado);
@@ -196,13 +193,8 @@ public class ListarInformacionCooridnadorTest {
         }
 
         @Test
-        void testListarInformacionCoordinadoFase2Test_TrabajoGradoNoExiste() {
+        void ListarInformacionCoordinadorTestt_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
-
-                List<RespuestaExamenValoracion> lista = new ArrayList<>();
-
-                when(respuestaExamenValoracionRepository.findByTrabajoGrado(idTrabajoGrado))
-                                .thenReturn(lista);
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
                         respuestaExamenValoracionServiceImpl.buscarPorId(idTrabajoGrado);

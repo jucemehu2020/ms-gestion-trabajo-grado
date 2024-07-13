@@ -36,6 +36,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
@@ -54,12 +55,14 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenVal
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosRespuestaExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.ExamenValoracionCanceladoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TiemposPendientesRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion.RespuestaExamenValoracionServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class InsertarInformacionCoordinadorTest {
+public class InsertarInformacionCoordinadorREVTest {
 
         @Mock
         private RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
@@ -77,6 +80,10 @@ public class InsertarInformacionCoordinadorTest {
         private ExamenValoracionCanceladoMapper examenValoracionCanceladoMapper;
         @Mock
         private TrabajoGradoRepository trabajoGradoRepository;
+        @Mock
+        private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
+        @Mock
+        private TiemposPendientesRepository tiemposPendientesRepository;
         @Mock
         private ArchivoClient archivoClient;
         @Mock
@@ -100,15 +107,15 @@ public class InsertarInformacionCoordinadorTest {
                                 anexoRespuestaExamenValoracionMapper,
                                 examenValoracionCanceladoMapper,
                                 trabajoGradoRepository,
-                                null,
-                                null,
+                                solicitudExamenValoracionRepository,
+                                tiemposPendientesRepository,
                                 archivoClient,
                                 archivoClientExpertos);
                 ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
         }
 
         @Test
-        void testInsertarInformacionCoordinador_InsertarExitoso() {
+        void InsertarInformacionCoordinadorREVTest_InsertarExitoso() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -133,9 +140,6 @@ public class InsertarInformacionCoordinadorTest {
 
                 when(result.hasErrors()).thenReturn(false);
 
-                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
-                                .thenReturn(0L);
-
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setTitulo("Prueba test");
@@ -144,6 +148,13 @@ public class InsertarInformacionCoordinadorTest {
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
+                solicitudExamenValoracion.setIdEvaluadorInterno(1L);
+                solicitudExamenValoracion.setIdEvaluadorExterno(1L);
+
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(solicitudExamenValoracion));
 
                 RespuestaExamenValoracion respuestaExamenValoracionOld = new RespuestaExamenValoracion();
                 respuestaExamenValoracionOld.setIdEvaluador(1L);
@@ -190,6 +201,9 @@ public class InsertarInformacionCoordinadorTest {
                 when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
                                 .thenReturn(true);
 
+                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
+                                .thenReturn(0L);
+
                 when(respuestaExamenValoracionRepository.save(any(RespuestaExamenValoracion.class)))
                                 .thenReturn(respuestaExamenValoracion);
 
@@ -222,9 +236,10 @@ public class InsertarInformacionCoordinadorTest {
                         utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
                                         .thenReturn("path/to/new/file");
 
-                        RespuestaExamenValoracionResponseDto resultado = respuestaExamenValoracionServiceImpl.insertarInformacion(
-                                        idTrabajoGrado,
-                                        respuestaExamenValoracionDto, result);
+                        RespuestaExamenValoracionResponseDto resultado = respuestaExamenValoracionServiceImpl
+                                        .insertarInformacion(
+                                                        idTrabajoGrado,
+                                                        respuestaExamenValoracionDto, result);
 
                         assertNotNull(resultado);
                         assertEquals(1L, resultado.getId());
@@ -246,7 +261,7 @@ public class InsertarInformacionCoordinadorTest {
         }
 
         @Test
-        void testInsertarInformacionCoordinador_FaltanAtributos() {
+        void InsertarInformacionCoordinadorREVTest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
@@ -273,7 +288,8 @@ public class InsertarInformacionCoordinadorTest {
                 when(result.getFieldErrors()).thenReturn(List.of(fieldError));
 
                 FieldErrorException exception = assertThrows(FieldErrorException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
+                                        respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -287,7 +303,7 @@ public class InsertarInformacionCoordinadorTest {
         }
 
         @Test
-        void testInsertarInformacionCoordinador_EstadoNoValido() {
+        void InsertarInformacionCoordinadorREVTest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
@@ -311,9 +327,6 @@ public class InsertarInformacionCoordinadorTest {
 
                 when(result.hasErrors()).thenReturn(false);
 
-                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
-                                .thenReturn(0L);
-
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
                 trabajoGrado.setTitulo("Prueba test");
@@ -324,7 +337,8 @@ public class InsertarInformacionCoordinadorTest {
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 InformationException exception = assertThrows(InformationException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
+                                        respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -335,7 +349,7 @@ public class InsertarInformacionCoordinadorTest {
         }
 
         @Test
-        void testInsertarInformacionCoordinador_TrabajoGradoNoExiste() {
+        void InsertarInformacionCoordinadorREVTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
@@ -362,7 +376,8 @@ public class InsertarInformacionCoordinadorTest {
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
+                                        respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -372,7 +387,7 @@ public class InsertarInformacionCoordinadorTest {
         }
 
         @Test
-        void testInsertarInformacionCoordinador_DocenteNoExiste() {
+        void InsertarInformacionCoordinadorREVTest_DocenteNoExiste() {
                 Long idTrabajoGrado = 1L;
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
@@ -396,8 +411,12 @@ public class InsertarInformacionCoordinadorTest {
 
                 when(result.hasErrors()).thenReturn(false);
 
-                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
-                                .thenReturn(0L);
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
+                solicitudExamenValoracion.setIdEvaluadorInterno(2L);
+                solicitudExamenValoracion.setIdEvaluadorExterno(1L);
+
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(solicitudExamenValoracion));
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -413,7 +432,8 @@ public class InsertarInformacionCoordinadorTest {
                                                 + respuestaExamenValoracionDto.getIdEvaluador() + " no encontrado"));
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
+                                        respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -423,7 +443,7 @@ public class InsertarInformacionCoordinadorTest {
         }
 
         @Test
-        void testInsertarInformacionCoordinador_ExpertoNoExiste() {
+        void InsertarInformacionCoordinadorREVTest_ExpertoNoExiste() {
                 Long idTrabajoGrado = 1L;
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
@@ -447,8 +467,12 @@ public class InsertarInformacionCoordinadorTest {
 
                 when(result.hasErrors()).thenReturn(false);
 
-                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
-                                .thenReturn(0L);
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
+                solicitudExamenValoracion.setIdEvaluadorInterno(2L);
+                solicitudExamenValoracion.setIdEvaluadorExterno(1L);
+
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(solicitudExamenValoracion));
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -464,7 +488,8 @@ public class InsertarInformacionCoordinadorTest {
                                                 + respuestaExamenValoracionDto.getIdEvaluador() + " no encontrado"));
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
+                                        respuestaExamenValoracionDto,
                                         result);
                 });
 
@@ -474,7 +499,7 @@ public class InsertarInformacionCoordinadorTest {
         }
 
         @Test
-        void testInsertarInformacionCoordinador_ServidorDocenteCaido() {
+        void InsertarInformacionCoordinadorREVTest_ServidorDocenteCaido() {
                 Long idTrabajoGrado = 1L;
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
@@ -498,8 +523,12 @@ public class InsertarInformacionCoordinadorTest {
 
                 when(result.hasErrors()).thenReturn(false);
 
-                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
-                                .thenReturn(0L);
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
+                solicitudExamenValoracion.setIdEvaluadorInterno(2L);
+                solicitudExamenValoracion.setIdEvaluadorExterno(1L);
+
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(solicitudExamenValoracion));
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -526,7 +555,7 @@ public class InsertarInformacionCoordinadorTest {
         }
 
         @Test
-        void testInsertarInformacionCoordinador_ServidorExternoCaido() {
+        void InsertarInformacionCoordinadorREVTest_ServidorExternoCaido() {
                 Long idTrabajoGrado = 1L;
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
@@ -550,8 +579,12 @@ public class InsertarInformacionCoordinadorTest {
 
                 when(result.hasErrors()).thenReturn(false);
 
-                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
-                                .thenReturn(0L);
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
+                solicitudExamenValoracion.setIdEvaluadorInterno(2L);
+                solicitudExamenValoracion.setIdEvaluadorExterno(1L);
+
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(solicitudExamenValoracion));
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -578,7 +611,7 @@ public class InsertarInformacionCoordinadorTest {
         }
 
         @Test
-        void testInsertarInformacionCoordinador_RegistrosNoPermitidos() {
+        void InsertarInformacionCoordinadorREVTest_RegistrosNoPermitidos() {
                 Long idTrabajoGrado = 1L;
 
                 List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
@@ -602,8 +635,14 @@ public class InsertarInformacionCoordinadorTest {
 
                 when(result.hasErrors()).thenReturn(false);
 
-                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
-                                .thenReturn(4L);
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(15);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
                 InformationException thrown = assertThrows(
                                 InformationException.class,
@@ -617,7 +656,7 @@ public class InsertarInformacionCoordinadorTest {
         }
 
         @Test
-        void testInsertarInformacionCoordinador_RegistroYaAprobado() {
+        void InsertarInformacionCoordinadorREVTest_RegistroYaAprobado() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -642,8 +681,12 @@ public class InsertarInformacionCoordinadorTest {
 
                 when(result.hasErrors()).thenReturn(false);
 
-                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
-                                .thenReturn(0L);
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
+                solicitudExamenValoracion.setIdEvaluadorInterno(2L);
+                solicitudExamenValoracion.setIdEvaluadorExterno(1L);
+
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(solicitudExamenValoracion));
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -676,42 +719,6 @@ public class InsertarInformacionCoordinadorTest {
                 assertTrue(thrown.getMessage().contains(
                                 "El evaluador previamente dio su concepto como APROBADO, no es permitido que realice nuevos registros"));
 
-        }
-
-        @Test
-        void testInsertarInformacionCoordinador_AtributoFechaMaximaNoPermitido() {
-
-                Long idTrabajoGrado = 1L;
-
-                List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
-                listaAnexosDto.add(AnexoRespuestaExamenValoracionDto.builder()
-                                .linkAnexo("Anexos.txt-cHJ1ZWJhIGRlIHRleHR")
-                                .build());
-
-                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-                envioEmailDto.setAsunto("Respuesta evaluadores");
-                envioEmailDto.setMensaje("Envio documentos enviados por el evaluador Mage");
-
-                RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
-                respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
-                respuestaExamenValoracionDto.setIdEvaluador(1L);
-                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
-                respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado, respuestaExamenValoracionDto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Atributo FECHA MAXIMA no permitido";
-                assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
 }

@@ -99,7 +99,7 @@ public class ActualizarInformacionDocenteGRTest {
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
         generacionResolucionOld.setId(1L);
         generacionResolucionOld.setDirector(1L);
-        generacionResolucionOld.setCodirector(1L);
+        generacionResolucionOld.setCodirector(2L);
         generacionResolucionOld.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkAnteproyectoAprobado.txt");
         generacionResolucionOld.setLinkSolicitudComite(
@@ -108,7 +108,7 @@ public class ActualizarInformacionDocenteGRTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(7);
+        trabajoGrado.setNumeroEstado(18);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setGeneracionResolucion(generacionResolucionOld);
@@ -160,8 +160,8 @@ public class ActualizarInformacionDocenteGRTest {
         GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = new GeneracionResolucionDocenteResponseDto();
         generacionResolucionDocenteResponseDto.setId(1L);
         generacionResolucionDocenteResponseDto.setTitulo("Prueba test");
-        generacionResolucionOld.setDirector(1L);
-        generacionResolucionOld.setCodirector(1L);
+        generacionResolucionDocenteResponseDto.setDirector(1L);
+        generacionResolucionDocenteResponseDto.setCodirector(2L);
         generacionResolucionDocenteResponseDto.setLinkAnteproyectoFinal(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702194402-linkAnteproyectoAprobado.txt");
         generacionResolucionDocenteResponseDto.setLinkSolicitudComite(
@@ -182,8 +182,8 @@ public class ActualizarInformacionDocenteGRTest {
             assertNotNull(resultado);
             assertEquals(1L, resultado.getId());
             assertEquals("Prueba test", resultado.getTitulo());
-            assertEquals("Karla Ramirez", resultado.getDirector());
-            assertEquals("Luis Perez", resultado.getCodirector());
+            assertEquals(1L, resultado.getDirector());
+            assertEquals(2L, resultado.getCodirector());
             assertEquals(
                     "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702194402-linkAnteproyectoAprobado.txt",
                     resultado.getLinkAnteproyectoFinal());
@@ -292,7 +292,7 @@ public class ActualizarInformacionDocenteGRTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(13);
+        trabajoGrado.setNumeroEstado(18);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setGeneracionResolucion(generacionResolucionOld);
@@ -380,7 +380,7 @@ public class ActualizarInformacionDocenteGRTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(13);
+        trabajoGrado.setNumeroEstado(18);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setGeneracionResolucion(generacionResolucionOld);
@@ -496,7 +496,7 @@ public class ActualizarInformacionDocenteGRTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(13);
+        trabajoGrado.setNumeroEstado(18);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setGeneracionResolucion(generacionResolucionOld);

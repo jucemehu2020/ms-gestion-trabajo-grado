@@ -93,7 +93,7 @@ public class ActualizarInformacionDocenteSTest {
     }
 
     @Test
-    void ActualizarInformacionDocenteSTest_ActualizacionExitosaTrue() {
+    void ActualizarInformacionDocenteSTest_ActualizacionExitosa() {
 
         Long idTrabajoGrado = 1L;
 
@@ -116,7 +116,7 @@ public class ActualizarInformacionDocenteSTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(19);
+        trabajoGrado.setNumeroEstado(24);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
@@ -277,7 +277,7 @@ public class ActualizarInformacionDocenteSTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(19);
+        trabajoGrado.setNumeroEstado(24);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
@@ -324,7 +324,7 @@ public class ActualizarInformacionDocenteSTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(19);
+        trabajoGrado.setNumeroEstado(24);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
@@ -370,7 +370,7 @@ public class ActualizarInformacionDocenteSTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(19);
+        trabajoGrado.setNumeroEstado(24);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
@@ -414,7 +414,7 @@ public class ActualizarInformacionDocenteSTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(19);
+        trabajoGrado.setNumeroEstado(24);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);

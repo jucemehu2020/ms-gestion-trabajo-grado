@@ -38,7 +38,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ListarInformacionDocenteTest {
+public class ListarInformacionDocenteSEVTest {
 
         @Mock
         private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
@@ -78,7 +78,7 @@ public class ListarInformacionDocenteTest {
         }
 
         @Test
-        public void testListarInformacionDocente_Exito() {
+        public void ListarInformacionDocenteSEVTest_Exito() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
                 solicitudExamenValoracion.setId(1L);
@@ -148,6 +148,7 @@ public class ListarInformacionDocenteTest {
                 assertEquals(docenteEsperado, solicitudExamenValoracionDocenteResponseListDto.getEvaluadorInterno());
 
                 Map<String, String> expertoEsperado = new HashMap<>();
+                expertoEsperado.put("id", "1");
                 expertoEsperado.put("correo", "mellizohurt@unicauca.edu.co");
                 expertoEsperado.put("universidad", "Universidad de Mexico");
                 expertoEsperado.put("nombres", "Julio Mellizo");
@@ -156,7 +157,7 @@ public class ListarInformacionDocenteTest {
         }
 
         @Test
-        void testListarInformacionDocente_TrabajoGradoNoExiste() {
+        void ListarInformacionDocenteSEVTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
                 when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
@@ -173,7 +174,7 @@ public class ListarInformacionDocenteTest {
         }
 
         @Test
-        void testListarInformacionDocente_ServidorDocenteCaido() {
+        void ListarInformacionDocenteSEVTest_ServidorDocenteCaido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
                 solicitudExamenValoracion.setId(1L);
@@ -204,7 +205,7 @@ public class ListarInformacionDocenteTest {
         }
 
         @Test
-        void testListarInformacionDocente_ServidorExpertoCaido() {
+        void ListarInformacionDocenteSEVTest_ServidorExpertoCaido() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
                 solicitudExamenValoracion.setId(1L);

@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +31,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClien
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
@@ -42,12 +39,14 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.Estudiante
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.ObtenerDocumentosParaEnvioDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSustentacionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SustentacionProyectoInvestigacionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TiemposPendientesRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacionServiceImpl;
 
@@ -55,220 +54,366 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proy
 @SpringBootTest
 public class InsertarInformacionCoordinadorFase1STest {
 
-    @Mock
-    private SustentacionProyectoInvestigacionRepository sustentacionProyectoInvestigacionRepository;
-    @Mock
-    private SustentacionProyectoInvestigacionMapper sustentacionProyectoIngestigacionMapper;
-    @Mock
-    private SustentacionProyectoInvestigacionResponseMapper sustentacionProyectoInvestigacionResponseMapper;
-    @Mock
-    private RespuestaComiteSustentacionRepository respuestaComiteSustentacionRepository;
-    @Mock
-    private TrabajoGradoRepository trabajoGradoRepository;
-    @Mock
-    private ArchivoClient archivoClient;
-    @Mock
-    private ArchivoClientExpertos archivoClientExpertos;
-    @Mock
-    private ArchivoClientEgresados archivoClientEgresados;
-    @Mock
-    private BindingResult result;
-    @Mock
-    private EnvioCorreos envioCorreos;
-    @InjectMocks
-    private SustentacionProyectoInvestigacionServiceImpl sustentacionProyectoInvestigacionServiceImpl;
+        @Mock
+        private SustentacionProyectoInvestigacionRepository sustentacionProyectoInvestigacionRepository;
+        @Mock
+        private SustentacionProyectoInvestigacionMapper sustentacionProyectoIngestigacionMapper;
+        @Mock
+        private SustentacionProyectoInvestigacionResponseMapper sustentacionProyectoInvestigacionResponseMapper;
+        @Mock
+        private RespuestaComiteSustentacionRepository respuestaComiteSustentacionRepository;
+        @Mock
+        private TrabajoGradoRepository trabajoGradoRepository;
+        @Mock
+        private TiemposPendientesRepository tiemposPendientesRepository;
+        @Mock
+        private ArchivoClient archivoClient;
+        @Mock
+        private ArchivoClientExpertos archivoClientExpertos;
+        @Mock
+        private ArchivoClientEgresados archivoClientEgresados;
+        @Mock
+        private BindingResult result;
+        @Mock
+        private EnvioCorreos envioCorreos;
+        @InjectMocks
+        private SustentacionProyectoInvestigacionServiceImpl sustentacionProyectoInvestigacionServiceImpl;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        sustentacionProyectoInvestigacionServiceImpl = new SustentacionProyectoInvestigacionServiceImpl(
-                sustentacionProyectoInvestigacionRepository,
-                sustentacionProyectoIngestigacionMapper,
-                sustentacionProyectoInvestigacionResponseMapper,
-                respuestaComiteSustentacionRepository,
-                trabajoGradoRepository,
-                null,
-                archivoClient,
-                archivoClientExpertos,
-                archivoClientEgresados);
-        ReflectionTestUtils.setField(sustentacionProyectoInvestigacionServiceImpl, "envioCorreos",
-                envioCorreos);
-    }
-
-    @Test
-    void SustentacionProyectoInvestigacionServiceImplTest_RegistroExitosoTrue() {
-
-        Long idTrabajoGrado = 1L;
-
-        ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto = new ObtenerDocumentosParaEnvioDto();
-        obtenerDocumentosParaEnvioDto.setB64FormatoF("cHJ1ZWJhIGRlIHRleHR");
-
-        EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-        envioEmailDto.setAsunto("Solicitud revision comite");
-        envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
-
-        SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
-        sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setConceptoCoordinador(ConceptoVerificacion.ACEPTADO);
-        sustentacionTrabajoInvestigacionCoordinadorFase1Dto
-                .setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
-        sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
-
-        when(result.hasErrors()).thenReturn(false);
-
-        SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setId(1L);
-
-        TrabajoGrado trabajoGrado = new TrabajoGrado();
-        trabajoGrado.setId(idTrabajoGrado);
-        trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(18);
-        trabajoGrado.setIdEstudiante(123L);
-        trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
-
-        when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
-        when(sustentacionProyectoInvestigacionRepository.findById(
-                trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
-                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
-
-        when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
-                .thenReturn(true);
-
-        SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionNew.setId(1L);
-        sustentacionTrabajoInvestigacionNew
-                .setConceptoCoordinador(sustentacionTrabajoInvestigacionCoordinadorFase1Dto.getConceptoCoordinador());
-
-        when(sustentacionProyectoInvestigacionRepository.save(sustentacionTrabajoInvestigacionOld))
-                .thenReturn(sustentacionTrabajoInvestigacionNew);
-
-        STICoordinadorFase1ResponseDto stiCoordinadorFase1ResponseDto = new STICoordinadorFase1ResponseDto();
-        stiCoordinadorFase1ResponseDto.setId(
-                sustentacionTrabajoInvestigacionNew.getId());
-        stiCoordinadorFase1ResponseDto
-                .setConceptoCoordinador(sustentacionTrabajoInvestigacionNew.getConceptoCoordinador());
-
-        when(sustentacionProyectoInvestigacionResponseMapper.toCoordinadorFase1Dto(sustentacionTrabajoInvestigacionNew))
-                .thenReturn(stiCoordinadorFase1ResponseDto);
-
-        try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
-            utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
-                    .thenReturn("path/to/new/file");
-
-            STICoordinadorFase1ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
-                    .insertarInformacionCoordinadoFase1(idTrabajoGrado,
-                            sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
-
-            assertNotNull(resultado);
-            assertEquals(1L, resultado.getId());
-            assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoCoordinador());
+        @BeforeEach
+        void setUp() {
+                MockitoAnnotations.openMocks(this);
+                sustentacionProyectoInvestigacionServiceImpl = new SustentacionProyectoInvestigacionServiceImpl(
+                                sustentacionProyectoInvestigacionRepository,
+                                sustentacionProyectoIngestigacionMapper,
+                                sustentacionProyectoInvestigacionResponseMapper,
+                                respuestaComiteSustentacionRepository,
+                                trabajoGradoRepository,
+                                tiemposPendientesRepository,
+                                archivoClient,
+                                archivoClientExpertos,
+                                archivoClientEgresados);
+                ReflectionTestUtils.setField(sustentacionProyectoInvestigacionServiceImpl, "envioCorreos",
+                                envioCorreos);
         }
 
-    }
+        @Test
+        void SustentacionProyectoInvestigacionServiceImplTest_RegistroExitosoTrue() {
 
-    @Test
-    void SustentacionProyectoInvestigacionServiceImplTest_RegistroExitosoFalse() {
-        Long idTrabajoGrado = 1L;
+                Long idTrabajoGrado = 1L;
 
-        EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-        envioEmailDto.setAsunto("Revision errores documento");
-        envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos para poder enviarlos a comite.");
+                ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto = new ObtenerDocumentosParaEnvioDto();
+                obtenerDocumentosParaEnvioDto.setB64FormatoF("cHJ1ZWJhIGRlIHRleHR");
 
-        SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
-        sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setConceptoCoordinador(ConceptoVerificacion.RECHAZADO);
-        sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Solicitud revision comite");
+                envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
 
-        when(result.hasErrors()).thenReturn(false);
+                SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setConceptoCoordinador(ConceptoVerificacion.ACEPTADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
 
-        SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setId(1L);
+                when(result.hasErrors()).thenReturn(false);
 
-        TrabajoGrado trabajoGrado = new TrabajoGrado();
-        trabajoGrado.setId(idTrabajoGrado);
-        trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(18);
-        trabajoGrado.setIdEstudiante(123L);
-        trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-        trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+                SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
+                sustentacionTrabajoInvestigacionOld.setId(1L);
 
-        when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
-        when(sustentacionProyectoInvestigacionRepository.findById(
-                trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
-                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(24);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
-        PersonaDto PersonaEstudianteDto = new PersonaDto();
-        PersonaEstudianteDto.setIdentificacion(123L);
-        PersonaEstudianteDto.setNombre("Juan");
-        PersonaEstudianteDto.setApellido("Meneses");
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+                when(sustentacionProyectoInvestigacionRepository.findById(
+                                trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
+                                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
-        EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
-        estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
+                when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
+                                .thenReturn(true);
 
-        when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
-                .thenReturn(estudianteResponseDtoAll);
+                SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionTrabajoInvestigacion();
+                sustentacionTrabajoInvestigacionNew.setId(1L);
+                sustentacionTrabajoInvestigacionNew
+                                .setConceptoCoordinador(sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                                .getConceptoCoordinador());
 
-        when(envioCorreos.enviarCorreosCorrecion(any(ArrayList.class), anyString(), anyString()))
-                .thenReturn(true);
+                when(sustentacionProyectoInvestigacionRepository.save(sustentacionTrabajoInvestigacionOld))
+                                .thenReturn(sustentacionTrabajoInvestigacionNew);
 
-        SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionTrabajoInvestigacion();
-        sustentacionTrabajoInvestigacionNew.setId(1L);
-        sustentacionTrabajoInvestigacionNew
-                .setConceptoCoordinador(sustentacionTrabajoInvestigacionCoordinadorFase1Dto.getConceptoCoordinador());
+                STICoordinadorFase1ResponseDto stiCoordinadorFase1ResponseDto = new STICoordinadorFase1ResponseDto();
+                stiCoordinadorFase1ResponseDto.setId(
+                                sustentacionTrabajoInvestigacionNew.getId());
+                stiCoordinadorFase1ResponseDto
+                                .setConceptoCoordinador(sustentacionTrabajoInvestigacionNew.getConceptoCoordinador());
 
-        when(sustentacionProyectoInvestigacionRepository.save(sustentacionTrabajoInvestigacionOld))
-                .thenReturn(sustentacionTrabajoInvestigacionNew);
+                when(sustentacionProyectoInvestigacionResponseMapper
+                                .toCoordinadorFase1Dto(sustentacionTrabajoInvestigacionNew))
+                                .thenReturn(stiCoordinadorFase1ResponseDto);
 
-        STICoordinadorFase1ResponseDto stiCoordinadorFase1ResponseDto = new STICoordinadorFase1ResponseDto();
-        stiCoordinadorFase1ResponseDto.setId(
-                sustentacionTrabajoInvestigacionNew.getId());
-        stiCoordinadorFase1ResponseDto
-                .setConceptoCoordinador(sustentacionTrabajoInvestigacionNew.getConceptoCoordinador());
+                STICoordinadorFase1ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
+                                .insertarInformacionCoordinadoFase1(idTrabajoGrado,
+                                                sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
 
-        when(sustentacionProyectoInvestigacionResponseMapper.toCoordinadorFase1Dto(sustentacionTrabajoInvestigacionNew))
-                .thenReturn(stiCoordinadorFase1ResponseDto);
+                assertNotNull(resultado);
+                assertEquals(1L, resultado.getId());
+                assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoCoordinador());
 
-        try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
-            utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
-                    .thenReturn("path/to/new/file");
-
-            STICoordinadorFase1ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
-                    .insertarInformacionCoordinadoFase1(idTrabajoGrado,
-                            sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
-
-            assertNotNull(resultado);
-            assertEquals(1L, resultado.getId());
-            assertEquals(ConceptoVerificacion.RECHAZADO, resultado.getConceptoCoordinador());
         }
-    }
 
-    @Test
-    void ActualizarInformacionDocenteSTest_FaltanAtributos() {
+        @Test
+        void SustentacionProyectoInvestigacionServiceImplTest_RegistroExitosoFalse() {
+                Long idTrabajoGrado = 1L;
 
-        Long idTrabajoGrado = 1L;
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Revision errores documento");
+                envioEmailDto.setMensaje(
+                                "Comedidamente solicito revisar los documentos para poder enviarlos a comite.");
 
-        SustentacionTrabajoInvestigacionDocenteDto sustentacionTrabajoInvestigacionDocenteDto = new SustentacionTrabajoInvestigacionDocenteDto();
-        sustentacionTrabajoInvestigacionDocenteDto.setLinkFormatoF("linkFormatoF.txt-cHJ1ZWJhIGRlIHRleHR");
-        sustentacionTrabajoInvestigacionDocenteDto.setUrlDocumentacion("www.archivoPrueba2.com");
-        sustentacionTrabajoInvestigacionDocenteDto.setIdJuradoExterno(1L);
+                SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setConceptoCoordinador(ConceptoVerificacion.RECHAZADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
 
-        FieldError fieldError = new FieldError("SustentacionTrabajoInvestigacionDocenteDto", "idJuradoInterno",
-                "no debe ser nulo");
-        when(result.hasErrors()).thenReturn(true);
-        when(result.getFieldErrors()).thenReturn(List.of(fieldError));
+                when(result.hasErrors()).thenReturn(false);
 
-        FieldErrorException exception = assertThrows(FieldErrorException.class, () -> {
-            sustentacionProyectoInvestigacionServiceImpl
-                    .actualizarInformacionDocente(idTrabajoGrado,
-                            sustentacionTrabajoInvestigacionDocenteDto, result);
-        });
+                SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
+                sustentacionTrabajoInvestigacionOld.setId(1L);
 
-        assertNotNull(exception.getResult());
-        List<FieldError> fieldErrors = exception.getResult().getFieldErrors();
-        assertFalse(fieldErrors.isEmpty());
-        String actualMessage = "El campo: " + fieldErrors.get(0).getField() + ", "
-                + fieldError.getDefaultMessage();
-        String expectedMessage = "El campo: idJuradoInterno, no debe ser nulo";
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(24);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+                when(sustentacionProyectoInvestigacionRepository.findById(
+                                trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
+                                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
+
+                PersonaDto PersonaEstudianteDto = new PersonaDto();
+                PersonaEstudianteDto.setIdentificacion(123L);
+                PersonaEstudianteDto.setNombre("Juan");
+                PersonaEstudianteDto.setApellido("Meneses");
+
+                EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
+                estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
+
+                when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
+                                .thenReturn(estudianteResponseDtoAll);
+
+                when(envioCorreos.enviarCorreosCorrecion(any(ArrayList.class), anyString(), anyString()))
+                                .thenReturn(true);
+
+                SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionTrabajoInvestigacion();
+                sustentacionTrabajoInvestigacionNew.setId(1L);
+                sustentacionTrabajoInvestigacionNew
+                                .setConceptoCoordinador(sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                                .getConceptoCoordinador());
+
+                when(sustentacionProyectoInvestigacionRepository.save(sustentacionTrabajoInvestigacionOld))
+                                .thenReturn(sustentacionTrabajoInvestigacionNew);
+
+                STICoordinadorFase1ResponseDto stiCoordinadorFase1ResponseDto = new STICoordinadorFase1ResponseDto();
+                stiCoordinadorFase1ResponseDto.setId(
+                                sustentacionTrabajoInvestigacionNew.getId());
+                stiCoordinadorFase1ResponseDto
+                                .setConceptoCoordinador(sustentacionTrabajoInvestigacionNew.getConceptoCoordinador());
+
+                when(sustentacionProyectoInvestigacionResponseMapper
+                                .toCoordinadorFase1Dto(sustentacionTrabajoInvestigacionNew))
+                                .thenReturn(stiCoordinadorFase1ResponseDto);
+
+                STICoordinadorFase1ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
+                                .insertarInformacionCoordinadoFase1(idTrabajoGrado,
+                                                sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
+
+                assertNotNull(resultado);
+                assertEquals(1L, resultado.getId());
+                assertEquals(ConceptoVerificacion.RECHAZADO, resultado.getConceptoCoordinador());
+
+        }
+
+        @Test
+        void SustentacionProyectoInvestigacionServiceImplTest_AtributosNoValidos() {
+
+                Long idTrabajoGrado = 1L;
+
+                ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto = new ObtenerDocumentosParaEnvioDto();
+                obtenerDocumentosParaEnvioDto.setB64FormatoF("cHJ1ZWJhIGRlIHRleHR");
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Solicitud revision comite");
+                envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
+
+                SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setConceptoCoordinador(ConceptoVerificacion.RECHAZADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        sustentacionProyectoInvestigacionServiceImpl
+                                        .insertarInformacionCoordinadoFase1(idTrabajoGrado,
+                                                        sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Envio de atributos no permitido";
+
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
+
+        @Test
+        void SustentacionProyectoInvestigacionServiceImplTest_FaltanAtributos() {
+
+                Long idTrabajoGrado = 1L;
+
+                ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto = new ObtenerDocumentosParaEnvioDto();
+                obtenerDocumentosParaEnvioDto.setB64FormatoF("cHJ1ZWJhIGRlIHRleHR");
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Solicitud revision comite");
+                envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
+
+                SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
+
+                FieldError fieldError = new FieldError("SustentacionTrabajoInvestigacionCoordinadorFase1Dto",
+                                "conceptoCoordinador",
+                                "no debe ser nulo");
+                when(result.hasErrors()).thenReturn(true);
+                when(result.getFieldErrors()).thenReturn(List.of(fieldError));
+
+                FieldErrorException exception = assertThrows(FieldErrorException.class, () -> {
+                        sustentacionProyectoInvestigacionServiceImpl
+                                        .insertarInformacionCoordinadoFase1(idTrabajoGrado,
+                                                        sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
+                });
+
+                assertNotNull(exception.getResult());
+                List<FieldError> fieldErrors = exception.getResult().getFieldErrors();
+                assertFalse(fieldErrors.isEmpty());
+                String actualMessage = "El campo: " + fieldErrors.get(0).getField() + ", "
+                                + fieldError.getDefaultMessage();
+                String expectedMessage = "El campo: conceptoCoordinador, no debe ser nulo";
+                assertTrue(actualMessage.contains(expectedMessage));
+        }
+
+        @Test
+        void SustentacionProyectoInvestigacionServiceImplTest_AtributosIncompletos() {
+
+                Long idTrabajoGrado = 1L;
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Solicitud revision comite");
+                envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
+
+                SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setConceptoCoordinador(ConceptoVerificacion.ACEPTADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        sustentacionProyectoInvestigacionServiceImpl
+                                        .insertarInformacionCoordinadoFase1(idTrabajoGrado,
+                                                        sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Atributos incorrectos";
+
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
+
+        @Test
+        void SustentacionProyectoInvestigacionServiceImplTest_EstadoNoValido() {
+                Long idTrabajoGrado = 1L;
+
+                ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto = new ObtenerDocumentosParaEnvioDto();
+                obtenerDocumentosParaEnvioDto.setB64FormatoF("cHJ1ZWJhIGRlIHRleHR");
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Solicitud revision comite");
+                envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
+
+                SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setConceptoCoordinador(ConceptoVerificacion.ACEPTADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionTrabajoInvestigacion();
+                sustentacionTrabajoInvestigacionOld.setId(1L);
+
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(18);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        sustentacionProyectoInvestigacionServiceImpl
+                                        .insertarInformacionCoordinadoFase1(idTrabajoGrado,
+                                                        sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "No es permitido registrar la informacion";
+
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
+
+        @Test
+        void SustentacionProyectoInvestigacionServiceImplTest_NoExisteTrabajoGrado() {
+                Long idTrabajoGrado = 2L;
+
+                ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvioDto = new ObtenerDocumentosParaEnvioDto();
+                obtenerDocumentosParaEnvioDto.setB64FormatoF("cHJ1ZWJhIGRlIHRleHR");
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Solicitud revision comite");
+                envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
+
+                SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setConceptoCoordinador(ConceptoVerificacion.ACEPTADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setObtenerDocumentosParaEnvio(obtenerDocumentosParaEnvioDto);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());
+
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+                        sustentacionProyectoInvestigacionServiceImpl
+                                        .insertarInformacionCoordinadoFase1(idTrabajoGrado,
+                                                        sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
 }

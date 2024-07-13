@@ -30,6 +30,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClien
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
@@ -50,12 +51,13 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenVal
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSolicitudRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TiemposPendientesRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion.SolicitudExamenValoracionServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class InsertarInformacionCoordinadorFase2Test {
+public class InsertarInformacionCoordinadorFase2SEVTest {
 
         @Mock
         private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
@@ -63,6 +65,8 @@ public class InsertarInformacionCoordinadorFase2Test {
         private RespuestaComiteSolicitudRepository respuestaComiteSolicitudRepository;
         @Mock
         private TrabajoGradoRepository trabajoGradoRepository;
+        @Mock
+        private TiemposPendientesRepository tiemposPendientesRepository;
         @Mock
         private ArchivoClient archivoClient;
         @Mock
@@ -90,7 +94,7 @@ public class InsertarInformacionCoordinadorFase2Test {
                                 respuestaComiteSolicitudRepository,
                                 null,
                                 trabajoGradoRepository,
-                                null,
+                                tiemposPendientesRepository,
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
@@ -100,7 +104,7 @@ public class InsertarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase2_RegistroExitosoConceptoTrue() {
+        void InsertarInformacionCoordinadorFase2SEVTest_RegistroExitosoConceptoTrue() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -220,6 +224,9 @@ public class InsertarInformacionCoordinadorFase2Test {
                                 .setFechaMaximaEvaluacion(solicitudExamenValoracionCoordinadorFase2Dto
                                                 .getFechaMaximaEvaluacion());
 
+                when(tiemposPendientesRepository.save(any(TiemposPendientes.class)))
+                                .thenReturn(new TiemposPendientes());
+
                 when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
                                 .thenReturn(solicitudExamenValoracion);
 
@@ -243,7 +250,7 @@ public class InsertarInformacionCoordinadorFase2Test {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals(true, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
+                assertEquals(Concepto.APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
                 assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
                 assertEquals(LocalDate.parse("2023-05-24", formatter),
                                 resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
@@ -254,7 +261,7 @@ public class InsertarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase2_RegistroExitosoConceptoFalse() {
+        void InsertarInformacionCoordinadorFase2SEVTest_RegistroExitosoConceptoFalse() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -353,7 +360,7 @@ public class InsertarInformacionCoordinadorFase2Test {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals(false, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
+                assertEquals(Concepto.NO_APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
                 assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
                 assertEquals(LocalDate.parse("2023-05-24", formatter),
                                 resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
@@ -363,7 +370,7 @@ public class InsertarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase2_RegistroFalloPorFalse() {
+        void InsertarInformacionCoordinadorFase2SEVTest_RegistroFalloPorFalse() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -417,7 +424,7 @@ public class InsertarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase2_FaltanAtributos() {
+        void InsertarInformacionCoordinadorFase2SEVTest_FaltanAtributos() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -478,7 +485,7 @@ public class InsertarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase2_EstadoNoValido() {
+        void InsertarInformacionCoordinadorFase2SEVTest_EstadoNoValido() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -546,7 +553,7 @@ public class InsertarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void testInsertarInformacionCoordinadorFase2_TrabajoGradoNoExiste() {
+        void InsertarInformacionCoordinadorFase2SEVTest_TrabajoGradoNoExiste() {
 
                 Long idTrabajoGrado = 2L;
 

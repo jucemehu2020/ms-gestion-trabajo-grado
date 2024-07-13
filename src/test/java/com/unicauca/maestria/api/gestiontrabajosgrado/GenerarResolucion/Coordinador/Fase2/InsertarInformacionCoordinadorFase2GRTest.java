@@ -124,7 +124,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(15);
+        trabajoGrado.setNumeroEstado(20);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setGeneracionResolucion(generacionResolucion);
@@ -134,9 +134,6 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         when(generacionResolucionRepository
                 .findById(trabajoGrado.getGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucion));
-
-        when(generacionResolucionMapper.toEntity(generacionResolucionCoordinadorFase2Dto))
-                .thenReturn(generacionResolucion);
 
         when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
                 .thenReturn(true);
@@ -235,7 +232,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(15);
+        trabajoGrado.setNumeroEstado(20);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setGeneracionResolucion(generacionResolucion);
@@ -245,9 +242,6 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         when(generacionResolucionRepository
                 .findById(trabajoGrado.getGeneracionResolucion().getId()))
                 .thenReturn(Optional.of(generacionResolucion));
-
-        when(generacionResolucionMapper.toEntity(generacionResolucionCoordinadorFase2Dto))
-                .thenReturn(generacionResolucion);
 
         PersonaDto PersonaEstudianteDto = new PersonaDto();
         PersonaEstudianteDto.setIdentificacion(123L);
@@ -374,7 +368,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(idTrabajoGrado);
         trabajoGrado.setTitulo("Prueba test");
-        trabajoGrado.setNumeroEstado(15);
+        trabajoGrado.setNumeroEstado(20);
         trabajoGrado.setIdEstudiante(123L);
         trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
         trabajoGrado.setGeneracionResolucion(generacionResolucion);

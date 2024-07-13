@@ -26,7 +26,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ListarExpertosTest {
+public class ListarExpertosSEVTest {
 
         @Mock
         private ArchivoClientExpertos archivoClientExpertos;

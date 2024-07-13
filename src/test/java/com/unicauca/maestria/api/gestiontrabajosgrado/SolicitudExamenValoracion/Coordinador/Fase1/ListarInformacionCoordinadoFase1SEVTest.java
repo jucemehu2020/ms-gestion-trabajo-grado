@@ -34,7 +34,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ListarInformacionCoordinadoFase1Test {
+public class ListarInformacionCoordinadoFase1SEVTest {
 
     @Mock
     private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
@@ -79,7 +79,7 @@ public class ListarInformacionCoordinadoFase1Test {
     }
 
     @Test
-    public void testListarInformacionCoordinadoFase1Test_Exito() {
+    public void ListarInformacionCoordinadoFase1SEVTest_Exito() {
 
         Long idTrabajoGrado = 1L;
         SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
@@ -105,7 +105,7 @@ public class ListarInformacionCoordinadoFase1Test {
     }
 
     @Test
-    void testListarInformacionCoordinadoFase1Test_SinRegistro() {
+    void ListarInformacionCoordinadoFase1SEVTest_SinRegistro() {
         Long idTrabajoGrado = 1L;
         SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
 
@@ -122,7 +122,7 @@ public class ListarInformacionCoordinadoFase1Test {
     }
 
     @Test
-    void testListarInformacionCoordinadoFase1Test_TrabajoGradoNoExiste() {
+    void ListarInformacionCoordinadoFase1SEVTest_TrabajoGradoNoExiste() {
         Long idTrabajoGrado = 2L;
 
         when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
