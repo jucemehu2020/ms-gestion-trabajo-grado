@@ -1,6 +1,8 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -8,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.RespuestaComiteSustentacionDto;
 
 @Getter
 @Setter
@@ -15,9 +18,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Con
 @AllArgsConstructor
 @Builder
 public class SustentacionTrabajoInvestigacionDto {
-
-    @NotNull
-    private Long idTrabajoGrados;
 
     @NotBlank
     private String linkFormatoF;
@@ -32,6 +32,8 @@ public class SustentacionTrabajoInvestigacionDto {
     private Long idJuradoExterno;
 
     private ConceptoVerificacion conceptoCoordinador;
+
+    private List<RespuestaComiteSustentacionDto> actaFechaRespuestaComite;
 
     @NotBlank
     private String linkFormatoG;
