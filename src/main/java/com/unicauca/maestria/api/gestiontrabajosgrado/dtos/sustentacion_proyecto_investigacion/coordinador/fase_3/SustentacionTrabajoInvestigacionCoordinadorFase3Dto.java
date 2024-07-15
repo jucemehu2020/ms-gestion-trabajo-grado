@@ -20,6 +20,9 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase3Dto {
     private ConceptoVerificacion juradosAceptados;
 
     @NotNull
+    private LocalDate fechaSustentacion;
+
+    @NotNull
     private String numeroActaConsejo;
 
     @NotNull

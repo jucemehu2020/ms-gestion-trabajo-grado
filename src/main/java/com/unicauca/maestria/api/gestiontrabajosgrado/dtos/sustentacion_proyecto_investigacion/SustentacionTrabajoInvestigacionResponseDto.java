@@ -26,6 +26,7 @@ public class SustentacionTrabajoInvestigacionResponseDto {
     private String linkFormatoG;
     private String linkEstudioHojaVidaAcademica;
     private ConceptoVerificacion juradosAceptados;
+    private LocalDate fechaSustentacion;
     private String numeroActaConsejo;
     private LocalDate fechaActaConsejo;
     private String linkFormatoH;

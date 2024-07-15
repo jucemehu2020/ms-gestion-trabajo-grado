@@ -52,6 +52,8 @@ public class SustentacionTrabajoInvestigacion {
     @Enumerated(EnumType.STRING)
     private ConceptoVerificacion juradosAceptados;
 
+    private LocalDate fechaSustentacion;
+
     private String numeroActaConsejo;
 
     private LocalDate fechaActaConsejo;

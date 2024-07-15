@@ -465,6 +465,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                         sustentacionDto.getEnvioEmail().getMensaje());
                 }
                 sustentacionProyectoInvestigacion.setJuradosAceptados(sustentacionDto.getJuradosAceptados());
+                sustentacionProyectoInvestigacion.setFechaSustentacion(sustentacionDto.getFechaSustentacion());
                 sustentacionProyectoInvestigacion.setNumeroActaConsejo(sustentacionDto.getNumeroActaConsejo());
                 sustentacionProyectoInvestigacion.setFechaActaConsejo(sustentacionDto.getFechaActaConsejo());
 
@@ -579,6 +580,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                                 + " no encontrado"));
 
                 if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.APROBADO)) {
+                        Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
+                                        .findByTrabajoGradoId(idTrabajoGrado);
+                        if (tiemposPendientesOpt.isPresent()) {
+                                tiemposPendientesRepository.delete(tiemposPendientesOpt.get());
+                        }
                         trabajoGrado.setNumeroEstado(31);
                 } else if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.NO_APROBADO)) {
                         // Consultar aqui que se hace
@@ -1197,13 +1203,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 ArrayList<String> correos = new ArrayList<>();
 
-                // if (sustentacionProyectoInvestigacionTmp.getJuradosAceptados() !=
-                // sustentacionDto
-                // .getJuradosAceptados()) {
-                // // Si pasa de acepados a no aceptados
-                // if
-                // (sustentacionDto.getJuradosAceptados().equals(ConceptoVerificacion.RECHAZADO))
-                // {
                 sustentacionProyectoInvestigacionTmp
                                 .setIdJuradoInterno(
                                                 Long.parseLong(sustentacionDto.getIdJuradoInterno()));
@@ -1218,10 +1217,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 envioCorreos.enviarCorreosCorrecion(correos,
                                 sustentacionDto.getEnvioEmail().getAsunto(),
                                 sustentacionDto.getEnvioEmail().getMensaje());
-                // }
-                // }
 
                 sustentacionProyectoInvestigacionTmp.setJuradosAceptados(sustentacionDto.getJuradosAceptados());
+                sustentacionProyectoInvestigacionTmp.setFechaSustentacion(sustentacionDto.getFechaSustentacion());
                 sustentacionProyectoInvestigacionTmp.setNumeroActaConsejo(sustentacionDto.getNumeroActaConsejo());
                 sustentacionProyectoInvestigacionTmp.setFechaActaConsejo(sustentacionDto.getFechaActaConsejo());
 

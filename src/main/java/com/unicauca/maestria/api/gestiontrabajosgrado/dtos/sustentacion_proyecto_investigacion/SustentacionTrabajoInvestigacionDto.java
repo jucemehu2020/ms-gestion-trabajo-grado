@@ -43,6 +43,9 @@ public class SustentacionTrabajoInvestigacionDto {
 
     @NotNull
     private ConceptoVerificacion juradosAceptados;
+    
+    @NotNull
+    private LocalDate fechaSustentacion;
 
     @NotBlank
     private String numeroActaConsejo;
