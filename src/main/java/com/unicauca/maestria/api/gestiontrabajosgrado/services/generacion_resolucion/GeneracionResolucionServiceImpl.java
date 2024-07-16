@@ -470,7 +470,10 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 "Trabajo de grado con id " + idTrabajoGrado
                                                                 + " no encontrado"));
 
-                if (generacionResolucionTmp.getActaFechaRespuestaComite() == null
+                boolean actaFechaRespuestaComiteEmpty = generacionResolucionTmp
+                                .getActaFechaRespuestaComite() == null ||
+                                generacionResolucionTmp.getActaFechaRespuestaComite().isEmpty();
+                if (actaFechaRespuestaComiteEmpty
                                 && generacionResolucionTmp.getLinkSolicitudConsejoFacultad() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
@@ -508,7 +511,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 validarLink(generacionResolucionDocenteDto.getLinkAnteproyectoFinal());
                 validarLink(generacionResolucionDocenteDto.getLinkSolicitudComite());
 
-                // Busca el trabajo de grado
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
@@ -565,7 +567,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 return generacionResolucionDocenteResponseDto;
         }
 
-        // Funciones privadas
         private void updateExamenValoracionDocenteValues(GeneracionResolucion generacionResolucion,
                         GeneracionResolucionDocenteDto generacionResolucionDocenteDto, TrabajoGrado trabajoGrado) {
 

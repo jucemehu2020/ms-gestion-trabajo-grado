@@ -179,7 +179,9 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	@Transactional
 	public TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante, String token) {
 
+		System.out.println("entra aqui");
 		EstudianteResponseDtoAll informacionEstudiante = archivoClient.obtenerInformacionEstudiante(idEstudiante);
+		System.out.println("paso 2");
 		if (!informacionEstudiante.getInformacionMaestria().getEstadoMaestria().equals(EstadoMaestriaActual.ACTIVO)) {
 			throw new InformationException("El estudiante no esta actualmente ACTIVO");
 		}
@@ -189,7 +191,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		for (int i = 0; i < trabajosGrado.size(); i++) {
 			if (trabajosGrado.get(i).getNumeroEstado() == 31) {
 				throw new InformationException("Ya existe un trabajo de grado aprobado");
-			} else if (trabajosGrado.get(i).getNumeroEstado() != 15 || trabajosGrado.get(i).getNumeroEstado() != 34) {
+			} else if (trabajosGrado.get(i).getNumeroEstado() != 15 && trabajosGrado.get(i).getNumeroEstado() != 34) {
 				throw new InformationException("Ya existe un trabajo de grado en proceso");
 			}
 		}

@@ -391,7 +391,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         sustentacionTrabajoInvestigacion.setActaFechaRespuestaComite(new ArrayList<>());
                 }
 
-                // Agregar la nueva respuesta a la lista existente
                 sustentacionTrabajoInvestigacion.getActaFechaRespuestaComite().add(respuestaComite);
                 sustentacionTrabajoInvestigacion.setLinkEstudioHojaVidaAcademica(
                                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto.getLinkEstudioHojaVidaAcademica());
@@ -607,10 +606,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         }
                         trabajoGrado.setNumeroEstado(31);
                 } else if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.NO_APROBADO)) {
-                        // Consultar aqui que se hace
                         trabajoGrado.setNumeroEstado(32);
                 } else {
-                        // aqui hacer lo de agregar a la tabla de tiempo
                         trabajoGrado.setNumeroEstado(33);
                         insertarInformacionTiempos(trabajoGrado);
                 }
@@ -751,7 +748,10 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 "Trabajo de grado con id " + idTrabajoGrado
                                                                 + " no encontrado"));
 
-                if (sustentacionTrabajoInvestigacion.getActaFechaRespuestaComite() == null
+                boolean actaFechaRespuestaComiteEmpty = sustentacionTrabajoInvestigacion
+                                .getActaFechaRespuestaComite() == null ||
+                                sustentacionTrabajoInvestigacion.getActaFechaRespuestaComite().isEmpty();
+                if (actaFechaRespuestaComiteEmpty
                                 && sustentacionTrabajoInvestigacion.getLinkEstudioHojaVidaAcademica() == null
                                 && sustentacionTrabajoInvestigacion.getLinkFormatoG() == null) {
                         throw new InformationException("No se han registrado datos");

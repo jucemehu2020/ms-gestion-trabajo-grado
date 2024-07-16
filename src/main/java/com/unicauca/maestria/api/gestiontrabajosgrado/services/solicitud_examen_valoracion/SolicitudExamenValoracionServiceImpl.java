@@ -474,8 +474,10 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						() -> new ResourceNotFoundException(
 								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-		if (solicitudExamenValoracion.getActaFechaRespuestaComite() == null
-				&& solicitudExamenValoracion.getLinkOficioDirigidoEvaluadores() == null
+		boolean actaFechaRespuestaComiteEmpty = solicitudExamenValoracion
+				.getActaFechaRespuestaComite() == null ||
+				solicitudExamenValoracion.getActaFechaRespuestaComite().isEmpty();
+		if (actaFechaRespuestaComiteEmpty && solicitudExamenValoracion.getLinkOficioDirigidoEvaluadores() == null
 				&& solicitudExamenValoracion.getFechaMaximaEvaluacion() == null) {
 			throw new InformationException("No se han registrado datos");
 		}
