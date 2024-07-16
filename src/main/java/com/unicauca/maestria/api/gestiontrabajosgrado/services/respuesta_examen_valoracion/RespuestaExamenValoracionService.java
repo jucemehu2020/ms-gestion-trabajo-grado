@@ -5,10 +5,9 @@ import java.util.Map;
 
 import org.springframework.validation.BindingResult;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.ObtenerDocumentosParaEnvioCorreoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Fase2.ExamenValoracionCanceladoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Cancelado.ExamenValoracionCanceladoDto;
 
 public interface RespuestaExamenValoracionService {
 
@@ -26,10 +25,6 @@ public interface RespuestaExamenValoracionService {
         public RespuestaExamenValoracionResponseDto actualizar(Long idRespuestaExamen,
                         RespuestaExamenValoracionDto respuestaExamenValoracionDto,
                         BindingResult result);
-
-        public Long validarNumeroNoAprobado(Long idTrabajoGrado);
-
-        public ObtenerDocumentosParaEnvioCorreoDto obtenerDocumentosParaEnviarCorreo(Long idRtaExamenValoracion);
 
         public Boolean evaluadorNoRespondio(Long idTrabajoGrado);
 

@@ -1,10 +1,8 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.SolicitudExamenValoracion.Docente;
 
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Collections;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,24 +20,21 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.Ti
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.ExpertoInfoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ServiceUnavailableException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
-import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosSolicitudExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion.SolicitudExamenValoracionServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ListarExpertosSEVTest {
+public class ObtenerExpertoSEVTest {
 
         @Mock
         private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
-        @Mock
-        private AnexosSolicitudExamenValoracionRepository anexosSolicitudExamenValoracionRepository;
         @Mock
         private TrabajoGradoRepository trabajoGradoRepository;
         @Mock
@@ -63,7 +58,7 @@ public class ListarExpertosSEVTest {
                 solicitudExamenValoracionService = new SolicitudExamenValoracionServiceImpl(
                                 solicitudExamenValoracionRepository,
                                 null,
-                                anexosSolicitudExamenValoracionRepository,
+                                null,
                                 trabajoGradoRepository,
                                 null,
                                 examenValoracionMapper,
@@ -74,7 +69,8 @@ public class ListarExpertosSEVTest {
         }
 
         @Test
-        void ListarExpertosSEVTest_Exito() {
+        void ObtenerExpertoSEVTest_InformacionExitosa() {
+                Long idExperto = 1L;
 
                 PersonaDto persona = PersonaDto.builder()
                                 .id(4L)
@@ -93,44 +89,51 @@ public class ListarExpertosSEVTest {
                                 .universidadtitexp("Universidad de Mexico")
                                 .build();
 
-                when(archivoClientExpertos.listar()).thenReturn(List.of(expertoResponse));
+                when(archivoClientExpertos.obtenerExpertoPorId(idExperto)).thenReturn(expertoResponse);
 
-                List<ExpertoInfoDto> result = solicitudExamenValoracionService.listarExpertos();
+                ExpertoInfoDto informacionGeneralResponseDtoEsperado = ExpertoInfoDto.builder()
+                                .id(expertoResponse.getId())
+                                .nombre(expertoResponse.getPersona().getNombre())
+                                .apellido(expertoResponse.getPersona().getApellido())
+                                .correo(expertoResponse.getPersona().getCorreoElectronico())
+                                .universidad(expertoResponse.getUniversidadtitexp())
+                                .build();
 
-                verify(archivoClientExpertos).listar();
+                ExpertoInfoDto resultado = solicitudExamenValoracionService.obtenerExperto(idExperto);
 
-                // Verificar resultados
-                assertNotNull(result);
-                assertEquals(1, result.size());
-                assertEquals("Cesar", result.get(0).getNombre());
-                assertEquals("Hurtado", result.get(0).getApellido());
-                assertEquals("julio.mellizo@gse.com.co", result.get(0).getCorreo());
-                assertEquals("Universidad de Mexico", result.get(0).getUniversidad());
+                assertNotNull(resultado);
+                assertEquals(informacionGeneralResponseDtoEsperado, resultado);
+
         }
 
         @Test
-        void ListarExpertosSEVTest_NoHayExperto() {
-                when(archivoClientExpertos.listar()).thenReturn(Collections.emptyList());
+        void ObtenerExpertoSEVTest_NoExisteDocente() {
+                Long idExperto = 2L;
 
-                InformationException thrown = assertThrows(
-                                InformationException.class,
-                                () -> solicitudExamenValoracionService.listarExpertos(),
-                                "Expected listarExpertos() to throw, but it didn't");
+                when(archivoClientExpertos.obtenerExpertoPorId(idExperto))
+                                .thenThrow(new ResourceNotFoundException("Expertos con id "
+                                                + idExperto + " no encontrado"));
 
-                assertTrue(thrown.getMessage().contains("No hay expertos registrados"));
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+                        solicitudExamenValoracionService.obtenerExperto(idExperto);
+                });
 
-                verify(archivoClientExpertos).listar();
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Expertos con id 2 no encontrado";
+                assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
         @Test
-        void testListarInformacionDocente_ServidorExpertoCaido() {
-                when(archivoClientExpertos.listar())
+        void ObtenerExpertoSEVTest_ServidorDocenteCaido() {
+                Long idExperto = 1L;
+
+                when(archivoClientExpertos.obtenerExpertoPorId(idExperto))
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
 
                 ServiceUnavailableException thrown = assertThrows(
                                 ServiceUnavailableException.class,
-                                () -> solicitudExamenValoracionService.listarExpertos(),
+                                () -> solicitudExamenValoracionService.obtenerExperto(idExperto),
                                 "Servidor externo actualmente fuera de servicio");
 
                 assertNotNull(thrown.getMessage());

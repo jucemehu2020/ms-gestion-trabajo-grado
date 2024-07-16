@@ -149,6 +149,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 solicitudExamenValoracionOld.setId(1L);
                 solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
                 solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
+                solicitudExamenValoracionOld.setActaFechaRespuestaComite(new ArrayList<>());
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -277,8 +278,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Envio correcion por parte del comite");
-                envioEmailDto
-                                .setMensaje("Por favor corregir el apartado de metolodogia y dar respuesta oportuna a las correciones");
+                envioEmailDto.setMensaje("Por favor corregir el apartado de metolodogia y dar respuesta oportuna a las correciones");
 
                 SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
                 solicitudExamenValoracionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComite);
@@ -290,6 +290,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 solicitudExamenValoracionOld.setId(1L);
                 solicitudExamenValoracionOld.setIdEvaluadorInterno(idTrabajoGrado);
                 solicitudExamenValoracionOld.setIdEvaluadorExterno(idTrabajoGrado);
+                solicitudExamenValoracionOld.setActaFechaRespuestaComite(new ArrayList<>());
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);

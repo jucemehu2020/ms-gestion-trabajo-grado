@@ -84,7 +84,6 @@ public class InsertarInformacionDocenteSEVTest {
 
         @Test
         void InsertarInformacionDocenteSEVTest_RegistroExitoso() {
-                // Configuración de datos y mocks
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -112,7 +111,6 @@ public class InsertarInformacionDocenteSEVTest {
                 when(archivoClientExpertos.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno()))
                                 .thenReturn(expertoResponseDto);
 
-                // Simulación de la llamada a obtenerInformacionEstudiante
                 EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
                 PersonaDto persona = new PersonaDto();
                 persona.setIdentificacion(12345678L);
@@ -122,7 +120,6 @@ public class InsertarInformacionDocenteSEVTest {
                 when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
                                 .thenReturn(estudianteResponseDtoAll);
 
-                // Aquí configuramos la conversión de DTO a entidad
                 SolicitudExamenValoracion examenValoracion = new SolicitudExamenValoracion();
                 examenValoracion.setTitulo("Prueba test");
                 examenValoracion.setLinkFormatoA("formatoA.txt-cHJ1ZWJhIGRlIHRleHR");
@@ -187,7 +184,7 @@ public class InsertarInformacionDocenteSEVTest {
         }
 
         @Test
-        void InsertarInformacionDocenteSEVTest_FaltanAtributos() {
+        void InsertarInformacionDocenteSEVTest_FaltanAtributosParaRegistro() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
                 examenValoracionDto.setTitulo("Prueba test");
@@ -308,7 +305,7 @@ public class InsertarInformacionDocenteSEVTest {
                 examenValoracionDto.setLinkFormatoA("formatoA.txt-cHJ1ZWJhIGRlIHRleHR");
                 examenValoracionDto.setLinkFormatoD("formatoD.txt-cHJ1ZWJhIGRlIHRleHR");
                 examenValoracionDto.setLinkFormatoE("formatoE.txt-cHJ1ZWJhIGRlIHRleHR");
-                examenValoracionDto.setIdEvaluadorInterno(2L); // ID de docente que no existe
+                examenValoracionDto.setIdEvaluadorInterno(2L);
                 examenValoracionDto.setIdEvaluadorExterno(1L);
                 examenValoracionDto.setAnexos(new ArrayList<>());
 
@@ -321,7 +318,6 @@ public class InsertarInformacionDocenteSEVTest {
                 when(solicitudExamenValoracionRepository.existsByTrabajoGradoId(idTrabajoGrado)).thenReturn(false);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
-                // Simular la excepción lanzada cuando el docente no se encuentra
                 when(archivoClient.obtenerDocentePorId(2L))
                                 .thenThrow(new ResourceNotFoundException("Docentes con id "
                                                 + examenValoracionDto.getIdEvaluadorInterno() + " no encontrado"));
@@ -445,5 +441,56 @@ public class InsertarInformacionDocenteSEVTest {
 
                 assertNotNull(thrown.getMessage());
                 assertTrue(thrown.getMessage().contains("Servidor externo actualmente fuera de servicio"));
+        }
+
+        
+        @Test
+        void InsertarInformacionDocenteSEVTest_FormatoDocumentosInvalido() {
+                Long idTrabajoGrado = 1L;
+                SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
+                examenValoracionDto.setTitulo("Prueba test");
+                examenValoracionDto.setLinkFormatoA("formatoA.txtcHJ1ZWJhIGRlIHRleHR");
+                examenValoracionDto.setLinkFormatoD("formatoD.txt-cHJ1ZWJhIGRlIHRleHR");
+                examenValoracionDto.setLinkFormatoE("formatoE.txt-cHJ1ZWJhIGRlIHRleHR");
+                examenValoracionDto.setIdEvaluadorInterno(1L);
+                examenValoracionDto.setIdEvaluadorExterno(1L);
+                examenValoracionDto.setAnexos(new ArrayList<>());
+
+                when(result.hasErrors()).thenReturn(false);
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        solicitudExamenValoracionService.insertarInformacionDocente(idTrabajoGrado, examenValoracionDto,
+                                        result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Formato de link no válido: formatoA.txtcHJ1ZWJhIGRlIHRleHR";
+
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
+
+        @Test
+        void InsertarInformacionDocenteSEVTest_FormatoB64Invalido() {
+                Long idTrabajoGrado = 1L;
+                SolicitudExamenValoracionDocenteDto examenValoracionDto = new SolicitudExamenValoracionDocenteDto();
+                examenValoracionDto.setTitulo("Prueba test");
+                examenValoracionDto.setLinkFormatoA("formatoA.txt-cHJ1ZWJhIGRlIHVwZGF0ZQ===");
+                examenValoracionDto.setLinkFormatoD("formatoD.txt-cHJ1ZWJhIGRlIHRleHR");
+                examenValoracionDto.setLinkFormatoE("formatoE.txt-cHJ1ZWJhIGRlIHRleHR");
+                examenValoracionDto.setIdEvaluadorInterno(1L);
+                examenValoracionDto.setIdEvaluadorExterno(1L);
+                examenValoracionDto.setAnexos(new ArrayList<>());
+
+                when(result.hasErrors()).thenReturn(false);
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        solicitudExamenValoracionService.insertarInformacionDocente(idTrabajoGrado, examenValoracionDto,
+                                        result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Base64 no válido";
+
+                assertTrue(exception.getMessage().contains(expectedMessage));
         }
 }

@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -161,19 +160,6 @@ public class GeneracionResolucionController {
                                 .body(generacionResolucion.actualizarInformacionCoordinadorFase3(idTrabajoGrado,
                                                 generacionResolucionDto,
                                                 result));
-        }
-
-        @GetMapping("/obtenerDocumentosParaEnviarAlComite/{idGeneracionResolucion}")
-        public ResponseEntity<ObtenerDocumentosParaEnvioDto> obtenerDocumentosParaEnviarAlComite(
-                        @PathVariable Long idGeneracionResolucion) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(generacionResolucion.obtenerDocumentosParaEnviarAlComite(idGeneracionResolucion));
-        }
-
-        @ExceptionHandler(UnrecognizedPropertyException.class)
-        public ResponseEntity<String> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex) {
-                String errorMessage = "Unknown field: " + ex.getPropertyName();
-                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
 }

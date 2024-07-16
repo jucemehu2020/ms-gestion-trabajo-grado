@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EventosIdsDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.InformacionTrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_grado.InicioTrabajoGradoService;
@@ -31,13 +30,13 @@ public class InicioTrabajoGradoController {
     private final InicioTrabajoGradoService inicioTrabajoGradoService;
 
     @GetMapping("/")
-    public ResponseEntity<List<EstudianteInfoDto>> obtenerEstudiantes() {
-        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.obtenerEstudiantes());
+    public ResponseEntity<List<EstudianteInfoDto>> listarEstudiantes() {
+        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.listarEstudiantes());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EstudianteResponseDto> buscarEstadoEstudiante(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.buscarEstadoEstudiantePor(id));
+    public ResponseEntity<EstudianteResponseDto> listarTrabajosGradoEstudiante(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.listarTrabajosGradoEstudiante(id));
     }
 
     @GetMapping("/obtenerInformacionEstudiante/{id}")
@@ -65,16 +64,11 @@ public class InicioTrabajoGradoController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/obtenerIdsEventos/{idTrabajoGrado}")
-    public ResponseEntity<EventosIdsDto> obtenerIdsEventos(@PathVariable Long idTrabajoGrado) {
-        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.obtenerIdsEventos(idTrabajoGrado));
-    }
-
     @GetMapping("/listarInformacionEstados")
-    public ResponseEntity<List<InformacionTrabajoGradoResponseDto>> listarEstadosExamenValoracion(
+    public ResponseEntity<List<InformacionTrabajoGradoResponseDto>> listarInformacionEstados(
             @RequestParam ArrayList<Integer> consultarEstados) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(inicioTrabajoGradoService.listarEstadosExamenValoracion(consultarEstados));
+                .body(inicioTrabajoGradoService.listarInformacionEstados(consultarEstados));
     }
 
     @GetMapping("/descargarDocumento")

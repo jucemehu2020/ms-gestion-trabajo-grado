@@ -24,16 +24,11 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.Traba
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EventosIdsDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.InformacionTrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapper;
-import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.GeneracionResolucionRepository;
-import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
-import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
-import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SustentacionProyectoInvestigacionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TiemposPendientesRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 
@@ -48,12 +43,6 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	private final TrabajoGradoResponseMapper trabajoGradoResponseMapper;
 	private final ArchivoClient archivoClient;
 	private final ArchivoClientLogin archivoClientLogin;
-
-	// Eventos
-	private final SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
-	private final RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
-	private final GeneracionResolucionRepository generacionResolucionRepository;
-	private final SustentacionProyectoInvestigacionRepository sustentacionProyectoInvestigacionRepository;
 
 	@Autowired
 	private EnvioCorreos envioCorreos;
@@ -81,23 +70,8 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	}
 
 	private void verificarEstado(Optional<TrabajoGrado> trabajoGrado, TiemposPendientes tiemposPendientes) {
-		// Caso para solicitud
 		EstudianteResponseDtoAll informacionEstudiantes = archivoClient
 				.obtenerInformacionEstudiante(trabajoGrado.get().getIdEstudiante());
-		// if (trabajoGrado.get().getNumeroEstado() == 7 ||
-		// trabajoGrado.get().getNumeroEstado() == 34 ||
-		// trabajoGrado.get().getNumeroEstado() == 4) {
-		// tiemposPendientesRepository.deleteById(tiemposPendientes.getId());
-		// } else if (trabajoGrado.get().getNumeroEstado() >= 8 &&
-		// trabajoGrado.get().getNumeroEstado() <= 14
-		// || trabajoGrado.get().getNumeroEstado() == 34 ||
-		// trabajoGrado.get().getNumeroEstado() == 35) {
-		// tiemposPendientesRepository.deleteById(tiemposPendientes.getId());
-		// } else if (trabajoGrado.get().getNumeroEstado() == 31 ||
-		// trabajoGrado.get().getNumeroEstado() == 32
-		// || trabajoGrado.get().getNumeroEstado() == 34) {
-		// tiemposPendientesRepository.deleteById(tiemposPendientes.getId());
-		// } else {
 		String complementoMensaje = trabajoGrado.get().getId() + " titulado " + trabajoGrado.get().getTitulo()
 				+ " realizado por el estudiante " + informacionEstudiantes.getPersona().getNombre() + " "
 				+ informacionEstudiantes.getPersona().getApellido() + " registrada en la fecha "
@@ -122,14 +96,17 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 			envioCorreos.enviarCorreosUnico(Constants.correoCoordinacionMaestria,
 					"Notificacion de recuerdo sustentacion aplazada", mensaje);
 		}
-		// }
-
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<EstudianteInfoDto> obtenerEstudiantes() {
+	public List<EstudianteInfoDto> listarEstudiantes() {
 		List<EstudianteResponseDtoAll> informacionEstudiantes = archivoClient.obtenerEstudiantes();
+
+		if (informacionEstudiantes.isEmpty()) {
+			throw new InformationException("No hay estudiantes registrados");
+		}
+
 		List<EstudianteInfoDto> estudiantesReducidos = informacionEstudiantes.stream()
 				.map(estudiante -> new EstudianteInfoDto(
 						estudiante.getId(),
@@ -144,18 +121,10 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 
 	@Override
 	@Transactional(readOnly = true)
-	public EstudianteResponseDto buscarEstadoEstudiantePor(Long idEstudiante) {
+	public EstudianteResponseDto listarTrabajosGradoEstudiante(Long idEstudiante) {
 
-		EstudianteResponseDtoAll informacionEstudiante = archivoClient.obtenerInformacionEstudiante(idEstudiante);
-		if (!informacionEstudiante.getInformacionMaestria().getEstadoMaestria().equals(EstadoMaestriaActual.ACTIVO)) {
-			throw new InformationException("El estudiante no esta actualmente ACTIVO");
-		}
-		// hacer aqui si no existe estudiante
-
-		// Obtener la lista de trabajos de grado del estudiante desde el repositorio
 		List<TrabajoGrado> trabajosGrado = trabajoGradoRepository.findByEstudianteId(idEstudiante);
 
-		// Transformar la lista de trabajos de grado a DTOs
 		List<TrabajoGradoResponseDto> trabajosGradoDto = trabajosGrado.stream().map(trabajo -> {
 			EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[trabajo.getNumeroEstado()];
 			return TrabajoGradoResponseDto.builder()
@@ -167,7 +136,6 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 					.build();
 		}).collect(Collectors.toList());
 
-		// Crear y retornar el DTO de respuesta del estudiante
 		return EstudianteResponseDto.builder()
 				.idEstudiante(idEstudiante)
 				.trabajoGrado(trabajosGradoDto)
@@ -191,21 +159,17 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	@Transactional(readOnly = true)
 	public TrabajoGradoResponseDto buscarTrabajoGrado(Long idTrabajoGrado) {
 
-		// Consultar si existe estudiante
 		TrabajoGrado resTrabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(
 						() -> new ResourceNotFoundException(
-								"Trabajo de grado con id: " + idTrabajoGrado + " No encontrado"));
+								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
 		TrabajoGradoResponseDto trabajoGradoConvertDto = trabajoGradoResponseMapper.toDto(resTrabajoGrado);
 
-		// Convertir el estado actual a entero
 		int estadoActualInt = trabajoGradoConvertDto.getNumeroEstado();
 
-		// Obtener el enum correspondiente a partir del entero
 		EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[estadoActualInt];
 
-		// Asignar el estado del trabajo de grado utilizando el enum
 		trabajoGradoConvertDto.setEstado(estadoEnum.getMensaje());
 
 		return trabajoGradoConvertDto;
@@ -214,6 +178,11 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	@Override
 	@Transactional
 	public TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante, String token) {
+
+		EstudianteResponseDtoAll informacionEstudiante = archivoClient.obtenerInformacionEstudiante(idEstudiante);
+		if (!informacionEstudiante.getInformacionMaestria().getEstadoMaestria().equals(EstadoMaestriaActual.ACTIVO)) {
+			throw new InformationException("El estudiante no esta actualmente ACTIVO");
+		}
 
 		List<TrabajoGrado> trabajosGrado = trabajoGradoRepository.findByEstudianteId(idEstudiante);
 
@@ -232,7 +201,6 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		JSONObject jsonObject = new JSONObject(respuestaLogin);
 		String correoElectronico = jsonObject.getString("message");
 
-		// Crear el objeto TrabajoGrado
 		TrabajoGrado trabajoGradoConvert = new TrabajoGrado();
 		trabajoGradoConvert.setIdEstudiante(informacionEstudiantes.getId());
 		trabajoGradoConvert.setFechaCreacion(LocalDate.now());
@@ -240,19 +208,14 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		trabajoGradoConvert.setTitulo("");
 		trabajoGradoConvert.setCorreoElectronicoTutor(correoElectronico);
 
-		// Guardar el TrabajoGrado en la base de datos
 		TrabajoGrado trabajoGradoGuardado = trabajoGradoRepository.save(trabajoGradoConvert);
 
-		// Mapear el TrabajoGrado guardado a un DTO de respuesta
 		TrabajoGradoResponseDto trabajoGradoConvertDto = trabajoGradoResponseMapper.toDto(trabajoGradoGuardado);
 
-		// Convertir el estado actual a entero
 		int estadoActualInt = trabajoGradoConvertDto.getNumeroEstado();
 
-		// Obtener el enum correspondiente a partir del entero
 		EstadoTrabajoGrado estadoEnum = EstadoTrabajoGrado.values()[estadoActualInt];
 
-		// Asignar el estado del trabajo de grado utilizando el enum
 		trabajoGradoConvertDto.setEstado(estadoEnum.getMensaje());
 
 		return trabajoGradoConvertDto;
@@ -266,40 +229,18 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 						() -> new ResourceNotFoundException(
 								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 		trabajoGradoRepository.deleteById(idTrabajoGrado);
-
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public EventosIdsDto obtenerIdsEventos(Long idTrabajoGrado) {
-
-		trabajoGradoRepository.findById(idTrabajoGrado)
-				.orElseThrow(
-						() -> new ResourceNotFoundException(
-								"Tarabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
-
-		Long idSolicitudExamenvaloracion = solicitudExamenValoracionRepository
-				.findIdExamenValoracionByTrabajoGradoId(idTrabajoGrado);
-		List<Long> idRespuestaExamenvaloracion = respuestaExamenValoracionRepository
-				.findIdRespuestaExamenValoracionByTrabajoGradoId(idTrabajoGrado);
-		Long idGeneracionResolucion = generacionResolucionRepository
-				.findIdGeneracionResolucionByTrabajoGradoId(idTrabajoGrado);
-		Long idSustentacion = sustentacionProyectoInvestigacionRepository
-				.findIdSustentacionTrabajoInvestigacionByTrabajoGradoId(idTrabajoGrado);
-
-		EventosIdsDto eventosIdsDto = new EventosIdsDto();
-		eventosIdsDto.setIdSolicitudExamenValoracion(idSolicitudExamenvaloracion);
-		eventosIdsDto.setIdRespuestaExamenValoracion(idRespuestaExamenvaloracion);
-		eventosIdsDto.setIdGeneracionResolucion(idGeneracionResolucion);
-		eventosIdsDto.setIdSustentacion(idSustentacion);
-
-		return eventosIdsDto;
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<InformacionTrabajoGradoResponseDto> listarEstadosExamenValoracion(
+	public List<InformacionTrabajoGradoResponseDto> listarInformacionEstados(
 			ArrayList<Integer> capturaEstadosDto) {
+
+		boolean isValid = capturaEstadosDto.stream().allMatch(estado -> estado >= 0 && estado <= 35);
+		if (!isValid) {
+			throw new InformationException("El rango de estados es del 0 a 35");
+		}
+
 		List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findAll();
 
 		List<InformacionTrabajoGradoResponseDto> trabajosGradoDto = listaTrabajoGrado.stream()
@@ -336,7 +277,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(
 						() -> new ResourceNotFoundException(
-								"Tarabajo de grado con id: " + idTrabajoGrado + " no encontrado"));
+								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
 		trabajoGrado.setNumeroEstado(34);
 

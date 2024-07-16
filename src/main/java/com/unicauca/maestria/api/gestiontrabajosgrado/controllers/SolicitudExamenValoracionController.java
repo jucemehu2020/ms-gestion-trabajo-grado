@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.DatosFormatoBResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.ObtenerDocumentosParaEvaluadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
@@ -138,20 +136,6 @@ public class SolicitudExamenValoracionController {
                                 .body(serviceSolicitudExamenValoracion.actualizarInformacionCoordinadorFase2(
                                                 idTrabajoGrado,
                                                 examenValoracion, result));
-        }
-
-        @GetMapping("/obtenerInformacionFormatoB/{id}")
-        public ResponseEntity<DatosFormatoBResponseDto> obtenerInformacionFormatoB(@PathVariable Long id) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(serviceSolicitudExamenValoracion.obtenerInformacionFormatoB(id));
-        }
-
-        @GetMapping("/obtenerDocumentosParaEvaluador/{idExamenValoracion}")
-        public ResponseEntity<ObtenerDocumentosParaEvaluadorDto> obtenerDocumentosParaEvaluador(
-                        @PathVariable Long idExamenValoracion) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(serviceSolicitudExamenValoracion
-                                                .obtenerDocumentosParaEvaluador(idExamenValoracion));
         }
 
 }

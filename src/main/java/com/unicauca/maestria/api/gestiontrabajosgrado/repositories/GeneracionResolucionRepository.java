@@ -16,9 +16,6 @@ public interface GeneracionResolucionRepository extends JpaRepository<Generacion
 
     Optional<GeneracionResolucion> findByTrabajoGradoId(Long idTrabajoGradoId);
 
-    // @Query("SELECT sev FROM GeneracionResolucion sev WHERE sev.trabajoGrado.id = ?1")
-    // public GeneracionResolucion findByTrabajoGradoId(Long trabajoGradoId);
-
     @Query("SELECT rc FROM GeneracionResolucion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.id = :id ORDER BY rc.id DESC")
     List<RespuestaComiteGeneracionResolucion> findRespuestaComiteByGeneracionResolucionId(@Param("id") Long id);
 

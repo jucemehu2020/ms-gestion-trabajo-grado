@@ -78,19 +78,23 @@ public class GlobalHandlerException {
 	}
 
 	@ExceptionHandler(value = { InvalidFormatException.class })
-	public ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, WebRequest request) {
-		HttpStatus estado = HttpStatus.BAD_REQUEST;
+    public ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, WebRequest request) {
+        HttpStatus estado = HttpStatus.BAD_REQUEST;
+        Map<String, Object> body = new HashMap<>();
+        body.put("path", request.getDescription(false).substring(4));
 
-		// Convertir los valores del enum a una cadena legible
-		String valoresPermitidos = Stream.of(ex.getTargetType().getEnumConstants())
-				.map(Object::toString)
-				.collect(Collectors.joining(", "));
+        if (ex.getTargetType().isAssignableFrom(LocalDate.class)) {
+            body.put("message", "Formato de fecha no válido. Use el formato 'yyyy-MM-dd'.");
+        } else {
+            String valoresPermitidos = Stream.of(ex.getTargetType().getEnumConstants())
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
 
-		Map<String, Object> body = new HashMap<>();
-		body.put("message",
-				"Atributo " + ex.getValue() + " no es valido. Los valores aceptados son: " + valoresPermitidos);
-		body.put("path", request.getDescription(false).substring(4));
+            body.put("message",
+                    "Atributo " + ex.getValue() + " no es válido. Los valores aceptados son: " + valoresPermitidos);
+        }
 
-		return new ResponseEntity<>(body, estado);
-	}
+        return new ResponseEntity<>(body, estado);
+    }
+	
 }

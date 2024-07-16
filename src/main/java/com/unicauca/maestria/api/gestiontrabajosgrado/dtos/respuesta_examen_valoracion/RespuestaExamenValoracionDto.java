@@ -38,9 +38,7 @@ public class RespuestaExamenValoracionDto {
 
     @NotNull
     private TipoEvaluador tipoEvaluador;
-
-    // private Boolean permitidoExamen;
-
+    
     @Valid
     private EnvioEmailDto envioEmail;
 

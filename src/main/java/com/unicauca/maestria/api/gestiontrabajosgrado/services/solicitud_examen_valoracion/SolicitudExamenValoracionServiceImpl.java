@@ -18,6 +18,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ValidationUtils;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.RespuestaComiteExamenValoracion;
@@ -28,8 +29,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.Estudiante
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.DatosFormatoBResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.ObtenerDocumentosParaEvaluadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.SolicitudExamenValoracionCoordinadorFase2ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.AnexoSolicitudExamenValoracionDto;
@@ -116,7 +115,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				docente.getPersona().getNombre(),
 				docente.getPersona().getApellido(),
 				docente.getPersona().getCorreoElectronico(),
-				docente.getUltimaUniversidad());
+				"Universidad del Cauca");
 	}
 
 	@Override
@@ -139,6 +138,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		if (validacion.hasErrors()) {
 			throw new FieldErrorException(validacion);
+		}
+
+		validarLink(datosExamenValoracion.getLinkFormatoA());
+		validarLink(datosExamenValoracion.getLinkFormatoD());
+		validarLink(datosExamenValoracion.getLinkFormatoE());
+
+		for (AnexoSolicitudExamenValoracionDto anexo : datosExamenValoracion.getAnexos()) {
+			validarLink(anexo.getLinkAnexo());
 		}
 
 		if (solicitudExamenValoracionRepository.existsByTrabajoGradoId(idTrabajoGrado)) {
@@ -199,6 +206,15 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		validarConceptoDocumentos(datosExamenFase1);
+
+		if (datosExamenFase1.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)) {
+			ValidationUtils.validarBase64(datosExamenFase1.getDocumentosEnvioComite().getB64FormatoA());
+			ValidationUtils.validarBase64(datosExamenFase1.getDocumentosEnvioComite().getB64FormatoE());
+			ValidationUtils.validarBase64(datosExamenFase1.getDocumentosEnvioComite().getB64FormatoD());
+			for (String anexo : datosExamenFase1.getDocumentosEnvioComite().getB64Anexos()) {
+				ValidationUtils.validarBase64(anexo);
+			}
+		}
 
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
@@ -273,6 +289,19 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 							: "Atributos incorrectos");
 		}
 
+		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)) {
+			validarLink(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
+
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoD());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoE());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64Oficio());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoB());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoC());
+			for (String anexo : examenValoracionDto.getInformacionEnvioEvaluador().getB64Anexos()) {
+				ValidationUtils.validarBase64(anexo);
+			}
+		}
+
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
@@ -286,6 +315,12 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Examen de valoracion con id " + trabajoGrado.getSolicitudExamenValoracion().getId()
 								+ " no encontrado"));
+
+		for (RespuestaComiteExamenValoracion respuesta : examenValoracionTmp.getActaFechaRespuestaComite()) {
+			if (respuesta.getConceptoComite().equals(Concepto.APROBADO)) {
+				throw new InformationException("El concepto ya es APROBADO");
+			}
+		}
 
 		ArrayList<String> correos = new ArrayList<>();
 
@@ -341,7 +376,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	private void agregarInformacionCoordinador(SolicitudExamenValoracion examenValoracion,
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto) {
 
-		// Crear una nueva instancia de RespuestaComite
 		RespuestaComiteExamenValoracion respuestaComite = RespuestaComiteExamenValoracion.builder()
 				.conceptoComite(examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite())
 				.numeroActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getNumeroActa())
@@ -365,6 +399,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		SolicitudExamenValoracion solicitudExamenValoracion = solicitudExamenValoracionRepository
 				.findByTrabajoGradoId(idTrabajoGrado).orElseThrow(() -> new ResourceNotFoundException(
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+		if (solicitudExamenValoracion.getLinkFormatoA() == null || solicitudExamenValoracion.getLinkFormatoD() == null
+				|| solicitudExamenValoracion.getLinkFormatoE() == null
+				|| solicitudExamenValoracion.getActaFechaRespuestaComite() == null
+				|| solicitudExamenValoracion.getIdEvaluadorInterno() == null
+				|| solicitudExamenValoracion.getIdEvaluadorExterno() == null) {
+			throw new InformationException("No se han registrado datos");
+		}
 
 		DocenteResponseDto docente = archivoClient
 				.obtenerDocentePorId(solicitudExamenValoracion.getIdEvaluadorInterno());
@@ -448,6 +490,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		if (result.hasErrors()) {
 			throw new FieldErrorException(result);
+		}
+
+		validarLink(examenValoracionDto.getLinkFormatoA());
+		validarLink(examenValoracionDto.getLinkFormatoD());
+		validarLink(examenValoracionDto.getLinkFormatoE());
+
+		for (AnexoSolicitudExamenValoracionDto anexo : examenValoracionDto.getAnexos()) {
+			validarLink(anexo.getLinkAnexo());
 		}
 
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
@@ -579,6 +629,19 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new InformationException("Atributos incorrectos");
 		}
 
+		if (examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()
+				.equals(ConceptoVerificacion.ACEPTADO)) {
+			ValidationUtils
+					.validarBase64(examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite().getB64FormatoA());
+			ValidationUtils
+					.validarBase64(examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite().getB64FormatoE());
+			ValidationUtils
+					.validarBase64(examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite().getB64FormatoD());
+			for (String anexo : examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite().getB64Anexos()) {
+				ValidationUtils.validarBase64(anexo);
+			}
+		}
+
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
@@ -644,6 +707,19 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		if (conceptoComite.equals(Concepto.APROBADO) && linkOficio == null && fechaMaximaEvaluacion == null
 				&& informacionEnvioEvaluador == null) {
 			throw new InformationException("Atributos incorrectos");
+		}
+
+		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)) {
+			validarLink(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
+
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoD());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoE());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64Oficio());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoB());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoC());
+			for (String anexo : examenValoracionDto.getInformacionEnvioEvaluador().getB64Anexos()) {
+				ValidationUtils.validarBase64(anexo);
+			}
 		}
 
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
@@ -738,79 +814,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public DatosFormatoBResponseDto obtenerInformacionFormatoB(Long idTrabajoGrado) {
-
-		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"TrabajoGrado con id: " + idTrabajoGrado + " No encontrado"));
-
-		EstudianteResponseDtoAll estudiante = archivoClient
-				.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
-
-		Optional<SolicitudExamenValoracion> examenValoracion = solicitudExamenValoracionRepository
-				.findById(trabajoGrado.getSolicitudExamenValoracion().getId());
-
-		if (!examenValoracion.isPresent()) {
-			throw new ResourceNotFoundException(
-					"Solicitud examen valoracion con idTrabajoGrado: " + idTrabajoGrado + " No encontrada");
-		}
-
-		DocenteResponseDto docente = archivoClient
-				.obtenerDocentePorId(examenValoracion.get().getIdEvaluadorInterno());
-		String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
-		Map<String, String> evaluadorInternoMap = new HashMap<>();
-		evaluadorInternoMap.put("nombres", nombre_docente);
-		evaluadorInternoMap.put("universidad", "Universidad del Cauca");
-		evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
-
-		ExpertoResponseDto experto = archivoClientExpertos
-				.obtenerExpertoPorId(examenValoracion.get().getIdEvaluadorExterno());
-		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
-		Map<String, String> evaluadorExternoMap = new HashMap<>();
-		evaluadorExternoMap.put("nombres", nombre_experto);
-		evaluadorExternoMap.put("universidad", experto.getUniversidadtitexp());
-		evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
-
-		return new DatosFormatoBResponseDto(trabajoGrado.getTitulo(),
-				estudiante.getPersona().getNombre() + " " + estudiante.getPersona().getApellido(),
-				evaluadorInternoMap, evaluadorExternoMap);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluador(Long idTrabajoGrado) {
-
-		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"TrabajoGrado con id: " + idTrabajoGrado + " No encontrado"));
-
-		SolicitudExamenValoracion examenValoracion = solicitudExamenValoracionRepository
-				.findById(trabajoGrado.getSolicitudExamenValoracion().getId())
-				.orElseThrow(
-						() -> new ResourceNotFoundException(
-								"Examen de valoracion con id: "
-										+ trabajoGrado.getSolicitudExamenValoracion().getId()
-										+ " no encontrado"));
-
-		List<AnexoSolicitudExamenValoracion> anexosSolicitudExamenValoracion = anexosSolicitudExamenValoracionRepository
-				.obtenerAnexosPorId(examenValoracion.getId());
-
-		ArrayList<String> listaAnexos = new ArrayList<>();
-		for (int documento = 0; documento < anexosSolicitudExamenValoracion.size(); documento++) {
-			listaAnexos.add(
-					FilesUtilities.recuperarArchivo(anexosSolicitudExamenValoracion.get(documento).getLinkAnexo()));
-		}
-
-		ObtenerDocumentosParaEvaluadorDto obtenerDocumentosParaEvaluadorDto = new ObtenerDocumentosParaEvaluadorDto(
-				FilesUtilities.recuperarArchivo(examenValoracion.getLinkFormatoD()),
-				FilesUtilities.recuperarArchivo(examenValoracion.getLinkFormatoE()),
-				listaAnexos);
-
-		return obtenerDocumentosParaEvaluadorDto;
-	}
-
 	private String identificacionArchivo(TrabajoGrado trabajoGrado) {
 		EstudianteResponseDtoAll informacionEstudiantes = archivoClient
 				.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
@@ -828,6 +831,12 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		String rutaCarpeta = anio + "/" + mes + "/" + informacionEstudiante + "/" + procesoVa;
 
 		return rutaCarpeta;
+	}
+
+	private void validarLink(String link) {
+		ValidationUtils.validarFormatoLink(link);
+		String base64 = link.substring(link.indexOf('-') + 1);
+		ValidationUtils.validarBase64(base64);
 	}
 
 }

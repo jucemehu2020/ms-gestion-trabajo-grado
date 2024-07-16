@@ -34,6 +34,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.Estudiante
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase1.SolicitudExamenValoracionResponseFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.DocumentosEnvioComiteDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
@@ -325,6 +326,7 @@ public class ActualizarInformacionCoordinadorFase1SEVTest {
 
                 DocumentosEnvioComiteDto documentosEnvioComiteDto = new DocumentosEnvioComiteDto();
                 documentosEnvioComiteDto.setB64FormatoA("cHJ1ZWJhIGRlIHRleHR");
+                documentosEnvioComiteDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
                 documentosEnvioComiteDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
                 documentosEnvioComiteDto.setB64Anexos(anexos);
 
@@ -375,6 +377,7 @@ public class ActualizarInformacionCoordinadorFase1SEVTest {
 
                 DocumentosEnvioComiteDto documentosEnvioComiteDto = new DocumentosEnvioComiteDto();
                 documentosEnvioComiteDto.setB64FormatoA("cHJ1ZWJhIGRlIHRleHR");
+                documentosEnvioComiteDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
                 documentosEnvioComiteDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
                 documentosEnvioComiteDto.setB64Anexos(anexos);
 
@@ -395,6 +398,45 @@ public class ActualizarInformacionCoordinadorFase1SEVTest {
 
                 assertNotNull(exception.getMessage());
                 String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
+
+        @Test
+        void ActualizarInformacionCoordinadorFase1SEVTest_FormatoB64Invalido() {
+                Long idTrabajoGrado = 1L;
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Solicitud de revision examen de valoracion");
+                envioEmailDto.setMensaje(
+                                "Solicito comedidamente revisar el examen de valoracion del estudiante Julio Mellizo para aprobacion");
+
+                ArrayList<String> anexos = new ArrayList<>();
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+
+                DocumentosEnvioComiteDto documentosEnvioComiteDto = new DocumentosEnvioComiteDto();
+                documentosEnvioComiteDto.setB64FormatoA("cHJ1ZWJhIGRlIHRleHR");
+                documentosEnvioComiteDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
+                documentosEnvioComiteDto.setB64FormatoD("cHJ1ZWJhIGRlIHVwZGF0ZQ===");
+                documentosEnvioComiteDto.setB64Anexos(anexos);
+
+                SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
+                solicitudExamenValoracionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
+                solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(documentosEnvioComiteDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        solicitudExamenValoracionService.actualizarInformacionCoordinadorFase1(idTrabajoGrado,
+                                        solicitudExamenValoracionCoordinadorFase1Dto,
+                                        result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Base64 no válido";
+
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 }

@@ -4,17 +4,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.ObtenerDocumentosParaEnvioCorreoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Fase2.ExamenValoracionCanceladoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Cancelado.ExamenValoracionCanceladoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion.RespuestaExamenValoracionService;
 
 import lombok.RequiredArgsConstructor;
@@ -63,20 +61,6 @@ public class RespuestaExamenValoracionController {
                                 .body(respuestaExamenValoracion
                                                 .insertarInformacionCancelado(idTrabajoGrado,
                                                                 examenValoracionCanceladoDto, result));
-        }
-
-        @GetMapping("/validarNumeroNoAprobado/{idTrabajoGrado}")
-        public ResponseEntity<?> validarNumeroNoAprobado(@PathVariable Long idTrabajoGrado) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(respuestaExamenValoracion.validarNumeroNoAprobado(idTrabajoGrado));
-        }
-
-        @GetMapping("/obtenerDocumentosParaEnviarCorreo/{idRespuestaExamenValoracion}")
-        public ResponseEntity<ObtenerDocumentosParaEnvioCorreoDto> obtenerDocumentosParaEnviarCorreo(
-                        @PathVariable Long idRespuestaExamenValoracion) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(respuestaExamenValoracion
-                                                .obtenerDocumentosParaEnviarCorreo(idRespuestaExamenValoracion));
         }
 
         @GetMapping("/evaluadorNoRespondio/{idTrabajoGrado}")

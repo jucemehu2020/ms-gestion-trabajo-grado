@@ -312,14 +312,15 @@ public class InsertarInformacionCoordinadorFase1SEVTest {
         @Test
         void InsertarInformacionCoordinadorFase1SEVTest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
-                SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
-                solicitudExamenValoracionCoordinadorFase1Dto
-                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Solicitud de revision examen de valoracion");
                 envioEmailDto.setMensaje(
                                 "Solicito comedidamente revisar el examen de valoracion del estudiante Julio Mellizo para aprobacion.");
+
+                SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.RECHAZADO);
                 solicitudExamenValoracionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
                 solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(null);
 
@@ -377,6 +378,44 @@ public class InsertarInformacionCoordinadorFase1SEVTest {
 
                 assertNotNull(exception.getMessage());
                 String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
+
+        @Test
+        void InsertarInformacionCoordinadorFase1SEVTest_FormatoB64Invalido() {
+                Long idTrabajoGrado = 1L;
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Solicitud de revision examen de valoracion");
+                envioEmailDto.setMensaje(
+                                "Solicito comedidamente revisar el examen de valoracion del estudiante Julio Mellizo para aprobacion.");
+
+                DocumentosEnvioComiteDto documentosEnvioComiteDto = new DocumentosEnvioComiteDto();
+                documentosEnvioComiteDto.setB64FormatoA("cHJ1ZWJhIGRlIHRleHR");
+                documentosEnvioComiteDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
+                documentosEnvioComiteDto.setB64FormatoD("cHJ1ZWJhIGRlIHRleHR");
+                ArrayList<String> anexos = new ArrayList<>();
+                anexos.add("cHJ1ZWJhIGRlIHVwZGF0ZQ===");
+                anexos.add("cHJ1ZWJhIGRlIHRleHR");
+                documentosEnvioComiteDto.setB64Anexos(anexos);
+
+                SolicitudExamenValoracionCoordinadorFase1Dto solicitudExamenValoracionCoordinadorFase1Dto = new SolicitudExamenValoracionCoordinadorFase1Dto();
+                solicitudExamenValoracionCoordinadorFase1Dto
+                                .setConceptoCoordinadorDocumentos(ConceptoVerificacion.ACEPTADO);
+                solicitudExamenValoracionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
+                solicitudExamenValoracionCoordinadorFase1Dto.setDocumentosEnvioComite(documentosEnvioComiteDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        solicitudExamenValoracionService.insertarInformacionCoordinadorFase1(idTrabajoGrado,
+                                        solicitudExamenValoracionCoordinadorFase1Dto,
+                                        result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Base64 no válido";
+
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 }

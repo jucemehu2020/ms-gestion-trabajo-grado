@@ -48,8 +48,6 @@ public interface GeneracionResolucionService {
 
         public GeneracionResolucionCoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(Long idTrabajoGrado);
 
-        public ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviarAlComite(Long idTrabajoGrado);
-
         public GeneracionResolucionDocenteResponseDto actualizarInformacionDocente(
                         Long idTrabajoGrado,
                         GeneracionResolucionDocenteDto generacionResolucionDocenteDto,

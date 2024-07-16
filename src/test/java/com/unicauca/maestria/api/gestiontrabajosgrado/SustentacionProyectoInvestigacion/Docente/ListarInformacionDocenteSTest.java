@@ -154,7 +154,7 @@ public class ListarInformacionDocenteSTest {
                                                 + expertoResponseDto.getPersona().getApellido());
 
                 SustentacionTrabajoInvestigacionListDocenteDto sustentacionTrabajoInvestigacionListDocenteDto = new SustentacionTrabajoInvestigacionListDocenteDto();
-                sustentacionTrabajoInvestigacionListDocenteDto.setIdSustentacionTrabajoInvestigacion(
+                sustentacionTrabajoInvestigacionListDocenteDto.setId(
                                 sustentacionTrabajoInvestigacionOld.getId());
                 sustentacionTrabajoInvestigacionListDocenteDto
                                 .setLinkFormatoF(sustentacionTrabajoInvestigacionOld.getLinkFormatoF());
@@ -167,7 +167,7 @@ public class ListarInformacionDocenteSTest {
                                 .listarInformacionDocente(idTrabajoGrado);
 
                 assertNotNull(resultado);
-                assertEquals(1L, resultado.getIdSustentacionTrabajoInvestigacion());
+                assertEquals(1L, resultado.getId());
                 assertEquals(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-linkFormatoF.txt",
                                 resultado.getLinkFormatoF());

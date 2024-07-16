@@ -13,18 +13,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.docente.AbreviaturaTitulo;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.docente.CategoriaMinCiencia;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.Genero;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.TipoIdentificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.TituloDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ServiceUnavailableException;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
+import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosSolicitudExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
+import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.TrabajoGradoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_valoracion.SolicitudExamenValoracionServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,20 +37,45 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.solicitud_examen_
 public class ListarDocentesSEVTest {
 
         @Mock
+        private SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
+        @Mock
+        private AnexosSolicitudExamenValoracionRepository anexosSolicitudExamenValoracionRepository;
+        @Mock
+        private TrabajoGradoRepository trabajoGradoRepository;
+        @Mock
         private ArchivoClient archivoClient;
+        @Mock
+        private ArchivoClientExpertos archivoClientExpertos;
+        @Mock
+        private SolicitudExamenValoracionMapper examenValoracionMapper;
+        @Mock
+        private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
+        @Mock
+        private AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
+        @Mock
+        private BindingResult result;
 
         @InjectMocks
-        private SolicitudExamenValoracionServiceImpl docenteService;
+        private SolicitudExamenValoracionServiceImpl solicitudExamenValoracionService;
 
         @BeforeEach
-        public void setUp() {
-                docenteService = new SolicitudExamenValoracionServiceImpl(null, null, null, null, null, null, null, null,
-                                archivoClient, null);
+        void setUp() {
+                solicitudExamenValoracionService = new SolicitudExamenValoracionServiceImpl(
+                                solicitudExamenValoracionRepository,
+                                null,
+                                anexosSolicitudExamenValoracionRepository,
+                                trabajoGradoRepository,
+                                null,
+                                examenValoracionMapper,
+                                examenValoracionResponseMapper,
+                                anexoSolicitudExamenValoracionMapper,
+                                archivoClient,
+                                archivoClientExpertos);
         }
 
         @Test
-        public void testListarDocentes_Exito() {
-                // Configurar los datos simulados
+        void ListarDocentesSEVTest_Exito() {
+
                 PersonaDto persona = PersonaDto.builder()
                                 .id(4L)
                                 .identificacion(1098L)
@@ -57,31 +87,16 @@ public class ListarDocentesSEVTest {
                                 .tipoIdentificacion(TipoIdentificacion.CEDULA_CIUDADANIA)
                                 .build();
 
-                TituloDto titulo = TituloDto.builder()
-                                .id(6L)
-                                .abreviatura(AbreviaturaTitulo.ING)
-                                .universidad("Universidad Del Valle")
-                                .categoriaMinCiencia(CategoriaMinCiencia.ASOCIADO)
-                                .linkCvLac("http:aall.uni")
-                                .build();
-
                 DocenteResponseDto docenteResponse = DocenteResponseDto.builder()
                                 .id(6L)
                                 .persona(persona)
-                                .titulos(List.of(titulo))
                                 .build();
 
-                // Configurar el mock para devolver la lista esperada
                 when(archivoClient.listarDocentesRes()).thenReturn(List.of(docenteResponse));
 
-                // Ejecutar el método
-                List<DocenteInfoDto> result = docenteService.listarDocentes();
-                System.out.println("Result: " + result); // Agregar mensaje de depuración
+                List<DocenteInfoDto> result = solicitudExamenValoracionService.listarDocentes();
 
-                // Verificar que el método mockeado fue llamado
-                verify(archivoClient).listarDocentesRes();
 
-                // Verificar resultados
                 assertNotNull(result);
                 assertEquals(1, result.size());
                 assertEquals("Karla", result.get(0).getNombre());
@@ -91,31 +106,28 @@ public class ListarDocentesSEVTest {
         }
 
         @Test
-        public void testListarDocentes_NoHayDocentes() {
-                // Configurar el mock para devolver una lista vacía
+        void ListarDocentesSEVTest_NoHayDocentes() {
                 when(archivoClient.listarDocentesRes()).thenReturn(Collections.emptyList());
 
-                // Ejecutar el método y verificar que lanza la excepción esperada
                 InformationException thrown = assertThrows(
                                 InformationException.class,
-                                () -> docenteService.listarDocentes(),
+                                () -> solicitudExamenValoracionService.listarDocentes(),
                                 "Expected listarDocentes() to throw, but it didn't");
 
                 assertTrue(thrown.getMessage().contains("No hay docentes registrados"));
 
-                // Verificar que el método mockeado fue llamado
                 verify(archivoClient).listarDocentesRes();
         }
 
         @Test
-        void testListarInformacionDocente_ServidorDocenteCaido() {
+        void ListarDocentesSEVTest_ServidorDocenteCaido() {
                 when(archivoClient.listarDocentesRes())
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
 
                 ServiceUnavailableException thrown = assertThrows(
                                 ServiceUnavailableException.class,
-                                () -> docenteService.listarDocentes(),
+                                () -> solicitudExamenValoracionService.listarDocentes(),
                                 "Servidor externo actualmente fuera de servicio");
 
                 assertNotNull(thrown.getMessage());

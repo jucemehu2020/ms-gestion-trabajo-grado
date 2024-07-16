@@ -26,6 +26,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseListDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ServiceUnavailableException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
@@ -78,7 +79,7 @@ public class ListarInformacionDocenteSEVTest {
         }
 
         @Test
-        public void ListarInformacionDocenteSEVTest_Exito() {
+        void ListarInformacionDocenteSEVTest_Exito() {
                 Long idTrabajoGrado = 1L;
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
                 solicitudExamenValoracion.setId(1L);
@@ -89,6 +90,7 @@ public class ListarInformacionDocenteSEVTest {
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoD.txt");
                 solicitudExamenValoracion.setLinkFormatoE(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoE.txt");
+                solicitudExamenValoracion.setActaFechaRespuestaComite(new ArrayList<>());
                 solicitudExamenValoracion.setIdEvaluadorInterno(1L);
                 solicitudExamenValoracion.setIdEvaluadorExterno(1L);
 
@@ -128,7 +130,6 @@ public class ListarInformacionDocenteSEVTest {
                 SolicitudExamenValoracionDocenteResponseListDto solicitudExamenValoracionDocenteResponseListDto = solicitudExamenValoracionService
                                 .listarInformacionDocente(idTrabajoGrado);
 
-                // Verificar resultados
                 assertNotNull(solicitudExamenValoracionDocenteResponseListDto);
                 assertEquals(1, solicitudExamenValoracionDocenteResponseListDto.getId());
                 assertEquals("Prueba", solicitudExamenValoracionDocenteResponseListDto.getTitulo());
@@ -157,19 +158,19 @@ public class ListarInformacionDocenteSEVTest {
         }
 
         @Test
-        void ListarInformacionDocenteSEVTest_TrabajoGradoNoExiste() {
-                Long idTrabajoGrado = 2L;
+        void ListarInformacionDocenteSEVTest_NoHayRegistros() {
+                Long idTrabajoGrado = 1L;
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
 
                 when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
-                                .thenThrow(new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+                                .thenReturn(Optional.of(solicitudExamenValoracion));
 
-                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+                InformationException exception = assertThrows(InformationException.class, () -> {
                         solicitudExamenValoracionService.listarInformacionDocente(idTrabajoGrado);
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                String expectedMessage = "No se han registrado datos";
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
@@ -185,6 +186,7 @@ public class ListarInformacionDocenteSEVTest {
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoD.txt");
                 solicitudExamenValoracion.setLinkFormatoE(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoE.txt");
+                solicitudExamenValoracion.setActaFechaRespuestaComite(new ArrayList<>());
                 solicitudExamenValoracion.setIdEvaluadorInterno(1L);
                 solicitudExamenValoracion.setIdEvaluadorExterno(1L);
 
@@ -216,6 +218,7 @@ public class ListarInformacionDocenteSEVTest {
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoD.txt");
                 solicitudExamenValoracion.setLinkFormatoE(
                                 "./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/27-06-24/20240627220507-formatoE.txt");
+                solicitudExamenValoracion.setActaFechaRespuestaComite(new ArrayList<>());
                 solicitudExamenValoracion.setIdEvaluadorInterno(1L);
                 solicitudExamenValoracion.setIdEvaluadorExterno(1L);
 
@@ -246,4 +249,22 @@ public class ListarInformacionDocenteSEVTest {
                 assertNotNull(thrown.getMessage());
                 assertTrue(thrown.getMessage().contains("Servidor externo actualmente fuera de servicio"));
         }
+
+        @Test
+        void ListarInformacionDocenteSEVTest_TrabajoGradoNoExiste() {
+                Long idTrabajoGrado = 2L;
+
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenThrow(new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+                        solicitudExamenValoracionService.listarInformacionDocente(idTrabajoGrado);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
+
 }

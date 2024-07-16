@@ -19,6 +19,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Con
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ValidationUtils;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.RespuestaComiteGeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
@@ -27,7 +28,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.Estudiante
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1ResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.ObtenerDocumentosParaEnvioDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2.GeneracionResolucionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2.GeneracionResolucionCoordinadorFase2ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_3.GeneracionResolucionCoordinadorFase3Dto;
@@ -105,6 +105,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new FieldErrorException(result);
                 }
 
+                validarLink(generacionResolucionDto.getLinkAnteproyectoFinal());
+                validarLink(generacionResolucionDto.getLinkSolicitudComite());
+
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -169,10 +172,16 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
-                if (generacionResolucionDto.getConceptoDocumentosCoordinador()
-                                .equals(ConceptoVerificacion.ACEPTADO)
+                if (generacionResolucionDto.getConceptoDocumentosCoordinador().equals(ConceptoVerificacion.ACEPTADO)
                                 && generacionResolucionDto.getObtenerDocumentosParaEnvio() == null) {
                         throw new InformationException("Atributos incorrectos");
+                }
+
+                if (generacionResolucionDto.getConceptoDocumentosCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
+                        ValidationUtils.validarBase64(generacionResolucionDto.getObtenerDocumentosParaEnvio()
+                                        .getBase64AnteproyectoFinal());
+                        ValidationUtils.validarBase64(generacionResolucionDto.getObtenerDocumentosParaEnvio()
+                                        .getBase64SolicitudComite());
                 }
 
                 ArrayList<String> correos = new ArrayList<>();
@@ -228,31 +237,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         }
 
         @Override
-        @Transactional(readOnly = true)
-        public ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviarAlComite(Long idTrabajoGrado) {
-
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id "
-                                                                + idTrabajoGrado
-                                                                + " no encontrado"));
-
-                GeneracionResolucion generacionResolucion = generacionResolucionRepository
-                                .findByTrabajoGradoId(trabajoGrado.getGeneracionResolucion().getId())
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id "
-                                                                + trabajoGrado.getGeneracionResolucion().getId()
-                                                                + " no encontrado"));
-
-                ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnviar = new ObtenerDocumentosParaEnvioDto(
-                                FilesUtilities.recuperarArchivo(generacionResolucion.getLinkAnteproyectoFinal()),
-                                FilesUtilities.recuperarArchivo(generacionResolucion.getLinkSolicitudComite()));
-
-                return obtenerDocumentosParaEnviar;
-        }
-
-        @Override
         @Transactional
         public GeneracionResolucionCoordinadorFase2ResponseDto insertarInformacionCoordinadorFase2(
                         Long idTrabajoGrado,
@@ -273,6 +257,11 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 .equals(Concepto.APROBADO)
                                 && generacionResolucionDto.getLinkSolicitudConsejoFacultad() == null) {
                         throw new InformationException("Atributos incorrectos");
+                }
+
+                if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+                                .equals(Concepto.APROBADO)) {
+                        validarLink(generacionResolucionDto.getLinkSolicitudConsejoFacultad());
                 }
 
                 ArrayList<String> correos = new ArrayList<>();
@@ -516,6 +505,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new FieldErrorException(result);
                 }
 
+                validarLink(generacionResolucionDocenteDto.getLinkAnteproyectoFinal());
+                validarLink(generacionResolucionDocenteDto.getLinkSolicitudComite());
+
                 // Busca el trabajo de grado
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
@@ -544,29 +536,27 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 trabajoGrado.setNumeroEstado(18);
 
-                GeneracionResolucion generacionResolucion = null;
-                if (generacionResolucionOld != null) {
-                        if (!generacionResolucionDocenteDto.getLinkAnteproyectoFinal()
-                                        .equals(generacionResolucionOld.getLinkAnteproyectoFinal())) {
-                                generacionResolucionDocenteDto.setLinkAnteproyectoFinal(
-                                                FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                                generacionResolucionDocenteDto
-                                                                                .getLinkAnteproyectoFinal()));
-                                FilesUtilities.deleteFileExample(generacionResolucionOld.getLinkAnteproyectoFinal());
-                        }
-                        if (!generacionResolucionDocenteDto.getLinkSolicitudComite()
-                                        .equals(generacionResolucionOld.getLinkSolicitudComite())) {
-                                generacionResolucionDocenteDto.setLinkSolicitudComite(
-                                                FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                                generacionResolucionDocenteDto
-                                                                                .getLinkSolicitudComite()));
-                                FilesUtilities.deleteFileExample(generacionResolucionOld.getLinkSolicitudComite());
-                        }
-
-                        updateExamenValoracionDocenteValues(generacionResolucionOld, generacionResolucionDocenteDto,
-                                        trabajoGrado);
-                        generacionResolucion = generacionResolucionRepository.save(generacionResolucionOld);
+                if (!generacionResolucionDocenteDto.getLinkAnteproyectoFinal()
+                                .equals(generacionResolucionOld.getLinkAnteproyectoFinal())) {
+                        generacionResolucionDocenteDto.setLinkAnteproyectoFinal(
+                                        FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                        generacionResolucionDocenteDto
+                                                                        .getLinkAnteproyectoFinal()));
+                        FilesUtilities.deleteFileExample(generacionResolucionOld.getLinkAnteproyectoFinal());
                 }
+                if (!generacionResolucionDocenteDto.getLinkSolicitudComite()
+                                .equals(generacionResolucionOld.getLinkSolicitudComite())) {
+                        generacionResolucionDocenteDto.setLinkSolicitudComite(
+                                        FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                        generacionResolucionDocenteDto
+                                                                        .getLinkSolicitudComite()));
+                        FilesUtilities.deleteFileExample(generacionResolucionOld.getLinkSolicitudComite());
+                }
+
+                updateExamenValoracionDocenteValues(generacionResolucionOld, generacionResolucionDocenteDto,
+                                trabajoGrado);
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
+                                .save(generacionResolucionOld);
 
                 GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = generacionResolucionResponseMapper
                                 .toDocenteDto(generacionResolucion);
@@ -611,6 +601,14 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 .equals(ConceptoVerificacion.ACEPTADO)
                                 && generacionResolucionDocenteDto.getObtenerDocumentosParaEnvio() == null) {
                         throw new InformationException("Atributos incorrectos");
+                }
+
+                if (generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
+                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                        ValidationUtils.validarBase64(generacionResolucionDocenteDto.getObtenerDocumentosParaEnvio()
+                                        .getBase64AnteproyectoFinal());
+                        ValidationUtils.validarBase64(generacionResolucionDocenteDto.getObtenerDocumentosParaEnvio()
+                                        .getBase64SolicitudComite());
                 }
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
@@ -687,6 +685,11 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 .equals(Concepto.APROBADO)
                                 && generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad() == null) {
                         throw new InformationException("Atributos incorrectos");
+                }
+
+                if (generacionResolucionCoordinadorFase1Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+                                .equals(Concepto.APROBADO)) {
+                        validarLink(generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad());
                 }
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
@@ -875,6 +878,12 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 String rutaCarpeta = anio + "/" + mes + "/" + informacionEstudiante + "/" + procesoVa;
 
                 return rutaCarpeta;
+        }
+
+        private void validarLink(String link) {
+                ValidationUtils.validarFormatoLink(link);
+                String base64 = link.substring(link.indexOf('-') + 1);
+                ValidationUtils.validarBase64(base64);
         }
 
 }

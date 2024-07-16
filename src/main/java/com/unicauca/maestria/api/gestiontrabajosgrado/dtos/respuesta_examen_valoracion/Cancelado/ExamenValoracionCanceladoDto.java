@@ -1,8 +1,7 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Fase2;
+package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Cancelado;
 
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -13,9 +12,6 @@ import javax.validation.constraints.NotNull;
 public class ExamenValoracionCanceladoDto {
 
     @NotNull
-    private Boolean estadoFinalizado;
-
-    @NotBlank
     private String observacion;
 
 }

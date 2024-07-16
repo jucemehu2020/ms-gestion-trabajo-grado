@@ -17,74 +17,9 @@ import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
+
 public class FilesUtilities {
-    public static String guardarArchivo(String archivoBase64) {
-        try {
-            String[] partesBase64 = archivoBase64.split("-");
-            byte[] archivoBytes = Base64.getDecoder().decode(partesBase64[1]);
-            Date fechaActual = new Date();
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yy");
-            String fechaFormateada = formatoFecha.format(fechaActual);
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(archivoBytes);
-
-            String rutaCarpeta = "./files/" + fechaFormateada;
-            String rutaArchivo = rutaCarpeta + "/" + generateUniqueFileName() + "-" +
-                    partesBase64[0];
-            File carpeta = new File(rutaCarpeta);
-            OutputStream out = null;
-            if (!carpeta.exists()) {
-                if (carpeta.mkdirs()) {
-                    out = new FileOutputStream(rutaArchivo);
-                    out.write(archivoBytes);
-                    out.close();
-                    return rutaArchivo;
-                }
-            } else {
-                out = new FileOutputStream(rutaArchivo);
-                out.write(archivoBytes);
-                out.close();
-                return rutaArchivo;
-            }
-            return "Error al guardar el archivo";
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String guardarArchivoNew(String tituloTG, String procesoVa, String archivoBase64, String nombre) {
-        try {
-            String[] partesBase64 = archivoBase64.split("-");
-            byte[] archivoBytes = Base64.getDecoder().decode(partesBase64[1]);
-            Date fechaActual = new Date();
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yy");
-            String fechaFormateada = formatoFecha.format(fechaActual);
-
-            String rutaCarpeta = "./files/" + tituloTG + "/" + procesoVa + "/" + nombre + "/" + fechaFormateada;
-            String rutaArchivo = rutaCarpeta + "/" + generateUniqueFileName() + "-" + partesBase64[0];
-            File carpeta = new File(rutaCarpeta);
-            OutputStream out = null;
-            if (!carpeta.exists()) {
-                if (carpeta.mkdirs()) {
-                    out = new FileOutputStream(rutaArchivo);
-                    out.write(archivoBytes);
-                    out.close();
-                    return rutaArchivo;
-                }
-            } else {
-                out = new FileOutputStream(rutaArchivo);
-                out.write(archivoBytes);
-                out.close();
-                return rutaArchivo;
-            }
-            return "Error al guardar el archivo";
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static String guardarArchivoNew2(String ruta, String archivoBase64) {
         try {
@@ -171,7 +106,7 @@ public class FilesUtilities {
             fileInputStreamReader.close();
             return Base64.getEncoder().encodeToString(bytes);
         } catch (IOException e) {
-            throw new RuntimeException("Error al recuperar el archivo: " + e.getMessage());
+            throw new InformationException("Error al recuperar el archivo");
         }
     }
 

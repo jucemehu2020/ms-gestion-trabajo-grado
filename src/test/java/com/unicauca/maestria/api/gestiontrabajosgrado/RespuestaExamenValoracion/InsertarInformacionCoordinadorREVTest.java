@@ -252,8 +252,7 @@ public class InsertarInformacionCoordinadorREVTest {
                         assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-Anexos.txt",
                                         resultado.getAnexos().get(0).getLinkAnexo());
                         assertEquals(ConceptosVarios.APROBADO, resultado.getRespuestaExamenValoracion());
-                        assertEquals(null,
-                                        resultado.getFechaMaximaEntrega());
+                        assertEquals(null, resultado.getFechaMaximaEntrega());
                         assertEquals(1L, resultado.getIdEvaluador());
                         assertEquals(TipoEvaluador.INTERNO, resultado.getTipoEvaluador());
                 }
@@ -468,8 +467,8 @@ public class InsertarInformacionCoordinadorREVTest {
                 when(result.hasErrors()).thenReturn(false);
 
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-                solicitudExamenValoracion.setIdEvaluadorInterno(2L);
-                solicitudExamenValoracion.setIdEvaluadorExterno(1L);
+                solicitudExamenValoracion.setIdEvaluadorInterno(1L);
+                solicitudExamenValoracion.setIdEvaluadorExterno(2L);
 
                 when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(solicitudExamenValoracion));
@@ -580,8 +579,8 @@ public class InsertarInformacionCoordinadorREVTest {
                 when(result.hasErrors()).thenReturn(false);
 
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
-                solicitudExamenValoracion.setIdEvaluadorInterno(2L);
-                solicitudExamenValoracion.setIdEvaluadorExterno(1L);
+                solicitudExamenValoracion.setIdEvaluadorInterno(1L);
+                solicitudExamenValoracion.setIdEvaluadorExterno(2L);
 
                 when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(solicitudExamenValoracion));
@@ -718,6 +717,111 @@ public class InsertarInformacionCoordinadorREVTest {
                 assertNotNull(thrown.getMessage());
                 assertTrue(thrown.getMessage().contains(
                                 "El evaluador previamente dio su concepto como APROBADO, no es permitido que realice nuevos registros"));
+
+        }
+
+        @Test
+        void InsertarInformacionCoordinadorREVTest_MismoEvaluador() {
+                Long idTrabajoGrado = 1L;
+
+                List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
+                listaAnexosDto.add(AnexoRespuestaExamenValoracionDto.builder()
+                                .linkAnexo("Anexos.txt-cHJ1ZWJhIGRlIHRleHR")
+                                .build());
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Respuesta evaluadores");
+                envioEmailDto.setMensaje("Envio documentos enviados por el evaluador Mage");
+
+                RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
+                respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
+                respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
+                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
+                respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
+                respuestaExamenValoracionDto.setIdEvaluador(1L);
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
+                respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(5);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+
+                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
+                                .thenReturn(0L);
+
+                SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
+                solicitudExamenValoracion.setIdEvaluadorInterno(2L);
+                solicitudExamenValoracion.setIdEvaluadorExterno(1L);
+
+                when(solicitudExamenValoracionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(solicitudExamenValoracion));
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
+                                        respuestaExamenValoracionDto,
+                                        result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "La informacion del evaluador no coincide con la registrada en la solicitud";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+
+        }
+
+        @Test
+        void InsertarInformacionCoordinadorREVTest_Maximo2RegistroNoAprobados() {
+                Long idTrabajoGrado = 1L;
+
+                List<AnexoRespuestaExamenValoracionDto> listaAnexosDto = new ArrayList<>();
+                listaAnexosDto.add(AnexoRespuestaExamenValoracionDto.builder()
+                                .linkAnexo("Anexos.txt-cHJ1ZWJhIGRlIHRleHR")
+                                .build());
+
+                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
+                envioEmailDto.setAsunto("Respuesta evaluadores");
+                envioEmailDto.setMensaje("Envio documentos enviados por el evaluador Mage");
+
+                RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
+                respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
+                respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
+                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
+                respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
+                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
+                respuestaExamenValoracionDto.setIdEvaluador(1L);
+                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
+                respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
+
+                when(result.hasErrors()).thenReturn(false);
+
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(5);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+
+                when(respuestaExamenValoracionRepository.countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado))
+                                .thenReturn(2L);
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        respuestaExamenValoracionServiceImpl.insertarInformacion(idTrabajoGrado,
+                                        respuestaExamenValoracionDto,
+                                        result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Ya no es permitido registrar mas respuestas para el evaluador";
+                assertTrue(exception.getMessage().contains(expectedMessage));
 
         }
 
