@@ -508,9 +508,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new FieldErrorException(result);
                 }
 
-                validarLink(generacionResolucionDocenteDto.getLinkAnteproyectoFinal());
-                validarLink(generacionResolucionDocenteDto.getLinkSolicitudComite());
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
@@ -540,6 +537,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (!generacionResolucionDocenteDto.getLinkAnteproyectoFinal()
                                 .equals(generacionResolucionOld.getLinkAnteproyectoFinal())) {
+                        validarLink(generacionResolucionDocenteDto.getLinkAnteproyectoFinal());
                         generacionResolucionDocenteDto.setLinkAnteproyectoFinal(
                                         FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                         generacionResolucionDocenteDto
@@ -548,6 +546,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 }
                 if (!generacionResolucionDocenteDto.getLinkSolicitudComite()
                                 .equals(generacionResolucionOld.getLinkSolicitudComite())) {
+                        validarLink(generacionResolucionDocenteDto.getLinkSolicitudComite());
                         generacionResolucionDocenteDto.setLinkSolicitudComite(
                                         FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                         generacionResolucionDocenteDto
@@ -573,6 +572,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 archivoClient.obtenerDocentePorId(generacionResolucionDocenteDto.getIdDirector());
 
                 archivoClient.obtenerDocentePorId(generacionResolucionDocenteDto.getIdCodirector());
+
+                generacionResolucion.setConceptoDocumentosCoordinador(null);
 
                 generacionResolucion.setDirector(generacionResolucionDocenteDto.getIdDirector());
                 generacionResolucion.setCodirector(generacionResolucionDocenteDto.getIdCodirector());
@@ -618,7 +619,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + idTrabajoGrado
                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 20 && trabajoGrado.getNumeroEstado() != 19) {
+                if (trabajoGrado.getNumeroEstado() != 18 && trabajoGrado.getNumeroEstado() != 19
+                                && trabajoGrado.getNumeroEstado() != 20) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -688,18 +690,14 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new InformationException("Atributos incorrectos");
                 }
 
-                if (generacionResolucionCoordinadorFase1Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
-                                .equals(Concepto.APROBADO)) {
-                        validarLink(generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad());
-                }
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
                                                 + idTrabajoGrado
                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 21 && trabajoGrado.getNumeroEstado() != 22) {
+                if (trabajoGrado.getNumeroEstado() != 20 && trabajoGrado.getNumeroEstado() != 21
+                                && trabajoGrado.getNumeroEstado() != 22) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -740,6 +738,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 generacionResolucionOld.getLinkSolicitudConsejoFacultad());
                                 trabajoGrado.setNumeroEstado(21);
                         } else {
+                                validarLink(generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad());
                                 correos.add(Constants.correoConsejo);
                                 Map<String, Object> documentosParaConsejo = new HashMap<>();
                                 String[] solicitudConsejoFacultad = generacionResolucionCoordinadorFase1Dto
@@ -762,6 +761,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 if (generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad()
                                                 .compareTo(generacionResolucionOld
                                                                 .getLinkSolicitudConsejoFacultad()) != 0) {
+                                        validarLink(generacionResolucionCoordinadorFase1Dto
+                                                        .getLinkSolicitudConsejoFacultad());
                                         generacionResolucionCoordinadorFase1Dto
                                                         .setLinkSolicitudConsejoFacultad(FilesUtilities
                                                                         .guardarArchivoNew2(rutaArchivo,

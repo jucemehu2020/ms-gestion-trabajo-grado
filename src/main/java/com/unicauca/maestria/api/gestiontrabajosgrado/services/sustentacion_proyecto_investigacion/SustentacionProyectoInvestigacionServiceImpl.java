@@ -868,8 +868,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new FieldErrorException(result);
                 }
 
-                validarLink(sustentacionDto.getLinkFormatoF());
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -897,11 +895,10 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 trabajoGrado.setNumeroEstado(24);
 
-                if (!sustentacionDto.getLinkFormatoF()
-                                .equals(sustentacionProyectoInvestigacionTmp.getLinkFormatoF())) {
-                        sustentacionDto.setLinkFormatoF(
-                                        FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                        sustentacionDto.getLinkFormatoF()));
+                if (!sustentacionDto.getLinkFormatoF().equals(sustentacionProyectoInvestigacionTmp.getLinkFormatoF())) {
+                        validarLink(sustentacionDto.getLinkFormatoF());
+                        sustentacionDto.setLinkFormatoF(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                        sustentacionDto.getLinkFormatoF()));
                         FilesUtilities.deleteFileExample(
                                         sustentacionProyectoInvestigacionTmp.getLinkFormatoF());
                 }
@@ -922,6 +919,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacion,
                         SustentacionTrabajoInvestigacionDocenteDto sustentacionTrabajoInvestigacionDocenteDto,
                         TrabajoGrado trabajoGrado) {
+
+                sustentacionTrabajoInvestigacion.setConceptoCoordinador(null);
 
                 sustentacionTrabajoInvestigacion
                                 .setUrlDocumentacion(sustentacionTrabajoInvestigacionDocenteDto.getUrlDocumentacion());
@@ -1035,12 +1034,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("Atributos incorrectos");
                 }
 
-                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
-                                .equals(Concepto.APROBADO)) {
-                        validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
-                        validarLink(sustentacionDto.getLinkFormatoG());
-                }
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -1094,6 +1087,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                                 trabajoGrado.setNumeroEstado(27);
                         } else {
+                                validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
+                                validarLink(sustentacionDto.getLinkFormatoG());
                                 correos.add(Constants.correoComite);
                                 Map<String, Object> documentosParaConsejo = new HashMap<>();
                                 correos.add(Constants.correoComite);
@@ -1125,6 +1120,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 if (sustentacionDto.getLinkEstudioHojaVidaAcademica()
                                                 .compareTo(sustentacionProyectoInvestigacionOld
                                                                 .getLinkEstudioHojaVidaAcademica()) != 0) {
+                                        validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
                                         sustentacionDto.setLinkEstudioHojaVidaAcademica(FilesUtilities
                                                         .guardarArchivoNew2(rutaArchivo, sustentacionDto
                                                                         .getLinkEstudioHojaVidaAcademica()));
@@ -1132,11 +1128,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                         sustentacionProyectoInvestigacionOld
                                                                         .getLinkEstudioHojaVidaAcademica());
                                 }
-                                if (sustentacionDto.getLinkFormatoG()
-                                                .compareTo(sustentacionProyectoInvestigacionOld
-                                                                .getLinkFormatoG()) != 0) {
-                                        sustentacionDto.setLinkFormatoG(FilesUtilities
-                                                        .guardarArchivoNew2(rutaArchivo, sustentacionDto
+                                if (sustentacionDto.getLinkFormatoG().compareTo(sustentacionProyectoInvestigacionOld
+                                                .getLinkFormatoG()) != 0) {
+                                        validarLink(sustentacionDto.getLinkFormatoG());
+                                        sustentacionDto.setLinkFormatoG(
+                                                        FilesUtilities.guardarArchivoNew2(rutaArchivo, sustentacionDto
                                                                         .getLinkFormatoG()));
                                         FilesUtilities.deleteFileExample(
                                                         sustentacionProyectoInvestigacionOld
@@ -1236,11 +1232,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 ArrayList<String> correos = new ArrayList<>();
 
                 sustentacionProyectoInvestigacionTmp
-                                .setIdJuradoInterno(
-                                                Long.parseLong(sustentacionDto.getIdJuradoInterno()));
+                                .setIdJuradoInterno(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
                 sustentacionProyectoInvestigacionTmp
-                                .setIdJuradoExterno(
-                                                Long.parseLong(sustentacionDto.getIdJuradoExterno()));
+                                .setIdJuradoExterno(Long.parseLong(sustentacionDto.getIdJuradoExterno()));
 
                 EstudianteResponseDtoAll estudiante = archivoClient
                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
@@ -1274,9 +1268,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new FieldErrorException(result);
                 }
 
-                validarLink(sustentacionDto.getLinkFormatoH());
-                validarLink(sustentacionDto.getLinkFormatoI());
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -1299,6 +1290,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (!sustentacionDto.getLinkFormatoH()
                                 .equals(sustentacionProyectoInvestigacionTmp.getLinkFormatoH())) {
+                        validarLink(sustentacionDto.getLinkFormatoH());
                         sustentacionDto.setLinkFormatoH(
                                         FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                         sustentacionDto.getLinkFormatoH()));
@@ -1307,6 +1299,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 }
                 if (!sustentacionDto.getLinkFormatoI()
                                 .equals(sustentacionProyectoInvestigacionTmp.getLinkFormatoI())) {
+                        validarLink(sustentacionDto.getLinkFormatoI());
                         sustentacionDto.setLinkFormatoI(
                                         FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                         sustentacionDto.getLinkFormatoI()));
@@ -1355,11 +1348,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
-                if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.APROBADO)) {
-                        validarLink(sustentacionDto.getLinkActaSustentacionPublica());
-                        validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado());
-                }
-
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -1383,6 +1371,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 if (!sustentacionProyectoInvestigacionTmp.getRespuestaSustentacion()
                                 .equals(sustentacionDto.getRespuestaSustentacion())) {
                         if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.APROBADO)) {
+                                validarLink(sustentacionDto.getLinkActaSustentacionPublica());
+                                validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado());
                                 sustentacionProyectoInvestigacionTmp.setLinkActaSustentacionPublica(
                                                 FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                                 sustentacionDto.getLinkActaSustentacionPublica()));
@@ -1420,6 +1410,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 } else {
                         if (!sustentacionDto.getLinkActaSustentacionPublica().equals(
                                         sustentacionProyectoInvestigacionTmp.getLinkActaSustentacionPublica())) {
+                                validarLink(sustentacionDto.getLinkActaSustentacionPublica());
                                 sustentacionDto.setLinkActaSustentacionPublica(
                                                 FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                                 sustentacionDto.getLinkActaSustentacionPublica()));
@@ -1428,6 +1419,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         }
                         if (!sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado().equals(
                                         sustentacionProyectoInvestigacionTmp.getLinkEstudioHojaVidaAcademicaGrado())) {
+                                validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado());
                                 sustentacionDto.setLinkEstudioHojaVidaAcademicaGrado(
                                                 FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                                 sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado()));

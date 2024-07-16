@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: ms-gestion-trabajo-grado
+  datasource:
+    url: jdbc:mysql://localhost:3306/maestriafinal
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: maestriaprueba2024@gmail.com
+    password: qawl sbgr mawn dzkm
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  jackson:
+    date-format: yyyy-MM-dd
+    serialization:
+      write-dates-as-timestamps: false
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+
+server:
+  port: 8083
+
+app:
+  jwtSecret: SecretKey
+  jwtExpirationMs: 86400000

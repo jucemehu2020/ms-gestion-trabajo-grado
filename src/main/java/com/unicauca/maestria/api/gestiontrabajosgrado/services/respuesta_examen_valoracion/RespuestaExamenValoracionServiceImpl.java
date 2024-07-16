@@ -21,6 +21,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.ExamenValoracionCancelado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
@@ -325,9 +326,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         throw new FieldErrorException(result);
                 }
 
-                validarLink(respuestaExamenValoracionDto.getLinkFormatoB());
-                validarLink(respuestaExamenValoracionDto.getLinkFormatoC());
-
                 Boolean cambioDocumento = false;
 
                 RespuestaExamenValoracion respuestaExamenValoracionTmp = respuestaExamenValoracionRepository
@@ -386,6 +384,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                 if (respuestaExamenValoracionDto.getLinkFormatoB()
                                 .compareTo(respuestaExamenValoracionTmp.getLinkFormatoB()) != 0) {
+                        validarLink(respuestaExamenValoracionDto.getLinkFormatoB());
                         respuestaExamenValoracionDto.setLinkFormatoB(FilesUtilities.guardarArchivoNew2(
                                         rutaArchivo,
                                         respuestaExamenValoracionDto.getLinkFormatoB()));
@@ -394,6 +393,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 }
                 if (respuestaExamenValoracionDto.getLinkFormatoC()
                                 .compareTo(respuestaExamenValoracionTmp.getLinkFormatoC()) != 0) {
+                        validarLink(respuestaExamenValoracionDto.getLinkFormatoC());
                         respuestaExamenValoracionDto.setLinkFormatoC(FilesUtilities.guardarArchivoNew2(
                                         rutaArchivo,
                                         respuestaExamenValoracionDto.getLinkFormatoC()));
@@ -402,6 +402,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 }
                 if (respuestaExamenValoracionDto.getLinkObservaciones()
                                 .compareTo(respuestaExamenValoracionTmp.getLinkObservaciones()) != 0) {
+                        validarLink(respuestaExamenValoracionDto.getLinkObservaciones());
                         respuestaExamenValoracionDto.setLinkObservaciones(FilesUtilities.guardarArchivoNew2(
                                         rutaArchivo,
                                         respuestaExamenValoracionDto.getLinkObservaciones()));
@@ -416,8 +417,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                 LocalDate fechaActual = LocalDate.now();
 
-                actualizarAnexos(respuestaExamenValoracionTmp, anexosEntidades,
-                                rutaArchivo, cambioDocumento, trabajoGrado, respuestaExamenValoracionDto);
+                actualizarAnexos(respuestaExamenValoracionTmp, anexosEntidades, rutaArchivo);
 
                 TiemposPendientes tiemposPendientes = new TiemposPendientes();
 
@@ -459,44 +459,48 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         }
 
         private void actualizarAnexos(RespuestaExamenValoracion examenValoracionTmp,
-                        List<AnexoRespuestaExamenValoracion> anexosDto, String rutaArchivo, Boolean cambioDocumento,
-                        TrabajoGrado trabajoGrado, RespuestaExamenValoracionDto respuestaExamenValoracionDto) {
+                        List<AnexoRespuestaExamenValoracion> anexosNuevos, String rutaArchivo) {
+                List<AnexoRespuestaExamenValoracion> anexosActuales = examenValoracionTmp.getAnexos();
 
-                List<AnexoRespuestaExamenValoracion> anexosExistentes = examenValoracionTmp.getAnexos();
-                Map<Long, AnexoRespuestaExamenValoracion> anexosExistentesMap = anexosExistentes.stream()
-                                .collect(Collectors.toMap(AnexoRespuestaExamenValoracion::getId, Function.identity()));
+                // Mapa para buscar anexos actuales por enlace
+                Map<String, AnexoRespuestaExamenValoracion> mapaAnexosActuales = anexosActuales.stream()
+                                .collect(Collectors.toMap(AnexoRespuestaExamenValoracion::getLinkAnexo,
+                                                Function.identity()));
 
-                // Eliminar los anexos que ya no están en el DTO
-                for (Iterator<AnexoRespuestaExamenValoracion> it = anexosExistentes.iterator(); it.hasNext();) {
-                        AnexoRespuestaExamenValoracion anexoExistente = it.next();
-                        if (anexosDto.stream().noneMatch(
-                                        anexoDto -> anexoDto.getId() != null
-                                                        && anexoDto.getId().equals(anexoExistente.getId()))) {
-                                FilesUtilities.deleteFileExample(anexoExistente.getLinkAnexo());
-                                it.remove();
-                        }
-                }
+                // Lista de anexos actualizados
+                List<AnexoRespuestaExamenValoracion> anexosActualizados = new ArrayList<>();
 
-                // Agregar o actualizar los anexos del DTO
-                for (AnexoRespuestaExamenValoracion anexoDto : anexosDto) {
-                        if (anexoDto.getId() == null) {
-                                anexoDto.setLinkAnexo(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                anexoDto.getLinkAnexo()));
-                                anexoDto.setRespuestaExamenValoracion(examenValoracionTmp);
-                                anexosExistentes.add(anexoDto);
+                for (AnexoRespuestaExamenValoracion anexoNuevo : anexosNuevos) {
+                        AnexoRespuestaExamenValoracion anexoActual = mapaAnexosActuales.get(anexoNuevo.getLinkAnexo());
+
+                        if (anexoActual != null) {
+                                // El anexo no ha cambiado, mantener el actual
+                                anexosActualizados.add(anexoActual);
                         } else {
-                                // Anexo existente, actualizar si es necesario
-                                AnexoRespuestaExamenValoracion anexoExistente = anexosExistentesMap
-                                                .get(anexoDto.getId());
-                                if (anexoExistente != null
-                                                && !anexoExistente.getLinkAnexo().equals(anexoDto.getLinkAnexo())) {
-                                        FilesUtilities.deleteFileExample(anexoExistente.getLinkAnexo());
-                                        anexoExistente.setLinkAnexo(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                        anexoDto.getLinkAnexo()));
-                                }
+                                // El anexo ha cambiado o es nuevo, validar y agregar
+                                validarLink(anexoNuevo.getLinkAnexo());
+                                String rutaAnexoNueva = FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                anexoNuevo.getLinkAnexo());
+                                anexoNuevo.setLinkAnexo(rutaAnexoNueva);
+                                anexoNuevo.setRespuestaExamenValoracion(examenValoracionTmp);
+                                anexosActualizados.add(anexoNuevo);
                         }
-                        cambioDocumento = true;
                 }
+
+                // Eliminar archivos de los anexos que ya no están en la lista nueva y eliminar
+                // el anexo de la entidad
+                Iterator<AnexoRespuestaExamenValoracion> iterator = anexosActuales.iterator();
+                while (iterator.hasNext()) {
+                        AnexoRespuestaExamenValoracion anexoActual = iterator.next();
+                        if (!anexosActualizados.contains(anexoActual)) {
+                                FilesUtilities.deleteFileExample(anexoActual.getLinkAnexo());
+                                iterator.remove();
+                        }
+                }
+
+                // Agregar los nuevos anexos a la colección existente
+                anexosActuales.clear();
+                anexosActuales.addAll(anexosActualizados);
         }
 
         private void updateRtaExamenValoracionValues(RespuestaExamenValoracion respuestaExamenValoracion,
