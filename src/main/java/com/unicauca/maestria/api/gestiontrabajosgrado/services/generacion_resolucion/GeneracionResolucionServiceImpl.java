@@ -630,6 +630,10 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + trabajoGrado.getGeneracionResolucion().getId()
                                                 + " no encontrado"));
 
+                if (generacionResolucionOld.getConceptoDocumentosCoordinador() == null) {
+                        throw new InformationException("No se han registrado datos");
+                }
+
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
 
                 ArrayList<String> correos = new ArrayList<>();
@@ -708,6 +712,13 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + trabajoGrado.getGeneracionResolucion()
                                                                                 .getId()
                                                                 + " no encontrado"));
+
+                boolean actaFechaRespuestaComiteEmpty = generacionResolucionOld.getActaFechaRespuestaComite() == null ||
+                                generacionResolucionOld.getActaFechaRespuestaComite().isEmpty();
+                if (actaFechaRespuestaComiteEmpty
+                                && generacionResolucionOld.getLinkSolicitudConsejoFacultad() == null) {
+                        throw new InformationException("No se han registrado datos");
+                }
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
 
@@ -835,7 +846,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + idTrabajoGrado
                                                 + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 21) {
+                if (trabajoGrado.getNumeroEstado() != 21 && trabajoGrado.getNumeroEstado() != 23) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -846,6 +857,11 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + trabajoGrado.getGeneracionResolucion()
                                                                                 .getId()
                                                                 + " no encontrado"));
+
+                if (generacionResolucionOld.getNumeroActaConsejoFacultad() == null
+                                && generacionResolucionOld.getFechaActaConsejoFacultad() == null) {
+                        throw new InformationException("No se han registrado datos");
+                }
 
                 trabajoGrado.setNumeroEstado(23);
 

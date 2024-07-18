@@ -2,21 +2,22 @@ spring:
   application:
     name: ms-gestion-trabajo-grado
   datasource:
-    url: jdbc:mysql://localhost:3306/maestriafinal
-    username: root
-    password: root
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+    show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
-    show-sql: true
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: maestriaprueba2024@gmail.com
-    password: qawl sbgr mawn dzkm
+    host: ${SPRING_MAIL_SMTP}
+    port: ${SPRING_MAIL_PORT}
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -35,8 +36,8 @@ logging:
         SQL: debug
 
 server:
-  port: 8083
+   port: ${SPRING_SERVER_TRABAJO_GRADO_PORT}
 
 app:
-  jwtSecret: SecretKey
-  jwtExpirationMs: 86400000
+  jwtSecret: ${SPRING_JWT_KEY}
+  jwtExpirationMs: ${SPRING_JWT_EXPIRATION}

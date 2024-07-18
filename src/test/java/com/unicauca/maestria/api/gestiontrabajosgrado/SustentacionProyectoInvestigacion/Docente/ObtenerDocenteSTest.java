@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.SustentacionProyectoInvestigacion;
+package com.unicauca.maestria.api.gestiontrabajosgrado.SustentacionProyectoInvestigacion.Docente;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,7 +14,6 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SustentacionProyectoInvestigacionResponseMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaComiteSustentacionRepository;
@@ -56,8 +55,6 @@ public class ObtenerDocenteSTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private ArchivoClientEgresados archivoClientEgresados;
         @Mock
         private BindingResult result;
@@ -77,7 +74,6 @@ public class ObtenerDocenteSTest {
                                 trabajoGradoRepository,
                                 tiemposPendientesRepository,
                                 archivoClient,
-                                archivoClientExpertos,
                                 archivoClientEgresados);
                 ReflectionTestUtils.setField(sustentacionProyectoInvestigacionServiceImpl, "envioCorreos",
                                 envioCorreos);

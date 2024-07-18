@@ -31,7 +31,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
@@ -87,8 +86,6 @@ public class ActualizarInformacionCoordinadorREVTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private BindingResult result;
         @Mock
         private EnvioCorreos envioCorreos;
@@ -109,8 +106,7 @@ public class ActualizarInformacionCoordinadorREVTest {
                                 trabajoGradoRepository,
                                 solicitudExamenValoracionRepository,
                                 tiemposPendientesRepository,
-                                archivoClient,
-                                archivoClientExpertos);
+                                archivoClient);
                 ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
         }
 
@@ -551,7 +547,7 @@ public class ActualizarInformacionCoordinadorREVTest {
                 when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
-                when(archivoClientExpertos.obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador()))
+                when(archivoClient.obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador()))
                                 .thenThrow(new ResourceNotFoundException("Expertos con id "
                                                 + respuestaExamenValoracionDto.getIdEvaluador() + " no encontrado"));
 
@@ -676,7 +672,7 @@ public class ActualizarInformacionCoordinadorREVTest {
                 when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
-                when(archivoClientExpertos.obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador()))
+                when(archivoClient.obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador()))
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
 

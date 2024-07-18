@@ -26,7 +26,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
@@ -70,8 +69,6 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private SolicitudExamenValoracionMapper examenValoracionMapper;
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
@@ -98,8 +95,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
-                                archivoClient,
-                                archivoClientExpertos);
+                                archivoClient);
                 ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
         }
 
@@ -113,7 +109,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
                 respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2026-05-24", formatter));
 
                 List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
                 listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
@@ -139,7 +135,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 solicitudExamenValoracionCoordinadorFase2Dto
                                 .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
                 solicitudExamenValoracionCoordinadorFase2Dto
-                                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
+                                .setFechaMaximaEvaluacion(LocalDate.parse("2026-05-29", formatter));
                 solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
                 solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
 
@@ -179,7 +175,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 ExpertoResponseDto expertoResponseDto = new ExpertoResponseDto();
                 expertoResponseDto.setPersona(personaExpertoDto);
 
-                when(archivoClientExpertos.obtenerExpertoPorId(solicitudExamenValoracionOld.getIdEvaluadorExterno()))
+                when(archivoClient.obtenerExpertoPorId(solicitudExamenValoracionOld.getIdEvaluadorExterno()))
                                 .thenReturn(expertoResponseDto);
 
                 when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))
@@ -253,11 +249,11 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 assertEquals(1L, resultado.getId());
                 assertEquals(Concepto.APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
                 assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
-                assertEquals(LocalDate.parse("2023-05-24", formatter),
+                assertEquals(LocalDate.parse("2026-05-24", formatter),
                                 resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
                 assertEquals("./files/2024/6/1084-Juan_Meneses/Solicitud_Examen_Valoracion/30-06-24/20240630181114-oficio.txt",
                                 resultado.getLinkOficioDirigidoEvaluadores());
-                assertEquals(LocalDate.parse("2023-05-29", formatter), resultado.getFechaMaximaEvaluacion());
+                assertEquals(LocalDate.parse("2026-05-29", formatter), resultado.getFechaMaximaEvaluacion());
 
         }
 
@@ -271,7 +267,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
                 respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.NO_APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2026-05-24", formatter));
 
                 List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
                 listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
@@ -363,7 +359,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 assertEquals(1L, resultado.getId());
                 assertEquals(Concepto.NO_APROBADO, resultado.getActaFechaRespuestaComite().get(0).getConceptoComite());
                 assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
-                assertEquals(LocalDate.parse("2023-05-24", formatter),
+                assertEquals(LocalDate.parse("2026-05-24", formatter),
                                 resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
                 assertEquals(null, resultado.getLinkOficioDirigidoEvaluadores());
                 assertEquals(null, resultado.getFechaMaximaEvaluacion());
@@ -380,7 +376,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
                 respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.NO_APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2026-05-24", formatter));
 
                 List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
                 listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
@@ -434,7 +430,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
                 respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2026-05-24", formatter));
 
                 List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
                 listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
@@ -495,7 +491,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
                 respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2026-05-24", formatter));
 
                 List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
                 listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
@@ -521,7 +517,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 solicitudExamenValoracionCoordinadorFase2Dto
                                 .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
                 solicitudExamenValoracionCoordinadorFase2Dto
-                                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
+                                .setFechaMaximaEvaluacion(LocalDate.parse("2026-05-29", formatter));
                 solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
                 solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
 
@@ -563,7 +559,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 RespuestaComiteExamenValoracionDto respuestaComiteExamenValoracionDto = new RespuestaComiteExamenValoracionDto();
                 respuestaComiteExamenValoracionDto.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteExamenValoracionDto.setNumeroActa("AX1-3445");
-                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
+                respuestaComiteExamenValoracionDto.setFechaActa(LocalDate.parse("2026-05-24", formatter));
 
                 List<RespuestaComiteExamenValoracionDto> listaRespuestaComite = new ArrayList();
                 listaRespuestaComite.add(respuestaComiteExamenValoracionDto);
@@ -589,7 +585,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 solicitudExamenValoracionCoordinadorFase2Dto
                                 .setLinkOficioDirigidoEvaluadores("oficio.txt-cHJ1ZWJhIGRlIHRleHR");
                 solicitudExamenValoracionCoordinadorFase2Dto
-                                .setFechaMaximaEvaluacion(LocalDate.parse("2023-05-29", formatter));
+                                .setFechaMaximaEvaluacion(LocalDate.parse("2026-05-29", formatter));
                 solicitudExamenValoracionCoordinadorFase2Dto.setEnvioEmailDto(envioEmailDto);
                 solicitudExamenValoracionCoordinadorFase2Dto.setInformacionEnvioEvaluador(informacionEnvioEvaluadorDto);
 

@@ -26,7 +26,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
@@ -70,8 +69,6 @@ public class ActualizarInformacionCoordinadorFase2SEVTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private SolicitudExamenValoracionMapper examenValoracionMapper;
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
@@ -98,8 +95,7 @@ public class ActualizarInformacionCoordinadorFase2SEVTest {
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
-                                archivoClient,
-                                archivoClientExpertos);
+                                archivoClient);
                 ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
         }
 
@@ -194,7 +190,7 @@ public class ActualizarInformacionCoordinadorFase2SEVTest {
                 ExpertoResponseDto expertoResponseDto = new ExpertoResponseDto();
                 expertoResponseDto.setPersona(personaExpertoDto);
 
-                when(archivoClientExpertos.obtenerExpertoPorId(solicitudExamenValoracionOld.getIdEvaluadorExterno()))
+                when(archivoClient.obtenerExpertoPorId(solicitudExamenValoracionOld.getIdEvaluadorExterno()))
                                 .thenReturn(expertoResponseDto);
 
                 when(envioCorreos.enviarCorreoConAnexos(any(ArrayList.class), anyString(), anyString(), anyMap()))

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 
 @FeignClient(name = "msv-estudiante-docente", url = "http://localhost:8082", configuration = FeignConfig.class)
 public interface ArchivoClient {
@@ -27,5 +28,11 @@ public interface ArchivoClient {
 
     @GetMapping("/api/docentes/{id}")
     public DocenteResponseDto obtenerDocentePorId(@PathVariable Long id);
+
+    @GetMapping("/api/expertos")
+    public List<ExpertoResponseDto> listarExpertos();
+
+    @GetMapping("/api/expertos/{id}")
+    public ExpertoResponseDto obtenerExpertoPorId(@PathVariable Long id);
 
 }

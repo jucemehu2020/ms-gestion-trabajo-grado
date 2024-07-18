@@ -19,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
@@ -50,8 +49,6 @@ public class ListarInformacionDocenteSEVTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private SolicitudExamenValoracionMapper examenValoracionMapper;
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
@@ -74,8 +71,7 @@ public class ListarInformacionDocenteSEVTest {
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
-                                archivoClient,
-                                archivoClientExpertos);
+                                archivoClient);
         }
 
         @Test
@@ -118,7 +114,7 @@ public class ListarInformacionDocenteSEVTest {
 
                 when(archivoClient.obtenerDocentePorId(solicitudExamenValoracion.getIdEvaluadorInterno()))
                                 .thenReturn(docenteResponseDto);
-                when(archivoClientExpertos.obtenerExpertoPorId(solicitudExamenValoracion.getIdEvaluadorExterno()))
+                when(archivoClient.obtenerExpertoPorId(solicitudExamenValoracion.getIdEvaluadorExterno()))
                                 .thenReturn(expertoResponseDto);
 
                 List<AnexoSolicitudExamenValoracion> listaAnexos = new ArrayList<>();
@@ -237,7 +233,7 @@ public class ListarInformacionDocenteSEVTest {
                 when(archivoClient.obtenerDocentePorId(solicitudExamenValoracion.getIdEvaluadorInterno()))
                                 .thenReturn(docenteResponseDto);
 
-                when(archivoClientExpertos.obtenerExpertoPorId(solicitudExamenValoracion.getIdEvaluadorExterno()))
+                when(archivoClient.obtenerExpertoPorId(solicitudExamenValoracion.getIdEvaluadorExterno()))
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
 

@@ -23,7 +23,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
@@ -59,8 +58,6 @@ public class ActualizarInformacionCoordinadorFase1SEVTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private SolicitudExamenValoracionMapper examenValoracionMapper;
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
@@ -87,8 +84,7 @@ public class ActualizarInformacionCoordinadorFase1SEVTest {
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
-                                archivoClient,
-                                archivoClientExpertos);
+                                archivoClient);
                 ReflectionTestUtils.setField(solicitudExamenValoracionService, "envioCorreos", envioCorreos);
         }
 

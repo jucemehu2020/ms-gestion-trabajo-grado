@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.SolicitudExamenValoracionResponseMapper;
@@ -43,8 +42,6 @@ public class ObtenerDocenteSEVTest {
     @Mock
     private ArchivoClient archivoClient;
     @Mock
-    private ArchivoClientExpertos archivoClientExpertos;
-    @Mock
     private SolicitudExamenValoracionMapper examenValoracionMapper;
     @Mock
     private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
@@ -67,8 +64,7 @@ public class ObtenerDocenteSEVTest {
                 examenValoracionMapper,
                 examenValoracionResponseMapper,
                 anexoSolicitudExamenValoracionMapper,
-                archivoClient,
-                archivoClientExpertos);
+                archivoClient);
     }
 
     @Test

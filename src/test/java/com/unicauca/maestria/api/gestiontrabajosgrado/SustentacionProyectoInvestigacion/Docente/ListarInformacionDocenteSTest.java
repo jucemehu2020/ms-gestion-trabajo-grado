@@ -23,7 +23,6 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
@@ -58,8 +57,6 @@ public class ListarInformacionDocenteSTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private ArchivoClientEgresados archivoClientEgresados;
         @Mock
         private BindingResult result;
@@ -79,7 +76,6 @@ public class ListarInformacionDocenteSTest {
                                 trabajoGradoRepository,
                                 null,
                                 archivoClient,
-                                archivoClientExpertos,
                                 archivoClientEgresados);
                 ReflectionTestUtils.setField(sustentacionProyectoInvestigacionServiceImpl, "envioCorreos",
                                 envioCorreos);
@@ -142,8 +138,7 @@ public class ListarInformacionDocenteSTest {
                 expertoResponseDto.setPersona(personaDto2);
                 expertoResponseDto.setUniversidadtitexp("Universidad de Mexico");
 
-                when(archivoClientExpertos
-                                .obtenerExpertoPorId(sustentacionTrabajoInvestigacionOld.getIdJuradoExterno()))
+                when(archivoClient.obtenerExpertoPorId(sustentacionTrabajoInvestigacionOld.getIdJuradoExterno()))
                                 .thenReturn(expertoResponseDto);
 
                 Map<String, String> expertoEsperado = new HashMap<>();
@@ -306,8 +301,7 @@ public class ListarInformacionDocenteSTest {
                 when(archivoClient.obtenerDocentePorId(sustentacionTrabajoInvestigacionOld.getIdJuradoInterno()))
                                 .thenReturn(docenteResponseDto);
 
-                when(archivoClientExpertos
-                                .obtenerExpertoPorId(sustentacionTrabajoInvestigacionOld.getIdJuradoExterno()))
+                when(archivoClient.obtenerExpertoPorId(sustentacionTrabajoInvestigacionOld.getIdJuradoExterno()))
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
 

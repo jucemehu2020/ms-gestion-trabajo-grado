@@ -21,7 +21,6 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante.SustentacionTrabajoInvestigacionEstudianteResponseDto;
@@ -54,8 +53,6 @@ public class ListarInformacionEstudianteSTest {
     @Mock
     private ArchivoClient archivoClient;
     @Mock
-    private ArchivoClientExpertos archivoClientExpertos;
-    @Mock
     private ArchivoClientEgresados archivoClientEgresados;
     @Mock
     private BindingResult result;
@@ -75,7 +72,6 @@ public class ListarInformacionEstudianteSTest {
                 trabajoGradoRepository,
                 tiemposPendientesRepository,
                 archivoClient,
-                archivoClientExpertos,
                 archivoClientEgresados);
         ReflectionTestUtils.setField(sustentacionProyectoInvestigacionServiceImpl, "envioCorreos",
                 envioCorreos);

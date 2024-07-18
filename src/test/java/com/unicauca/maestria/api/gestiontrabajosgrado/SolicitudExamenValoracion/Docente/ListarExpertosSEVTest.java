@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.Genero;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.TipoIdentificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
@@ -45,8 +44,6 @@ public class ListarExpertosSEVTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private SolicitudExamenValoracionMapper examenValoracionMapper;
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
@@ -69,8 +66,7 @@ public class ListarExpertosSEVTest {
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
-                                archivoClient,
-                                archivoClientExpertos);
+                                archivoClient);
         }
 
         @Test
@@ -93,11 +89,9 @@ public class ListarExpertosSEVTest {
                                 .universidadtitexp("Universidad de Mexico")
                                 .build();
 
-                when(archivoClientExpertos.listar()).thenReturn(List.of(expertoResponse));
+                when(archivoClient.listarExpertos()).thenReturn(List.of(expertoResponse));
 
                 List<ExpertoInfoDto> result = solicitudExamenValoracionService.listarExpertos();
-
-                verify(archivoClientExpertos).listar();
 
                 // Verificar resultados
                 assertNotNull(result);
@@ -110,7 +104,7 @@ public class ListarExpertosSEVTest {
 
         @Test
         void ListarExpertosSEVTest_NoHayExperto() {
-                when(archivoClientExpertos.listar()).thenReturn(Collections.emptyList());
+                when(archivoClient.listarExpertos()).thenReturn(Collections.emptyList());
 
                 InformationException thrown = assertThrows(
                                 InformationException.class,
@@ -118,13 +112,11 @@ public class ListarExpertosSEVTest {
                                 "Expected listarExpertos() to throw, but it didn't");
 
                 assertTrue(thrown.getMessage().contains("No hay expertos registrados"));
-
-                verify(archivoClientExpertos).listar();
         }
 
         @Test
         void testListarInformacionDocente_ServidorExpertoCaido() {
-                when(archivoClientExpertos.listar())
+                when(archivoClient.listarExpertos())
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
 

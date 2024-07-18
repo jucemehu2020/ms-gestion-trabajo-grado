@@ -24,7 +24,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.ExamenValoracionCancelado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
@@ -71,8 +70,6 @@ public class InsertarInformacionCanceladoREVTest {
     @Mock
     private ArchivoClient archivoClient;
     @Mock
-    private ArchivoClientExpertos archivoClientExpertos;
-    @Mock
     private BindingResult result;
     @Mock
     private EnvioCorreos envioCorreos;
@@ -93,8 +90,7 @@ public class InsertarInformacionCanceladoREVTest {
                 trabajoGradoRepository,
                 solicitudExamenValoracionRepository,
                 tiemposPendientesRepository,
-                archivoClient,
-                archivoClientExpertos);
+                archivoClient);
         ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
     }
 

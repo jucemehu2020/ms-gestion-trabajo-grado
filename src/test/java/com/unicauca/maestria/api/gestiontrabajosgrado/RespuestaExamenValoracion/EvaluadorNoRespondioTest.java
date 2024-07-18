@@ -20,7 +20,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
@@ -63,8 +62,6 @@ public class EvaluadorNoRespondioTest {
     @Mock
     private ArchivoClient archivoClient;
     @Mock
-    private ArchivoClientExpertos archivoClientExpertos;
-    @Mock
     private BindingResult result;
     @Mock
     private EnvioCorreos envioCorreos;
@@ -85,8 +82,7 @@ public class EvaluadorNoRespondioTest {
                 trabajoGradoRepository,
                 solicitudExamenValoracionRepository,
                 tiemposPendientesRepository,
-                archivoClient,
-                archivoClientExpertos);
+                archivoClient);
         ReflectionTestUtils.setField(respuestaExamenValoracionServiceImpl, "envioCorreos", envioCorreos);
     }
 

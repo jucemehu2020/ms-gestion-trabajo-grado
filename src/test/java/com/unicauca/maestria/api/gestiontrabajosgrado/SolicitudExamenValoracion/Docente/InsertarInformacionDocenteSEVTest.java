@@ -20,7 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
@@ -54,8 +53,6 @@ public class InsertarInformacionDocenteSEVTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private SolicitudExamenValoracionMapper examenValoracionMapper;
         @Mock
         private SolicitudExamenValoracionResponseMapper examenValoracionResponseMapper;
@@ -78,8 +75,7 @@ public class InsertarInformacionDocenteSEVTest {
                                 examenValoracionMapper,
                                 examenValoracionResponseMapper,
                                 anexoSolicitudExamenValoracionMapper,
-                                archivoClient,
-                                archivoClientExpertos);
+                                archivoClient);
         }
 
         @Test
@@ -108,7 +104,7 @@ public class InsertarInformacionDocenteSEVTest {
                                 .thenReturn(docenteResponseDto);
 
                 ExpertoResponseDto expertoResponseDto = new ExpertoResponseDto();
-                when(archivoClientExpertos.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno()))
+                when(archivoClient.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno()))
                                 .thenReturn(expertoResponseDto);
 
                 EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
@@ -357,7 +353,7 @@ public class InsertarInformacionDocenteSEVTest {
                 when(archivoClient.obtenerDocentePorId(examenValoracionDto.getIdEvaluadorInterno()))
                                 .thenReturn(docenteResponseDto);
 
-                when(archivoClientExpertos.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno()))
+                when(archivoClient.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno()))
                                 .thenThrow(new ResourceNotFoundException("Experto con id "
                                                 + examenValoracionDto.getIdEvaluadorExterno() + " no encontrado"));
 
@@ -428,7 +424,7 @@ public class InsertarInformacionDocenteSEVTest {
                 when(solicitudExamenValoracionRepository.existsByTrabajoGradoId(idTrabajoGrado)).thenReturn(false);
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
-                when(archivoClientExpertos.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno()))
+                when(archivoClient.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno()))
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
 

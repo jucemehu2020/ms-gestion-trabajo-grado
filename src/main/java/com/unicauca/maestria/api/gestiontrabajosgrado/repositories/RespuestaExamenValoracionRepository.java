@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
 
@@ -16,6 +17,9 @@ public interface RespuestaExamenValoracionRepository extends JpaRepository<Respu
 
         @Query("SELECT COUNT(r) FROM RespuestaExamenValoracion r WHERE r.trabajoGrado.id = :trabajoGrado AND r.respuestaExamenValoracion = 'NO_APROBADO'")
         Long countByTrabajoGradoIdAndRespuestaNoAprobado(@Param("trabajoGrado") Long trabajoGrado);
+
+        @Query("SELECT COUNT(r) FROM RespuestaExamenValoracion r WHERE r.trabajoGrado.id = :trabajoGrado AND r.respuestaExamenValoracion = 'APLAZADO'")
+        Long countByTrabajoGradoIdAndRespuestaAplazado(@Param("trabajoGrado") Long trabajoGrado);
 
         @Query("SELECT sev.id FROM RespuestaExamenValoracion sev WHERE sev.trabajoGrado.id = ?1")
         public List<Long> findIdRespuestaExamenValoracionByTrabajoGradoId(Long trabajoGradoId);
@@ -41,4 +45,7 @@ public interface RespuestaExamenValoracionRepository extends JpaRepository<Respu
         Long countNoAprobadoByIdEvaluadorAndTipoEvaluador(@Param("idEvaluador") Long idEvaluador,
                         @Param("tipoEvaluador") TipoEvaluador tipoEvaluador);
 
+        @Query("SELECT r.respuestaExamenValoracion FROM RespuestaExamenValoracion r WHERE r.tipoEvaluador = :tipoEvaluador AND r.trabajoGrado.id = :idTrabajoGrado")
+        ConceptosVarios findConceptoByTipoEvaluadorAndTrabajoGrado(@Param("tipoEvaluador") TipoEvaluador tipoEvaluador,
+                        @Param("idTrabajoGrado") Long idTrabajoGrado);
 }

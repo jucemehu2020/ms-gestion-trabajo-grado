@@ -72,7 +72,7 @@ public class InicioTrabajoGradoController {
     }
 
     @GetMapping("/descargarDocumento")
-    public ResponseEntity<?> descargarArchivo(@Valid @RequestParam String rutaArchivo) {
+    public ResponseEntity<?> descargarArchivo(@RequestParam String rutaArchivo) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(inicioTrabajoGradoService.descargarArchivo(rutaArchivo));
     }

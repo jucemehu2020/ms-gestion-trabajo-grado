@@ -28,7 +28,6 @@ import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
@@ -68,8 +67,6 @@ public class InsertarInformacionDocenteSTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private ArchivoClientEgresados archivoClientEgresados;
         @Mock
         private BindingResult result;
@@ -89,7 +86,6 @@ public class InsertarInformacionDocenteSTest {
                                 trabajoGradoRepository,
                                 tiemposPendientesRepository,
                                 archivoClient,
-                                archivoClientExpertos,
                                 archivoClientEgresados);
                 ReflectionTestUtils.setField(sustentacionProyectoInvestigacionServiceImpl, "envioCorreos",
                                 envioCorreos);
@@ -300,8 +296,7 @@ public class InsertarInformacionDocenteSTest {
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
-                when(archivoClientExpertos
-                                .obtenerExpertoPorId(sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoExterno()))
+                when(archivoClient.obtenerExpertoPorId(sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoExterno()))
                                 .thenThrow(new ResourceNotFoundException("Experto con id "
                                                 + sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoExterno()
                                                 + " no encontrado"));
@@ -373,8 +368,7 @@ public class InsertarInformacionDocenteSTest {
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
 
-                when(archivoClientExpertos
-                                .obtenerExpertoPorId(sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoExterno()))
+                when(archivoClient.obtenerExpertoPorId(sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoExterno()))
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
 

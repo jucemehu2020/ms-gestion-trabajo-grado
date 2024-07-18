@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
@@ -65,7 +64,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	private final AnexoSolicitudExamenValoracionMapper anexoSolicitudExamenValoracionMapper;
 	// Other
 	private final ArchivoClient archivoClient;
-	private final ArchivoClientExpertos archivoClientExpertos;
 
 	@Autowired
 	private EnvioCorreos envioCorreos;
@@ -91,7 +89,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	@Override
 	@Transactional(readOnly = true)
 	public List<ExpertoInfoDto> listarExpertos() {
-		List<ExpertoResponseDto> listadoExpertos = archivoClientExpertos.listar();
+		List<ExpertoResponseDto> listadoExpertos = archivoClient.listarExpertos();
 		if (listadoExpertos.isEmpty()) {
 			throw new InformationException("No hay expertos registrados");
 		}
@@ -121,7 +119,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	@Override
 	@Transactional(readOnly = true)
 	public ExpertoInfoDto obtenerExperto(Long id) {
-		ExpertoResponseDto experto = archivoClientExpertos.obtenerExpertoPorId(id);
+		ExpertoResponseDto experto = archivoClient.obtenerExpertoPorId(id);
 		return new ExpertoInfoDto(
 				experto.getId(),
 				experto.getPersona().getNombre(),
@@ -161,7 +159,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		archivoClient.obtenerDocentePorId(datosExamenValoracion.getIdEvaluadorInterno());
-		archivoClientExpertos.obtenerExpertoPorId(datosExamenValoracion.getIdEvaluadorExterno());
+		archivoClient.obtenerExpertoPorId(datosExamenValoracion.getIdEvaluadorExterno());
 
 		String directorioArchivos = identificacionArchivo(trabajoGrado);
 
@@ -284,9 +282,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		if ((conceptoComite.equals(Concepto.NO_APROBADO) && tieneAtributosEnvio) ||
 				(conceptoComite.equals(Concepto.APROBADO) && !tieneAtributosEnvio)) {
-			throw new InformationException(
-					conceptoComite.equals(Concepto.NO_APROBADO) ? "Envio de atributos no permitido"
-							: "Atributos incorrectos");
+			throw new InformationException(conceptoComite.equals(Concepto.NO_APROBADO)
+					? "Envio de atributos no permitido"
+					: "Atributos incorrectos");
+		}
+
+		if (examenValoracionDto.getFechaMaximaEvaluacion() != null
+				&& examenValoracionDto.getFechaMaximaEvaluacion().isBefore(LocalDate.now())) {
+			throw new InformationException("La fecha máxima de evaluación no puede ser menor a la fecha actual.");
 		}
 
 		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)) {
@@ -328,7 +331,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			DocenteResponseDto docente = archivoClient
 					.obtenerDocentePorId(examenValoracionTmp.getIdEvaluadorInterno());
 			correos.add(docente.getPersona().getCorreoElectronico());
-			ExpertoResponseDto experto = archivoClientExpertos
+			ExpertoResponseDto experto = archivoClient
 					.obtenerExpertoPorId(examenValoracionTmp.getIdEvaluadorExterno());
 			correos.add(experto.getPersona().getCorreoElectronico());
 			Map<String, Object> documentosParaEvaluador = examenValoracionDto
@@ -361,15 +364,23 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	}
 
 	private void insertarInformacionTiempos(LocalDate fechaLimite, TrabajoGrado trabajoGrado) {
+		Optional<TiemposPendientes> optionalTiemposPendientes = tiemposPendientesRepository
+				.findByTrabajoGradoId(trabajoGrado.getId());
+
 		TiemposPendientes tiemposPendientes = new TiemposPendientes();
+		if (optionalTiemposPendientes.isPresent()) {
+			// Si el registro ya existe, lo actualizamos
+			tiemposPendientes = optionalTiemposPendientes.get();
+		} else {
+			// Si no existe, creamos uno nuevo
+			tiemposPendientes = new TiemposPendientes();
+			tiemposPendientes.setTrabajoGrado(trabajoGrado);
+		}
+
+		tiemposPendientes.setFechaRegistro(LocalDate.now());
 		tiemposPendientes.setEstado(trabajoGrado.getNumeroEstado());
-
-		LocalDate fechaActual = LocalDate.now();
-
-		tiemposPendientes.setFechaRegistro(fechaActual);
-
 		tiemposPendientes.setFechaLimite(fechaLimite);
-		tiemposPendientes.setTrabajoGrado(trabajoGrado);
+
 		tiemposPendientesRepository.save(tiemposPendientes);
 	}
 
@@ -417,7 +428,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		evaluadorInternoMap.put("universidad", "Universidad del Cauca");
 		evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
 
-		ExpertoResponseDto experto = archivoClientExpertos
+		ExpertoResponseDto experto = archivoClient
 				.obtenerExpertoPorId(solicitudExamenValoracion.getIdEvaluadorExterno());
 		String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
 		Map<String, String> evaluadorExternoMap = new HashMap<>();
@@ -504,7 +515,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		archivoClient.obtenerDocentePorId(examenValoracionDto.getIdEvaluadorInterno());
-		archivoClientExpertos.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno());
+		archivoClient.obtenerExpertoPorId(examenValoracionDto.getIdEvaluadorExterno());
 
 		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
 				.findById(trabajoGrado.getSolicitudExamenValoracion().getId())
@@ -663,6 +674,10 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id: "
 						+ trabajoGrado.getSolicitudExamenValoracion().getId() + " no encontrado"));
 
+		if (examenValoracionOld.getConceptoCoordinadorDocumentos() == null) {
+			throw new InformationException("No se han registrado datos");
+		}
+
 		if (!conceptoCoordinador.equals(examenValoracionOld.getConceptoCoordinadorDocumentos())) {
 			ArrayList<String> correos = new ArrayList<>();
 			if (conceptoCoordinador.equals(ConceptoVerificacion.RECHAZADO)) {
@@ -741,6 +756,13 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				.orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id "
 						+ trabajoGrado.getSolicitudExamenValoracion().getId() + " no encontrado"));
 
+		boolean actaFechaRespuestaComiteEmpty = examenValoracionTmp.getActaFechaRespuestaComite() == null ||
+				examenValoracionTmp.getActaFechaRespuestaComite().isEmpty();
+		if (actaFechaRespuestaComiteEmpty && examenValoracionTmp.getLinkOficioDirigidoEvaluadores() == null
+				&& examenValoracionTmp.getFechaMaximaEvaluacion() == null) {
+			throw new InformationException("No se han registrado datos");
+		}
+
 		String rutaArchivo = identificacionArchivo(trabajoGrado);
 
 		SolicitudExamenValoracion responseExamenValoracion = null;
@@ -768,7 +790,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				DocenteResponseDto docente = archivoClient
 						.obtenerDocentePorId(examenValoracionTmp.getIdEvaluadorInterno());
 				correos.add(docente.getPersona().getCorreoElectronico());
-				ExpertoResponseDto experto = archivoClientExpertos
+				ExpertoResponseDto experto = archivoClient
 						.obtenerExpertoPorId(examenValoracionTmp.getIdEvaluadorExterno());
 				correos.add(experto.getPersona().getCorreoElectronico());
 				envioCorreos.enviarCorreoConAnexos(correos, examenValoracionDto.getEnvioEmailDto().getAsunto(),

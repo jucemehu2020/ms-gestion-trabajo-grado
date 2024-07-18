@@ -13,17 +13,10 @@ public interface GeneracionResolucionMapper extends GenericMapper<GeneracionReso
     // Métodos de mapeo para el DTO de Coordinador
     GeneracionResolucion toEntity(GeneracionResolucionDocenteDto docenteDto);
 
-    // GeneracionResolucionDocenteDto toDocenteDto(GeneracionResolucion entity);
-
     // Métodos de mapeo para el DTO de Comite
     GeneracionResolucion toEntity(GeneracionResolucionCoordinadorFase2Dto coordinadorDto);
-
-    // GeneracionResolucionCoordinadorFase1Dto
-    // toCoordinadorFase1Dto(GeneracionResolucion entity);
 
     // Métodos de mapeo para el DTO de Comite
     GeneracionResolucion toEntity(GeneracionResolucionCoordinadorFase3Dto coordinadorDto);
 
-    // GeneracionResolucionCoordinadorFase2Dto
-    // toCoordinadorFase2Dto(GeneracionResolucion entity);
 }

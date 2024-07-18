@@ -18,9 +18,6 @@ public interface SolicitudExamenValoracionRepository extends JpaRepository<Solic
     @Query("SELECT sev.trabajoGrado.id FROM SolicitudExamenValoracion sev WHERE sev.id = ?1")
     public Long obtenerIdTrabajoGrado(Long trabajoGradoId);
 
-    // @Query("SELECT sev FROM SolicitudExamenValoracion sev WHERE sev.trabajoGrado.id = ?1")
-    // public SolicitudExamenValoracion findByTrabajoGradoId(Long trabajoGradoId);
-
     public Optional<SolicitudExamenValoracion> findByTrabajoGradoId(Long idTrabajoGradoId);
 
     @Query("SELECT rc FROM SolicitudExamenValoracion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.id = :id ORDER BY rc.id DESC")

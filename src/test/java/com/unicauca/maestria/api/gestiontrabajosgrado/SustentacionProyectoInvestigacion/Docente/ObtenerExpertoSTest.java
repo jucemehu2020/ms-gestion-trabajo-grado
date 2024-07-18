@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.SustentacionProyectoInvestigacion;
+package com.unicauca.maestria.api.gestiontrabajosgrado.SustentacionProyectoInvestigacion.Docente;
 
 import static org.mockito.Mockito.*;
 
@@ -17,7 +17,6 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientExpertos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.Genero;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.TipoIdentificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
@@ -53,8 +52,6 @@ public class ObtenerExpertoSTest {
         @Mock
         private ArchivoClient archivoClient;
         @Mock
-        private ArchivoClientExpertos archivoClientExpertos;
-        @Mock
         private ArchivoClientEgresados archivoClientEgresados;
         @Mock
         private BindingResult result;
@@ -74,7 +71,6 @@ public class ObtenerExpertoSTest {
                                 trabajoGradoRepository,
                                 tiemposPendientesRepository,
                                 archivoClient,
-                                archivoClientExpertos,
                                 archivoClientEgresados);
                 ReflectionTestUtils.setField(sustentacionProyectoInvestigacionServiceImpl, "envioCorreos",
                                 envioCorreos);
@@ -101,7 +97,7 @@ public class ObtenerExpertoSTest {
                                 .universidadtitexp("Universidad de Mexico")
                                 .build();
 
-                when(archivoClientExpertos.obtenerExpertoPorId(idExperto)).thenReturn(expertoResponse);
+                when(archivoClient.obtenerExpertoPorId(idExperto)).thenReturn(expertoResponse);
 
                 ExpertoInfoDto informacionGeneralResponseDtoEsperado = ExpertoInfoDto.builder()
                                 .id(expertoResponse.getId())
@@ -122,7 +118,7 @@ public class ObtenerExpertoSTest {
         void ObtenerExpertoSTest_NoExisteDocente() {
                 Long idExperto = 2L;
 
-                when(archivoClientExpertos.obtenerExpertoPorId(idExperto))
+                when(archivoClient.obtenerExpertoPorId(idExperto))
                                 .thenThrow(new ResourceNotFoundException("Expertos con id "
                                                 + idExperto + " no encontrado"));
 
@@ -139,7 +135,7 @@ public class ObtenerExpertoSTest {
         void ObtenerExpertoSTest_ServidorDocenteCaido() {
                 Long idExperto = 1L;
 
-                when(archivoClientExpertos.obtenerExpertoPorId(idExperto))
+                when(archivoClient.obtenerExpertoPorId(idExperto))
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
 
