@@ -20,5 +20,6 @@ public class STICoordinadorFase3ResponseDto {
     private LocalDate fechaActaConsejo;
     private String idJuradoInterno;
     private String idJuradoExterno;
+    private String linkOficioConsejo;
 
 }

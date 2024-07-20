@@ -18,11 +18,7 @@ public class GeneracionResolucionCoordinadorFase1Dto {
     @NotNull
     private ConceptoVerificacion conceptoDocumentosCoordinador;
 
-    @NotNull
     @Valid
     private EnvioEmailDto envioEmail;
-
-    @Valid
-    private ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvio;
 
 }

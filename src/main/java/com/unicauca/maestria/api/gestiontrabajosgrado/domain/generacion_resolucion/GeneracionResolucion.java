@@ -55,6 +55,8 @@ public class GeneracionResolucion {
 
     private LocalDate fechaActaConsejoFacultad;
 
+    private String linkOficioConsejo;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_trabajo_grado")
     private TrabajoGrado trabajoGrado;

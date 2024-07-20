@@ -17,4 +17,7 @@ public class GeneracionResolucionCoordinadorFase3Dto {
     @NotNull
     private LocalDate fechaActaConsejoFacultad;
 
+    @NotNull
+    private String linkOficioConsejo;
+
 }

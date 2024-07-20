@@ -39,7 +39,8 @@ public enum EstadoTrabajoGrado {
         SUSTENTACION_NO_APROBADA("Sustentación no aprobada. Examen de valoración finalizado."),
         SUSTENTACION_APLAZADA("Sustentación aplazada. Examen de valoración en espera"),
         CANCELADO_TRABAJO_GRADO("El trabajo de grado ha sido cancelado de forma DEFINITIVA por el coordinador"),
-        EVALUADOR_NO_RESPONDIO("Evaluador del examen de valoracion no dio respuesta");
+        EVALUADOR_NO_RESPONDIO("Evaluador del examen de valoracion no dio respuesta"),
+        SIN_ACTUALIZAR_FECHA_SUSTENTACION("No se ha reigstrado la fecha de sustentacion");
 
     private final String mensaje;
 

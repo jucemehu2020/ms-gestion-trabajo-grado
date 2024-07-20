@@ -19,7 +19,6 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase3Dto {
     @NotNull
     private ConceptoVerificacion juradosAceptados;
 
-    @NotNull
     private LocalDate fechaSustentacion;
 
     @NotNull
@@ -36,5 +35,8 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase3Dto {
 
     @Valid
     private EnvioEmailDto envioEmail;
+
+    @NotNull
+    private String linkOficioConsejo;
 
 }

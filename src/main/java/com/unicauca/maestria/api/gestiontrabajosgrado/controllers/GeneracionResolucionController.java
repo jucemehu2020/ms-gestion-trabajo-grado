@@ -6,9 +6,9 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,11 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.DirectorAndCodirectorResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.GeneracionResolucionCoordinadorFase1ResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_1.ObtenerDocumentosParaEnvioDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2.GeneracionResolucionCoordinadorFase2Dto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_2.GeneracionResolucionCoordinadorFase2ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.coordinador.fase_3.GeneracionResolucionCoordinadorFase3Dto;
@@ -42,11 +40,13 @@ public class GeneracionResolucionController {
         private final GeneracionResolucionService generacionResolucion;
 
         @GetMapping("/listarDirectorAndCodirector")
+        @PreAuthorize("hasRole('DOCENTE')")
         public ResponseEntity<List<DirectorAndCodirectorResponseDto>> listarDirectorAndCodirector() {
                 return ResponseEntity.status(HttpStatus.OK).body(generacionResolucion.listarDirectorAndCodirector());
         }
 
         @PostMapping("/insertarInformacionDocente/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE')")
         public ResponseEntity<GeneracionResolucionDocenteResponseDto> insertarInformacionDocente(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionDocenteDto generacionResolucionDto,
@@ -57,6 +57,7 @@ public class GeneracionResolucionController {
         }
 
         @PostMapping("/insertarInformacionCoordinadorFase1/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> insertarInformacionCoordinadorFase1(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto,
@@ -69,6 +70,7 @@ public class GeneracionResolucionController {
         }
 
         @PostMapping("/insertarInformacionCoordinadorFase2/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionCoordinadorFase2ResponseDto> insertarInformacionCoordinadorFase2(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto,
@@ -80,6 +82,7 @@ public class GeneracionResolucionController {
         }
 
         @PostMapping("/insertarInformacionCoordinadorFase3/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionCoordinadorFase3ResponseDto> insertarInformacionCoordinadorFase3(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto,
@@ -91,6 +94,7 @@ public class GeneracionResolucionController {
         }
 
         @GetMapping("/listarInformacionDocente/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionDocenteListDto> listarInformacionDocente(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -98,6 +102,7 @@ public class GeneracionResolucionController {
         }
 
         @GetMapping("/listarInformacionCoordinadorFase1/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> listarInformacionCoordinadorFase1(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -105,6 +110,7 @@ public class GeneracionResolucionController {
         }
 
         @GetMapping("/listarInformacionCoordinadorFase2/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionCoordinadorFase2ResponseDto> listarInformacionCoordinadorFase2(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -112,6 +118,7 @@ public class GeneracionResolucionController {
         }
 
         @GetMapping("/listarInformacionCoordinadorFase3/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionCoordinadorFase3ResponseDto> listarInformacionCoordinadorFase3(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -119,6 +126,7 @@ public class GeneracionResolucionController {
         }
 
         @PutMapping("/actualizarInformacionDocente/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE')")
         public ResponseEntity<GeneracionResolucionDocenteResponseDto> actualizarInformacionDocente(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionDocenteDto generacionResolucionDto,
@@ -130,6 +138,7 @@ public class GeneracionResolucionController {
         }
 
         @PutMapping("/actualizarInformacionCoordinadorFase1/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionCoordinadorFase1ResponseDto> actualizarInformacionCoordinadorFase1(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase1Dto generacionResolucionDto,
@@ -141,6 +150,7 @@ public class GeneracionResolucionController {
         }
 
         @PutMapping("/actualizarInformacionCoordinadorFase2/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionCoordinadorFase2ResponseDto> actualizarInformacionCoordinadorFase2(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto,
@@ -152,6 +162,7 @@ public class GeneracionResolucionController {
         }
 
         @PutMapping("/actualizarInformacionCoordinadorFase3/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<GeneracionResolucionCoordinadorFase3ResponseDto> actualizarInformacionCoordinadorFase3(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto,

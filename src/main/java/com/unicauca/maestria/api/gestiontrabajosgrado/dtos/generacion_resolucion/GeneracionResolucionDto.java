@@ -12,7 +12,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Con
 @AllArgsConstructor
 @Builder
 public class GeneracionResolucionDto {
-    
+
     @NotNull
     private Long idTrabajoGrados;
 
@@ -45,4 +45,7 @@ public class GeneracionResolucionDto {
 
     @NotNull
     private LocalDate fechaActaConsejoFacultad;
+
+    @NotNull
+    private String linkOficioConsejo;
 }

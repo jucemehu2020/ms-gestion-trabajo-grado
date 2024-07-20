@@ -2,7 +2,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.mappers;
 
 import org.mapstruct.Mapper;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.SolicitudExamenValoracionResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.SustentacionTrabajoInvestigacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
@@ -14,37 +14,37 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 
 @Mapper(componentModel = "spring")
 public interface SustentacionProyectoInvestigacionMapper
-        extends GenericMapper<SustentacionTrabajoInvestigacionDto, SustentacionTrabajoInvestigacion> {
+        extends GenericMapper<SustentacionTrabajoInvestigacionDto, SustentacionProyectoInvestigacion> {
 
     // Docente
-    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionDocenteDto docenteDto);
+    SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionDocenteDto docenteDto);
 
-    SustentacionTrabajoInvestigacionDocenteDto toDocenteDto(SustentacionTrabajoInvestigacion entity);
+    SustentacionTrabajoInvestigacionDocenteDto toDocenteDto(SustentacionProyectoInvestigacion entity);
 
     // Coordinador Fase 1
-    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase1Dto comiteDto);
+    SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase1Dto comiteDto);
 
-    SustentacionTrabajoInvestigacionCoordinadorFase1Dto toCoordinaforFase1Dto(SustentacionTrabajoInvestigacion entity);
+    SustentacionTrabajoInvestigacionCoordinadorFase1Dto toCoordinaforFase1Dto(SustentacionProyectoInvestigacion entity);
 
     // Coordinador Fase 2
-    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase2Dto comiteDto);
+    SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase2Dto comiteDto);
 
-    SustentacionTrabajoInvestigacionCoordinadorFase2Dto toCoordinaforFase2Dto(SustentacionTrabajoInvestigacion entity);
+    SustentacionTrabajoInvestigacionCoordinadorFase2Dto toCoordinaforFase2Dto(SustentacionProyectoInvestigacion entity);
 
     // Coordinador Fase 3
-    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase3Dto comiteDto);
+    SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase3Dto comiteDto);
 
-    SustentacionTrabajoInvestigacionCoordinadorFase3Dto toCoordinaforFase3Dto(SustentacionTrabajoInvestigacion entity);
+    SustentacionTrabajoInvestigacionCoordinadorFase3Dto toCoordinaforFase3Dto(SustentacionProyectoInvestigacion entity);
 
     // Estudiante
-    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionEstudianteDto comiteDto);
+    SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionEstudianteDto comiteDto);
 
-    SustentacionTrabajoInvestigacionEstudianteDto toEstudianteDto(SustentacionTrabajoInvestigacion entity);
+    SustentacionTrabajoInvestigacionEstudianteDto toEstudianteDto(SustentacionProyectoInvestigacion entity);
 
     // Coordinador Fase 3
-    SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase4Dto comiteDto);
+    SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase4Dto comiteDto);
 
-    SustentacionTrabajoInvestigacionCoordinadorFase4Dto toCoordinaforFase4Dto(SustentacionTrabajoInvestigacion entity);
+    SustentacionTrabajoInvestigacionCoordinadorFase4Dto toCoordinaforFase4Dto(SustentacionProyectoInvestigacion entity);
 
     SolicitudExamenValoracionResponseDto toDto(SolicitudExamenValoracionResponseDto entity);
 }

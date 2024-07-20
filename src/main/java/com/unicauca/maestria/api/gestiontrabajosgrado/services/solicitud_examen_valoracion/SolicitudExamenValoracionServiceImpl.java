@@ -13,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ConvertString;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
@@ -203,15 +202,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new FieldErrorException(validacion);
 		}
 
-		validarConceptoDocumentos(datosExamenFase1);
-
-		if (datosExamenFase1.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)) {
-			ValidationUtils.validarBase64(datosExamenFase1.getDocumentosEnvioComite().getB64FormatoA());
-			ValidationUtils.validarBase64(datosExamenFase1.getDocumentosEnvioComite().getB64FormatoE());
-			ValidationUtils.validarBase64(datosExamenFase1.getDocumentosEnvioComite().getB64FormatoD());
-			for (String anexo : datosExamenFase1.getDocumentosEnvioComite().getB64Anexos()) {
-				ValidationUtils.validarBase64(anexo);
-			}
+		if (datosExamenFase1.getEnvioEmail() == null
+				&& datosExamenFase1.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)) {
+			throw new InformationException("Faltan atributos para el registro");
 		}
 
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
@@ -228,15 +221,10 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						"Examen de valoracion no encontrado para id: "
 								+ trabajoGrado.getSolicitudExamenValoracion().getId()));
 
-		ArrayList<String> correos = new ArrayList<>();
-
 		if (datosExamenFase1.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)) {
-			correos.add(Constants.correoComite);
-			Map<String, Object> documentos = datosExamenFase1.getDocumentosEnvioComite().getDocumentos();
-			envioCorreos.enviarCorreoConAnexos(correos, datosExamenFase1.getEnvioEmail().getAsunto(),
-					datosExamenFase1.getEnvioEmail().getMensaje(), documentos);
 			trabajoGrado.setNumeroEstado(3);
 		} else {
+			ArrayList<String> correos = new ArrayList<>();
 			EstudianteResponseDtoAll estudiante = archivoClient
 					.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 			correos.add(estudiante.getCorreoUniversidad());
@@ -251,18 +239,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		SolicitudExamenValoracion solicitudGuardada = solicitudExamenValoracionRepository.save(solicitudActual);
 
 		return examenValoracionResponseMapper.toCoordinadorFase1Dto(solicitudGuardada);
-	}
-
-	private void validarConceptoDocumentos(SolicitudExamenValoracionCoordinadorFase1Dto datosExamenFase1) {
-		if (datosExamenFase1.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.RECHAZADO)
-				&& datosExamenFase1.getDocumentosEnvioComite() != null) {
-			throw new InformationException("Envio de atributos no permitido para concepto rechazado");
-		}
-
-		if (datosExamenFase1.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)
-				&& datosExamenFase1.getDocumentosEnvioComite() == null) {
-			throw new InformationException("Atributos incorrectos para documentos aceptados");
-		}
 	}
 
 	@Override
@@ -298,8 +274,10 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoD());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoE());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64Oficio());
-			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoB());
-			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoC());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoBEv1());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoCEv1());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoBEv2());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoCEv2());
 			for (String anexo : examenValoracionDto.getInformacionEnvioEvaluador().getB64Anexos()) {
 				ValidationUtils.validarBase64(anexo);
 			}
@@ -632,33 +610,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new FieldErrorException(result);
 		}
 
+		if (examenValoracionFase1CoordinadorDto.getEnvioEmail() == null
+				&& examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()
+						.equals(ConceptoVerificacion.ACEPTADO)) {
+			throw new InformationException("Faltan atributos para el registro");
+		}
+
 		ConceptoVerificacion conceptoCoordinador = examenValoracionFase1CoordinadorDto
 				.getConceptoCoordinadorDocumentos();
-		Map<String, Object> documentosEnvioComiteDto = examenValoracionFase1CoordinadorDto
-				.getDocumentosEnvioComite() != null
-						? examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite().getDocumentos()
-						: null;
-
-		if (conceptoCoordinador.equals(ConceptoVerificacion.RECHAZADO) && documentosEnvioComiteDto != null) {
-			throw new InformationException("Envio de atributos no permitido");
-		}
-
-		if (conceptoCoordinador.equals(ConceptoVerificacion.ACEPTADO) && documentosEnvioComiteDto == null) {
-			throw new InformationException("Atributos incorrectos");
-		}
-
-		if (examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()
-				.equals(ConceptoVerificacion.ACEPTADO)) {
-			ValidationUtils
-					.validarBase64(examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite().getB64FormatoA());
-			ValidationUtils
-					.validarBase64(examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite().getB64FormatoE());
-			ValidationUtils
-					.validarBase64(examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite().getB64FormatoD());
-			for (String anexo : examenValoracionFase1CoordinadorDto.getDocumentosEnvioComite().getB64Anexos()) {
-				ValidationUtils.validarBase64(anexo);
-			}
-		}
 
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
@@ -690,10 +649,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						examenValoracionFase1CoordinadorDto.getEnvioEmail().getMensaje());
 				trabajoGrado.setNumeroEstado(2);
 			} else {
-				correos.add(Constants.correoComite);
-				envioCorreos.enviarCorreoConAnexos(correos,
-						examenValoracionFase1CoordinadorDto.getEnvioEmail().getAsunto(),
-						examenValoracionFase1CoordinadorDto.getEnvioEmail().getMensaje(), documentosEnvioComiteDto);
 				trabajoGrado.setNumeroEstado(3);
 			}
 		}
@@ -735,8 +690,10 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoD());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoE());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64Oficio());
-			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoB());
-			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoC());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoBEv1());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoCEv1());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoBEv2());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoCEv2());
 			for (String anexo : examenValoracionDto.getInformacionEnvioEvaluador().getB64Anexos()) {
 				ValidationUtils.validarBase64(anexo);
 			}

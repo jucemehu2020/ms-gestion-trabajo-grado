@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion;
+package com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,5 +36,5 @@ public class RespuestaComiteSustentacion {
     @ManyToOne
     @JoinColumn(name = "id_sustentacion_trabajo_investigacion")
     @JsonBackReference
-    private SustentacionTrabajoInvestigacion sustentacionTrabajoInvestigacion;
+    private SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion;
 }

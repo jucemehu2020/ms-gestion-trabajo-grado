@@ -7,23 +7,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.RespuestaComiteSustentacion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.RespuestaComiteSustentacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacion;
 
 public interface SustentacionProyectoInvestigacionRepository
-        extends JpaRepository<SustentacionTrabajoInvestigacion, Long> {
+        extends JpaRepository<SustentacionProyectoInvestigacion, Long> {
 
-    @Query("SELECT COUNT(sev) FROM SustentacionTrabajoInvestigacion sev WHERE sev.trabajoGrado.id = ?1")
+    @Query("SELECT COUNT(sev) FROM SustentacionProyectoInvestigacion sev WHERE sev.trabajoGrado.id = ?1")
     public int countByTrabajoGradoId(Long trabajoGradoId);
 
-    // @Query("SELECT sev FROM SustentacionTrabajoInvestigacion sev WHERE sev.trabajoGrado.id = ?1")
-    // public SustentacionTrabajoInvestigacion findByTrabajoGradoId(Long trabajoGradoId);
+    Optional<SustentacionProyectoInvestigacion> findByTrabajoGradoId(Long idTrabajoGradoId);
 
-    Optional<SustentacionTrabajoInvestigacion> findByTrabajoGradoId(Long idTrabajoGradoId);
-
-    @Query("SELECT rc FROM SustentacionTrabajoInvestigacion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.id = :id ORDER BY rc.id DESC")
+    @Query("SELECT rc FROM SustentacionProyectoInvestigacion sev JOIN sev.actaFechaRespuestaComite rc WHERE sev.id = :id ORDER BY rc.id DESC")
     List<RespuestaComiteSustentacion> findRespuestaComiteBySustentacionId(@Param("id") Long id);
 
-    @Query("SELECT sev.id FROM SustentacionTrabajoInvestigacion sev WHERE sev.trabajoGrado.id = ?1")
-    public Long findIdSustentacionTrabajoInvestigacionByTrabajoGradoId(Long trabajoGradoId);
+    @Query("SELECT sev.id FROM SustentacionProyectoInvestigacion sev WHERE sev.trabajoGrado.id = ?1")
+    public Long findIdSustentacionProyectoInvestigacionByTrabajoGradoId(Long trabajoGradoId);
 }

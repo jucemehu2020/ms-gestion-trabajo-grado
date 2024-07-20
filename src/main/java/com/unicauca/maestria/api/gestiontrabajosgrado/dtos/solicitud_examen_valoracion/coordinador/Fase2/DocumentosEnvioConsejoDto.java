@@ -13,7 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DocumentosEnvioComiteDto {
+public class DocumentosEnvioConsejoDto {
 
     @NotNull
     private String b64FormatoA;

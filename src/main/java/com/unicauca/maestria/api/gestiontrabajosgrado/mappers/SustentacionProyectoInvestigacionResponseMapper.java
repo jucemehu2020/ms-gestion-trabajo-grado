@@ -2,7 +2,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.mappers;
 
 import org.mapstruct.Mapper;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.SustentacionTrabajoInvestigacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.SustentacionTrabajoInvestigacionCoordinadorFase1Dto;
@@ -19,39 +19,39 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto
 
 @Mapper(componentModel = "spring")
 public interface SustentacionProyectoInvestigacionResponseMapper
-                extends GenericMapper<SustentacionTrabajoInvestigacionDto, SustentacionTrabajoInvestigacion> {
+                extends GenericMapper<SustentacionTrabajoInvestigacionDto, SustentacionProyectoInvestigacion> {
 
         // Docente
-        SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionDocenteDto dto);
+        SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionDocenteDto dto);
 
-        SustentacionTrabajoInvestigacionDocenteResponseDto toDocenteDto(SustentacionTrabajoInvestigacion entity);
+        SustentacionTrabajoInvestigacionDocenteResponseDto toDocenteDto(SustentacionProyectoInvestigacion entity);
 
         // Coordinador Fase 1
-        SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase1Dto dto);
+        SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase1Dto dto);
 
         STICoordinadorFase1ResponseDto toCoordinadorFase1Dto(
-                        SustentacionTrabajoInvestigacion entity);
+                        SustentacionProyectoInvestigacion entity);
 
         // Coordinador Fase 2
-        SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase2Dto dto);
+        SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase2Dto dto);
 
         STICoordinadorFase2ResponseDto toCoordinadorFase2Dto(
-                        SustentacionTrabajoInvestigacion entity);
+                        SustentacionProyectoInvestigacion entity);
 
         // Estudiante
-        SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionEstudianteDto dto);
+        SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionEstudianteDto dto);
 
-        SustentacionTrabajoInvestigacionEstudianteResponseDto toEstudianteDto(SustentacionTrabajoInvestigacion entity);
+        SustentacionTrabajoInvestigacionEstudianteResponseDto toEstudianteDto(SustentacionProyectoInvestigacion entity);
 
         // Coordinador Fase 3
-        SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase3Dto dto);
+        SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase3Dto dto);
 
         STICoordinadorFase3ResponseDto toCoordinadorFase3Dto(
-                        SustentacionTrabajoInvestigacion entity);
+                        SustentacionProyectoInvestigacion entity);
 
         // Coordinador Fase 4
-        SustentacionTrabajoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase4Dto dto);
+        SustentacionProyectoInvestigacion toEntity(SustentacionTrabajoInvestigacionCoordinadorFase4Dto dto);
 
         STICoordinadorFase4ResponseDto toCoordinadorFase4Dto(
-                        SustentacionTrabajoInvestigacion entity);
+                        SustentacionProyectoInvestigacion entity);
 }

@@ -13,5 +13,6 @@ public class GeneracionResolucionCoordinadorFase3ResponseDto {
     private Long id;
     private String numeroActaConsejoFacultad;
     private LocalDate fechaActaConsejoFacultad;
+    private String linkOficioConsejo;
 
 }

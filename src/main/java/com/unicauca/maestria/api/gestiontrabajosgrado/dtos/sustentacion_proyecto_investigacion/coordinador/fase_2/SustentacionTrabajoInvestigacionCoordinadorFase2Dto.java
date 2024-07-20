@@ -28,4 +28,7 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase2Dto {
     @Valid
     private EnvioEmailDto envioEmail;
 
+    @Valid
+    private InformacionEnvioConsejoDto informacionEnvioConsejo;
+
 }

@@ -19,8 +19,6 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase4Dto {
 
     private String linkActaSustentacionPublica;
 
-    private String linkEstudioHojaVidaAcademicaGrado;
-
     private String numeroActaFinal;
 
     private LocalDate fechaActaFinal;

@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,26 +37,31 @@ public class SustentacionProyectoInvestigacionController {
         private final SustentacionProyectoInvestigacionService sustentacionProyectoInvestigacion;
 
         @GetMapping("/listarDocentes")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<List<DocenteInfoDto>> listarDocentes() {
                 return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.listarDocentes());
         }
 
         @GetMapping("/listarExpertos")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<List<ExpertoInfoDto>> listarExpertos() {
                 return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.listarExpertos());
         }
 
         @GetMapping("/docente/{id}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<DocenteInfoDto> obtenerDocente(@PathVariable Long id) {
                 return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.obtenerDocente(id));
         }
 
         @GetMapping("/experto/{id}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<ExpertoInfoDto> obtenerExperto(@PathVariable Long id) {
                 return ResponseEntity.status(HttpStatus.OK).body(sustentacionProyectoInvestigacion.obtenerExperto(id));
         }
 
         @PostMapping("/insertarInformacionDocente/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE')")
         public ResponseEntity<SustentacionTrabajoInvestigacionDocenteResponseDto> insertarInformacionDocente(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,
@@ -67,6 +73,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PostMapping("/insertarInformacionCoordinadoFase1/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<STICoordinadorFase1ResponseDto> insertarInformacionCoordinadoFase1(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
@@ -79,6 +86,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PostMapping("/insertarInformacionCoordinadoFase2/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<STICoordinadorFase2ResponseDto> insertarInformacionCoordinadoFase2(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
@@ -91,6 +99,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PostMapping("/insertarInformacionCoordinadoFase3/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<STICoordinadorFase3ResponseDto> insertarInformacionCoordinadoFase3(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
@@ -103,6 +112,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PostMapping("/insertarInformacionEstudiante/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<SustentacionTrabajoInvestigacionEstudianteResponseDto> insertarInformacionEstudiante(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
@@ -114,6 +124,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PostMapping("/insertarInformacionCoordinadoFase4/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<STICoordinadorFase4ResponseDto> insertarInformacionCoordinadoFase4(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
@@ -126,6 +137,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @GetMapping("/listarInformacionDocente/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<SustentacionTrabajoInvestigacionListDocenteDto> listarInformacionDocente(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -133,6 +145,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @GetMapping("/listarInformacionCoordinadorFase1/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<STICoordinadorFase1ResponseDto> listarInformacionCoordinadorFase1(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -141,6 +154,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @GetMapping("/listarInformacionCoordinadorFase2/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<STICoordinadorFase2ResponseDto> listarInformacionCoordinadorFase2(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -149,6 +163,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @GetMapping("/listarInformacionCoordinadorFase3/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<STICoordinadorFase3ResponseDto> listarInformacionCoordinadorFase3(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -157,6 +172,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @GetMapping("/listarInformacionEstudiante/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<SustentacionTrabajoInvestigacionEstudianteResponseDto> listarInformacionEstudiante(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -164,6 +180,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @GetMapping("/listarInformacionCoordinadorFase4/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<STICoordinadorFase4ResponseDto> listarInformacionCoordinadorFase4(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -172,12 +189,14 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @GetMapping("/verificarEgresado/{idEstudiante}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<?> verificarEgresado(@PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(sustentacionProyectoInvestigacion.verificarEgresado(idTrabajoGrado));
         }
 
         @PutMapping("/actualizarInformacionDocente/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE')")
         public ResponseEntity<SustentacionTrabajoInvestigacionDocenteResponseDto> actualizarInformacionDocente(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,
@@ -189,6 +208,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PutMapping("/actualizarInformacionCoordinadoFase1/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<STICoordinadorFase1ResponseDto> actualizarInformacionCoordinadoFase1(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
@@ -201,6 +221,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PutMapping("/actualizarInformacionCoordinadoFase2/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<STICoordinadorFase2ResponseDto> actualizarInformacionCoordinadoFase2(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
@@ -213,6 +234,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PutMapping("/actualizarInformacionCoordinadoFase3/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<STICoordinadorFase3ResponseDto> actualizarInformacionCoordinadoFase3(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
@@ -225,6 +247,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PutMapping("/actualizarInformacionEstudiante/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('ESTUDIANTE')")
         public ResponseEntity<SustentacionTrabajoInvestigacionEstudianteResponseDto> actualizarInformacionEstudiante(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
@@ -237,6 +260,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PutMapping("/actualizarInformacionCoordinadoFase4/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<STICoordinadorFase4ResponseDto> actualizarInformacionCoordinadoFase4(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,

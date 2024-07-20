@@ -26,4 +26,7 @@ public class GeneracionResolucionCoordinadorFase2Dto {
     @Valid
     private EnvioEmailDto envioEmail;
 
+    @Valid
+    private ObtenerDocumentosParaEnvioConsejoDto obtenerDocumentosParaEnvioConsejo;
+
 }

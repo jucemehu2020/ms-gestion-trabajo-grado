@@ -30,21 +30,25 @@ public class InicioTrabajoGradoController {
     private final InicioTrabajoGradoService inicioTrabajoGradoService;
 
     @GetMapping("/")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
     public ResponseEntity<List<EstudianteInfoDto>> listarEstudiantes() {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.listarEstudiantes());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
     public ResponseEntity<EstudianteResponseDto> listarTrabajosGradoEstudiante(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.listarTrabajosGradoEstudiante(id));
     }
 
     @GetMapping("/obtenerInformacionEstudiante/{id}")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
     public ResponseEntity<EstudianteInfoDto> obtenerInformacionEstudiante(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.obtenerInformacionEstudiante(id));
     }
 
     @GetMapping("/buscarTrabajoGrado/{id}")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
     public ResponseEntity<TrabajoGradoResponseDto> buscarTrabajoGrado(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.buscarTrabajoGrado(id));
     }
@@ -59,12 +63,14 @@ public class InicioTrabajoGradoController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('DOCENTE')")
     public ResponseEntity<?> eliminarTrabajoGrado(@PathVariable Long id) {
         inicioTrabajoGradoService.eliminarTrabajoGrado(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/listarInformacionEstados")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
     public ResponseEntity<List<InformacionTrabajoGradoResponseDto>> listarInformacionEstados(
             @RequestParam ArrayList<Integer> consultarEstados) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -72,12 +78,14 @@ public class InicioTrabajoGradoController {
     }
 
     @GetMapping("/descargarDocumento")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
     public ResponseEntity<?> descargarArchivo(@RequestParam String rutaArchivo) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(inicioTrabajoGradoService.descargarArchivo(rutaArchivo));
     }
 
     @GetMapping("/cancelarTrabajoGrado/{idTrabajoGrado}")
+    @PreAuthorize("hasRole('COORDINADOR')")
     public ResponseEntity<?> cancelarTrabajoGrado(@PathVariable Long idTrabajoGrado) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(inicioTrabajoGradoService.cancelarTrabajoGrado(idTrabajoGrado));

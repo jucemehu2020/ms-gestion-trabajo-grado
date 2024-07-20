@@ -1,12 +1,14 @@
-package com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion;
+package com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.AnexoSustentacionDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +25,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SustentacionTrabajoInvestigacion {
+public class SustentacionProyectoInvestigacion {
 
     @Id
     // @Column(name = "id_sustentacion_trabajo_investigacion")
@@ -32,7 +34,11 @@ public class SustentacionTrabajoInvestigacion {
 
     private String linkFormatoF;
 
-    private String urlDocumentacion;
+    private String linkMonografia;
+
+    @OneToMany(mappedBy = "sustentacionProyectoInvestigacion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<AnexoSustentacion> anexos;
 
     private Long idJuradoInterno;
 
@@ -57,6 +63,8 @@ public class SustentacionTrabajoInvestigacion {
     private String numeroActaConsejo;
 
     private LocalDate fechaActaConsejo;
+
+    private String linkOficioConsejo;
 
     private String linkFormatoH;
 

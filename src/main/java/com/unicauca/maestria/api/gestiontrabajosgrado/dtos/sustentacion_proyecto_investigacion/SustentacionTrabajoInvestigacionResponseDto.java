@@ -1,11 +1,15 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.RespuestaComiteSustentacionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.AnexoSustentacionDto;
 
 import lombok.*;
 
@@ -18,7 +22,8 @@ public class SustentacionTrabajoInvestigacionResponseDto {
 
     private Long id;
     private String linkFormatoF;
-    private String urlDocumentacion;
+    private String linkMonografia;
+    private List<AnexoSustentacionDto> anexos = new ArrayList<>();
     private Long idJuradoInterno;
     private Long idJuradoExterno;
     private ConceptoVerificacion conceptoCoordinador;

@@ -1,6 +1,10 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente;
 
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -11,10 +15,13 @@ import javax.validation.constraints.NotNull;
 public class SustentacionTrabajoInvestigacionDocenteDto {
 
     @NotNull
-    private String linkFormatoF;
+    private String linkMonografia;
 
     @NotNull
-    private String urlDocumentacion;
+    private List<AnexoSustentacionDto> anexos = new ArrayList<>();
+
+    @NotNull
+    private String linkFormatoF;
 
     @NotNull
     private Long idJuradoInterno;

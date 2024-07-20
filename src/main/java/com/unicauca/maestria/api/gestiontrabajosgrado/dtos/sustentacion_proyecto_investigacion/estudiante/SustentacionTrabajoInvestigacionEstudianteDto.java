@@ -15,5 +15,8 @@ public class SustentacionTrabajoInvestigacionEstudianteDto {
 
     @NotNull
     private String linkFormatoI;
+    
+    @NotNull
+    private String linkEstudioHojaVidaAcademicaGrado;
 
 }

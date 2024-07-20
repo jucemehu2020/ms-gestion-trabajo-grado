@@ -16,7 +16,6 @@ public class STICoordinadorFase4ResponseDto {
     private Long id;
     private String linkActaSustentacionPublica;
     private ConceptosVarios respuestaSustentacion;
-    private String linkEstudioHojaVidaAcademicaGrado;
     private String numeroActaFinal;
     private LocalDate fechaActaFinal;
 

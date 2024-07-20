@@ -27,6 +27,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.Estudiante
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.AnexoRespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RetornoFormatoBDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Cancelado.ExamenValoracionCanceladoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
@@ -628,6 +629,25 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 trabajoGrado.setNumeroEstado(35);
                 trabajoGradoRepository.save(trabajoGrado);
                 return true;
+        }
+
+        @Override
+        public RetornoFormatoBDto obtenerFormatosB(Long idTrabajoGrado) {
+                List<String> listaFormatosB = respuestaExamenValoracionRepository
+                                .findLinkFormatoBByIdTrabajoGradoAndRespuestaExamenValoracion(idTrabajoGrado);
+
+                Map<String, String> formatosB = new HashMap<>();
+                
+                for (int i = 0; i < listaFormatosB.size(); i++) {
+                        String clave = "formatoBEv" + (i + 1);
+                        formatosB.put(clave, listaFormatosB.get(i));
+                }
+
+                RetornoFormatoBDto retornoFormatoBDto = RetornoFormatoBDto.builder()
+                                .formatosB(formatosB)
+                                .build();
+
+                return retornoFormatoBDto;
         }
 
         private void validarLink(String link) {

@@ -25,7 +25,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resoluci
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.ExamenValoracionCancelado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacion;
 
 @Data
 @NoArgsConstructor
@@ -62,7 +62,7 @@ public class TrabajoGrado {
     private GeneracionResolucion generacionResolucion;
 
     @OneToOne(mappedBy = "trabajoGrado", cascade = CascadeType.ALL)
-    private SustentacionTrabajoInvestigacion sustentacionProyectoInvestigacion;
+    private SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion;
 
     @OneToMany(mappedBy = "trabajoGrado", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TiemposPendientes> tiemposPendientes;

@@ -12,5 +12,6 @@ public class SustentacionTrabajoInvestigacionEstudianteResponseDto {
     private Long id; 
     private String linkFormatoH;
     private String linkFormatoI;
+    private String linkEstudioHojaVidaAcademicaGrado;
 
 }

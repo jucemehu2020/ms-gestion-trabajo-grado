@@ -18,11 +18,7 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase1Dto {
     @NotNull
     private ConceptoVerificacion conceptoCoordinador;
 
-    @NotNull
     @Valid
     private EnvioEmailDto envioEmail;
-
-    @Valid
-    private ObtenerDocumentosParaEnvioDto obtenerDocumentosParaEnvio;
 
 }

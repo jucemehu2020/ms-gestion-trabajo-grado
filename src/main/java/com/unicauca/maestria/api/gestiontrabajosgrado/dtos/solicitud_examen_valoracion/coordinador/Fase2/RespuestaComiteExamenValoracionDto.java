@@ -26,4 +26,5 @@ public class RespuestaComiteExamenValoracionDto {
     private String numeroActa;
     @NotNull
     private LocalDate fechaActa;
+
 }

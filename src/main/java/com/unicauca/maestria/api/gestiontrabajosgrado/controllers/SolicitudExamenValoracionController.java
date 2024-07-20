@@ -3,6 +3,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,26 +30,31 @@ public class SolicitudExamenValoracionController {
         private final SolicitudExamenValoracionService serviceSolicitudExamenValoracion;
 
         @GetMapping("/listarDocentes")
+        @PreAuthorize("hasRole('DOCENTE')")
         public ResponseEntity<List<DocenteInfoDto>> listarDocentes() {
                 return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.listarDocentes());
         }
 
         @GetMapping("/listarExpertos")
+        @PreAuthorize("hasRole('DOCENTE')")
         public ResponseEntity<List<ExpertoInfoDto>> listarExpertos() {
                 return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.listarExpertos());
         }
 
         @GetMapping("/docente/{id}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<DocenteInfoDto> obtenerDocente(@PathVariable Long id) {
                 return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.obtenerDocente(id));
         }
 
         @GetMapping("/experto/{id}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<ExpertoInfoDto> obtenerExperto(@PathVariable Long id) {
                 return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.obtenerExperto(id));
         }
 
         @PostMapping("/insertarInformacionDocente/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE')")
         public ResponseEntity<SolicitudExamenValoracionDocenteResponseDto> insertarInformacionDocente(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionDocenteDto informacionDocente,
@@ -60,6 +66,7 @@ public class SolicitudExamenValoracionController {
         }
 
         @PostMapping("/insertarInformacionCoordinadorFase1/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<SolicitudExamenValoracionResponseFase1Dto> insertarInformacionCoordinadorFase1(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase1Dto informacionCoordinador,
@@ -72,6 +79,7 @@ public class SolicitudExamenValoracionController {
         }
 
         @PostMapping("/insertarInformacionCoordinadorFase2/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<SolicitudExamenValoracionCoordinadorFase2ResponseDto> insertarInformacionCoordinadorFase2(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase2Dto informacionCoordinador,
@@ -84,6 +92,7 @@ public class SolicitudExamenValoracionController {
         }
 
         @GetMapping("/listarInformacionDocente/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<SolicitudExamenValoracionDocenteResponseListDto> listarInformacionDocente(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -91,6 +100,7 @@ public class SolicitudExamenValoracionController {
         }
 
         @GetMapping("/listarInformacionCoordinadorFase1/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<SolicitudExamenValoracionResponseFase1Dto> listarInformacionCoordinadorFase1(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -99,6 +109,7 @@ public class SolicitudExamenValoracionController {
         }
 
         @GetMapping("/listarInformacionCoordinadorFase2/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<SolicitudExamenValoracionCoordinadorFase2ResponseDto> listarInformacionCoordinadorFase2(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -107,6 +118,7 @@ public class SolicitudExamenValoracionController {
         }
 
         @PutMapping("/actualizarInformacionDocente/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<SolicitudExamenValoracionDocenteResponseDto> actualizarInformacionDocente(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionDocenteDto examenValoracion,
@@ -117,6 +129,7 @@ public class SolicitudExamenValoracionController {
         }
 
         @PutMapping("/actualizarInformacionCoordinadorFase1/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<SolicitudExamenValoracionResponseFase1Dto> actualizarInformacionCoordinadorFase1(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase1Dto examenValoracion,
@@ -128,6 +141,7 @@ public class SolicitudExamenValoracionController {
         }
 
         @PutMapping("/actualizarInformacionCoordinadorFase2/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<SolicitudExamenValoracionCoordinadorFase2ResponseDto> actualizarInformacionCoordinadorFase2(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SolicitudExamenValoracionCoordinadorFase2Dto examenValoracion,

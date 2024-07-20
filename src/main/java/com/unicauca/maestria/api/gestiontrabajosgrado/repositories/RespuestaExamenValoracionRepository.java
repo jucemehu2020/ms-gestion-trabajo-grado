@@ -48,4 +48,7 @@ public interface RespuestaExamenValoracionRepository extends JpaRepository<Respu
         @Query("SELECT r.respuestaExamenValoracion FROM RespuestaExamenValoracion r WHERE r.tipoEvaluador = :tipoEvaluador AND r.trabajoGrado.id = :idTrabajoGrado")
         ConceptosVarios findConceptoByTipoEvaluadorAndTrabajoGrado(@Param("tipoEvaluador") TipoEvaluador tipoEvaluador,
                         @Param("idTrabajoGrado") Long idTrabajoGrado);
+
+        @Query("SELECT r.linkFormatoB FROM RespuestaExamenValoracion r WHERE r.trabajoGrado.id = :idTrabajoGrado AND r.respuestaExamenValoracion = 'APROBADO'")
+        List<String> findLinkFormatoBByIdTrabajoGradoAndRespuestaExamenValoracion(Long idTrabajoGrado);
 }

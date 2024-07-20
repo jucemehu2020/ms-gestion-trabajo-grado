@@ -26,4 +26,5 @@ public class GeneracionResolucionResponseDto {
     private String numeroResolucionGeneradaCF;
     private LocalDate fechaResolucion;
     private String linkResolucionGeneradaCF;
+    private String linkOficioConsejo;
 }
