@@ -154,7 +154,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                 if (respuestaExamenValoracionDto.getRespuestaExamenValoracion()
                                 .equals(ConceptosVarios.NO_APROBADO)) {
-
                         tiemposPendientes.setEstado(numEstado);
                         tiemposPendientes.setFechaLimite(fechaActual.plusDays(15));
                         insertarInformacionTiempos(fechaActual.plusDays(15), trabajoGrado);
@@ -261,6 +260,18 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
                 if (numeroNoAprobado != 4 && trabajoGrado.getNumeroEstado() != 15) {
                         throw new InformationException("No es permitido registrar la informacion");
+                }
+
+                Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
+                                .findByTrabajoGradoId(idTrabajoGrado);
+                if (tiemposPendientesOpt.isPresent()) {
+                        tiemposPendientesRepository.delete(tiemposPendientesOpt.get());
+                }
+
+                List<RespuestaExamenValoracion> respuestas = respuestaExamenValoracionRepository
+                                .findByTrabajoGrado(idTrabajoGrado);
+                if (!respuestas.isEmpty()) {
+                        respuestaExamenValoracionRepository.deleteAll(respuestas);
                 }
 
                 ExamenValoracionCancelado examenValoracionCancelado = examenValoracionCanceladoRepository
@@ -626,6 +637,13 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id "
                                                                 + idTrabajoGrado + " no encontrado"));
+
+                Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
+                                .findByTrabajoGradoId(idTrabajoGrado);
+                if (tiemposPendientesOpt.isPresent()) {
+                        tiemposPendientesRepository.delete(tiemposPendientesOpt.get());
+                }
+
                 trabajoGrado.setNumeroEstado(35);
                 trabajoGradoRepository.save(trabajoGrado);
                 return true;
@@ -633,11 +651,17 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         @Override
         public RetornoFormatoBDto obtenerFormatosB(Long idTrabajoGrado) {
+
+                trabajoGradoRepository.findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id "
+                                                                + idTrabajoGrado + " no encontrado"));
+
                 List<String> listaFormatosB = respuestaExamenValoracionRepository
                                 .findLinkFormatoBByIdTrabajoGradoAndRespuestaExamenValoracion(idTrabajoGrado);
 
                 Map<String, String> formatosB = new HashMap<>();
-                
+
                 for (int i = 0; i < listaFormatosB.size(); i++) {
                         String clave = "formatoBEv" + (i + 1);
                         formatosB.put(clave, listaFormatosB.get(i));

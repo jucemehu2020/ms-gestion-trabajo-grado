@@ -50,8 +50,6 @@ public class SolicitudExamenValoracion {
     @JsonManagedReference
     private List<RespuestaComiteExamenValoracion> actaFechaRespuestaComite;
 
-    private String linkOficioGeneradoPorComite;
-
     private String linkOficioDirigidoEvaluadores;
 
     private LocalDate fechaMaximaEvaluacion;
