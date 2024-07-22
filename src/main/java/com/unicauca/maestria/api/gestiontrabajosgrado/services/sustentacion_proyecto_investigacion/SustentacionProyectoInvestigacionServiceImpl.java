@@ -150,7 +150,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new FieldErrorException(result);
                 }
 
+                validarLink(sustentacionDto.getLinkMonografia());
                 validarLink(sustentacionDto.getLinkFormatoF());
+                for (AnexoSustentacionDto anexo : sustentacionDto.getAnexos()) {
+                        validarLink(anexo.getLinkAnexo());
+                }
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -173,6 +177,10 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 trabajoGrado.setNumeroEstado(24);
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
+
+                sustentacionProyectoInvestigacion.setLinkMonografia(
+                                FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                sustentacionProyectoInvestigacion.getLinkMonografia()));
 
                 sustentacionProyectoInvestigacion.setLinkFormatoF(
                                 FilesUtilities.guardarArchivoNew2(rutaArchivo,
@@ -704,6 +712,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         listaAnexos.add(anexo.getLinkAnexo());
                 }
 
+                sustentacionTrabajoInvestigacionDocenteResponseDto.setAnexos(listaAnexos);
                 sustentacionTrabajoInvestigacionDocenteResponseDto.setJuradoInterno(evaluadorInternoMap);
                 sustentacionTrabajoInvestigacionDocenteResponseDto.setJuradoExterno(evaluadorExternoMap);
 
@@ -886,6 +895,14 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 trabajoGrado.setNumeroEstado(24);
 
+                if (!sustentacionDto.getLinkMonografia()
+                                .equals(sustentacionProyectoInvestigacionTmp.getLinkMonografia())) {
+                        validarLink(sustentacionDto.getLinkMonografia());
+                        sustentacionDto.setLinkMonografia(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                        sustentacionDto.getLinkMonografia()));
+                        FilesUtilities.deleteFileExample(
+                                        sustentacionProyectoInvestigacionTmp.getLinkMonografia());
+                }
                 if (!sustentacionDto.getLinkFormatoF().equals(sustentacionProyectoInvestigacionTmp.getLinkFormatoF())) {
                         validarLink(sustentacionDto.getLinkFormatoF());
                         sustentacionDto.setLinkFormatoF(FilesUtilities.guardarArchivoNew2(rutaArchivo,
@@ -924,6 +941,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 sustentacionTrabajoInvestigacion
                                 .setIdJuradoExterno(sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoExterno());
                 // Update archivos
+                sustentacionTrabajoInvestigacion
+                                .setLinkMonografia(sustentacionTrabajoInvestigacionDocenteDto.getLinkMonografia());
                 sustentacionTrabajoInvestigacion
                                 .setLinkFormatoF(sustentacionTrabajoInvestigacionDocenteDto.getLinkFormatoF());
         }
@@ -1408,8 +1427,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 31 && trabajoGrado.getNumeroEstado() != 32
-                                && trabajoGrado.getNumeroEstado() != 33) {
+                if (trabajoGrado.getNumeroEstado() != 30 && trabajoGrado.getNumeroEstado() != 31
+                                && trabajoGrado.getNumeroEstado() != 32 && trabajoGrado.getNumeroEstado() != 33) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 

@@ -59,8 +59,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         private final TrabajoGradoRepository trabajoGradoRepository;
         private final SolicitudExamenValoracionRepository solicitudExamenValoracionRepository;
         private final TiemposPendientesRepository tiemposPendientesRepository;
-
-        // Extras
         private final ArchivoClient archivoClient;
 
         @Autowired

@@ -28,7 +28,6 @@ import javax.persistence.*;
 public class SustentacionProyectoInvestigacion {
 
     @Id
-    // @Column(name = "id_sustentacion_trabajo_investigacion")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -47,7 +46,7 @@ public class SustentacionProyectoInvestigacion {
     @Enumerated(EnumType.STRING)
     private ConceptoVerificacion conceptoCoordinador;
 
-    @OneToMany(mappedBy = "sustentacionTrabajoInvestigacion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sustentacionProyectoInvestigacion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<RespuestaComiteSustentacion> actaFechaRespuestaComite;
 

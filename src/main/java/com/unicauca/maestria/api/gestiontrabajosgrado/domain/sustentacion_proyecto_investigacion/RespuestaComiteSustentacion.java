@@ -34,7 +34,7 @@ public class RespuestaComiteSustentacion {
     private LocalDate fechaActa;
 
     @ManyToOne
-    @JoinColumn(name = "id_sustentacion_trabajo_investigacion")
+    @JoinColumn(name = "id_sustentacion_proyecto_investigacion")
     @JsonBackReference
     private SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion;
 }

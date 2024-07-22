@@ -30,7 +30,7 @@ public class InicioTrabajoGradoController {
     private final InicioTrabajoGradoService inicioTrabajoGradoService;
 
     @GetMapping("/")
-    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
     public ResponseEntity<List<EstudianteInfoDto>> listarEstudiantes() {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.listarEstudiantes());
     }

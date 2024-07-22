@@ -112,7 +112,7 @@ public class SustentacionProyectoInvestigacionController {
         }
 
         @PostMapping("/insertarInformacionEstudiante/{idTrabajoGrado}")
-        @PreAuthorize("hasRole('COORDINADOR')")
+        @PreAuthorize("hasRole('ESTUDIANTE')")
         public ResponseEntity<SustentacionTrabajoInvestigacionEstudianteResponseDto> insertarInformacionEstudiante(
                         @PathVariable Long idTrabajoGrado,
                         @Valid @RequestBody SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
@@ -188,8 +188,8 @@ public class SustentacionProyectoInvestigacionController {
                                                 .listarInformacionCoordinadorFase4(idTrabajoGrado));
         }
 
-        @GetMapping("/verificarEgresado/{idEstudiante}")
-        @PreAuthorize("hasRole('COORDINADOR')")
+        @GetMapping("/verificarEgresado/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<?> verificarEgresado(@PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(sustentacionProyectoInvestigacion.verificarEgresado(idTrabajoGrado));

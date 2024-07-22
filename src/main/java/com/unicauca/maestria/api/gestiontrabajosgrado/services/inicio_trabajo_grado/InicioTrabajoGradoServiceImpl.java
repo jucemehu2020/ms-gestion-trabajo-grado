@@ -179,9 +179,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	@Transactional
 	public TrabajoGradoResponseDto crearTrabajoGrado(Long idEstudiante, String token) {
 
-		System.out.println("entra aqui");
 		EstudianteResponseDtoAll informacionEstudiante = archivoClient.obtenerInformacionEstudiante(idEstudiante);
-		System.out.println("paso 2");
 		if (!informacionEstudiante.getInformacionMaestria().getEstadoMaestria().equals(EstadoMaestriaActual.ACTIVO)) {
 			throw new InformationException("El estudiante no esta actualmente ACTIVO");
 		}
@@ -238,9 +236,9 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	public List<InformacionTrabajoGradoResponseDto> listarInformacionEstados(
 			ArrayList<Integer> capturaEstadosDto) {
 
-		boolean isValid = capturaEstadosDto.stream().allMatch(estado -> estado >= 0 && estado <= 35);
+		boolean isValid = capturaEstadosDto.stream().allMatch(estado -> estado >= 0 && estado <= 36);
 		if (!isValid) {
-			throw new InformationException("El rango de estados es del 0 a 35");
+			throw new InformationException("El rango de estados es del 0 a 36");
 		}
 
 		List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findAll();

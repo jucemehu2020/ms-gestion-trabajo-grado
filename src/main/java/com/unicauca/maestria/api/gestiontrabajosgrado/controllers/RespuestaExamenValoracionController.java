@@ -39,7 +39,7 @@ public class RespuestaExamenValoracionController {
         }
 
         @GetMapping("/{idTrabajoGrado}")
-        @PreAuthorize("hasRole('COORDINADOR')")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<Map<String, List<RespuestaExamenValoracionResponseDto>>> buscarPorId(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)
