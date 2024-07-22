@@ -36,5 +36,5 @@ public class RespuestaComiteSustentacion {
     @ManyToOne
     @JoinColumn(name = "id_sustentacion_proyecto_investigacion")
     @JsonBackReference
-    private SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion;
+    private SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion;
 }
