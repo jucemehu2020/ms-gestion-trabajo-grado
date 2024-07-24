@@ -373,7 +373,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 .getNumeroActa())
                                 .fechaActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                                 .getActaFechaRespuestaComite().get(0).getFechaActa())
-                                .sustentacionTrabajoInvestigacion(sustentacionTrabajoInvestigacion)
+                                .sustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacion)
                                 .build();
 
                 // Si la colección está vacía, inicializarla

@@ -84,7 +84,7 @@ public class InicioTrabajoGradoController {
                 .body(inicioTrabajoGradoService.descargarArchivo(rutaArchivo));
     }
 
-    @GetMapping("/cancelarTrabajoGrado/{idTrabajoGrado}")
+    @PutMapping("/cancelarTrabajoGrado/{idTrabajoGrado}")
     @PreAuthorize("hasRole('COORDINADOR')")
     public ResponseEntity<?> cancelarTrabajoGrado(@PathVariable Long idTrabajoGrado) {
         return ResponseEntity.status(HttpStatus.OK)

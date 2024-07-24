@@ -24,11 +24,15 @@ public class InformacionEnvioConsejoDto {
     @NotNull
     private String b64FormatoG;
 
+    @NotNull
+    private String b64HistoriaAcademica;
+
     public Map<String, Object> getDocumentos() {
         Map<String, Object> documentos = new HashMap<>();
         documentos.put("monografia", b64Monografia);
         documentos.put("anexos", b64Anexos);
         documentos.put("formatoG", b64FormatoG);
+        documentos.put("historiaAcademica", b64HistoriaAcademica);
         return documentos;
     }
 }

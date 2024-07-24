@@ -42,16 +42,18 @@ public class EnvioCorreos {
         Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
         // Validar todos los correos antes de enviar
-        for (String correo : correos) {
-            if (!esCorreoValido(correo, emailPattern)) {
-                correosFallidos.add(correo);
-            }
-        }
+        // for (String correo : correos) {
+        // if (!esCorreoValido(correo, emailPattern)) {
+        // correosFallidos.add(correo);
+        // }
+        // }
 
-        if (!correosFallidos.isEmpty()) {
-            System.err.println("Los siguientes correos no son válidos: " + correosFallidos);
-            throw new InformationException("Los siguientes correos no son válidos: " + correosFallidos);
-        }
+        // if (!correosFallidos.isEmpty()) {
+        // System.err.println("Los siguientes correos no son válidos: " +
+        // correosFallidos);
+        // throw new InformationException("Los siguientes correos no son válidos: " +
+        // correosFallidos);
+        // }
 
         // Si todos los correos son válidos, proceder a enviarlos
         try {
@@ -105,6 +107,76 @@ public class EnvioCorreos {
                 // Enviar el mensaje
                 mailSender.send(message);
             }
+
+            return true;
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean enviarCorreoEvaluadores(String correo, String asunto, String mensaje,
+            Map<String, Object> documentos) {
+
+        try {
+            Map<String, Object> templateModel = new HashMap<>();
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            String saludo = obtenerSaludo();
+
+            // Configurar variables del contexto para la plantilla
+            templateModel.put("mensaje_saludo", saludo);
+            templateModel.put("mensaje", mensaje);
+
+            // Crear el contexto para el motor de plantillas
+            Context context = new Context();
+            context.setVariables(templateModel);
+
+            // Procesar la plantilla de correo electrónico
+            String html = templateEngine.process("emailTemplate", context);
+
+            helper.setTo(correo);
+            helper.setSubject(asunto);
+            helper.setText(html, true); // Establecer el cuerpo del mensaje HTML
+
+            for (Map.Entry<String, Object> entry : documentos.entrySet()) {
+                String nombreDocumento = entry.getKey();
+                Object valorDocumento = entry.getValue();
+
+                // Determinar la extensión y el tipo MIME
+                String extension;
+                String mimeType;
+                if (nombreDocumento.equals("formatoBEv1") || nombreDocumento.equals("formatoCEv1") ||
+                        nombreDocumento.equals("formatoBEv2") || nombreDocumento.equals("formatoCEv2")) {
+                    extension = ".docx";
+                    mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                } else {
+                    extension = ".pdf";
+                    mimeType = "application/pdf";
+                }
+
+                if (valorDocumento instanceof String) {
+                    // Manejar los documentos que son cadenas
+                    String base64Documento = (String) valorDocumento;
+                    byte[] documentoBytes = Base64.getDecoder().decode(base64Documento);
+                    ByteArrayDataSource dataSource = new ByteArrayDataSource(documentoBytes, mimeType);
+                    helper.addAttachment(nombreDocumento + extension, dataSource);
+                } else if (valorDocumento instanceof List) {
+                    // Manejar la lista de anexos
+                    List<String> listaAnexos = (List<String>) valorDocumento;
+                    for (int i = 0; i < listaAnexos.size(); i++) {
+                        String base64Anexo = listaAnexos.get(i);
+                        byte[] anexoBytes = Base64.getDecoder().decode(base64Anexo);
+                        ByteArrayDataSource dataSource = new ByteArrayDataSource(anexoBytes, mimeType);
+                        helper.addAttachment(nombreDocumento + "_" + (i + 1) + extension, dataSource);
+                    }
+                }
+            }
+
+            // Enviar el mensaje
+            mailSender.send(message);
 
             return true;
         } catch (MessagingException e) {

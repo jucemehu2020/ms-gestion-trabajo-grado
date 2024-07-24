@@ -20,7 +20,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.AnexoRespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.ExamenValoracionCancelado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
@@ -84,10 +83,12 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                 + idTrabajoGrado + " no encontrado"));
 
                 Long numeroNoAprobadoPorEvaluador = respuestaExamenValoracionRepository
-                                .countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado);
+                                .countByTrabajoGradoIdAndRespuestaNoAprobadoAndEvaluador(idTrabajoGrado,
+                                                respuestaExamenValoracionDto.getIdEvaluador(),
+                                                respuestaExamenValoracionDto.getTipoEvaluador());
 
                 if (numeroNoAprobadoPorEvaluador == 2) {
-                        throw new InformationException("Ya no es permitido registrar mas respuestas para el evaluador");
+                        throw new InformationException("No se permiten mas registros para el evaluador");
                 }
 
                 if (trabajoGrado.getNumeroEstado() == 15) {
@@ -366,7 +367,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 && trabajoGrado.getNumeroEstado() != 8 && trabajoGrado.getNumeroEstado() != 9
                                 && trabajoGrado.getNumeroEstado() != 10 && trabajoGrado.getNumeroEstado() != 11
                                 && trabajoGrado.getNumeroEstado() != 12 && trabajoGrado.getNumeroEstado() != 13
-                                && trabajoGrado.getNumeroEstado() != 14) {
+                                && trabajoGrado.getNumeroEstado() != 14 && trabajoGrado.getNumeroEstado() != 15) {
                         throw new InformationException("No es permitido registrar la informacion");
                 }
 
@@ -378,11 +379,12 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         archivoClient.obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador());
                 }
 
-                Long ultimoRegistro = respuestaExamenValoracionRepository.findLatestIdByIdEvaluadorAndTipoEvaluador(
-                                respuestaExamenValoracionDto.getIdEvaluador(),
-                                respuestaExamenValoracionDto.getTipoEvaluador());
+                List<Long> ultimoRegistro = respuestaExamenValoracionRepository
+                                .findLatestIdByIdEvaluadorAndTipoEvaluador(
+                                                respuestaExamenValoracionDto.getIdEvaluador(),
+                                                respuestaExamenValoracionDto.getTipoEvaluador());
 
-                if (idRespuestaExamen != ultimoRegistro) {
+                if (!ultimoRegistro.isEmpty() && !idRespuestaExamen.equals(ultimoRegistro.get(0))) {
                         throw new InformationException(
                                         "No es permitido actualizar porque no es el ultimo registro realizado por el evaluador");
                 }
@@ -544,8 +546,9 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 ConceptosVarios conceptoOther = null;
 
                 if (tieneDosEvaluadores) {
-                        conceptoOther = respuestaExamenValoracionRepository
+                        List<ConceptosVarios> conceptos = respuestaExamenValoracionRepository
                                         .findConceptoByTipoEvaluadorAndTrabajoGrado(t2, idTrabajoGrado);
+                        conceptoOther = conceptos.stream().findFirst().orElse(null);
                 }
 
                 switch (conceptoEvaluador) {
@@ -553,7 +556,8 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 if (numeroEstadoActual == 5 || (!tieneDosEvaluadores && vieneDe == 2)) {
                                         numEstado = 6;
                                 } else if (numeroEstadoActual == 6 || numeroEstadoActual == 12
-                                                || numeroEstadoActual == 13 || numeroEstadoActual == 17) {
+                                                || numeroEstadoActual == 13 || numeroEstadoActual == 17
+                                                || numeroEstadoActual == 15) {
                                         Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
                                                         .findByTrabajoGradoId(idTrabajoGrado);
                                         if (tiemposPendientesOpt.isPresent()) {
@@ -561,11 +565,13 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                         }
                                         numEstado = 7;
                                 } else if (numeroEstadoActual == 9 || numeroEstadoActual == 8
-                                                || (conceptoOther.equals(ConceptosVarios.NO_APROBADO)
+                                                || (conceptoOther != null
+                                                                && conceptoOther.equals(ConceptosVarios.NO_APROBADO)
                                                                 && numeroEstadoActual == 14)) {
                                         numEstado = 12;
                                 } else if (numeroEstadoActual == 10 || numeroEstadoActual == 11
-                                                || (conceptoOther.equals(ConceptosVarios.APLAZADO)
+                                                || (conceptoOther != null
+                                                                && conceptoOther.equals(ConceptosVarios.APLAZADO)
                                                                 && numeroEstadoActual == 14)) {
                                         numEstado = 13;
                                 }
@@ -574,14 +580,16 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 if (numeroEstadoActual == 5 || (!tieneDosEvaluadores && vieneDe == 2)) {
                                         numEstado = 8;
                                 } else if (numeroEstadoActual == 8 || numeroEstadoActual == 12
-                                                || numeroEstadoActual == 14) {
+                                                || numeroEstadoActual == 14 || numeroEstadoActual == 15) {
                                         numEstado = 9;
                                 } else if (numeroEstadoActual == 7 || numeroEstadoActual == 6
-                                                || (conceptoOther.equals(ConceptosVarios.APROBADO)
+                                                || (conceptoOther != null
+                                                                && conceptoOther.equals(ConceptosVarios.APROBADO)
                                                                 && numeroEstadoActual == 13)) {
                                         numEstado = 12;
                                 } else if (numeroEstadoActual == 11 || numeroEstadoActual == 10
-                                                || (conceptoOther.equals(ConceptosVarios.APLAZADO)
+                                                || (conceptoOther != null
+                                                                && conceptoOther.equals(ConceptosVarios.APLAZADO)
                                                                 && numeroEstadoActual == 13)) {
                                         numEstado = 14;
                                 }
@@ -590,14 +598,16 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 if (numeroEstadoActual == 5 || (!tieneDosEvaluadores && vieneDe == 2)) {
                                         numEstado = 10;
                                 } else if (numeroEstadoActual == 10 || numeroEstadoActual == 13
-                                                || numeroEstadoActual == 14) {
+                                                || numeroEstadoActual == 14 || numeroEstadoActual == 15) {
                                         numEstado = 11;
                                 } else if (numeroEstadoActual == 6 || numeroEstadoActual == 7
-                                                || (conceptoOther.equals(ConceptosVarios.APROBADO)
+                                                || (conceptoOther != null
+                                                                && conceptoOther.equals(ConceptosVarios.APROBADO)
                                                                 && numeroEstadoActual == 12)) {
                                         numEstado = 13;
                                 } else if (numeroEstadoActual == 8 || numeroEstadoActual == 9
-                                                || (conceptoOther.equals(ConceptosVarios.NO_APROBADO)
+                                                || (conceptoOther != null
+                                                                && conceptoOther.equals(ConceptosVarios.NO_APROBADO)
                                                                 && numeroEstadoActual == 12)) {
                                         numEstado = 14;
                                 }

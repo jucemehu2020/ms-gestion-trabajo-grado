@@ -203,7 +203,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		if (datosExamenFase1.getEnvioEmail() == null
-				&& datosExamenFase1.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)) {
+				&& datosExamenFase1.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.RECHAZADO)) {
 			throw new InformationException("Faltan atributos para el registro");
 		}
 
@@ -306,16 +306,36 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		ArrayList<String> correos = new ArrayList<>();
 
 		if (conceptoComite.equals(Concepto.APROBADO)) {
-			DocenteResponseDto docente = archivoClient
-					.obtenerDocentePorId(examenValoracionTmp.getIdEvaluadorInterno());
-			correos.add(docente.getPersona().getCorreoElectronico());
-			ExpertoResponseDto experto = archivoClient
-					.obtenerExpertoPorId(examenValoracionTmp.getIdEvaluadorExterno());
-			correos.add(experto.getPersona().getCorreoElectronico());
 			Map<String, Object> documentosParaEvaluador = examenValoracionDto
 					.getInformacionEnvioEvaluador().getDocumentos();
-			envioCorreos.enviarCorreoConAnexos(correos, examenValoracionDto.getEnvioEmailDto().getAsunto(),
-					examenValoracionDto.getEnvioEmailDto().getMensaje(), documentosParaEvaluador);
+
+			// Filtrar documentos para el docente
+			Map<String, Object> documentosParaDocente = documentosParaEvaluador.entrySet().stream()
+					.filter(entry -> !entry.getKey().equals("formatoBEv2") && !entry.getKey().equals("formatoCEv2"))
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+			// Filtrar documentos para el experto
+			Map<String, Object> documentosParaExperto = documentosParaEvaluador.entrySet().stream()
+					.filter(entry -> !entry.getKey().equals("formatoBEv1") && !entry.getKey().equals("formatoCEv1"))
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+			DocenteResponseDto docente = archivoClient
+					.obtenerDocentePorId(examenValoracionTmp.getIdEvaluadorInterno());
+
+			envioCorreos.enviarCorreoEvaluadores(docente.getPersona().getCorreoElectronico(),
+					examenValoracionDto.getEnvioEmailDto().getAsunto(),
+					examenValoracionDto.getEnvioEmailDto().getMensaje(), documentosParaDocente);
+			ExpertoResponseDto experto = archivoClient
+					.obtenerExpertoPorId(examenValoracionTmp.getIdEvaluadorExterno());
+
+			envioCorreos.enviarCorreoEvaluadores(experto.getPersona().getCorreoElectronico(),
+					examenValoracionDto.getEnvioEmailDto().getAsunto(),
+					examenValoracionDto.getEnvioEmailDto().getMensaje(), documentosParaExperto);
+
+			// envioCorreos.enviarCorreoConAnexos(correos,
+			// examenValoracionDto.getEnvioEmailDto().getAsunto(),
+			// examenValoracionDto.getEnvioEmailDto().getMensaje(),
+			// documentosParaEvaluador);
 
 			String rutaArchivo = identificacionArchivo(trabajoGrado);
 

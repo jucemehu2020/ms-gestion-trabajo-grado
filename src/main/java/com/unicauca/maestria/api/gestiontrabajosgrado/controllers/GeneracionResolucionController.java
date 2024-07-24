@@ -94,7 +94,7 @@ public class GeneracionResolucionController {
         }
 
         @GetMapping("/listarInformacionDocente/{idTrabajoGrado}")
-        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
         public ResponseEntity<GeneracionResolucionDocenteListDto> listarInformacionDocente(
                         @PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)

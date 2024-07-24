@@ -30,13 +30,13 @@ public class SolicitudExamenValoracionController {
         private final SolicitudExamenValoracionService serviceSolicitudExamenValoracion;
 
         @GetMapping("/listarDocentes")
-        @PreAuthorize("hasRole('DOCENTE')")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<List<DocenteInfoDto>> listarDocentes() {
                 return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.listarDocentes());
         }
 
         @GetMapping("/listarExpertos")
-        @PreAuthorize("hasRole('DOCENTE')")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
         public ResponseEntity<List<ExpertoInfoDto>> listarExpertos() {
                 return ResponseEntity.status(HttpStatus.OK).body(serviceSolicitudExamenValoracion.listarExpertos());
         }

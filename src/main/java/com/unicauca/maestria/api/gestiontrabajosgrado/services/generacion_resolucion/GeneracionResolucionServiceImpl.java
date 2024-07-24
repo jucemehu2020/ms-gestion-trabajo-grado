@@ -169,7 +169,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionDto.getEnvioEmail() == null
                                 && generacionResolucionDto.getConceptoDocumentosCoordinador()
-                                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                                                .equals(ConceptoVerificacion.RECHAZADO)) {
                         throw new InformationException("Faltan atributos para el registro");
                 }
 
@@ -194,7 +194,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionDto.getConceptoDocumentosCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
                         trabajoGrado.setNumeroEstado(20);
-
                 } else {
                         ArrayList<String> correos = new ArrayList<>();
                         EstudianteResponseDtoAll estudiante = archivoClient

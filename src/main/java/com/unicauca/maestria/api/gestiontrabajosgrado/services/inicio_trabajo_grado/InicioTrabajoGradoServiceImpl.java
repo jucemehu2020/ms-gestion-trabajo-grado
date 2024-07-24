@@ -271,7 +271,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public Boolean cancelarTrabajoGrado(Long idTrabajoGrado) {
 
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)

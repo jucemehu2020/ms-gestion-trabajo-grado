@@ -3,11 +3,8 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyect
 import java.time.LocalDate;
 import lombok.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
 @Getter
 @Setter
@@ -32,9 +29,6 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase3Dto {
 
     @Builder.Default
     private String idJuradoExterno = "Sin cambios";
-
-    @Valid
-    private EnvioEmailDto envioEmail;
 
     @NotNull
     private String linkOficioConsejo;
