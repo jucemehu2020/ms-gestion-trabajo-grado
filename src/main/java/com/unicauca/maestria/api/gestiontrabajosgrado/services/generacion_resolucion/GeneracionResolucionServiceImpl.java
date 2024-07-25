@@ -173,6 +173,12 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new InformationException("Faltan atributos para el registro");
                 }
 
+                if (generacionResolucionDto.getEnvioEmail() != null
+                                && generacionResolucionDto.getConceptoDocumentosCoordinador()
+                                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                        throw new InformationException("Envio de atributos no permitido");
+                }
+
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -228,15 +234,17 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
-                                && generacionResolucionDto.getLinkSolicitudConsejoFacultad() != null &&
-                                generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo() != null) {
+                                && (generacionResolucionDto.getLinkSolicitudConsejoFacultad() != null ||
+                                                generacionResolucionDto
+                                                                .getObtenerDocumentosParaEnvioConsejo() != null)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)
-                                && generacionResolucionDto.getLinkSolicitudConsejoFacultad() == null
-                                && generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo() == null) {
+                                && (generacionResolucionDto.getLinkSolicitudConsejoFacultad() == null
+                                                || generacionResolucionDto
+                                                                .getObtenerDocumentosParaEnvioConsejo() == null)) {
                         throw new InformationException("Atributos incorrectos");
                 }
 
@@ -521,6 +529,10 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + idTrabajoGrado
                                                 + " no encontrado"));
 
+                archivoClient.obtenerDocentePorId(generacionResolucionDocenteDto.getIdDirector());
+
+                archivoClient.obtenerDocentePorId(generacionResolucionDocenteDto.getIdCodirector());
+
                 if (trabajoGrado.getNumeroEstado() != 18 && trabajoGrado.getNumeroEstado() != 19
                                 && trabajoGrado.getNumeroEstado() != 21) {
                         throw new InformationException("No es permitido registrar la informacion");
@@ -602,8 +614,14 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionDocenteDto.getEnvioEmail() == null
                                 && generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
-                                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                                                .equals(ConceptoVerificacion.RECHAZADO)) {
                         throw new InformationException("Faltan atributos para el registro");
+                }
+
+                if (generacionResolucionDocenteDto.getEnvioEmail() != null
+                                && generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
+                                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                        throw new InformationException("Envio de atributos no permitido");
                 }
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
@@ -669,17 +687,17 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionCoordinadorFase1Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
-                                && generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad() != null
-                                && generacionResolucionCoordinadorFase1Dto
-                                                .getObtenerDocumentosParaEnvioConsejo() != null) {
+                                && (generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad() != null
+                                                || generacionResolucionCoordinadorFase1Dto
+                                                                .getObtenerDocumentosParaEnvioConsejo() != null)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
                 if (generacionResolucionCoordinadorFase1Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)
-                                && generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad() == null
-                                && generacionResolucionCoordinadorFase1Dto
-                                                .getObtenerDocumentosParaEnvioConsejo() == null) {
+                                && (generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad() == null
+                                                || generacionResolucionCoordinadorFase1Dto
+                                                                .getObtenerDocumentosParaEnvioConsejo() == null)) {
                         throw new InformationException("Atributos incorrectos");
                 }
 

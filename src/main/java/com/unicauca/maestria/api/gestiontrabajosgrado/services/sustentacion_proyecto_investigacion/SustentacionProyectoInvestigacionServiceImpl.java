@@ -212,8 +212,19 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
                         BindingResult result) {
+
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
+                }
+
+                if (sustentacionDto.getEnvioEmail() == null && sustentacionDto.getConceptoCoordinador()
+                                .equals(ConceptoVerificacion.RECHAZADO)) {
+                        throw new InformationException("Faltan atributos para el registro");
+                }
+
+                if (sustentacionDto.getEnvioEmail() != null && sustentacionDto.getConceptoCoordinador()
+                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                        throw new InformationException("Envio de atributos no permitido");
                 }
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
@@ -479,6 +490,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
                         BindingResult result) {
+
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
@@ -1005,8 +1017,13 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (sustentacionDto.getEnvioEmail() == null
                                 && sustentacionDto.getConceptoCoordinador()
-                                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                                                .equals(ConceptoVerificacion.RECHAZADO)) {
                         throw new InformationException("Faltan atributos para el registro");
+                }
+
+                if (sustentacionDto.getEnvioEmail() != null && sustentacionDto.getConceptoCoordinador()
+                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                        throw new InformationException("Envio de atributos no permitido");
                 }
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository

@@ -207,6 +207,11 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new InformationException("Faltan atributos para el registro");
 		}
 
+		if (datosExamenFase1.getEnvioEmail() != null
+				&& datosExamenFase1.getConceptoCoordinadorDocumentos().equals(ConceptoVerificacion.ACEPTADO)) {
+			throw new InformationException("Envio de atributos no permitido");
+		}
+
 		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
@@ -632,8 +637,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		if (examenValoracionFase1CoordinadorDto.getEnvioEmail() == null
 				&& examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()
-						.equals(ConceptoVerificacion.ACEPTADO)) {
+						.equals(ConceptoVerificacion.RECHAZADO)) {
 			throw new InformationException("Faltan atributos para el registro");
+		}
+
+		if (examenValoracionFase1CoordinadorDto.getEnvioEmail() != null
+				&& examenValoracionFase1CoordinadorDto.getConceptoCoordinadorDocumentos()
+						.equals(ConceptoVerificacion.ACEPTADO)) {
+			throw new InformationException("Envio de atributos no permitido");
 		}
 
 		ConceptoVerificacion conceptoCoordinador = examenValoracionFase1CoordinadorDto
@@ -762,16 +773,33 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				trabajoGrado.setNumeroEstado(4);
 			} else {
 				validarLink(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
-				linkOficio = FilesUtilities.guardarArchivoNew2(rutaArchivo, linkOficio);
-				examenValoracionDto.setLinkOficioDirigidoEvaluadores(linkOficio);
+
+				Map<String, Object> documentosParaEvaluador = examenValoracionDto
+						.getInformacionEnvioEvaluador().getDocumentos();
+
+				// Filtrar documentos para el docente
+				Map<String, Object> documentosParaDocente = documentosParaEvaluador.entrySet().stream()
+						.filter(entry -> !entry.getKey().equals("formatoBEv2") && !entry.getKey().equals("formatoCEv2"))
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+				// Filtrar documentos para el experto
+				Map<String, Object> documentosParaExperto = documentosParaEvaluador.entrySet().stream()
+						.filter(entry -> !entry.getKey().equals("formatoBEv1") && !entry.getKey().equals("formatoCEv1"))
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
 				DocenteResponseDto docente = archivoClient
 						.obtenerDocentePorId(examenValoracionTmp.getIdEvaluadorInterno());
-				correos.add(docente.getPersona().getCorreoElectronico());
+
+				envioCorreos.enviarCorreoEvaluadores(docente.getPersona().getCorreoElectronico(),
+						examenValoracionDto.getEnvioEmailDto().getAsunto(),
+						examenValoracionDto.getEnvioEmailDto().getMensaje(), documentosParaDocente);
 				ExpertoResponseDto experto = archivoClient
 						.obtenerExpertoPorId(examenValoracionTmp.getIdEvaluadorExterno());
-				correos.add(experto.getPersona().getCorreoElectronico());
-				envioCorreos.enviarCorreoConAnexos(correos, examenValoracionDto.getEnvioEmailDto().getAsunto(),
-						examenValoracionDto.getEnvioEmailDto().getMensaje(), informacionEnvioEvaluador);
+
+				envioCorreos.enviarCorreoEvaluadores(experto.getPersona().getCorreoElectronico(),
+						examenValoracionDto.getEnvioEmailDto().getAsunto(),
+						examenValoracionDto.getEnvioEmailDto().getMensaje(), documentosParaExperto);
+
 				trabajoGrado.setNumeroEstado(5);
 				insertarInformacionTiempos(examenValoracionDto.getFechaMaximaEvaluacion(), trabajoGrado);
 			}

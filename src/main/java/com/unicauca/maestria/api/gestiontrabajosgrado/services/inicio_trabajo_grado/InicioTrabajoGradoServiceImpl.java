@@ -50,7 +50,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	@Autowired
 	private JwtUtil jwtTokenProvider;
 
-	@Scheduled(fixedRate = 300000) // Ejecuta cada 300 segundos (5 minutos)
+	@Scheduled(fixedRate = 86400000) // Ejecuta cada 24 horas (Tiempo en milisegundos)
 	public void checkDates() {
 		List<TiemposPendientes> tiemposPendientesList = tiemposPendientesRepository.findAll();
 		LocalDate hoy = LocalDate.now();
