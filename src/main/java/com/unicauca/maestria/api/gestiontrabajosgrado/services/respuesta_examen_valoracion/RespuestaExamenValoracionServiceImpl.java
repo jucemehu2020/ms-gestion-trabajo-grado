@@ -254,6 +254,14 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                 + idTrabajoGrado
                                                                 + " no encontrado"));
 
+                Optional<ExamenValoracionCancelado> examenExisteValoracionCancelado = examenValoracionCanceladoRepository
+                                .findByTrabajoGradoId(idTrabajoGrado);
+
+                if (examenExisteValoracionCancelado.isPresent()) {
+                        throw new InformationException(
+                                        "Ya existe un examen de valoracion cancelado para este trabajo de grado");
+                }
+
                 Long numeroNoAprobado = respuestaExamenValoracionRepository
                                 .countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado);
 
@@ -273,10 +281,13 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         respuestaExamenValoracionRepository.deleteAll(respuestas);
                 }
 
-                ExamenValoracionCancelado examenValoracionCancelado = examenValoracionCanceladoRepository
-                                .save(examenValoracionCanceladoMapper.toEntity(examenValoracionCanceladoDto));
+                ExamenValoracionCancelado examenValoracionCancelado = examenValoracionCanceladoMapper
+                                .toEntity(examenValoracionCanceladoDto);
 
-                return examenValoracionCanceladoMapper.toDto(examenValoracionCancelado);
+                examenValoracionCancelado.setTrabajoGrado(trabajoGrado);
+
+                return examenValoracionCanceladoMapper
+                                .toDto(examenValoracionCanceladoRepository.save(examenValoracionCancelado));
         }
 
         private boolean enviarCorreoTutorEstudiante(RespuestaExamenValoracionDto respuestaExamenValoracionDto,

@@ -1,5 +1,6 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.services.inicio_trabajo_grado;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientLogin;
@@ -21,11 +23,13 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.InformacionTrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.TrabajoGradoResponseMapper;
@@ -58,7 +62,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		for (TiemposPendientes tiemposPendientes : tiemposPendientesList) {
 			LocalDate fechaLimite = tiemposPendientes.getFechaLimite();
 
-			if (fechaLimite.isBefore(hoy)) {
+			if (fechaLimite != null && fechaLimite.isBefore(hoy)) {
 				List<TiemposPendientes> listaTiempos = tiemposPendientesRepository.findAll();
 				for (int i = 0; i < listaTiempos.size(); i++) {
 					Optional<TrabajoGrado> resTrabajoGrado = trabajoGradoRepository
@@ -197,16 +201,22 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		EstudianteResponseDtoAll informacionEstudiantes = archivoClient.obtenerInformacionEstudiante(idEstudiante);
 
 		String usuario = jwtTokenProvider.getUserNameFromJwtToken(token);
-		String respuestaLogin = archivoClientLogin.obtenerCorreo(usuario);
+		String respuestaLogin = archivoClientLogin.obtenerPersonaId(usuario);
 		JSONObject jsonObject = new JSONObject(respuestaLogin);
-		String correoElectronico = jsonObject.getString("message");
+
+		// Proceos temporal mientras se ajusta al login
+
+		Long personaId = jsonObject.getLong("personaId");
+		DocenteResponseDto docente = archivoClient.obtenerDocentePorId(personaId);
+
+		// String correoElectronico = jsonObject.getString("message");
 
 		TrabajoGrado trabajoGradoConvert = new TrabajoGrado();
 		trabajoGradoConvert.setIdEstudiante(informacionEstudiantes.getId());
 		trabajoGradoConvert.setFechaCreacion(LocalDate.now());
 		trabajoGradoConvert.setNumeroEstado(0);
 		trabajoGradoConvert.setTitulo("");
-		trabajoGradoConvert.setCorreoElectronicoTutor(correoElectronico);
+		trabajoGradoConvert.setCorreoElectronicoTutor(docente.getPersona().getCorreoElectronico());
 
 		TrabajoGrado trabajoGradoGuardado = trabajoGradoRepository.save(trabajoGradoConvert);
 
@@ -282,6 +292,35 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		trabajoGrado.setNumeroEstado(34);
 
 		trabajoGradoRepository.save(trabajoGrado);
+
+		return true;
+	}
+
+	@Override
+	@Transactional
+	public Boolean verificarDocente(String idTrabajoGrado, String token) {
+
+		String usuario = jwtTokenProvider.getUserNameFromJwtToken(token);
+
+		TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(Long.parseLong(idTrabajoGrado))
+				.orElseThrow(
+						() -> new ResourceNotFoundException(
+								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+		String respuestaLogin = archivoClientLogin.obtenerPersonaId(usuario);
+		JSONObject jsonObject = new JSONObject(respuestaLogin);
+		Long personaId = jsonObject.getLong("personaId");
+		JSONArray rolesArray = jsonObject.getJSONArray("roles");
+		String nombreRol = rolesArray.getJSONObject(0).getString("nombreRol");
+
+		if (nombreRol.equals("ROLE_DOCENTE")) {
+			DocenteResponseDto docente = archivoClient.obtenerDocentePorId(personaId);
+			if (docente.getPersona().getCorreoElectronico().equals(trabajoGrado.getCorreoElectronicoTutor())) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 
 		return true;
 	}

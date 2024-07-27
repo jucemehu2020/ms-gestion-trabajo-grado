@@ -91,4 +91,13 @@ public class InicioTrabajoGradoController {
                 .body(inicioTrabajoGradoService.cancelarTrabajoGrado(idTrabajoGrado));
     }
 
+    @GetMapping("/verificarDocente")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
+    public ResponseEntity<?> verificarDocente(@RequestParam String idTrabajoGrado,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(inicioTrabajoGradoService.verificarDocente(idTrabajoGrado, token));
+    }
+
 }

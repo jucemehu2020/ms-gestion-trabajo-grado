@@ -717,6 +717,11 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new InformationException("Atributos incorrectos");
 		}
 
+		if (examenValoracionDto.getFechaMaximaEvaluacion() != null
+				&& examenValoracionDto.getFechaMaximaEvaluacion().isBefore(LocalDate.now())) {
+			throw new InformationException("La fecha máxima de evaluación no puede ser menor a la fecha actual.");
+		}
+
 		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)) {
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoD());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoE());

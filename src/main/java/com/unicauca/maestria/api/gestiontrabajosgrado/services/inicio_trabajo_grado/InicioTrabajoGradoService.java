@@ -28,4 +28,6 @@ public interface InicioTrabajoGradoService {
 
     public Boolean cancelarTrabajoGrado(Long idTrabajoGrado);
 
+    public Boolean verificarDocente(String idTrabajoGrado, String token);
+
 }

@@ -1,5 +1,4 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.mappers;
-
 import org.mapstruct.Mapper;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
