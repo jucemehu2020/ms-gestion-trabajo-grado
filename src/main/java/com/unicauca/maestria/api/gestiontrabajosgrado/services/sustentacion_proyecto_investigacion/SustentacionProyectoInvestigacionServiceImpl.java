@@ -1192,7 +1192,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         }
                 } else {
                         if (sustentacionProyectoInvestigacionOld != null) {
-                                if (sustentacionDto.getLinkEstudioHojaVidaAcademica()
+                                if (sustentacionDto != null && sustentacionDto.getLinkEstudioHojaVidaAcademica()
                                                 .compareTo(sustentacionProyectoInvestigacionOld
                                                                 .getLinkEstudioHojaVidaAcademica()) != 0) {
                                         validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
@@ -1203,8 +1203,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                         sustentacionProyectoInvestigacionOld
                                                                         .getLinkEstudioHojaVidaAcademica());
                                 }
-                                if (sustentacionDto.getLinkFormatoG().compareTo(sustentacionProyectoInvestigacionOld
-                                                .getLinkFormatoG()) != 0) {
+                                if (sustentacionDto.getLinkFormatoG() != null && sustentacionDto.getLinkFormatoG()
+                                                .compareTo(sustentacionProyectoInvestigacionOld
+                                                                .getLinkFormatoG()) != 0) {
                                         validarLink(sustentacionDto.getLinkFormatoG());
                                         sustentacionDto.setLinkFormatoG(
                                                         FilesUtilities.guardarArchivoNew2(rutaArchivo, sustentacionDto

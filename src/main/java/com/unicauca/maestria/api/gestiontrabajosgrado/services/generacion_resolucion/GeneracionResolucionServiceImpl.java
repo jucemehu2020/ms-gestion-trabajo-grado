@@ -678,25 +678,25 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         @Override
         public GeneracionResolucionCoordinadorFase2ResponseDto actualizarInformacionCoordinadorFase2(
                         Long idTrabajoGrado,
-                        GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase1Dto,
+                        GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto,
                         BindingResult result) {
 
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
 
-                if (generacionResolucionCoordinadorFase1Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+                if (generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
-                                && (generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad() != null
-                                                || generacionResolucionCoordinadorFase1Dto
+                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad() != null
+                                                || generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo() != null)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
-                if (generacionResolucionCoordinadorFase1Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+                if (generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)
-                                && (generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad() == null
-                                                || generacionResolucionCoordinadorFase1Dto
+                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad() == null
+                                                || generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo() == null)) {
                         throw new InformationException("Atributos incorrectos");
                 }
@@ -737,67 +737,68 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 : respuestaComiteList.get(0);
 
                 if (ultimoRegistro != null
-                                && ultimoRegistro.getConceptoComite() != generacionResolucionCoordinadorFase1Dto
+                                && ultimoRegistro.getConceptoComite() != generacionResolucionCoordinadorFase2Dto
                                                 .getActaFechaRespuestaComite().get(0)
                                                 .getConceptoComite()) {
                         ArrayList<String> correos = new ArrayList<>();
                         // Si pasa de aprobado a no aprobado
-                        if (!generacionResolucionCoordinadorFase1Dto.getActaFechaRespuestaComite().get(0)
+                        if (!generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
                                         .getConceptoComite().equals(Concepto.APROBADO)) {
                                 EstudianteResponseDtoAll estudiante = archivoClient
                                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
                                 correos.add(estudiante.getCorreoUniversidad());
                                 correos.add(trabajoGrado.getCorreoElectronicoTutor());
                                 envioCorreos.enviarCorreosCorrecion(correos,
-                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmail().getAsunto(),
-                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmail()
+                                                generacionResolucionCoordinadorFase2Dto.getEnvioEmail().getAsunto(),
+                                                generacionResolucionCoordinadorFase2Dto.getEnvioEmail()
                                                                 .getMensaje());
                                 FilesUtilities.deleteFileExample(
                                                 generacionResolucionOld.getLinkSolicitudConsejoFacultad());
                                 trabajoGrado.setNumeroEstado(21);
                         } else {
-                                validarLink(generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad());
+                                validarLink(generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
                                 ValidationUtils.validarBase64(
-                                                generacionResolucionCoordinadorFase1Dto
+                                                generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo()
                                                                 .getB64FormatoBEv1());
                                 ValidationUtils.validarBase64(
-                                                generacionResolucionCoordinadorFase1Dto
+                                                generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo()
                                                                 .getB64FormatoBEv2());
                                 ValidationUtils.validarBase64(
-                                                generacionResolucionCoordinadorFase1Dto
+                                                generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo()
                                                                 .getB64AnteproyectoFinal());
                                 ValidationUtils.validarBase64(
-                                                generacionResolucionCoordinadorFase1Dto
+                                                generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo()
                                                                 .getB64SolicitudConsejoFacultad());
                                 correos.add(Constants.correoConsejo);
-                                Map<String, Object> documentosParaConsejo = generacionResolucionCoordinadorFase1Dto
+                                Map<String, Object> documentosParaConsejo = generacionResolucionCoordinadorFase2Dto
                                                 .getObtenerDocumentosParaEnvioConsejo().getDocumentos();
                                 envioCorreos.enviarCorreoConAnexos(correos,
-                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmail().getAsunto(),
-                                                generacionResolucionCoordinadorFase1Dto.getEnvioEmail().getMensaje(),
+                                                generacionResolucionCoordinadorFase2Dto.getEnvioEmail().getAsunto(),
+                                                generacionResolucionCoordinadorFase2Dto.getEnvioEmail().getMensaje(),
                                                 documentosParaConsejo);
-                                generacionResolucionCoordinadorFase1Dto
+                                generacionResolucionCoordinadorFase2Dto
                                                 .setLinkSolicitudConsejoFacultad(FilesUtilities.guardarArchivoNew2(
                                                                 rutaArchivo,
-                                                                generacionResolucionCoordinadorFase1Dto
+                                                                generacionResolucionCoordinadorFase2Dto
                                                                                 .getLinkSolicitudConsejoFacultad()));
                                 trabajoGrado.setNumeroEstado(22);
                         }
                 } else {
-                        if (generacionResolucionOld != null) {
-                                if (generacionResolucionCoordinadorFase1Dto.getLinkSolicitudConsejoFacultad()
+                        if (generacionResolucionOld != null && generacionResolucionCoordinadorFase2Dto
+                                        .getLinkSolicitudConsejoFacultad() != null) {
+                                if (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad()
                                                 .compareTo(generacionResolucionOld
                                                                 .getLinkSolicitudConsejoFacultad()) != 0) {
-                                        validarLink(generacionResolucionCoordinadorFase1Dto
+                                        validarLink(generacionResolucionCoordinadorFase2Dto
                                                         .getLinkSolicitudConsejoFacultad());
-                                        generacionResolucionCoordinadorFase1Dto
+                                        generacionResolucionCoordinadorFase2Dto
                                                         .setLinkSolicitudConsejoFacultad(FilesUtilities
                                                                         .guardarArchivoNew2(rutaArchivo,
-                                                                                        generacionResolucionCoordinadorFase1Dto
+                                                                                        generacionResolucionCoordinadorFase2Dto
                                                                                                         .getLinkSolicitudConsejoFacultad()));
                                         FilesUtilities.deleteFileExample(
                                                         generacionResolucionOld.getLinkSolicitudConsejoFacultad());
@@ -805,7 +806,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         }
                 }
                 updateExamenValoracionCoordinadorValues(generacionResolucionOld,
-                                generacionResolucionCoordinadorFase1Dto, trabajoGrado);
+                                generacionResolucionCoordinadorFase2Dto, trabajoGrado);
                 responseExamenValoracion = generacionResolucionRepository.save(generacionResolucionOld);
                 return generacionResolucionResponseMapper.toCoordinadorFase2Dto(responseExamenValoracion);
         }

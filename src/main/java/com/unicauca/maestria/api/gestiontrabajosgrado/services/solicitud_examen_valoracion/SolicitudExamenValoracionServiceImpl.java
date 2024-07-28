@@ -758,6 +758,21 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		String rutaArchivo = identificacionArchivo(trabajoGrado);
 
+		if (conceptoComite.equals(Concepto.APROBADO) && examenValoracionTmp.getLinkOficioDirigidoEvaluadores() != null
+				&& !examenValoracionDto.getLinkOficioDirigidoEvaluadores()
+						.equals(examenValoracionTmp.getLinkOficioDirigidoEvaluadores())) {
+			examenValoracionDto.setLinkOficioDirigidoEvaluadores(
+					FilesUtilities.guardarArchivoNew2(rutaArchivo,
+							examenValoracionDto.getLinkOficioDirigidoEvaluadores()));
+			FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkOficioDirigidoEvaluadores());
+		} else if (conceptoComite.equals(Concepto.APROBADO)
+				&& examenValoracionTmp.getLinkOficioDirigidoEvaluadores() == null) {
+			validarLink(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
+			examenValoracionDto.setLinkOficioDirigidoEvaluadores(
+					FilesUtilities.guardarArchivoNew2(rutaArchivo,
+							examenValoracionDto.getLinkOficioDirigidoEvaluadores()));
+		}
+
 		SolicitudExamenValoracion responseExamenValoracion = null;
 		List<RespuestaComiteExamenValoracion> respuestaComiteList = solicitudExamenValoracionRepository
 				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracionTmp.getId());
@@ -767,6 +782,9 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		if (ultimoRegistro != null && ultimoRegistro.getConceptoComite() != conceptoComite) {
 			ArrayList<String> correos = new ArrayList<>();
 			if (conceptoComite.equals(Concepto.NO_APROBADO)) {
+				if (examenValoracionTmp.getLinkOficioDirigidoEvaluadores() != null) {
+					FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkOficioDirigidoEvaluadores());
+				}
 				EstudianteResponseDtoAll estudiante = archivoClient
 						.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 				correos.add(estudiante.getCorreoUniversidad());
@@ -774,11 +792,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				envioCorreos.enviarCorreosCorrecion(correos,
 						examenValoracionDto.getEnvioEmailDto().getAsunto(),
 						examenValoracionDto.getEnvioEmailDto().getMensaje());
-				FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkOficioDirigidoEvaluadores());
 				trabajoGrado.setNumeroEstado(4);
 			} else {
-				validarLink(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
-
 				Map<String, Object> documentosParaEvaluador = examenValoracionDto
 						.getInformacionEnvioEvaluador().getDocumentos();
 
@@ -807,17 +822,10 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 				trabajoGrado.setNumeroEstado(5);
 				insertarInformacionTiempos(examenValoracionDto.getFechaMaximaEvaluacion(), trabajoGrado);
+				tiemposPendientesRepository.findByTrabajoGradoId(idTrabajoGrado)
+						.ifPresent(tiemposPendientes -> tiemposPendientes.setFechaLimite(fechaMaximaEvaluacion));
 			}
-		} else if (examenValoracionTmp != null
-				&& !linkOficio.equals(examenValoracionTmp.getLinkOficioDirigidoEvaluadores())) {
-			validarLink(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
-			linkOficio = FilesUtilities.guardarArchivoNew2(rutaArchivo, linkOficio);
-			examenValoracionDto.setLinkOficioDirigidoEvaluadores(linkOficio);
-			FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkOficioDirigidoEvaluadores());
 		}
-
-		tiemposPendientesRepository.findByTrabajoGradoId(idTrabajoGrado)
-				.ifPresent(tiemposPendientes -> tiemposPendientes.setFechaLimite(fechaMaximaEvaluacion));
 
 		updateExamenValoracionCoordinadorValues(examenValoracionTmp, examenValoracionDto, trabajoGrado);
 		responseExamenValoracion = solicitudExamenValoracionRepository.save(examenValoracionTmp);
