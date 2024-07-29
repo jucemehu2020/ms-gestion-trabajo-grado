@@ -39,7 +39,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				// System.out.println("autorities:: " + userDetails.getAuthorities());
 				Collection<SimpleGrantedAuthority> roles = jwtUtil.getRolesFromJwtToken(jwt);
 
-				System.out.println("roles:: " + roles);
+				//System.out.println("roles:: " + roles);
 
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						null, null, roles);

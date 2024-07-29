@@ -26,10 +26,13 @@ import org.springframework.validation.BindingResult;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientLogin;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.EstadoMaestriaActual;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.Genero;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.estudiante.TipoIdentificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.security.JwtUtil;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.embeddables.InformacionMaestriaActual;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
@@ -100,7 +103,40 @@ public class CrearTrabajoGradoTest {
         when(archivoClient.obtenerInformacionEstudiante(idEstudiante)).thenReturn(informacionEstudiante);
         when(trabajoGradoRepository.findByEstudianteId(idEstudiante)).thenReturn(trabajosGrado);
         when(jwtTokenProvider.getUserNameFromJwtToken(token)).thenReturn(usuario);
-        when(archivoClientLogin.obtenerCorreo(usuario)).thenReturn("{\"message\": \"" + correoElectronico + "\"}");
+        //when(archivoClientLogin.obtenerCorreo(usuario)).thenReturn("{\"message\": \"" + correoElectronico + "\"}");
+
+        String jsonString = "{\n" +
+        "    \"id\": 1,\n" +
+        "    \"usuario\": \"user\",\n" +
+        "    \"contrasena\": \"$2a$10$YIQsFYd8fwfVYSAzQjhPdOyKKP5oCWxshHcquM/gVlcDcp9gLZr/e\",\n" +
+        "    \"personaId\": 1,\n" +
+        "    \"roles\": [\n" +
+        "        {\n" +
+        "            \"id\": 1,\n" +
+        "            \"nombreRol\": \"ROLE_DOCENTE\"\n" +
+        "        }\n" +
+        "    ]\n" +
+        "}";
+
+        when(archivoClientLogin.obtenerPersonaId(usuario)).thenReturn(jsonString);
+
+        PersonaDto persona = PersonaDto.builder()
+                .id(1L)
+                .identificacion(1098L)
+                .nombre("Karla")
+                .apellido("Ramirez")
+                .correoElectronico("julio.mellizo@gse.com.co")
+                .telefono("316-325-33-40")
+                .genero(Genero.FEMENINO)
+                .tipoIdentificacion(TipoIdentificacion.CEDULA_CIUDADANIA)
+                .build();
+
+        DocenteResponseDto docenteResponse = DocenteResponseDto.builder()
+                .id(1L)
+                .persona(persona)
+                .build();
+
+        when(archivoClient.obtenerDocentePorId(docenteResponse.getId())).thenReturn(docenteResponse);
 
         TrabajoGrado trabajoGradoConvert = new TrabajoGrado();
         trabajoGradoConvert.setIdEstudiante(idEstudiante);

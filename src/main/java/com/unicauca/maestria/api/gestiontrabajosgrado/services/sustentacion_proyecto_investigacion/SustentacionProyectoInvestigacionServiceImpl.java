@@ -421,6 +421,12 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("Atributos incorrectos");
                 }
 
+                if (sustentacionDto.getFechaSustentacion() != null
+                                && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
+                        throw new InformationException(
+                                        "La fecha máxima de evaluación no puede ser menor a la fecha actual.");
+                }
+
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -1281,6 +1287,12 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 if (sustentacionDto.getIdJuradoInterno().equals("Sin cambios")
                                 && sustentacionDto.getIdJuradoExterno().equals("Sin cambios")) {
                         throw new InformationException("Atributos incorrectos");
+                }
+
+                if (sustentacionDto.getFechaSustentacion() != null
+                                && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
+                        throw new InformationException(
+                                        "La fecha máxima de evaluación no puede ser menor a la fecha actual.");
                 }
 
                 archivoClient.obtenerDocentePorId(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
