@@ -11,7 +11,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.Estudiante
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 
-@FeignClient(name = "msv-estudiante-docente", url = "http://localhost:8082", configuration = FeignConfig.class)
+@FeignClient(name = "ms-estudiante-docente-experto", url = "http://localhost:8082", configuration = FeignConfig.class)
 public interface ArchivoClient {
 
     @GetMapping("/api/estudiantes/")

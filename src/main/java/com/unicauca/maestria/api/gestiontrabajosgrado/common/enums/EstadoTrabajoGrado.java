@@ -20,7 +20,7 @@ public enum EstadoTrabajoGrado {
         EXAMEN_DE_VALORACION_APROBADO_Y_APLAZADO("Examen de valoracion aprobado de un evaluador y aplazado por otro"),
         EXAMEN_DE_VALORACION_NO_APROBADO_Y_APLAZADO("Examen de valoracion no aprobado de un evaluador y aplazado por otro"),
         EXAMEN_DE_VALORACION_CANCELADO("Examen de valoración cancelado debiado a que se recibieron 4 NO APROBADO por parte de los evaluadores"),
-        EXAMEN_DE_VALORACION_NO_ACTUALIZADO("El docente no ha cargado la informacion actualizada del examen de valoracion"),
+        EXAMEN_DE_VALORACION_NO_ACTUALIZADO("Se esta registrando un APROBADO, pero el docente no ha cargado la informacion actualizada del examen de valoracion"),
         EXAMEN_DE_VALORACION_ACTUALIZADO("Examen de valoracion actualizado, a la espera del coordinador"),
         PENDIENTE_SUBIDA_ARCHIVOS_COORDINADOR_FASE1_GENERACION_RESOLUCION("Pendiente verificacion archivos coordinador"),
         DEVUELTO_GENERACION_DE_RESOLUCION_POR_COORDINADOR("Se ha solicitado correciones por parte del coordinador para continuar con el proceso de generacion de resolucion"),
