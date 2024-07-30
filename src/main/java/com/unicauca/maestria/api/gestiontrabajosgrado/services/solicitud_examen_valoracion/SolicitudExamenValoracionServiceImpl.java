@@ -177,15 +177,17 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		nuevaSolicitud.setLinkFormatoE(
 				FilesUtilities.guardarArchivoNew2(directorioArchivos, nuevaSolicitud.getLinkFormatoE()));
 
-		List<AnexoSolicitudExamenValoracion> anexosActualizados = new ArrayList<>();
-		for (AnexoSolicitudExamenValoracionDto anexoDto : datosExamenValoracion.getAnexos()) {
-			String rutaAnexo = FilesUtilities.guardarArchivoNew2(directorioArchivos, anexoDto.getLinkAnexo());
-			AnexoSolicitudExamenValoracion anexo = new AnexoSolicitudExamenValoracion();
-			anexo.setLinkAnexo(rutaAnexo);
-			anexo.setSolicitudExamenValoracion(nuevaSolicitud);
-			anexosActualizados.add(anexo);
+		if (datosExamenValoracion.getAnexos() != null) {
+			List<AnexoSolicitudExamenValoracion> anexosActualizados = new ArrayList<>();
+			for (AnexoSolicitudExamenValoracionDto anexoDto : datosExamenValoracion.getAnexos()) {
+				String rutaAnexo = FilesUtilities.guardarArchivoNew2(directorioArchivos, anexoDto.getLinkAnexo());
+				AnexoSolicitudExamenValoracion anexo = new AnexoSolicitudExamenValoracion();
+				anexo.setLinkAnexo(rutaAnexo);
+				anexo.setSolicitudExamenValoracion(nuevaSolicitud);
+				anexosActualizados.add(anexo);
+			}
+			nuevaSolicitud.setAnexos(anexosActualizados);
 		}
-		nuevaSolicitud.setAnexos(anexosActualizados);
 
 		SolicitudExamenValoracion solicitudGuardada = solicitudExamenValoracionRepository.save(nuevaSolicitud);
 
@@ -547,11 +549,13 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkFormatoE());
 		}
 
-		List<AnexoSolicitudExamenValoracion> anexosEntidades = examenValoracionDto.getAnexos().stream()
-				.map(anexoSolicitudExamenValoracionMapper::toEntity)
-				.collect(Collectors.toList());
+		if (examenValoracionDto.getAnexos() != null) {
+			List<AnexoSolicitudExamenValoracion> anexosEntidades = examenValoracionDto.getAnexos().stream()
+					.map(anexoSolicitudExamenValoracionMapper::toEntity)
+					.collect(Collectors.toList());
 
-		actualizarAnexos(examenValoracionTmp, anexosEntidades, rutaArchivo);
+			actualizarAnexos(examenValoracionTmp, anexosEntidades, rutaArchivo);
+		}
 
 		updateExamenValoracionDocenteValues(examenValoracionTmp, examenValoracionDto, trabajoGrado);
 		SolicitudExamenValoracion responseExamenValoracion = solicitudExamenValoracionRepository

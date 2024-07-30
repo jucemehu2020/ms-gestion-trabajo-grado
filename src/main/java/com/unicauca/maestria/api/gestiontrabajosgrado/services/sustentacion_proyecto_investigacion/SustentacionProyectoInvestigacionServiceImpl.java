@@ -186,16 +186,18 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                 sustentacionProyectoInvestigacion.getLinkFormatoF()));
 
-                List<AnexoSustentacion> anexosActualizados = new ArrayList<>();
-                for (AnexoSustentacionDto anexoDto : sustentacionDto.getAnexos()) {
-                        String rutaAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                        anexoDto.getLinkAnexo());
-                        AnexoSustentacion anexo = new AnexoSustentacion();
-                        anexo.setLinkAnexo(rutaAnexo);
-                        anexo.setSustentacionProyectoInvestigacion(sustentacionProyectoInvestigacion);
-                        anexosActualizados.add(anexo);
+                if (sustentacionProyectoInvestigacion.getAnexos() != null) {
+                        List<AnexoSustentacion> anexosActualizados = new ArrayList<>();
+                        for (AnexoSustentacionDto anexoDto : sustentacionDto.getAnexos()) {
+                                String rutaAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                anexoDto.getLinkAnexo());
+                                AnexoSustentacion anexo = new AnexoSustentacion();
+                                anexo.setLinkAnexo(rutaAnexo);
+                                anexo.setSustentacionProyectoInvestigacion(sustentacionProyectoInvestigacion);
+                                anexosActualizados.add(anexo);
+                        }
+                        sustentacionProyectoInvestigacion.setAnexos(anexosActualizados);
                 }
-                sustentacionProyectoInvestigacion.setAnexos(anexosActualizados);
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacion);
@@ -929,11 +931,13 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                         sustentacionProyectoInvestigacionTmp.getLinkFormatoF());
                 }
 
-                List<AnexoSustentacion> anexosEntidades = sustentacionDto.getAnexos().stream()
-                                .map(anexoSustentacionMapper::toEntity)
-                                .collect(Collectors.toList());
+                if (sustentacionDto.getAnexos() != null) {
+                        List<AnexoSustentacion> anexosEntidades = sustentacionDto.getAnexos().stream()
+                                        .map(anexoSustentacionMapper::toEntity)
+                                        .collect(Collectors.toList());
 
-                actualizarAnexos(sustentacionProyectoInvestigacionTmp, anexosEntidades, rutaArchivo);
+                        actualizarAnexos(sustentacionProyectoInvestigacionTmp, anexosEntidades, rutaArchivo);
+                }
 
                 updateExamenValoracionDocenteValues(sustentacionProyectoInvestigacionTmp, sustentacionDto,
                                 trabajoGrado);
