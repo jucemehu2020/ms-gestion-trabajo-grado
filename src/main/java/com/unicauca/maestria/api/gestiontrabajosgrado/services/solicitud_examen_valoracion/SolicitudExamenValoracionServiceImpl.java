@@ -154,7 +154,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
 		if (trabajoGrado.getNumeroEstado() != 0) {
-			throw new InformationException("No es permitido registrar la informacion");
+			throw new InformationException("No es permitido registrar la información");
 		}
 
 		archivoClient.obtenerDocentePorId(datosExamenValoracion.getIdEvaluadorInterno());
@@ -219,7 +219,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
 		if (trabajoGrado.getNumeroEstado() != 1) {
-			throw new InformationException("No es permitido registrar la informacion en este estado");
+			throw new InformationException("No es permitido registrar la información en este estado");
 		}
 
 		SolicitudExamenValoracion solicitudActual = solicitudExamenValoracionRepository
@@ -295,7 +295,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
 		if (trabajoGrado.getNumeroEstado() != 3) {
-			throw new InformationException("No es permitido registrar la informacion");
+			throw new InformationException("No es permitido registrar la información");
 		}
 
 		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository
@@ -516,7 +516,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		int numeroEstado = trabajoGrado.getNumeroEstado();
 		if (numeroEstado != 1 && numeroEstado != 2 && numeroEstado != 4 && numeroEstado != 16 && numeroEstado != 35) {
-			throw new InformationException("No es permitido registrar la informacion");
+			throw new InformationException("No es permitido registrar la información");
 		}
 
 		archivoClient.obtenerDocentePorId(examenValoracionDto.getIdEvaluadorInterno());
@@ -574,7 +574,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			FilesUtilities.deleteFolderAndItsContents(tituloTrabajoGrado);
 		}
 
-		examenValoracion.setConceptoCoordinadorDocumentos(null);
+		//examenValoracion.setConceptoCoordinadorDocumentos(null);
 
 		trabajoGrado.setTitulo(examenValoracionDto.getTitulo());
 		examenValoracion.setTitulo(examenValoracionDto.getTitulo());
@@ -660,7 +660,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		int numeroEstado = trabajoGrado.getNumeroEstado();
 		if (numeroEstado != 1 && numeroEstado != 2 && numeroEstado != 3) {
-			throw new InformationException("No es permitido registrar la informacion");
+			throw new InformationException("No es permitido registrar la información");
 		}
 
 		SolicitudExamenValoracion examenValoracionOld = solicitudExamenValoracionRepository
@@ -745,7 +745,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		int numeroEstado = trabajoGrado.getNumeroEstado();
 		if (numeroEstado != 3 && numeroEstado != 4 && numeroEstado != 5) {
-			throw new InformationException("No es permitido registrar la informacion");
+			throw new InformationException("No es permitido registrar la información");
 		}
 
 		SolicitudExamenValoracion examenValoracionTmp = solicitudExamenValoracionRepository

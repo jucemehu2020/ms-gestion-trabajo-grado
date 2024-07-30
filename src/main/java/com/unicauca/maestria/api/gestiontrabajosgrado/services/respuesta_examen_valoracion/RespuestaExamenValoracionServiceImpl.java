@@ -190,16 +190,18 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                 rtaExamenValoracion.getLinkObservaciones()));
 
                 List<AnexoRespuestaExamenValoracion> updatedLinkAnexos = new ArrayList<>();
-                for (AnexoRespuestaExamenValoracionDto linkAnexoDto : respuestaExamenValoracionDto
-                                .getAnexos()) {
-                        String updatedAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                        linkAnexoDto.getLinkAnexo());
-                        AnexoRespuestaExamenValoracion anexo = new AnexoRespuestaExamenValoracion();
-                        anexo.setLinkAnexo(updatedAnexo);
-                        anexo.setRespuestaExamenValoracion(rtaExamenValoracion);
-                        updatedLinkAnexos.add(anexo);
+                if (respuestaExamenValoracionDto.getAnexos() != null) {
+                        for (AnexoRespuestaExamenValoracionDto linkAnexoDto : respuestaExamenValoracionDto
+                                        .getAnexos()) {
+                                String updatedAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                                linkAnexoDto.getLinkAnexo());
+                                AnexoRespuestaExamenValoracion anexo = new AnexoRespuestaExamenValoracion();
+                                anexo.setLinkAnexo(updatedAnexo);
+                                anexo.setRespuestaExamenValoracion(rtaExamenValoracion);
+                                updatedLinkAnexos.add(anexo);
+                        }
+                        rtaExamenValoracion.setAnexos(updatedLinkAnexos);
                 }
-                rtaExamenValoracion.setAnexos(updatedLinkAnexos);
 
                 rtaExamenValoracion.setTrabajoGrado(trabajoGrado);
 
@@ -309,10 +311,13 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 documentosParaEvaluador.put("formatoC", formatoC[1]);
                 String[] obervaciones = respuestaExamenValoracionDto.getLinkObservaciones().split("-");
                 documentosParaEvaluador.put("observaciones", obervaciones[1]);
-                for (int i = 0; i < respuestaExamenValoracionDto.getAnexos().size(); i++) {
-                        String[] anexo = respuestaExamenValoracionDto.getAnexos().get(i).getLinkAnexo()
-                                        .split("-");
-                        documentosParaEvaluador.put("anexo-" + (i + 1), anexo[1]);
+                List<AnexoRespuestaExamenValoracionDto> anexos = respuestaExamenValoracionDto.getAnexos();
+                if (anexos != null) {
+                        for (int i = 0; i < anexos.size(); i++) {
+                                String[] anexo = respuestaExamenValoracionDto.getAnexos().get(i).getLinkAnexo()
+                                                .split("-");
+                                documentosParaEvaluador.put("anexo-" + (i + 1), anexo[1]);
+                        }
                 }
 
                 envioCorreos.enviarCorreoConAnexos(correos, respuestaExamenValoracionDto.getEnvioEmail().getAsunto(),
@@ -439,14 +444,18 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkObservaciones());
                 }
 
-                List<AnexoRespuestaExamenValoracion> anexosEntidades = respuestaExamenValoracionDto.getAnexos()
-                                .stream()
+                List<AnexoRespuestaExamenValoracionDto> anexos = respuestaExamenValoracionDto.getAnexos();
+                if(anexos == null){
+                        anexos = Collections.emptyList();
+                }
+
+                List<AnexoRespuestaExamenValoracion> anexosEntidades = anexos.stream()
                                 .map(anexoDto -> anexoRespuestaExamenValoracionMapper.toEntity(anexoDto))
                                 .collect(Collectors.toList());
 
-                LocalDate fechaActual = LocalDate.now();
-
                 actualizarAnexos(respuestaExamenValoracionTmp, anexosEntidades, rutaArchivo);
+
+                LocalDate fechaActual = LocalDate.now();
 
                 TiemposPendientes tiemposPendientes = new TiemposPendientes();
 

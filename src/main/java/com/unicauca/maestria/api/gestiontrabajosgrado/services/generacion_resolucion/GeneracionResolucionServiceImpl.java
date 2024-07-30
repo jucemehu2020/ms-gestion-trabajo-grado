@@ -901,18 +901,18 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                         generacionResolucionCoordinadorFase3Dto.getLinkOficioConsejo());
                 }
 
-                GeneracionResolucion generacionResolucion = new GeneracionResolucion();
+                // GeneracionResolucion generacionResolucion = new GeneracionResolucion();
 
-                generacionResolucion.setNumeroActaConsejoFacultad(
+                generacionResolucionOld.setNumeroActaConsejoFacultad(
                                 generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejoFacultad());
-                generacionResolucion.setFechaActaConsejoFacultad(
+                generacionResolucionOld.setFechaActaConsejoFacultad(
                                 generacionResolucionCoordinadorFase3Dto.getFechaActaConsejoFacultad());
-                generacionResolucion.setLinkOficioConsejo(
+                generacionResolucionOld.setLinkOficioConsejo(
                                 generacionResolucionCoordinadorFase3Dto.getLinkOficioConsejo());
 
-                generacionResolucion = generacionResolucionRepository.save(generacionResolucionOld);
+                generacionResolucionOld = generacionResolucionRepository.save(generacionResolucionOld);
 
-                return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucion);
+                return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionOld);
         }
 
         private String identificacionArchivo(TrabajoGrado trabajoGrado) {

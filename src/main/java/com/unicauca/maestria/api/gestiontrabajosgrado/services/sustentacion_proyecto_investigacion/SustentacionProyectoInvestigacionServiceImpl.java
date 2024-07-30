@@ -1201,7 +1201,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 trabajoGrado.setNumeroEstado(28);
                         }
                 } else {
-                        if (sustentacionProyectoInvestigacionOld != null) {
+                        if (sustentacionProyectoInvestigacionOld != null
+                                        && sustentacionDto.getLinkEstudioHojaVidaAcademica() != null) {
                                 if (sustentacionDto != null && sustentacionDto.getLinkEstudioHojaVidaAcademica()
                                                 .compareTo(sustentacionProyectoInvestigacionOld
                                                                 .getLinkEstudioHojaVidaAcademica()) != 0) {
@@ -1481,7 +1482,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.APROBADO)) {
                                 validarLink(sustentacionDto.getLinkActaSustentacionPublica());
 
-                                sustentacionProyectoInvestigacionTmp.setLinkActaSustentacionPublica(
+                                sustentacionDto.setLinkActaSustentacionPublica(
                                                 FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                                 sustentacionDto.getLinkActaSustentacionPublica()));
 
@@ -1511,8 +1512,10 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 trabajoGrado.setNumeroEstado(33);
                         }
                 } else {
-                        if (!sustentacionDto.getLinkActaSustentacionPublica().equals(
-                                        sustentacionProyectoInvestigacionTmp.getLinkActaSustentacionPublica())) {
+                        if (sustentacionDto.getLinkActaSustentacionPublica() != null
+                                        && sustentacionDto.getLinkActaSustentacionPublica().equals(
+                                                        sustentacionProyectoInvestigacionTmp
+                                                                        .getLinkActaSustentacionPublica())) {
                                 validarLink(sustentacionDto.getLinkActaSustentacionPublica());
                                 sustentacionDto.setLinkActaSustentacionPublica(
                                                 FilesUtilities.guardarArchivoNew2(rutaArchivo,
