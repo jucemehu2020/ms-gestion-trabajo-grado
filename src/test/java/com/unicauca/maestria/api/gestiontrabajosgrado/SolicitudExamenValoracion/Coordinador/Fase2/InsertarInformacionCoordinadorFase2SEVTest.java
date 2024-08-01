@@ -553,7 +553,7 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                                         result);
                 });
 
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
                 assertNotNull(exception.getMessage());
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
