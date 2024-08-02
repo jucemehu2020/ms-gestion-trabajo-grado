@@ -103,7 +103,7 @@ public class ListarTrabajosGradoEstudiantesTest {
     void ListarTrabajosGradoEstudiantesTest_EstudianteNoExiste() {
         Long idEstudiante = 4L;
 
-        when(trabajoGradoRepository.findByEstudianteId(idEstudiante))
+        when(archivoClient.obtenerInformacionEstudiante(idEstudiante))
                 .thenThrow(new ResourceNotFoundException("Estudiantes con id "
                         + idEstudiante + " no encontrado"));
 

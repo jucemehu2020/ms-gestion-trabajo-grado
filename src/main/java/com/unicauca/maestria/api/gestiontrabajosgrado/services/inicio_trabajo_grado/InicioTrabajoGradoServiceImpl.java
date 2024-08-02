@@ -127,6 +127,8 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	@Transactional(readOnly = true)
 	public EstudianteResponseDto listarTrabajosGradoEstudiante(Long idEstudiante) {
 
+		archivoClient.obtenerInformacionEstudiante(idEstudiante);
+
 		List<TrabajoGrado> trabajosGrado = trabajoGradoRepository.findByEstudianteId(idEstudiante);
 
 		List<TrabajoGradoResponseDto> trabajosGradoDto = trabajosGrado.stream().map(trabajo -> {

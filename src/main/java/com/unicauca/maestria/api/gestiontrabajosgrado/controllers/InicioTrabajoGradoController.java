@@ -35,22 +35,10 @@ public class InicioTrabajoGradoController {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.listarEstudiantes());
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
-    public ResponseEntity<EstudianteResponseDto> listarTrabajosGradoEstudiante(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.listarTrabajosGradoEstudiante(id));
-    }
-
     @GetMapping("/obtenerInformacionEstudiante/{id}")
     @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
     public ResponseEntity<EstudianteInfoDto> obtenerInformacionEstudiante(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.obtenerInformacionEstudiante(id));
-    }
-
-    @GetMapping("/buscarTrabajoGrado/{id}")
-    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
-    public ResponseEntity<TrabajoGradoResponseDto> buscarTrabajoGrado(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.buscarTrabajoGrado(id));
     }
 
     @PostMapping("/{idEstudiante}")
@@ -62,11 +50,16 @@ public class InicioTrabajoGradoController {
                 .body(inicioTrabajoGradoService.crearTrabajoGrado(idEstudiante, token));
     }
 
-    @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('DOCENTE')")
-    public ResponseEntity<?> eliminarTrabajoGrado(@PathVariable Long id) {
-        inicioTrabajoGradoService.eliminarTrabajoGrado(id);
-        return ResponseEntity.ok().build();
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
+    public ResponseEntity<EstudianteResponseDto> listarTrabajosGradoEstudiante(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.listarTrabajosGradoEstudiante(id));
+    }
+
+    @GetMapping("/buscarTrabajoGrado/{id}")
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR') or hasRole('ESTUDIANTE')")
+    public ResponseEntity<TrabajoGradoResponseDto> buscarTrabajoGrado(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(inicioTrabajoGradoService.buscarTrabajoGrado(id));
     }
 
     @GetMapping("/listarInformacionEstados")
@@ -98,6 +91,13 @@ public class InicioTrabajoGradoController {
         String token = authorizationHeader.replace("Bearer ", "");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(inicioTrabajoGradoService.verificarDocente(idTrabajoGrado, token));
+    }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('DOCENTE')")
+    public ResponseEntity<?> eliminarTrabajoGrado(@PathVariable Long id) {
+        inicioTrabajoGradoService.eliminarTrabajoGrado(id);
+        return ResponseEntity.ok().build();
     }
 
 }
