@@ -298,11 +298,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .equals(Concepto.APROBADO)) {
                         validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
                         validarLink(sustentacionDto.getLinkFormatoG());
-                        ValidationUtils.validarBase64(sustentacionDto.getInformacionEnvioConsejo().getB64Monografia());
                         for (String anexo : sustentacionDto.getInformacionEnvioConsejo().getB64Anexos()) {
                                 ValidationUtils.validarBase64(anexo);
                         }
-                        ValidationUtils.validarBase64(sustentacionDto.getInformacionEnvioConsejo().getB64FormatoG());
                 }
 
                 ArrayList<String> correos = new ArrayList<>();
