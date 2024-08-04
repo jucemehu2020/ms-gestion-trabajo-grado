@@ -12,10 +12,10 @@ import javax.validation.constraints.NotNull;
 public class GeneracionResolucionCoordinadorFase3Dto {
 
     @NotNull
-    private String numeroActaConsejoFacultad;
+    private String numeroActaConsejo;
 
     @NotNull
-    private LocalDate fechaActaConsejoFacultad;
+    private LocalDate fechaActaConsejo;
 
     @NotNull
     private String linkOficioConsejo;

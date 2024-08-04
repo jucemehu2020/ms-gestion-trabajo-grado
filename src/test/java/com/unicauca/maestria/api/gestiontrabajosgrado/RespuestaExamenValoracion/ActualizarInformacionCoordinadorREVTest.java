@@ -256,8 +256,6 @@ public class ActualizarInformacionCoordinadorREVTest {
         void ActualizarInformacionCoordinadorREVTest_FaltanAtributos() {
                 Long idRespuestaExamen = 1L;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Respuesta evaluadores");
                 envioEmailDto.setMensaje("Envio documentos enviados por el evaluador Mage");
@@ -293,8 +291,6 @@ public class ActualizarInformacionCoordinadorREVTest {
         @Test
         void ActualizarInformacionCoordinadorREVTest_EstadoNoValido() {
                 Long idRespuestaExamen = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Respuesta evaluadores");
@@ -344,15 +340,13 @@ public class ActualizarInformacionCoordinadorREVTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
         @Test
         void ActualizarInformacionCoordinadorREVTest_RespuestaExamenValoracionNoExiste() {
                 Long idRespuestaExamen = 2L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Respuesta evaluadores");
@@ -387,8 +381,6 @@ public class ActualizarInformacionCoordinadorREVTest {
         void ActualizarInformacionCoordinadorREVTest_DatosEvaluadorNoCorresponden() {
 
                 Long idRespuestaExamen = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Respuesta evaluadores");
@@ -441,135 +433,8 @@ public class ActualizarInformacionCoordinadorREVTest {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorREVTest_DocenteNoExiste() {
-                Long idRespuestaExamen = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-                envioEmailDto.setAsunto("Respuesta evaluadores");
-                envioEmailDto.setMensaje("Envio documentos enviados por el evaluador Mage");
-
-                RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
-                respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-                respuestaExamenValoracionDto.setIdEvaluador(2L);
-                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.INTERNO);
-                respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                TrabajoGrado trabajoGrado = new TrabajoGrado();
-                trabajoGrado.setId(1L);
-                trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(6);
-                trabajoGrado.setIdEstudiante(123L);
-                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-
-                RespuestaExamenValoracion respuestaExamenValoracionOld = new RespuestaExamenValoracion();
-                respuestaExamenValoracionOld.setLinkFormatoB(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt");
-                respuestaExamenValoracionOld.setLinkFormatoC(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt");
-                respuestaExamenValoracionOld.setLinkObservaciones(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt");
-                respuestaExamenValoracionOld.setAnexos(new ArrayList<>());
-                respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
-                respuestaExamenValoracionOld.setIdEvaluador(1L);
-                respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.INTERNO);
-                respuestaExamenValoracionOld.setTrabajoGrado(trabajoGrado);
-
-                when(respuestaExamenValoracionRepository.findById(idRespuestaExamen))
-                                .thenReturn(Optional.of(respuestaExamenValoracionOld));
-
-                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
-                                .thenReturn(Optional.of(trabajoGrado));
-
-                when(archivoClient.obtenerDocentePorId(respuestaExamenValoracionDto.getIdEvaluador()))
-                                .thenThrow(new ResourceNotFoundException("Docentes con id "
-                                                + respuestaExamenValoracionDto.getIdEvaluador() + " no encontrado"));
-
-                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.actualizar(idRespuestaExamen, respuestaExamenValoracionDto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Docentes con id 2 no encontrado";
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
-        void ActualizarInformacionCoordinadorREVTest_ExpertoNoExiste() {
-                Long idRespuestaExamen = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-                envioEmailDto.setAsunto("Respuesta evaluadores");
-                envioEmailDto.setMensaje("Envio documentos enviados por el evaluador Mage");
-
-                RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
-                respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setAnexos(new ArrayList<>());
-                respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
-
-                respuestaExamenValoracionDto.setIdEvaluador(2L);
-                respuestaExamenValoracionDto.setTipoEvaluador(TipoEvaluador.EXTERNO);
-                respuestaExamenValoracionDto.setEnvioEmail(envioEmailDto);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                TrabajoGrado trabajoGrado = new TrabajoGrado();
-                trabajoGrado.setId(1L);
-                trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(6);
-                trabajoGrado.setIdEstudiante(123L);
-                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-
-                RespuestaExamenValoracion respuestaExamenValoracionOld = new RespuestaExamenValoracion();
-                respuestaExamenValoracionOld.setLinkFormatoB(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt");
-                respuestaExamenValoracionOld.setLinkFormatoC(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt");
-                respuestaExamenValoracionOld.setLinkObservaciones(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt");
-                respuestaExamenValoracionOld.setAnexos(new ArrayList<>());
-                respuestaExamenValoracionOld.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
-                respuestaExamenValoracionOld.setIdEvaluador(1L);
-                respuestaExamenValoracionOld.setTipoEvaluador(TipoEvaluador.EXTERNO);
-                respuestaExamenValoracionOld.setTrabajoGrado(trabajoGrado);
-
-                when(respuestaExamenValoracionRepository.findById(idRespuestaExamen))
-                                .thenReturn(Optional.of(respuestaExamenValoracionOld));
-
-                when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
-                                .thenReturn(Optional.of(trabajoGrado));
-
-                when(archivoClient.obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador()))
-                                .thenThrow(new ResourceNotFoundException("Expertos con id "
-                                                + respuestaExamenValoracionDto.getIdEvaluador() + " no encontrado"));
-
-                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        respuestaExamenValoracionServiceImpl.actualizar(idRespuestaExamen, respuestaExamenValoracionDto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Expertos con id 2 no encontrado";
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void ActualizarInformacionCoordinadorREVTest_ServidorDocenteCaido() {
                 Long idRespuestaExamen = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Respuesta evaluadores");
@@ -631,8 +496,6 @@ public class ActualizarInformacionCoordinadorREVTest {
         @Test
         void ActualizarInformacionCoordinadorREVTest_ServidorExpertoCaido() {
                 Long idRespuestaExamen = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 EnvioEmailDto envioEmailDto = new EnvioEmailDto();
                 envioEmailDto.setAsunto("Respuesta evaluadores");

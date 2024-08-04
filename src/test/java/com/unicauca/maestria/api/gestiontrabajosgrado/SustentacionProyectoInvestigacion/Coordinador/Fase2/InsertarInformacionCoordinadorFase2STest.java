@@ -368,80 +368,6 @@ public class InsertarInformacionCoordinadorFase2STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase2STest_YaAprobado() {
-                Long idTrabajoGrado = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-                RespuestaComiteSustentacionDto respuestaComiteSustentacionDto = new RespuestaComiteSustentacionDto();
-                respuestaComiteSustentacionDto.setConceptoComite(Concepto.APROBADO);
-                respuestaComiteSustentacionDto.setNumeroActa("AX1-3445");
-                respuestaComiteSustentacionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
-
-                List<RespuestaComiteSustentacionDto> listaRespuestaComiteDto = new ArrayList<>();
-                listaRespuestaComiteDto.add(respuestaComiteSustentacionDto);
-
-                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-                envioEmailDto.setAsunto("Solicitud revision comite");
-                envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
-
-                InformacionEnvioConsejoDto informacionEnvioConsejoDto = new InformacionEnvioConsejoDto();
-                informacionEnvioConsejoDto.setB64Monografia("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioConsejoDto.setB64FormatoG("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioConsejoDto.setB64HistoriaAcademica("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioConsejoDto.setB64Anexos(new ArrayList<>());
-
-                SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto = new SustentacionTrabajoInvestigacionCoordinadorFase2Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                .setLinkEstudioHojaVidaAcademica(
-                                                "linkEstudioHojaVidaAcademica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                .setLinkFormatoG("linkFormatoG.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                .setActaFechaRespuestaComite(listaRespuestaComiteDto);
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto.setInformacionEnvioConsejo(informacionEnvioConsejoDto);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                RespuestaComiteSustentacion respuestaComiteSustentacion = new RespuestaComiteSustentacion();
-                respuestaComiteSustentacion.setConceptoComite(Concepto.APROBADO);
-                respuestaComiteSustentacion.setNumeroActa("AX1-3445");
-                respuestaComiteSustentacion.setFechaActa(LocalDate.parse("2023-05-24", formatter));
-
-                List<RespuestaComiteSustentacion> listaRespuestaComiteSustentacion = new ArrayList<>();
-                listaRespuestaComiteSustentacion.add(respuestaComiteSustentacion);
-
-                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
-                sustentacionTrabajoInvestigacionOld.setId(1L);
-                sustentacionTrabajoInvestigacionOld.setActaFechaRespuestaComite(listaRespuestaComiteSustentacion);
-
-                TrabajoGrado trabajoGrado = new TrabajoGrado();
-                trabajoGrado.setId(idTrabajoGrado);
-                trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(26);
-                trabajoGrado.setIdEstudiante(123L);
-                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
-
-                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
-                when(sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
-                                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        sustentacionProyectoInvestigacionServiceImpl.insertarInformacionCoordinadoFase2(idTrabajoGrado,
-                                        sustentacionTrabajoInvestigacionCoordinadorFase2Dto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "El concepto ya es APROBADO";
-
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void InsertarInformacionCoordinadorFase2STest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
@@ -582,7 +508,7 @@ public class InsertarInformacionCoordinadorFase2STest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
 

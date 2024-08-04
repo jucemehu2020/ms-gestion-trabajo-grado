@@ -83,14 +83,14 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 
 		if (trabajoGrado.get().getNumeroEstado() == 5 || trabajoGrado.get().getNumeroEstado() == 6
 				|| trabajoGrado.get().getNumeroEstado() == 8 && trabajoGrado.get().getNumeroEstado() == 10) {
-			String mensaje = "Este es un correo de recuerdo informando que la subida de la informacion del trabajo de grado numero "
+			String mensaje = "Este es un correo de recuerdo informando que la subida de la información del trabajo de grado numero "
 					+ complementoMensaje + " no ha sido completada.";
 			envioCorreos.enviarCorreosUnico(Constants.correoCoordinacionMaestria,
 					"Notificacion de recuerdo respuesta evaluadores", mensaje);
 		} else if (trabajoGrado.get().getNumeroEstado() >= 8 && trabajoGrado.get().getNumeroEstado() <= 14) {
 			String mensaje = "Este es un correo de recuerdo informando que el docente y estudiante del trabajo de grado numero "
 					+ complementoMensaje
-					+ " no han cargado la informacion despues de la respuesta de los evaluadores.";
+					+ " no han cargado la información despues de la respuesta de los evaluadores.";
 			envioCorreos.enviarCorreosUnico(Constants.correoCoordinacionMaestria,
 					"Notificacion de recuerdo correciones examen de valoracion", mensaje);
 		} else if (trabajoGrado.get().getNumeroEstado() == 33) {

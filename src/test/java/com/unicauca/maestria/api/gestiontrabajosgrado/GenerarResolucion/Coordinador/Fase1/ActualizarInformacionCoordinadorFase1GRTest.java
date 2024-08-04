@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -205,32 +204,6 @@ public class ActualizarInformacionCoordinadorFase1GRTest {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase1GRTest_AtributosIncorrectos() {
-                Long idTrabajoGrado = 1L;
-
-                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-                envioEmailDto.setAsunto("Revision documentos al comite");
-                envioEmailDto.setMensaje("Envio documento para revision");
-
-                GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto = new GeneracionResolucionCoordinadorFase1Dto();
-                generacionResolucionCoordinadorFase1Dto.setConceptoDocumentosCoordinador(ConceptoVerificacion.ACEPTADO);
-                generacionResolucionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        generacionResolucionServiceImpl.actualizarInformacionCoordinadorFase1(idTrabajoGrado,
-                                        generacionResolucionCoordinadorFase1Dto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Envio de atributos no permitido";
-
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void ActualizarInformacionCoordinadorFase1GRTest_FaltanAtributos() {
 
                 Long idTrabajoGrado = 1L;
@@ -293,7 +266,7 @@ public class ActualizarInformacionCoordinadorFase1GRTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }

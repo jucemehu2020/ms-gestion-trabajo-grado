@@ -92,7 +92,7 @@ public class ListarInformacionCoordinadorFase2GRTest {
         GeneracionResolucion generacionResolucion = new GeneracionResolucion();
         generacionResolucion.setId(1L);
         generacionResolucion.setActaFechaRespuestaComite(listaRespuestaComite);
-        generacionResolucion.setLinkSolicitudConsejoFacultad(
+        generacionResolucion.setLinkSolicitudConsejo(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
 
         when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
@@ -110,7 +110,7 @@ public class ListarInformacionCoordinadorFase2GRTest {
         generacionResolucionCoordinadorFase2ResponseDto
                 .setId(generacionResolucion.getId());
         generacionResolucionCoordinadorFase2ResponseDto.setActaFechaRespuestaComite(listaRespuestaComiteResponseDto);
-        generacionResolucionCoordinadorFase2ResponseDto.setLinkSolicitudConsejoFacultad(
+        generacionResolucionCoordinadorFase2ResponseDto.setLinkSolicitudConsejo(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
 
         when(generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucion))
@@ -127,7 +127,7 @@ public class ListarInformacionCoordinadorFase2GRTest {
                 resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
         assertEquals(
                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt",
-                resultado.getLinkSolicitudConsejoFacultad());
+                resultado.getLinkSolicitudConsejo());
     }
 
     @Test

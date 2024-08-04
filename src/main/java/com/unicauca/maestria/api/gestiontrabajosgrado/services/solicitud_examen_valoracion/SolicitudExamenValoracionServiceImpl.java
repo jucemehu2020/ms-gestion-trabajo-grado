@@ -259,8 +259,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		Concepto conceptoComite = examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite();
-		boolean tieneAtributosEnvio = examenValoracionDto.getLinkOficioDirigidoEvaluadores() != null &&
-				examenValoracionDto.getFechaMaximaEvaluacion() != null &&
+		boolean tieneAtributosEnvio = examenValoracionDto.getLinkOficioDirigidoEvaluadores() != null ||
+				examenValoracionDto.getFechaMaximaEvaluacion() != null ||
 				examenValoracionDto.getInformacionEnvioEvaluador() != null;
 
 		if ((conceptoComite.equals(Concepto.NO_APROBADO) && tieneAtributosEnvio) ||
@@ -268,6 +268,11 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			throw new InformationException(conceptoComite.equals(Concepto.NO_APROBADO)
 					? "Envio de atributos no permitido"
 					: "Atributos incorrectos");
+		}
+
+		if (examenValoracionDto.getActaFechaRespuestaComite().get(0).getFechaActa() != null
+				&& examenValoracionDto.getActaFechaRespuestaComite().get(0).getFechaActa().isAfter(LocalDate.now())) {
+			throw new InformationException("La fecha de registro del comite no puede ser mayor a la fecha actual.");
 		}
 
 		if (examenValoracionDto.getFechaMaximaEvaluacion() != null
@@ -574,7 +579,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			FilesUtilities.deleteFolderAndItsContents(tituloTrabajoGrado);
 		}
 
-		//examenValoracion.setConceptoCoordinadorDocumentos(null);
+		// examenValoracion.setConceptoCoordinadorDocumentos(null);
 
 		trabajoGrado.setTitulo(examenValoracionDto.getTitulo());
 		examenValoracion.setTitulo(examenValoracionDto.getTitulo());
@@ -711,13 +716,13 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				? examenValoracionDto.getInformacionEnvioEvaluador().getDocumentos()
 				: null;
 
-		if (conceptoComite.equals(Concepto.NO_APROBADO) && linkOficio != null && fechaMaximaEvaluacion != null
-				&& informacionEnvioEvaluador != null) {
+		if (conceptoComite.equals(Concepto.NO_APROBADO) && (linkOficio != null || fechaMaximaEvaluacion != null
+				|| informacionEnvioEvaluador != null)) {
 			throw new InformationException("Envio de atributos no permitido");
 		}
 
-		if (conceptoComite.equals(Concepto.APROBADO) && linkOficio == null && fechaMaximaEvaluacion == null
-				&& informacionEnvioEvaluador == null) {
+		if (conceptoComite.equals(Concepto.APROBADO) && (linkOficio == null || fechaMaximaEvaluacion == null
+				|| informacionEnvioEvaluador == null)) {
 			throw new InformationException("Atributos incorrectos");
 		}
 

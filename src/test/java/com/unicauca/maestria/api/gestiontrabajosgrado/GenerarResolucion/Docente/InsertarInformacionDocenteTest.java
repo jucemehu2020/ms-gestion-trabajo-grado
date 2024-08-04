@@ -252,7 +252,7 @@ public class InsertarInformacionDocenteTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
 
@@ -394,7 +394,7 @@ public class InsertarInformacionDocenteTest {
         }
 
         @Test
-        void testActualizarInformacionDocenteGRTest_ServidorDocenteCaido() {
+        void InsertarInformacionDocenteTest_ServidorDocenteCaido() {
                 Long idTrabajoGrado = 2L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();

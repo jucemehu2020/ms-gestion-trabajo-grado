@@ -100,7 +100,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 && trabajoGrado.getNumeroEstado() != 10 && trabajoGrado.getNumeroEstado() != 11
                                 && trabajoGrado.getNumeroEstado() != 12 && trabajoGrado.getNumeroEstado() != 13
                                 && trabajoGrado.getNumeroEstado() != 14 && trabajoGrado.getNumeroEstado() != 17) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 Optional<SolicitudExamenValoracion> solicitudExamenValoracion = solicitudExamenValoracionRepository
@@ -114,7 +114,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                 && respuestaExamenValoracionDto.getTipoEvaluador()
                                                                 .equals(TipoEvaluador.EXTERNO))) {
                         throw new InformationException(
-                                        "La informacion del evaluador no coincide con la registrada en la solicitud");
+                                        "La información del evaluador no coincide con la registrada en la solicitud");
                 }
 
                 if (respuestaExamenValoracionDto.getTipoEvaluador().equals(TipoEvaluador.INTERNO)) {
@@ -268,7 +268,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 .countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado);
 
                 if (numeroNoAprobado != 4 && trabajoGrado.getNumeroEstado() != 15) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
@@ -365,7 +365,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                 + " no encontrado"));
 
                 if (respuestaExamenValoracionTmp.getIdEvaluador() != respuestaExamenValoracionDto.getIdEvaluador()
-                                && respuestaExamenValoracionTmp.getTipoEvaluador() != respuestaExamenValoracionDto
+                                || respuestaExamenValoracionTmp.getTipoEvaluador() != respuestaExamenValoracionDto
                                                 .getTipoEvaluador()) {
                         throw new InformationException("Los datos del evaluador no corresponden");
                 }
@@ -384,7 +384,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 && trabajoGrado.getNumeroEstado() != 10 && trabajoGrado.getNumeroEstado() != 11
                                 && trabajoGrado.getNumeroEstado() != 12 && trabajoGrado.getNumeroEstado() != 13
                                 && trabajoGrado.getNumeroEstado() != 14 && trabajoGrado.getNumeroEstado() != 15) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 if (respuestaExamenValoracionDto.getTipoEvaluador().equals(TipoEvaluador.INTERNO)) {
@@ -445,7 +445,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 }
 
                 List<AnexoRespuestaExamenValoracionDto> anexos = respuestaExamenValoracionDto.getAnexos();
-                if(anexos == null){
+                if (anexos == null) {
                         anexos = Collections.emptyList();
                 }
 
@@ -558,7 +558,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 int numEstado = trabajoGradoRepository.obtenerEstadoTrabajoGrado(idTrabajoGrado);
 
                 Boolean tieneDosEvaluadores = respuestaExamenValoracionRepository
-                                .existsByEvaluadorTypes(TipoEvaluador.INTERNO, TipoEvaluador.EXTERNO);
+                                .existsByEvaluadorTypes(idTrabajoGrado);
 
                 TipoEvaluador t2 = tipoEvaluador.equals(TipoEvaluador.INTERNO) ? TipoEvaluador.EXTERNO
                                 : TipoEvaluador.INTERNO;

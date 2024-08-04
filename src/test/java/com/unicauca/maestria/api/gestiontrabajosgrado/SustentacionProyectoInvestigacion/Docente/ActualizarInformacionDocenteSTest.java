@@ -255,7 +255,7 @@ public class ActualizarInformacionDocenteSTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
@@ -401,7 +401,7 @@ public class ActualizarInformacionDocenteSTest {
         }
 
         @Test
-        void SustentacionProyectoInvestigacionServiceImplTest_ServidorExpertoCaido() {
+        void ActualizarInformacionDocenteSTest_ServidorExpertoCaido() {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionDocenteDto sustentacionTrabajoInvestigacionDocenteDto = new SustentacionTrabajoInvestigacionDocenteDto();
@@ -447,7 +447,7 @@ public class ActualizarInformacionDocenteSTest {
         }
 
         @Test
-        void SustentacionProyectoInvestigacionServiceImpltTest_TrabajoGradoNoExiste() {
+        void ActualizarInformacionDocenteSTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
                 SustentacionTrabajoInvestigacionDocenteDto sustentacionTrabajoInvestigacionDocenteDto = new SustentacionTrabajoInvestigacionDocenteDto();

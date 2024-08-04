@@ -162,7 +162,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                                 + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 23) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 archivoClient.obtenerDocentePorId(sustentacionDto.getIdJuradoInterno());
@@ -235,7 +235,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 24) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
@@ -282,16 +282,24 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
-                                && sustentacionDto.getLinkEstudioHojaVidaAcademica() != null
-                                && sustentacionDto.getLinkFormatoG() != null) {
+                                && (sustentacionDto.getLinkEstudioHojaVidaAcademica() != null
+                                                || sustentacionDto.getLinkFormatoG() != null
+                                                || sustentacionDto.getInformacionEnvioConsejo() != null)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)
-                                && sustentacionDto.getLinkEstudioHojaVidaAcademica() == null
-                                && sustentacionDto.getLinkFormatoG() == null
-                                && sustentacionDto.getInformacionEnvioConsejo() == null) {
+                                && (sustentacionDto.getLinkEstudioHojaVidaAcademica() == null
+                                                || sustentacionDto.getLinkFormatoG() == null
+                                                || sustentacionDto.getInformacionEnvioConsejo() == null)) {
                         throw new InformationException("Atributos incorrectos");
+                }
+
+                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getFechaActa() != null
+                                && sustentacionDto.getActaFechaRespuestaComite().get(0).getFechaActa()
+                                                .isAfter(LocalDate.now())) {
+                        throw new InformationException(
+                                        "La fecha de registro del comite no puede ser mayor a la fecha actual.");
                 }
 
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
@@ -313,7 +321,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                                 + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 26) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
@@ -410,21 +418,27 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 }
 
                 if (sustentacionDto.getJuradosAceptados().equals(ConceptoVerificacion.ACEPTADO)
-                                && !sustentacionDto.getIdJuradoInterno().equals("Sin cambios")
-                                && !sustentacionDto.getIdJuradoExterno().equals("Sin cambios")) {
+                                && (!sustentacionDto.getIdJuradoInterno().equals("Sin cambios")
+                                                || !sustentacionDto.getIdJuradoExterno().equals("Sin cambios"))) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
                 if (sustentacionDto.getJuradosAceptados().equals(ConceptoVerificacion.RECHAZADO)
-                                && sustentacionDto.getIdJuradoInterno().equals("Sin cambios")
-                                && sustentacionDto.getIdJuradoExterno().equals("Sin cambios")) {
+                                && (sustentacionDto.getIdJuradoInterno().equals("Sin cambios")
+                                                || sustentacionDto.getIdJuradoExterno().equals("Sin cambios"))) {
                         throw new InformationException("Atributos incorrectos");
                 }
 
-                if (sustentacionDto.getFechaSustentacion() != null
-                                && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
+                if (sustentacionDto.getFechaActaConsejo() != null
+                                && sustentacionDto.getFechaActaConsejo().isAfter(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha máxima de evaluación no puede ser menor a la fecha actual.");
+                                        "La fecha del consejo no puede ser mayor a la fecha actual.");
+                }
+
+                if (sustentacionDto.getFechaSustentacion() != null
+                                && sustentacionDto.getFechaSustentacion().isAfter(LocalDate.now())) {
+                        throw new InformationException(
+                                        "La fecha máxima de la sustentacion no puede ser mayor a la fecha actual.");
                 }
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
@@ -435,7 +449,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                                 + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 28) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
@@ -513,7 +527,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                                 + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 29) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 // List<CursoSaveDto> cursos = archivoClientEgresados
@@ -523,7 +537,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (empresas.size() == 0) {
                         throw new InformationException(
-                                        "No es permitido registrar la informacion debido a que el estudiante no ha completado los datos de egresado");
+                                        "No es permitido registrar la información debido a que el estudiante no ha completado los datos de egresado");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
@@ -592,7 +606,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 30) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
@@ -677,26 +691,12 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
         @Override
         @Transactional(readOnly = true)
         public SustentacionTrabajoInvestigacionListDocenteDto listarInformacionDocente(Long idTrabajoGrado) {
-                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
+                                .findByTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
+                                                "Sustentacion con ID trabajo de grado " + idTrabajoGrado
                                                                 + " no encontrado"));
-
-                if (sustentacionProyectoInvestigacionTmp.getLinkFormatoF() == null
-                                && sustentacionProyectoInvestigacionTmp.getLinkMonografia() == null
-                                && sustentacionProyectoInvestigacionTmp.getIdJuradoInterno() == null
-                                && sustentacionProyectoInvestigacionTmp.getIdJuradoExterno() == null) {
-                        throw new InformationException("No se han registrado datos");
-                }
 
                 DocenteResponseDto docente = archivoClient
                                 .obtenerDocentePorId(sustentacionProyectoInvestigacionTmp.getIdJuradoInterno());
@@ -893,7 +893,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (trabajoGrado.getNumeroEstado() != 24 && trabajoGrado.getNumeroEstado() != 25
                                 && trabajoGrado.getNumeroEstado() != 27) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 // Valida si el docente y experto existen
@@ -1041,7 +1041,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (trabajoGrado.getNumeroEstado() != 24 && trabajoGrado.getNumeroEstado() != 25
                                 && trabajoGrado.getNumeroEstado() != 26) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
@@ -1095,15 +1095,16 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
-                                && sustentacionDto.getLinkEstudioHojaVidaAcademica() != null
-                                && sustentacionDto.getLinkFormatoG() != null) {
+                                && (sustentacionDto.getLinkEstudioHojaVidaAcademica() != null
+                                                || sustentacionDto.getLinkFormatoG() != null
+                                                || sustentacionDto.getInformacionEnvioConsejo() != null)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)
-                                && sustentacionDto.getLinkEstudioHojaVidaAcademica() == null
-                                && sustentacionDto.getLinkFormatoG() == null
-                                && sustentacionDto.getInformacionEnvioConsejo() == null) {
+                                && (sustentacionDto.getLinkEstudioHojaVidaAcademica() == null
+                                                || sustentacionDto.getLinkFormatoG() == null
+                                                || sustentacionDto.getInformacionEnvioConsejo() == null)) {
                         throw new InformationException("Atributos incorrectos");
                 }
 
@@ -1114,7 +1115,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (trabajoGrado.getNumeroEstado() != 26 && trabajoGrado.getNumeroEstado() != 27
                                 && trabajoGrado.getNumeroEstado() != 28) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionOld = sustentacionProyectoInvestigacionRepository
@@ -1175,10 +1176,10 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 correos.add(Constants.correoComite);
                                 Map<String, Object> documentosParaConsejo = new HashMap<>();
                                 correos.add(Constants.correoComite);
-                                String[] solicitudConsejoFacultad = sustentacionDto
+                                String[] solicitudConsejo = sustentacionDto
                                                 .getLinkEstudioHojaVidaAcademica()
                                                 .split("-");
-                                documentosParaConsejo.put("historiaAcademica", solicitudConsejoFacultad[1]);
+                                documentosParaConsejo.put("historiaAcademica", solicitudConsejo[1]);
                                 String[] formatoG = sustentacionDto
                                                 .getLinkFormatoG()
                                                 .split("-");
@@ -1292,10 +1293,16 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("Atributos incorrectos");
                 }
 
-                if (sustentacionDto.getFechaSustentacion() != null
-                                && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
+                if (sustentacionDto.getFechaActaConsejo() != null
+                                && sustentacionDto.getFechaActaConsejo().isAfter(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha máxima de evaluación no puede ser menor a la fecha actual.");
+                                        "La fecha del consejo no puede ser mayor a la fecha actual.");
+                }
+
+                if (sustentacionDto.getFechaSustentacion() != null
+                                && sustentacionDto.getFechaSustentacion().isAfter(LocalDate.now())) {
+                        throw new InformationException(
+                                        "La fecha máxima de la sustentacion no puede ser mayor a la fecha actual.");
                 }
 
                 archivoClient.obtenerDocentePorId(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
@@ -1307,7 +1314,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (trabajoGrado.getNumeroEstado() != 28 && trabajoGrado.getNumeroEstado() != 29
                                 && trabajoGrado.getNumeroEstado() != 36) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
@@ -1380,7 +1387,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 30) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
@@ -1462,7 +1469,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (trabajoGrado.getNumeroEstado() != 30 && trabajoGrado.getNumeroEstado() != 31
                                 && trabajoGrado.getNumeroEstado() != 32 && trabajoGrado.getNumeroEstado() != 33) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository

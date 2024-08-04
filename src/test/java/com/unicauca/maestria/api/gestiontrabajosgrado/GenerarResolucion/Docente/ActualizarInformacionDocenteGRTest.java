@@ -85,7 +85,7 @@ public class ActualizarInformacionDocenteGRTest {
         }
 
         @Test
-        void testActualizarInformacionDocenteGRTest_ActualizacionExitosa() {
+        void ActualizarInformacionDocenteGRTest_ActualizacionExitosa() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -198,7 +198,7 @@ public class ActualizarInformacionDocenteGRTest {
         }
 
         @Test
-        void testActualizarInformacionDocenteGRTest_FaltanAtributos() {
+        void ActualizarInformacionDocenteGRTest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -229,7 +229,7 @@ public class ActualizarInformacionDocenteGRTest {
         }
 
         @Test
-        void testActualizarInformacionDocenteGRTest_EstadoNoValido() {
+        void ActualizarInformacionDocenteGRTest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -268,14 +268,14 @@ public class ActualizarInformacionDocenteGRTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
 
         }
 
         @Test
-        void testActualizarInformacionDocenteGRTest_DirectorNoExiste() {
+        void ActualizarInformacionDocenteGRTest_DirectorNoExiste() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -350,7 +350,7 @@ public class ActualizarInformacionDocenteGRTest {
         }
 
         @Test
-        void testActualizarInformacionDocenteGRTest_CoDirectorNoExiste() {
+        void ActualizarInformacionDocenteGRTest_CoDirectorNoExiste() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -428,7 +428,7 @@ public class ActualizarInformacionDocenteGRTest {
         }
 
         @Test
-        void testActualizarInformacionDocenteGRTest_TrabajoGradoNoExiste() {
+        void ActualizarInformacionDocenteGRTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -455,7 +455,7 @@ public class ActualizarInformacionDocenteGRTest {
         }
 
         @Test
-        void testActualizarInformacionDocenteGRTest_ServidorDocenteCaido() {
+        void ActualizarInformacionDocenteGRTest_ServidorDocenteCaido() {
                 Long idTrabajoGrado = 2L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();
@@ -502,7 +502,7 @@ public class ActualizarInformacionDocenteGRTest {
         }
 
         @Test
-        void testActualizarInformacionDocenteGRTest_IgualDirectorCodirector() {
+        void ActualizarInformacionDocenteGRTest_IgualDirectorCodirector() {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionDocenteDto generacionResolucionDocenteDto = new GeneracionResolucionDocenteDto();

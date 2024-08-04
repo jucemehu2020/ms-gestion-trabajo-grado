@@ -2,6 +2,8 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucio
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotNull;
+
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +19,10 @@ import lombok.Setter;
 @Builder
 public class RespuestaComiteGeneracionResolucionDto {
 
+    @NotNull
     private Concepto conceptoComite;
+    @NotNull
     private String numeroActa;
+    @NotNull
     private LocalDate fechaActa;
 }

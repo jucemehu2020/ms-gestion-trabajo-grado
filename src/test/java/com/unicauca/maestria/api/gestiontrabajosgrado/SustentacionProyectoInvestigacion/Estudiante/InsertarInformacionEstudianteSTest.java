@@ -261,8 +261,48 @@ public class InsertarInformacionEstudianteSTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
+                assertTrue(exception.getMessage().contains(expectedMessage));
+
+        }
+
+        @Test
+        void InsertarInformacionEstudianteSTest_FaltaRegistroEmpresa() {
+                Long idTrabajoGrado = 1L;
+
+                SustentacionTrabajoInvestigacionEstudianteDto sustentacionTrabajoInvestigacionEstudianteDto = new SustentacionTrabajoInvestigacionEstudianteDto();
+                sustentacionTrabajoInvestigacionEstudianteDto.setLinkFormatoH("linkFormatoH.txt-cHJ1ZWJhIGRlIHRleHR");
+                sustentacionTrabajoInvestigacionEstudianteDto.setLinkFormatoI("linkFormatoI.txt-cHJ1ZWJhIGRlIHRleHR");
+                sustentacionTrabajoInvestigacionEstudianteDto.setLinkEstudioHojaVidaAcademicaGrado(
+                                "linkEstudioHojaVidaAcademicaGrado.txt-cHJ1ZWJhIGRlIHRleHR");
+
+                when(result.hasErrors()).thenReturn(false);
+
+                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
+                sustentacionTrabajoInvestigacionOld.setId(1L);
+
+                TrabajoGrado trabajoGrado = new TrabajoGrado();
+                trabajoGrado.setId(idTrabajoGrado);
+                trabajoGrado.setTitulo("Prueba test");
+                trabajoGrado.setNumeroEstado(29);
+                trabajoGrado.setIdEstudiante(123L);
+                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
+                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
+
+                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+
+                when(archivoClientEgresados.obtenerEmpresasPorIdEstudiante(trabajoGrado.getIdEstudiante()))
+                                .thenReturn(new ArrayList<>());
+
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        sustentacionProyectoInvestigacionServiceImpl.insertarInformacionEstudiante(idTrabajoGrado,
+                                        sustentacionTrabajoInvestigacionEstudianteDto,
+                                        result);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "No es permitido registrar la información debido a que el estudiante no ha completado los datos de egresado";
                 assertTrue(exception.getMessage().contains(expectedMessage));
 
         }

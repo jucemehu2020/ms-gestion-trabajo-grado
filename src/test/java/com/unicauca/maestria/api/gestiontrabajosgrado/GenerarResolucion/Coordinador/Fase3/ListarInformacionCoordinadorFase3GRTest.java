@@ -79,8 +79,8 @@ public class ListarInformacionCoordinadorFase3GRTest {
 
         GeneracionResolucion generacionResolucionOld = new GeneracionResolucion();
         generacionResolucionOld.setId(1L);
-        generacionResolucionOld.setNumeroActaConsejoFacultad("b-0432");
-        generacionResolucionOld.setFechaActaConsejoFacultad(LocalDate.parse("2023-05-24", formatter));
+        generacionResolucionOld.setNumeroActaConsejo("b-0432");
+        generacionResolucionOld.setFechaActaConsejo(LocalDate.parse("2023-05-24", formatter));
 
         when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
                 .thenReturn(Optional.of(generacionResolucionOld));
@@ -89,9 +89,9 @@ public class ListarInformacionCoordinadorFase3GRTest {
         generacionResolucionCoordinadorFase3ResponseDto
                 .setId(generacionResolucionOld.getId());
         generacionResolucionCoordinadorFase3ResponseDto
-                .setNumeroActaConsejoFacultad(generacionResolucionOld.getNumeroActaConsejoFacultad());
+                .setNumeroActaConsejo(generacionResolucionOld.getNumeroActaConsejo());
         generacionResolucionCoordinadorFase3ResponseDto
-                .setFechaActaConsejoFacultad(generacionResolucionOld.getFechaActaConsejoFacultad());
+                .setFechaActaConsejo(generacionResolucionOld.getFechaActaConsejo());
 
         when(generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionOld))
                 .thenReturn(generacionResolucionCoordinadorFase3ResponseDto);
@@ -101,8 +101,8 @@ public class ListarInformacionCoordinadorFase3GRTest {
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
-        assertEquals("b-0432", resultado.getNumeroActaConsejoFacultad());
-        assertEquals(LocalDate.parse("2023-05-24", formatter), resultado.getFechaActaConsejoFacultad());
+        assertEquals("b-0432", resultado.getNumeroActaConsejo());
+        assertEquals(LocalDate.parse("2023-05-24", formatter), resultado.getFechaActaConsejo());
     }
 
     @Test

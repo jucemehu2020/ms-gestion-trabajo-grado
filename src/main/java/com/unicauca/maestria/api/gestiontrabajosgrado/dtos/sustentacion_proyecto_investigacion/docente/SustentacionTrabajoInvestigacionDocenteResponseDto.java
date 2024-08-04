@@ -16,7 +16,6 @@ public class SustentacionTrabajoInvestigacionDocenteResponseDto {
     private String linkFormatoF;
     private String linkMonografia;
     private List<AnexoSustentacionDto> anexos = new ArrayList<>();
-    private String urlDocumentacion;
     private Long idJuradoInterno;
     private Long idJuradoExterno;
 

@@ -36,18 +36,18 @@ public interface RespuestaExamenValoracionRepository extends JpaRepository<Respu
         List<Long> findLatestIdByIdEvaluadorAndTipoEvaluador(@Param("idEvaluador") Long idEvaluador,
                         @Param("tipoEvaluador") TipoEvaluador tipoEvaluador);
 
-        @Query("SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END " +
+        @Query("SELECT (COUNT(r) > 0) " +
                         "FROM RespuestaExamenValoracion r " +
-                        "WHERE r.idEvaluador IN (" +
-                        "  SELECT e.idEvaluador FROM RespuestaExamenValoracion e WHERE e.tipoEvaluador = :tipoEvaluador1"
+                        "WHERE r.trabajoGrado.id = :idTrabajoGrado " +
+                        "AND EXISTS (" +
+                        "  SELECT 1 FROM RespuestaExamenValoracion e WHERE e.tipoEvaluador = 'EXTERNO' AND e.trabajoGrado.id = :idTrabajoGrado"
                         +
                         ") " +
-                        "AND r.idEvaluador IN (" +
-                        "  SELECT e.idEvaluador FROM RespuestaExamenValoracion e WHERE e.tipoEvaluador = :tipoEvaluador2"
+                        "AND EXISTS (" +
+                        "  SELECT 1 FROM RespuestaExamenValoracion e WHERE e.tipoEvaluador = 'INTERNO' AND e.trabajoGrado.id = :idTrabajoGrado"
                         +
                         ")")
-        boolean existsByEvaluadorTypes(@Param("tipoEvaluador1") TipoEvaluador tipoEvaluador1,
-                        @Param("tipoEvaluador2") TipoEvaluador tipoEvaluador2);
+        boolean existsByEvaluadorTypes(@Param("idTrabajoGrado") Long idTrabajoGrado);
 
         @Query("SELECT COUNT(r) FROM RespuestaExamenValoracion r WHERE r.idEvaluador = :idEvaluador AND r.tipoEvaluador = :tipoEvaluador AND r.respuestaExamenValoracion = 'NO_APROBADO'")
         Long countNoAprobadoByIdEvaluadorAndTipoEvaluador(@Param("idEvaluador") Long idEvaluador,

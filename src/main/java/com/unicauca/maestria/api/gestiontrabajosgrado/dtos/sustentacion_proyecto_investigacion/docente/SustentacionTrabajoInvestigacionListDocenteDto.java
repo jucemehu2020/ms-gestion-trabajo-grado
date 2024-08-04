@@ -17,7 +17,6 @@ public class SustentacionTrabajoInvestigacionListDocenteDto {
     private String linkFormatoF;
     private String linkMonografia;
     private List<String> anexos = new ArrayList<>();
-    private String urlDocumentacion;
     private Map<String, String> juradoInterno;
     private Map<String, String> juradoExterno;
 

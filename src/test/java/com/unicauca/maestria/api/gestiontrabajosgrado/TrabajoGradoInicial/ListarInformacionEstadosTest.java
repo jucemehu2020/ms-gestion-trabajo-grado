@@ -122,7 +122,7 @@ public class ListarInformacionEstadosTest {
         assertEquals("Julio Mellizo", dto1.getNombreCompleto());
         assertEquals("julio@example.com", dto1.getCorreoElectronico());
         assertEquals(1, dto1.getNumeroEstado());
-        assertEquals("Pendiente revision por parte del coordinador", dto1.getEstado());
+        assertEquals("Pendiente revision por parte del COORDINADOR", dto1.getEstado());
 
         InformacionTrabajoGradoResponseDto dto2 = resultado.get(1);
         assertEquals(2L, dto2.getId());
@@ -131,7 +131,7 @@ public class ListarInformacionEstadosTest {
         assertEquals("Luis Perez", dto2.getNombreCompleto());
         assertEquals("luis@example.com", dto2.getCorreoElectronico());
         assertEquals(2, dto2.getNumeroEstado());
-        assertEquals("Se ha devuelto el examen de valoracion para correciones solicitadas del coordinador", dto2.getEstado());
+        assertEquals("Se ha devuelto el examen de valoracion para correciones solicitadas del COORDINADOR", dto2.getEstado());
     }
 
     @Test

@@ -68,7 +68,7 @@ public class RespuestaExamenValoracionController {
                                                                 examenValoracionCanceladoDto, result));
         }
 
-        @GetMapping("/evaluadorNoRespondio/{idTrabajoGrado}")
+        @PostMapping("/evaluadorNoRespondio/{idTrabajoGrado}")
         @PreAuthorize("hasRole('COORDINADOR')")
         public ResponseEntity<?> evaluadorNoRespondio(@PathVariable Long idTrabajoGrado) {
                 return ResponseEntity.status(HttpStatus.OK)

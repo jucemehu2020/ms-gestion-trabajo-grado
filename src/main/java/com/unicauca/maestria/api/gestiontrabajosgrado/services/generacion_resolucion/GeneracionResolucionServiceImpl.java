@@ -115,7 +115,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 7 && trabajoGrado.getNumeroEstado() != 17) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 if (generacionResolucionDto.getIdDirector() == generacionResolucionDto.getIdCodirector()) {
@@ -187,7 +187,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 18) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
@@ -234,7 +234,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
-                                && (generacionResolucionDto.getLinkSolicitudConsejoFacultad() != null ||
+                                && (generacionResolucionDto.getLinkSolicitudConsejo() != null ||
                                                 generacionResolucionDto
                                                                 .getObtenerDocumentosParaEnvioConsejo() != null)) {
                         throw new InformationException("Envio de atributos no permitido");
@@ -242,15 +242,22 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)
-                                && (generacionResolucionDto.getLinkSolicitudConsejoFacultad() == null
+                                && (generacionResolucionDto.getLinkSolicitudConsejo() == null
                                                 || generacionResolucionDto
                                                                 .getObtenerDocumentosParaEnvioConsejo() == null)) {
                         throw new InformationException("Atributos incorrectos");
                 }
 
+                if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getFechaActa() != null
+                                && generacionResolucionDto.getActaFechaRespuestaComite().get(0).getFechaActa()
+                                                .isAfter(LocalDate.now())) {
+                        throw new InformationException(
+                                        "La fecha de registro del comite no puede ser mayor a la fecha actual.");
+                }
+
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)) {
-                        validarLink(generacionResolucionDto.getLinkSolicitudConsejoFacultad());
+                        validarLink(generacionResolucionDto.getLinkSolicitudConsejo());
                         ValidationUtils.validarBase64(
                                         generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
                                                         .getB64FormatoBEv1());
@@ -262,7 +269,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                         .getB64AnteproyectoFinal());
                         ValidationUtils.validarBase64(
                                         generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
-                                                        .getB64SolicitudConsejoFacultad());
+                                                        .getB64SolicitudConsejo());
                 }
 
                 ArrayList<String> correos = new ArrayList<>();
@@ -275,7 +282,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 20) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
@@ -309,9 +316,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                         generacionResolucionDto.getEnvioEmail().getMensaje(),
                                         documentosParaConsejo);
                         String rutaArchivo = identificacionArchivo(trabajoGrado);
-                        generacionResolucionDto.setLinkSolicitudConsejoFacultad(
+                        generacionResolucionDto.setLinkSolicitudConsejo(
                                         FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                        generacionResolucionDto.getLinkSolicitudConsejoFacultad()));
+                                                        generacionResolucionDto.getLinkSolicitudConsejo()));
                         trabajoGrado.setNumeroEstado(22);
                 } else {
                         EstudianteResponseDtoAll estudiante = archivoClient
@@ -351,8 +358,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 // Agregar la nueva respuesta a la lista existente
                 generacionResolucion.getActaFechaRespuestaComite().add(respuestaComite);
-                generacionResolucion.setLinkSolicitudConsejoFacultad(
-                                generacionResolucionDto.getLinkSolicitudConsejoFacultad());
+                generacionResolucion.setLinkSolicitudConsejo(
+                                generacionResolucionDto.getLinkSolicitudConsejo());
         }
 
         @Override
@@ -375,7 +382,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                 + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 22) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
@@ -405,9 +412,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         // Funciones privadas
         private void agregarInformacionCoordinadorFase3(GeneracionResolucion generacionResolucion,
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto) {
-                generacionResolucion.setNumeroActaConsejoFacultad(
-                                generacionResolucionDto.getNumeroActaConsejoFacultad());
-                generacionResolucion.setFechaActaConsejoFacultad(generacionResolucionDto.getFechaActaConsejoFacultad());
+                generacionResolucion.setNumeroActaConsejo(
+                                generacionResolucionDto.getNumeroActaConsejo());
+                generacionResolucion.setFechaActaConsejo(generacionResolucionDto.getFechaActaConsejo());
                 generacionResolucion.setLinkOficioConsejo(generacionResolucionDto.getLinkOficioConsejo());
 
         }
@@ -488,7 +495,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 .getActaFechaRespuestaComite() == null ||
                                 generacionResolucionTmp.getActaFechaRespuestaComite().isEmpty();
                 if (actaFechaRespuestaComiteEmpty
-                                && generacionResolucionTmp.getLinkSolicitudConsejoFacultad() == null) {
+                                && generacionResolucionTmp.getLinkSolicitudConsejo() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
@@ -505,8 +512,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 "Trabajo de grado con id " + idTrabajoGrado
                                                                 + " no encontrado"));
 
-                if (generacionResolucionTmp.getNumeroActaConsejoFacultad() == null
-                                && generacionResolucionTmp.getFechaActaConsejoFacultad() == null
+                if (generacionResolucionTmp.getNumeroActaConsejo() == null
+                                && generacionResolucionTmp.getFechaActaConsejo() == null
                                 && generacionResolucionTmp.getLinkOficioConsejo() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
@@ -535,7 +542,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (trabajoGrado.getNumeroEstado() != 18 && trabajoGrado.getNumeroEstado() != 19
                                 && trabajoGrado.getNumeroEstado() != 21) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 if (generacionResolucionDocenteDto.getIdDirector() == generacionResolucionDocenteDto
@@ -632,7 +639,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (trabajoGrado.getNumeroEstado() != 18 && trabajoGrado.getNumeroEstado() != 19
                                 && trabajoGrado.getNumeroEstado() != 20) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
@@ -687,7 +694,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
-                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad() != null
+                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo() != null
                                                 || generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo() != null)) {
                         throw new InformationException("Envio de atributos no permitido");
@@ -695,7 +702,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)
-                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad() == null
+                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo() == null
                                                 || generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo() == null)) {
                         throw new InformationException("Atributos incorrectos");
@@ -709,7 +716,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (trabajoGrado.getNumeroEstado() != 20 && trabajoGrado.getNumeroEstado() != 21
                                 && trabajoGrado.getNumeroEstado() != 22) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
@@ -723,7 +730,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 boolean actaFechaRespuestaComiteEmpty = generacionResolucionOld.getActaFechaRespuestaComite() == null ||
                                 generacionResolucionOld.getActaFechaRespuestaComite().isEmpty();
                 if (actaFechaRespuestaComiteEmpty
-                                && generacionResolucionOld.getLinkSolicitudConsejoFacultad() == null) {
+                                && generacionResolucionOld.getLinkSolicitudConsejo() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
@@ -753,10 +760,10 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 generacionResolucionCoordinadorFase2Dto.getEnvioEmail()
                                                                 .getMensaje());
                                 FilesUtilities.deleteFileExample(
-                                                generacionResolucionOld.getLinkSolicitudConsejoFacultad());
+                                                generacionResolucionOld.getLinkSolicitudConsejo());
                                 trabajoGrado.setNumeroEstado(21);
                         } else {
-                                validarLink(generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
+                                validarLink(generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
                                 ValidationUtils.validarBase64(
                                                 generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo()
@@ -772,7 +779,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 ValidationUtils.validarBase64(
                                                 generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo()
-                                                                .getB64SolicitudConsejoFacultad());
+                                                                .getB64SolicitudConsejo());
                                 correos.add(Constants.correoConsejo);
                                 Map<String, Object> documentosParaConsejo = generacionResolucionCoordinadorFase2Dto
                                                 .getObtenerDocumentosParaEnvioConsejo().getDocumentos();
@@ -781,27 +788,27 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 generacionResolucionCoordinadorFase2Dto.getEnvioEmail().getMensaje(),
                                                 documentosParaConsejo);
                                 generacionResolucionCoordinadorFase2Dto
-                                                .setLinkSolicitudConsejoFacultad(FilesUtilities.guardarArchivoNew2(
+                                                .setLinkSolicitudConsejo(FilesUtilities.guardarArchivoNew2(
                                                                 rutaArchivo,
                                                                 generacionResolucionCoordinadorFase2Dto
-                                                                                .getLinkSolicitudConsejoFacultad()));
+                                                                                .getLinkSolicitudConsejo()));
                                 trabajoGrado.setNumeroEstado(22);
                         }
                 } else {
                         if (generacionResolucionOld != null && generacionResolucionCoordinadorFase2Dto
-                                        .getLinkSolicitudConsejoFacultad() != null) {
-                                if (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad()
+                                        .getLinkSolicitudConsejo() != null) {
+                                if (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo()
                                                 .compareTo(generacionResolucionOld
-                                                                .getLinkSolicitudConsejoFacultad()) != 0) {
+                                                                .getLinkSolicitudConsejo()) != 0) {
                                         validarLink(generacionResolucionCoordinadorFase2Dto
-                                                        .getLinkSolicitudConsejoFacultad());
+                                                        .getLinkSolicitudConsejo());
                                         generacionResolucionCoordinadorFase2Dto
-                                                        .setLinkSolicitudConsejoFacultad(FilesUtilities
+                                                        .setLinkSolicitudConsejo(FilesUtilities
                                                                         .guardarArchivoNew2(rutaArchivo,
                                                                                         generacionResolucionCoordinadorFase2Dto
-                                                                                                        .getLinkSolicitudConsejoFacultad()));
+                                                                                                        .getLinkSolicitudConsejo()));
                                         FilesUtilities.deleteFileExample(
-                                                        generacionResolucionOld.getLinkSolicitudConsejoFacultad());
+                                                        generacionResolucionOld.getLinkSolicitudConsejo());
                                 }
                         }
                 }
@@ -847,8 +854,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         respuestaComiteGeneracionResolucionRepository.save(actaFechaRespuestaComite);
                 }
 
-                generacionResolucion.setLinkSolicitudConsejoFacultad(
-                                generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
+                generacionResolucion.setLinkSolicitudConsejo(
+                                generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
         }
 
         @Override
@@ -870,7 +877,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 21 && trabajoGrado.getNumeroEstado() != 23) {
-                        throw new InformationException("No es permitido registrar la informacion");
+                        throw new InformationException("No es permitido registrar la información");
                 }
 
                 GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
@@ -881,8 +888,8 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                                                 .getId()
                                                                 + " no encontrado"));
 
-                if (generacionResolucionOld.getNumeroActaConsejoFacultad() == null
-                                && generacionResolucionOld.getFechaActaConsejoFacultad() == null) {
+                if (generacionResolucionOld.getNumeroActaConsejo() == null
+                                && generacionResolucionOld.getFechaActaConsejo() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
@@ -903,10 +910,10 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 // GeneracionResolucion generacionResolucion = new GeneracionResolucion();
 
-                generacionResolucionOld.setNumeroActaConsejoFacultad(
-                                generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejoFacultad());
-                generacionResolucionOld.setFechaActaConsejoFacultad(
-                                generacionResolucionCoordinadorFase3Dto.getFechaActaConsejoFacultad());
+                generacionResolucionOld.setNumeroActaConsejo(
+                                generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejo());
+                generacionResolucionOld.setFechaActaConsejo(
+                                generacionResolucionCoordinadorFase3Dto.getFechaActaConsejo());
                 generacionResolucionOld.setLinkOficioConsejo(
                                 generacionResolucionCoordinadorFase3Dto.getLinkOficioConsejo());
 

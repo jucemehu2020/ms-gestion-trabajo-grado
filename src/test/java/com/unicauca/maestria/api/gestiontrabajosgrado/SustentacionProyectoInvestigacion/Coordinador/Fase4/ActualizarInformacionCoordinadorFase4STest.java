@@ -103,7 +103,7 @@ public class ActualizarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_ActualizacionExitosaAprobado() {
+        void ActualizarInformacionCoordinadorFase4STest_ActualizacionExitosaAprobado() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -203,7 +203,7 @@ public class ActualizarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_ActualizacionExitosaNoAprobado() {
+        void ActualizarInformacionCoordinadorFase4STest_ActualizacionExitosaNoAprobado() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -286,7 +286,7 @@ public class ActualizarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_RegistroExitosoAplazado() {
+        void ActualizarInformacionCoordinadorFase4STest_RegistroExitosoAplazado() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -368,7 +368,7 @@ public class ActualizarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_AtributosNoValidos() {
+        void ActualizarInformacionCoordinadorFase4STest_AtributosNoValidos() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -398,7 +398,7 @@ public class ActualizarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_FaltanAtributos() {
+        void ActualizarInformacionCoordinadorFase4STest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -432,7 +432,7 @@ public class ActualizarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_AtributosIncompletos() {
+        void ActualizarInformacionCoordinadorFase4STest_AtributosIncompletos() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -460,7 +460,7 @@ public class ActualizarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_EstadoNoValido() {
+        void ActualizarInformacionCoordinadorFase4STest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -497,13 +497,13 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_NoExisteTrabajoGrado() {
+        void ActualizarInformacionCoordinadorFase4STest_NoExisteTrabajoGrado() {
                 Long idTrabajoGrado = 2L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -521,7 +521,7 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        sustentacionProyectoInvestigacionServiceImpl.insertarInformacionCoordinadoFase4(idTrabajoGrado,
+                        sustentacionProyectoInvestigacionServiceImpl.actualizarInformacionCoordinadoFase4(idTrabajoGrado,
                                         sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
                                         result);
                 });

@@ -48,12 +48,12 @@ public class GeneracionResolucion {
     @JsonManagedReference
     private List<RespuestaComiteGeneracionResolucion> actaFechaRespuestaComite;
 
-    private String linkSolicitudConsejoFacultad;
+    private String linkSolicitudConsejo;
 
     // Coordinador - Fase 3
-    private String numeroActaConsejoFacultad;
+    private String numeroActaConsejo;
 
-    private LocalDate fechaActaConsejoFacultad;
+    private LocalDate fechaActaConsejo;
 
     private String linkOficioConsejo;
 

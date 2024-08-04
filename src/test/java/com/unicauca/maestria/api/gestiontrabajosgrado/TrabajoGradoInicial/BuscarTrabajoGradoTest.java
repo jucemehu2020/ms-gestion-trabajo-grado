@@ -70,7 +70,7 @@ public class BuscarTrabajoGradoTest {
         TrabajoGrado trabajoGrado = new TrabajoGrado();
         trabajoGrado.setId(1L);
         trabajoGrado.setIdEstudiante(1L);
-        trabajoGrado.setFechaCreacion(LocalDate.parse("2024-07-12", formatter));
+        trabajoGrado.setFechaCreacion(LocalDate.parse("2025-07-12", formatter));
         trabajoGrado.setNumeroEstado(1);
         trabajoGrado.setTitulo("Ciclo del software");
 
@@ -89,8 +89,8 @@ public class BuscarTrabajoGradoTest {
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
-        assertEquals("Pendiente revision por parte del coordinador", resultado.getEstado());
-        assertEquals(LocalDate.parse("2024-07-12", formatter), resultado.getFechaCreacion());
+        assertEquals("Pendiente revision por parte del COORDINADOR", resultado.getEstado());
+        assertEquals(LocalDate.parse("2025-07-12", formatter), resultado.getFechaCreacion());
         assertEquals(1, resultado.getNumeroEstado());
         assertEquals("Ciclo del software", resultado.getTitulo());
     }

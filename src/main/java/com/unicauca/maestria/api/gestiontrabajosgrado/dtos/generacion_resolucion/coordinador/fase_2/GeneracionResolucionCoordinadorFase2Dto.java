@@ -20,7 +20,7 @@ public class GeneracionResolucionCoordinadorFase2Dto {
     @Valid
     private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
 
-    private String linkSolicitudConsejoFacultad;
+    private String linkSolicitudConsejo;
 
     @NotNull
     @Valid

@@ -113,11 +113,11 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 obtenerDocumentosParaEnvioConsejoDto.setB64AnteproyectoFinal("cHJ1ZWJhIGRlIHRleHR");
                 obtenerDocumentosParaEnvioConsejoDto.setB64FormatoBEv1("cHJ1ZWJhIGRlIHRleHR");
                 obtenerDocumentosParaEnvioConsejoDto.setB64FormatoBEv2("cHJ1ZWJhIGRlIHRleHR");
-                obtenerDocumentosParaEnvioConsejoDto.setB64SolicitudConsejoFacultad("cHJ1ZWJhIGRlIHRleHR");
+                obtenerDocumentosParaEnvioConsejoDto.setB64SolicitudConsejo("cHJ1ZWJhIGRlIHRleHR");
 
                 GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto = new GeneracionResolucionCoordinadorFase2Dto();
                 generacionResolucionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
-                generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejoFacultad(
+                generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejo(
                                 "linkSolicitudConcejoFacultad.txt-cHJ1ZWJhIGRlIHRleHR");
                 generacionResolucionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
                 generacionResolucionCoordinadorFase2Dto
@@ -128,8 +128,8 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
                 generacionResolucion.setId(1L);
                 generacionResolucion.setActaFechaRespuestaComite(new ArrayList<>());
-                generacionResolucion.setLinkSolicitudConsejoFacultad(
-                                generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
+                generacionResolucion.setLinkSolicitudConsejo(
+                                generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -175,7 +175,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                                 .setId(generacionResolucion.getId());
                 generacionResolucionCoordinadorFase2ResponseDto
                                 .setActaFechaRespuestaComite(listaRespuestaComiteResponseDto);
-                generacionResolucionCoordinadorFase2ResponseDto.setLinkSolicitudConsejoFacultad(
+                generacionResolucionCoordinadorFase2ResponseDto.setLinkSolicitudConsejo(
                                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
 
                 when(generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucion))
@@ -199,7 +199,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                                         resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
                         assertEquals(
                                         "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt",
-                                        resultado.getLinkSolicitudConsejoFacultad());
+                                        resultado.getLinkSolicitudConsejo());
                 }
 
         }
@@ -239,8 +239,8 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
                 generacionResolucion.setId(1L);
                 generacionResolucion.setActaFechaRespuestaComite(listaRespuestaComite);
-                generacionResolucion.setLinkSolicitudConsejoFacultad(
-                                generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
+                generacionResolucion.setLinkSolicitudConsejo(
+                                generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -300,7 +300,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
                 assertEquals(LocalDate.parse("2023-05-24", formatter),
                                 resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
-                assertEquals(null, resultado.getLinkSolicitudConsejoFacultad());
+                assertEquals(null, resultado.getLinkSolicitudConsejo());
 
         }
 
@@ -326,12 +326,12 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 obtenerDocumentosParaEnvioConsejoDto.setB64AnteproyectoFinal("cHJ1ZWJhIGRlIHRleHR");
                 obtenerDocumentosParaEnvioConsejoDto.setB64FormatoBEv1("cHJ1ZWJhIGRlIHRleHR");
                 obtenerDocumentosParaEnvioConsejoDto.setB64FormatoBEv2("cHJ1ZWJhIGRlIHRleHR");
-                obtenerDocumentosParaEnvioConsejoDto.setB64SolicitudConsejoFacultad("cHJ1ZWJhIGRlIHRleHR");
+                obtenerDocumentosParaEnvioConsejoDto.setB64SolicitudConsejo("cHJ1ZWJhIGRlIHRleHR");
 
                 GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto = new GeneracionResolucionCoordinadorFase2Dto();
                 generacionResolucionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
-                generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejoFacultad(
-                                "linkSolicitudConsejoFacultad.txt-cHJ1ZWJhIGRlIHRleHR");
+                generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejo(
+                                "linkSolicitudConsejo.txt-cHJ1ZWJhIGRlIHRleHR");
                 generacionResolucionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
                 generacionResolucionCoordinadorFase2Dto
                                 .setObtenerDocumentosParaEnvioConsejo(obtenerDocumentosParaEnvioConsejoDto);
@@ -350,71 +350,6 @@ public class InsertarInformacionCoordinadorFase2GRTest {
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
 
-        }
-
-        @Test
-        void testInsertarInformacionCoordinadorFase2GRTest_AprobadoYaExiste() {
-                Long idTrabajoGrado = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-                RespuestaComiteGeneracionResolucionDto respuestaComiteGeneracionResolucionDto = new RespuestaComiteGeneracionResolucionDto();
-                respuestaComiteGeneracionResolucionDto.setConceptoComite(Concepto.NO_APROBADO);
-                respuestaComiteGeneracionResolucionDto.setNumeroActa("AX1-3445");
-                respuestaComiteGeneracionResolucionDto.setFechaActa(LocalDate.parse("2023-05-24", formatter));
-
-                List<RespuestaComiteGeneracionResolucionDto> listaRespuestaComiteDto = new ArrayList<>();
-                listaRespuestaComiteDto.add(respuestaComiteGeneracionResolucionDto);
-
-                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-                envioEmailDto.setAsunto("Revision documentos al consejo");
-                envioEmailDto.setMensaje("Envio documento para revision");
-
-                GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto = new GeneracionResolucionCoordinadorFase2Dto();
-                generacionResolucionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
-                generacionResolucionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                RespuestaComiteGeneracionResolucion respuestaComiteGeneracionResolucion = new RespuestaComiteGeneracionResolucion();
-                respuestaComiteGeneracionResolucion.setConceptoComite(Concepto.APROBADO);
-                respuestaComiteGeneracionResolucion.setNumeroActa("AX1-3445");
-                respuestaComiteGeneracionResolucion.setFechaActa(LocalDate.parse("2023-05-24", formatter));
-
-                List<RespuestaComiteGeneracionResolucion> listaRespuestaComite = new ArrayList<>();
-                listaRespuestaComite.add(respuestaComiteGeneracionResolucion);
-
-                GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-                generacionResolucion.setId(1L);
-                generacionResolucion.setActaFechaRespuestaComite(listaRespuestaComite);
-                generacionResolucion.setLinkSolicitudConsejoFacultad(
-                                generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
-
-                TrabajoGrado trabajoGrado = new TrabajoGrado();
-                trabajoGrado.setId(idTrabajoGrado);
-                trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(20);
-                trabajoGrado.setIdEstudiante(123L);
-                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setGeneracionResolucion(generacionResolucion);
-
-                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
-
-                when(generacionResolucionRepository
-                                .findById(trabajoGrado.getGeneracionResolucion().getId()))
-                                .thenReturn(Optional.of(generacionResolucion));
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        generacionResolucionServiceImpl
-                                        .insertarInformacionCoordinadorFase2(idTrabajoGrado,
-                                                        generacionResolucionCoordinadorFase2Dto,
-                                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "El concepto ya es APROBADO";
-
-                assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
         @Test
@@ -438,8 +373,8 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto = new GeneracionResolucionCoordinadorFase2Dto();
                 generacionResolucionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
                 generacionResolucionCoordinadorFase2Dto
-                                .setLinkSolicitudConsejoFacultad(
-                                                "linkSolicitudConsejoFacultad.txt-cHJ1ZWJhIGRlIHRleHR");
+                                .setLinkSolicitudConsejo(
+                                                "linkSolicitudConsejo.txt-cHJ1ZWJhIGRlIHRleHR");
                 generacionResolucionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
 
                 FieldError fieldError = new FieldError("GeneracionResolucionDocenteDto", "conceptoComite",
@@ -484,11 +419,11 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 obtenerDocumentosParaEnvioConsejoDto.setB64AnteproyectoFinal("cHJ1ZWJhIGRlIHRleHR");
                 obtenerDocumentosParaEnvioConsejoDto.setB64FormatoBEv1("cHJ1ZWJhIGRlIHRleHR");
                 obtenerDocumentosParaEnvioConsejoDto.setB64FormatoBEv2("cHJ1ZWJhIGRlIHRleHR");
-                obtenerDocumentosParaEnvioConsejoDto.setB64SolicitudConsejoFacultad("cHJ1ZWJhIGRlIHRleHR");
+                obtenerDocumentosParaEnvioConsejoDto.setB64SolicitudConsejo("cHJ1ZWJhIGRlIHRleHR");
 
                 GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto = new GeneracionResolucionCoordinadorFase2Dto();
                 generacionResolucionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
-                generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejoFacultad(
+                generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejo(
                                 "linkSolicitudConcejoFacultad.txt-cHJ1ZWJhIGRlIHRleHR");
                 generacionResolucionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
                 generacionResolucionCoordinadorFase2Dto
@@ -507,8 +442,8 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 GeneracionResolucion generacionResolucion = new GeneracionResolucion();
                 generacionResolucion.setId(1L);
                 generacionResolucion.setActaFechaRespuestaComite(listaRespuestaComite);
-                generacionResolucion.setLinkSolicitudConsejoFacultad(
-                                generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejoFacultad());
+                generacionResolucion.setLinkSolicitudConsejo(
+                                generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -527,7 +462,7 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
@@ -554,11 +489,11 @@ public class InsertarInformacionCoordinadorFase2GRTest {
                 obtenerDocumentosParaEnvioConsejoDto.setB64AnteproyectoFinal("cHJ1ZWJhIGRlIHRleHR");
                 obtenerDocumentosParaEnvioConsejoDto.setB64FormatoBEv1("cHJ1ZWJhIGRlIHRleHR");
                 obtenerDocumentosParaEnvioConsejoDto.setB64FormatoBEv2("cHJ1ZWJhIGRlIHRleHR");
-                obtenerDocumentosParaEnvioConsejoDto.setB64SolicitudConsejoFacultad("cHJ1ZWJhIGRlIHRleHR");
+                obtenerDocumentosParaEnvioConsejoDto.setB64SolicitudConsejo("cHJ1ZWJhIGRlIHRleHR");
 
                 GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto = new GeneracionResolucionCoordinadorFase2Dto();
                 generacionResolucionCoordinadorFase2Dto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
-                generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejoFacultad(
+                generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejo(
                                 "linkSolicitudConcejoFacultad.txt-cHJ1ZWJhIGRlIHRleHR");
                 generacionResolucionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
                 generacionResolucionCoordinadorFase2Dto

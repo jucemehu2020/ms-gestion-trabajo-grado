@@ -219,34 +219,6 @@ public class InsertarInformacionCoordinadorFase1GRTest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase1GRTest_AtributosIncorrectos() {
-
-                Long idTrabajoGrado = 1L;
-
-                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-                envioEmailDto.setAsunto("Revision documentos al comite");
-                envioEmailDto.setMensaje("Envio documento para revision");
-
-                GeneracionResolucionCoordinadorFase1Dto generacionResolucionCoordinadorFase1Dto = new GeneracionResolucionCoordinadorFase1Dto();
-                generacionResolucionCoordinadorFase1Dto
-                                .setConceptoDocumentosCoordinador(ConceptoVerificacion.ACEPTADO);
-                generacionResolucionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        generacionResolucionServiceImpl.insertarInformacionCoordinadorFase1(idTrabajoGrado,
-                                        generacionResolucionCoordinadorFase1Dto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Envio de atributos no permitido";
-
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void InsertarInformacionCoordinadorFase1GRTest_FaltanAtributos() {
 
                 Long idTrabajoGrado = 1L;
@@ -316,7 +288,7 @@ public class InsertarInformacionCoordinadorFase1GRTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }

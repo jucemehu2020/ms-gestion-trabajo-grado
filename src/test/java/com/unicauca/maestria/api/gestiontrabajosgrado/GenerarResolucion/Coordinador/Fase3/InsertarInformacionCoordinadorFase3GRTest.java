@@ -87,9 +87,9 @@ public class InsertarInformacionCoordinadorFase3GRTest {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 GeneracionResolucionCoordinadorFase3Dto generacionResolucionCoordinadorFase3Dto = new GeneracionResolucionCoordinadorFase3Dto();
-                generacionResolucionCoordinadorFase3Dto.setNumeroActaConsejoFacultad("b-0432");
+                generacionResolucionCoordinadorFase3Dto.setNumeroActaConsejo("b-0432");
                 generacionResolucionCoordinadorFase3Dto
-                                .setFechaActaConsejoFacultad(LocalDate.parse("2023-05-24", formatter));
+                                .setFechaActaConsejo(LocalDate.parse("2023-05-24", formatter));
                 generacionResolucionCoordinadorFase3Dto
                                 .setLinkOficioConsejo("linkOficioConsejo.txt-cHJ1ZWJhIGRlIHRleHR");
 
@@ -115,11 +115,11 @@ public class InsertarInformacionCoordinadorFase3GRTest {
                 GeneracionResolucion generacionResolucionNew = new GeneracionResolucion();
                 generacionResolucionNew.setId(1L);
                 generacionResolucionNew
-                                .setNumeroActaConsejoFacultad(
-                                                generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejoFacultad());
+                                .setNumeroActaConsejo(
+                                                generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejo());
                 generacionResolucionNew
-                                .setFechaActaConsejoFacultad(
-                                                generacionResolucionCoordinadorFase3Dto.getFechaActaConsejoFacultad());
+                                .setFechaActaConsejo(
+                                                generacionResolucionCoordinadorFase3Dto.getFechaActaConsejo());
 
                 PersonaDto PersonaEstudianteDto = new PersonaDto();
                 PersonaEstudianteDto.setIdentificacion(123L);
@@ -139,9 +139,9 @@ public class InsertarInformacionCoordinadorFase3GRTest {
                 generacionResolucionCoordinadorFase3ResponseDto
                                 .setId(generacionResolucionNew.getId());
                 generacionResolucionCoordinadorFase3ResponseDto
-                                .setNumeroActaConsejoFacultad(generacionResolucionNew.getNumeroActaConsejoFacultad());
+                                .setNumeroActaConsejo(generacionResolucionNew.getNumeroActaConsejo());
                 generacionResolucionCoordinadorFase3ResponseDto
-                                .setFechaActaConsejoFacultad(generacionResolucionNew.getFechaActaConsejoFacultad());
+                                .setFechaActaConsejo(generacionResolucionNew.getFechaActaConsejo());
 
                 when(generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionNew))
                                 .thenReturn(generacionResolucionCoordinadorFase3ResponseDto);
@@ -153,8 +153,8 @@ public class InsertarInformacionCoordinadorFase3GRTest {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals("b-0432", resultado.getNumeroActaConsejoFacultad());
-                assertEquals(LocalDate.parse("2023-05-24", formatter), resultado.getFechaActaConsejoFacultad());
+                assertEquals("b-0432", resultado.getNumeroActaConsejo());
+                assertEquals(LocalDate.parse("2023-05-24", formatter), resultado.getFechaActaConsejo());
 
         }
 
@@ -164,11 +164,11 @@ public class InsertarInformacionCoordinadorFase3GRTest {
                 Long idTrabajoGrado = 1L;
 
                 GeneracionResolucionCoordinadorFase3Dto generacionResolucionCoordinadorFase3Dto = new GeneracionResolucionCoordinadorFase3Dto();
-                generacionResolucionCoordinadorFase3Dto.setNumeroActaConsejoFacultad("b-0432");
+                generacionResolucionCoordinadorFase3Dto.setNumeroActaConsejo("b-0432");
                 generacionResolucionCoordinadorFase3Dto
                                 .setLinkOficioConsejo("linkOficioConsejo.txt-cHJ1ZWJhIGRlIHRleHR");
 
-                FieldError fieldError = new FieldError("GeneracionResolucionDocenteDto", "fechaActaConsejoFacultad",
+                FieldError fieldError = new FieldError("GeneracionResolucionDocenteDto", "fechaActaConsejo",
                                 "no debe ser nulo");
                 when(result.hasErrors()).thenReturn(true);
                 when(result.getFieldErrors()).thenReturn(List.of(fieldError));
@@ -184,7 +184,7 @@ public class InsertarInformacionCoordinadorFase3GRTest {
                 assertFalse(fieldErrors.isEmpty());
                 String actualMessage = "El campo: " + fieldErrors.get(0).getField() + ", "
                                 + fieldError.getDefaultMessage();
-                String expectedMessage = "El campo: fechaActaConsejoFacultad, no debe ser nulo";
+                String expectedMessage = "El campo: fechaActaConsejo, no debe ser nulo";
                 assertTrue(actualMessage.contains(expectedMessage));
         }
 
@@ -195,9 +195,9 @@ public class InsertarInformacionCoordinadorFase3GRTest {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 GeneracionResolucionCoordinadorFase3Dto generacionResolucionCoordinadorFase3Dto = new GeneracionResolucionCoordinadorFase3Dto();
-                generacionResolucionCoordinadorFase3Dto.setNumeroActaConsejoFacultad("b-0432");
+                generacionResolucionCoordinadorFase3Dto.setNumeroActaConsejo("b-0432");
                 generacionResolucionCoordinadorFase3Dto
-                                .setFechaActaConsejoFacultad(LocalDate.parse("2023-05-24", formatter));
+                                .setFechaActaConsejo(LocalDate.parse("2023-05-24", formatter));
                 generacionResolucionCoordinadorFase3Dto
                                 .setLinkOficioConsejo("linkOficioConsejo.txt-cHJ1ZWJhIGRlIHRleHR");
 
@@ -223,7 +223,7 @@ public class InsertarInformacionCoordinadorFase3GRTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
 
@@ -237,9 +237,9 @@ public class InsertarInformacionCoordinadorFase3GRTest {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 GeneracionResolucionCoordinadorFase3Dto generacionResolucionCoordinadorFase3Dto = new GeneracionResolucionCoordinadorFase3Dto();
-                generacionResolucionCoordinadorFase3Dto.setNumeroActaConsejoFacultad("b-0432");
+                generacionResolucionCoordinadorFase3Dto.setNumeroActaConsejo("b-0432");
                 generacionResolucionCoordinadorFase3Dto
-                                .setFechaActaConsejoFacultad(LocalDate.parse("2023-05-24", formatter));
+                                .setFechaActaConsejo(LocalDate.parse("2023-05-24", formatter));
                 generacionResolucionCoordinadorFase3Dto
                                 .setLinkOficioConsejo("linkOficioConsejo.txt-cHJ1ZWJhIGRlIHRleHR");
 

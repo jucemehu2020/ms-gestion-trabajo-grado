@@ -38,13 +38,13 @@ public class GeneracionResolucionDto {
     private LocalDate fechaActaSolicitudComite;
 
     @NotNull
-    private String linkSolicitudConsejoFacultad;
+    private String linkSolicitudConsejo;
 
     @NotNull
-    private String numeroActaConsejoFacultad;
+    private String numeroActaConsejo;
 
     @NotNull
-    private LocalDate fechaActaConsejoFacultad;
+    private LocalDate fechaActaConsejo;
 
     @NotNull
     private String linkOficioConsejo;

@@ -21,7 +21,7 @@ public class ObtenerDocumentosParaEnvioConsejoDto {
     private String b64FormatoBEv2;
 
     @NotNull
-    private String b64SolicitudConsejoFacultad;
+    private String b64SolicitudConsejo;
 
     @NotNull
     private String b64AnteproyectoFinal;
@@ -30,7 +30,7 @@ public class ObtenerDocumentosParaEnvioConsejoDto {
         Map<String, Object> documentos = new HashMap<>();
         documentos.put("formatoBEv1", b64FormatoBEv1);
         documentos.put("formatoBEv2", b64FormatoBEv2);
-        documentos.put("solicitudConsejoFacultad", b64SolicitudConsejoFacultad);
+        documentos.put("solicitudConsejo", b64SolicitudConsejo);
         documentos.put("anteproyectoFinal", b64AnteproyectoFinal);
         return documentos;
     }

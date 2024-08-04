@@ -286,28 +286,6 @@ public class ActualizarInformacionCoordinadorFase1STest {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase1STest_AtributosIncompletos() {
-                Long idTrabajoGrado = 1L;
-
-                SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
-                                .setConceptoCoordinador(ConceptoVerificacion.RECHAZADO);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        sustentacionProyectoInvestigacionServiceImpl
-                                        .actualizarInformacionCoordinadoFase1(idTrabajoGrado,
-                                                        sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Faltan atributos para el registro";
-
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void ActualizarInformacionCoordinadorFase1STest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
 
@@ -344,7 +322,7 @@ public class ActualizarInformacionCoordinadorFase1STest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }

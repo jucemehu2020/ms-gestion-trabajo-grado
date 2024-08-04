@@ -31,7 +31,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.SustentacionTrabajoInvestigacionListDocenteDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ServiceUnavailableException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoSustentacionMapper;
@@ -91,7 +90,7 @@ public class ListarInformacionDocenteSTest {
         }
 
         @Test
-        void ListarInformacionDocenteSTest_Exito() {
+        void SustentacionProyectoInvestigacionServiceImplTest_Exito() {
 
                 Long idTrabajoGrado = 1L;
 
@@ -113,11 +112,7 @@ public class ListarInformacionDocenteSTest {
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
                 trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
-                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
-
-                when(sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId()))
+                when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
                 PersonaDto personaDto1 = new PersonaDto();
@@ -184,41 +179,10 @@ public class ListarInformacionDocenteSTest {
         }
 
         @Test
-        void ListarInformacionDocenteSTest_NoHayRegistro() {
-                Long idTrabajoGrado = 1L;
-
-                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
-                sustentacionTrabajoInvestigacionOld.setId(1L);
-
-                TrabajoGrado trabajoGrado = new TrabajoGrado();
-                trabajoGrado.setId(idTrabajoGrado);
-                trabajoGrado.setTitulo("Prueba test");
-                trabajoGrado.setNumeroEstado(18);
-                trabajoGrado.setIdEstudiante(123L);
-                trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
-                trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
-
-                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
-
-                when(sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId()))
-                                .thenReturn(Optional.of(new SustentacionProyectoInvestigacion()));
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        sustentacionProyectoInvestigacionServiceImpl.listarInformacionDocente(idTrabajoGrado);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "No se han registrado datos";
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void SustentacionProyectoInvestigacionServiceImplTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
-                when(trabajoGradoRepository.findById(idTrabajoGrado))
+                when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.empty());
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
@@ -226,7 +190,7 @@ public class ListarInformacionDocenteSTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                String expectedMessage = "Sustentacion con ID trabajo de grado 2 no encontrado";
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
@@ -252,16 +216,12 @@ public class ListarInformacionDocenteSTest {
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
                 trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
-                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
+                when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
                 when(archivoClient.obtenerDocentePorId(sustentacionTrabajoInvestigacionOld.getIdJuradoInterno()))
                                 .thenThrow(new ServiceUnavailableException(
                                                 "Servidor externo actualmente fuera de servicio"));
-
-                when(sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId()))
-                                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
                 ServiceUnavailableException thrown = assertThrows(
                                 ServiceUnavailableException.class,
@@ -295,11 +255,7 @@ public class ListarInformacionDocenteSTest {
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
                 trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacionOld);
 
-                when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.of(trabajoGrado));
-
-                when(sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId()))
+                when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
                 PersonaDto personaDto1 = new PersonaDto();

@@ -13,6 +13,6 @@ public class GeneracionResolucionCoordinadorFase2ResponseDto {
 
     private Long id;
     private List<RespuestaComiteGeneracionResolucionDto> actaFechaRespuestaComite;
-    private String linkSolicitudConsejoFacultad;
+    private String linkSolicitudConsejo;
 
 }

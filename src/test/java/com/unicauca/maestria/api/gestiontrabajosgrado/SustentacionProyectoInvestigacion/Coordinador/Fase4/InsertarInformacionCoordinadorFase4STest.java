@@ -106,7 +106,7 @@ public class InsertarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_RegistroExitosoAprobado() {
+        void InsertarInformacionCoordinadorFase4STest_RegistroExitosoAprobado() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -200,10 +200,8 @@ public class InsertarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_RegistroExitosoNoAprobado() {
+        void InsertarInformacionCoordinadorFase4STest_RegistroExitosoNoAprobado() {
                 Long idTrabajoGrado = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto
@@ -265,10 +263,8 @@ public class InsertarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_RegistroExitosoAplazado() {
+        void InsertarInformacionCoordinadorFase4STest_RegistroExitosoAplazado() {
                 Long idTrabajoGrado = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APLAZADO);
@@ -332,7 +328,7 @@ public class InsertarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_AtributosNoValidos() {
+        void InsertarInformacionCoordinadorFase4STest_AtributosNoValidos() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -360,7 +356,7 @@ public class InsertarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_FaltanAtributos() {
+        void InsertarInformacionCoordinadorFase4STest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -393,7 +389,7 @@ public class InsertarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_AtributosIncompletos() {
+        void InsertarInformacionCoordinadorFase4STest_AtributosIncompletos() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -420,7 +416,7 @@ public class InsertarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_EstadoNoValido() {
+        void InsertarInformacionCoordinadorFase4STest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -452,13 +448,13 @@ public class InsertarInformacionCoordinadorFase4STest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No es permitido registrar la informacion";
+                String expectedMessage = "No es permitido registrar la información";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase3STest_NoExisteTrabajoGrado() {
+        void InsertarInformacionCoordinadorFase4STest_NoExisteTrabajoGrado() {
                 Long idTrabajoGrado = 2L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
