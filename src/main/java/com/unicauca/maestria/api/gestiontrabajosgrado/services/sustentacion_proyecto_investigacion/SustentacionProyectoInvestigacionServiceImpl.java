@@ -439,7 +439,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 }
 
                 if (sustentacionDto.getFechaSustentacion() != null
-                                && sustentacionDto.getFechaSustentacion().isAfter(LocalDate.now())) {
+                                && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
                         throw new InformationException(
                                         "La fecha máxima de la sustentacion no puede ser mayor a la fecha actual.");
                 }
@@ -1303,7 +1303,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 }
 
                 if (sustentacionDto.getFechaSustentacion() != null
-                                && sustentacionDto.getFechaSustentacion().isAfter(LocalDate.now())) {
+                                && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
                         throw new InformationException(
                                         "La fecha máxima de la sustentacion no puede ser mayor a la fecha actual.");
                 }
