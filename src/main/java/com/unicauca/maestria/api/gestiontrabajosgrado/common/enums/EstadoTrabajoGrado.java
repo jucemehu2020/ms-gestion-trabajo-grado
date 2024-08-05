@@ -11,7 +11,7 @@ public enum EstadoTrabajoGrado {
         DEVUELTO_EXAMEN_DE_VALORACION_POR_COMITE("Se ha devuelto el examen de valoracion para correciones realizadas por el COMITE"),
         PENDIENTE_RESULTADO_EXAMEN_DE_VALORACION("Pendiente respuesta de examen de valoración por parte de los EVALUADORES"),
         EXAMEN_DE_VALORACION_APROBADO_EVALUADOR_1("Se ha aprobado por un EVALUADOR"),
-        EXAMEN_DE_VALORACION_APROBADO_EVALUADOR_2("Se ha aprobado por los dos EVALUADORES. Sin registrar información por parte del DOCENTE para generación  de resolucion"),
+        EXAMEN_DE_VALORACION_APROBADO_EVALUADOR_2("Se ha aprobado por los dos EVALUADORES. Sin registrar información por parte del DOCENTE para generación  de resolucion"),        
         EXAMEN_DE_VALORACION_NO_APROBADO_EVALUADOR_1("Examen de valoración no aprobado por un EVALUADOR"),
         EXAMEN_DE_VALORACION_NO_APROBADO_EVALUADOR_2("Examen de valoración no aprobado por ambos EVALUADORES"),
         EXAMEN_DE_VALORACION_APLAZADO_EVALUADOR_1("Examen de valoración aplazado por un EVALUADOR"),
@@ -50,6 +50,7 @@ public enum EstadoTrabajoGrado {
         for (EstadoTrabajoGrado estado : EstadoTrabajoGrado.values()) {
             mensajes.put(estado, estado.mensaje);
         }
+        
     }
 
     EstadoTrabajoGrado(String mensaje) {

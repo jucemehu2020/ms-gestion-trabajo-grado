@@ -306,8 +306,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .equals(Concepto.APROBADO)) {
                         validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
                         validarLink(sustentacionDto.getLinkFormatoG());
-                        for (String anexo : sustentacionDto.getInformacionEnvioConsejo().getB64Anexos()) {
-                                ValidationUtils.validarBase64(anexo);
+                        List<String> anexos = sustentacionDto.getInformacionEnvioConsejo().getB64Anexos();
+                        if (anexos != null && !anexos.isEmpty()) {
+                                for (String anexo : anexos) {
+                                        ValidationUtils.validarBase64(anexo);
+                                }
                         }
                 }
 

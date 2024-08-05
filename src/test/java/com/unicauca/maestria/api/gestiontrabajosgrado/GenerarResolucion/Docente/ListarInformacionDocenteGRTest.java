@@ -176,24 +176,6 @@ public class ListarInformacionDocenteGRTest {
         }
 
         @Test
-        void ListarInformacionDocenteGRTest_NoHayDatos() {
-                Long idTrabajoGrado = 1L;
-
-                GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-
-                when(generacionResolucionRepository.findByTrabajoGradoId(idTrabajoGrado))
-                                .thenReturn(Optional.of(generacionResolucion));
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        generacionResolucionServiceImpl.listarInformacionDocente(idTrabajoGrado);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "No se han registrado datos";
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void ListarInformacionDocenteGRTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
@@ -205,7 +187,7 @@ public class ListarInformacionDocenteGRTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                String expectedMessage = "Generacion de resolucion con ID trabajo de grado 2 no encontrado";
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 

@@ -579,7 +579,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			FilesUtilities.deleteFolderAndItsContents(tituloTrabajoGrado);
 		}
 
-		// examenValoracion.setConceptoCoordinadorDocumentos(null);
+		examenValoracion.setConceptoCoordinadorDocumentos(null);
 
 		trabajoGrado.setTitulo(examenValoracionDto.getTitulo());
 		examenValoracion.setTitulo(examenValoracionDto.getTitulo());

@@ -425,15 +425,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findByTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id "
+                                                "Generacion de resolucion con ID trabajo de grado "
                                                                 + idTrabajoGrado
                                                                 + " no encontrado"));
-
-                if (generacionResolucion.getDirector() == null && generacionResolucion.getCodirector() == null
-                                && generacionResolucion.getLinkAnteproyectoFinal() == null
-                                && generacionResolucion.getLinkSolicitudComite() == null) {
-                        throw new InformationException("No se han registrado datos");
-                }
 
                 Optional<TrabajoGrado> trabajoGrado = trabajoGradoRepository
                                 .findById(generacionResolucion.getTrabajoGrado().getId());
@@ -905,7 +899,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                         generacionResolucionCoordinadorFase3Dto
                                                                         .getLinkOficioConsejo()));
                         FilesUtilities.deleteFileExample(
-                                        generacionResolucionCoordinadorFase3Dto.getLinkOficioConsejo());
+                                generacionResolucionOld.getLinkOficioConsejo());
                 }
 
                 // GeneracionResolucion generacionResolucion = new GeneracionResolucion();
