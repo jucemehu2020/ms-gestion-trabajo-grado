@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +30,7 @@ import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
@@ -147,15 +151,22 @@ public class ActualizarInformacionCoordinadorFase3GRTest {
                 when(generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionNew))
                                 .thenReturn(generacionResolucionCoordinadorFase3ResponseDto);
 
-                GeneracionResolucionCoordinadorFase3ResponseDto resultado = generacionResolucionServiceImpl
-                                .actualizarInformacionCoordinadorFase3(idTrabajoGrado,
-                                                generacionResolucionCoordinadorFase3Dto,
-                                                result);
+                try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
+                        utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
+                                        .thenReturn("path/to/new/file");
+                        utilities.when(() -> FilesUtilities.deleteFileExample(anyString()))
+                                        .thenReturn(true);
 
-                assertNotNull(resultado);
-                assertEquals(1L, resultado.getId());
-                assertEquals("b-0433", resultado.getNumeroActaConsejo());
-                assertEquals(LocalDate.parse("2023-05-25", formatter), resultado.getFechaActaConsejo());
+                        GeneracionResolucionCoordinadorFase3ResponseDto resultado = generacionResolucionServiceImpl
+                                        .actualizarInformacionCoordinadorFase3(idTrabajoGrado,
+                                                        generacionResolucionCoordinadorFase3Dto,
+                                                        result);
+
+                        assertNotNull(resultado);
+                        assertEquals(1L, resultado.getId());
+                        assertEquals("b-0433", resultado.getNumeroActaConsejo());
+                        assertEquals(LocalDate.parse("2023-05-25", formatter), resultado.getFechaActaConsejo());
+                }
         }
 
         @Test
