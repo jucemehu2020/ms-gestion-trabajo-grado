@@ -441,7 +441,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 if (sustentacionDto.getFechaSustentacion() != null
                                 && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha máxima de la sustentacion no puede ser mayor a la fecha actual.");
+                                        "La fecha de la sustentacion no puede ser menor a la fecha actual.");
                 }
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
@@ -1305,7 +1305,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 if (sustentacionDto.getFechaSustentacion() != null
                                 && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha máxima de la sustentacion no puede ser mayor a la fecha actual.");
+                                        "La fecha de la sustentacion no puede ser menor a la fecha actual.");
                 }
 
                 archivoClient.obtenerDocentePorId(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
