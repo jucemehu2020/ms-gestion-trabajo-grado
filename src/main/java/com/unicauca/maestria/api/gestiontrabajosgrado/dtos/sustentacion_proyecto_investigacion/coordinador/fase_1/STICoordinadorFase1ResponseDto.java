@@ -13,5 +13,6 @@ public class STICoordinadorFase1ResponseDto {
 
     private Long id; 
     private ConceptoVerificacion conceptoCoordinador;
+    private String linkEstudioHojaVidaAcademica;
 
 }

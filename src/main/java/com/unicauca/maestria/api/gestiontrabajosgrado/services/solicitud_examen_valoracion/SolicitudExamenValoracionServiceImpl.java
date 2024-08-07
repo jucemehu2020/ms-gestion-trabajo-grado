@@ -286,9 +286,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoD());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoE());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64Oficio());
-			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoBEv1());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoB());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoCEv1());
-			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoBEv2());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoCEv2());
 			for (String anexo : examenValoracionDto.getInformacionEnvioEvaluador().getB64Anexos()) {
 				ValidationUtils.validarBase64(anexo);
@@ -316,19 +315,22 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 		}
 
 		ArrayList<String> correos = new ArrayList<>();
-
+		EstudianteResponseDtoAll estudiante = archivoClient
+				.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+		correos.add(estudiante.getCorreoUniversidad());
+		correos.add(trabajoGrado.getCorreoElectronicoTutor());
 		if (conceptoComite.equals(Concepto.APROBADO)) {
 			Map<String, Object> documentosParaEvaluador = examenValoracionDto
 					.getInformacionEnvioEvaluador().getDocumentos();
 
 			// Filtrar documentos para el docente
 			Map<String, Object> documentosParaDocente = documentosParaEvaluador.entrySet().stream()
-					.filter(entry -> !entry.getKey().equals("formatoBEv2") && !entry.getKey().equals("formatoCEv2"))
+					.filter(entry -> !entry.getKey().equals("formatoCEv2"))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 			// Filtrar documentos para el experto
 			Map<String, Object> documentosParaExperto = documentosParaEvaluador.entrySet().stream()
-					.filter(entry -> !entry.getKey().equals("formatoBEv1") && !entry.getKey().equals("formatoCEv1"))
+					.filter(entry -> !entry.getKey().equals("formatoCEv1"))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 			DocenteResponseDto docente = archivoClient
@@ -344,10 +346,11 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 					examenValoracionDto.getEnvioEmailDto().getAsunto(),
 					examenValoracionDto.getEnvioEmailDto().getMensaje(), documentosParaExperto);
 
-			// envioCorreos.enviarCorreoConAnexos(correos,
-			// examenValoracionDto.getEnvioEmailDto().getAsunto(),
-			// examenValoracionDto.getEnvioEmailDto().getMensaje(),
-			// documentosParaEvaluador);
+			// Envio a estudiante y docente
+			String asunto = "Copia envio documentos a evaluador";
+			String mensaje = "Se adjunta copia de los documentos enviados a los evaluadores "
+					+ docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+			envioCorreos.enviarCorreoConAnexos(correos, asunto, mensaje, documentosParaEvaluador);
 
 			String rutaArchivo = identificacionArchivo(trabajoGrado);
 
@@ -358,10 +361,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 			insertarInformacionTiempos(examenValoracionDto.getFechaMaximaEvaluacion(), trabajoGrado);
 		} else {
-			EstudianteResponseDtoAll estudiante = archivoClient
-					.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
-			correos.add(estudiante.getCorreoUniversidad());
-			correos.add(trabajoGrado.getCorreoElectronicoTutor());
 			envioCorreos.enviarCorreosCorrecion(correos, examenValoracionDto.getEnvioEmailDto().getAsunto(),
 					examenValoracionDto.getEnvioEmailDto().getMensaje());
 			trabajoGrado.setNumeroEstado(4);
@@ -735,9 +734,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoD());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoE());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64Oficio());
-			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoBEv1());
+			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoB());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoCEv1());
-			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoBEv2());
 			ValidationUtils.validarBase64(examenValoracionDto.getInformacionEnvioEvaluador().getB64FormatoCEv2());
 			for (String anexo : examenValoracionDto.getInformacionEnvioEvaluador().getB64Anexos()) {
 				ValidationUtils.validarBase64(anexo);
@@ -790,14 +788,14 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		if (ultimoRegistro != null && ultimoRegistro.getConceptoComite() != conceptoComite) {
 			ArrayList<String> correos = new ArrayList<>();
+			EstudianteResponseDtoAll estudiante = archivoClient
+					.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
+			correos.add(estudiante.getCorreoUniversidad());
+			correos.add(trabajoGrado.getCorreoElectronicoTutor());
 			if (conceptoComite.equals(Concepto.NO_APROBADO)) {
 				if (examenValoracionTmp.getLinkOficioDirigidoEvaluadores() != null) {
 					FilesUtilities.deleteFileExample(examenValoracionTmp.getLinkOficioDirigidoEvaluadores());
 				}
-				EstudianteResponseDtoAll estudiante = archivoClient
-						.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
-				correos.add(estudiante.getCorreoUniversidad());
-				correos.add(trabajoGrado.getCorreoElectronicoTutor());
 				envioCorreos.enviarCorreosCorrecion(correos,
 						examenValoracionDto.getEnvioEmailDto().getAsunto(),
 						examenValoracionDto.getEnvioEmailDto().getMensaje());
@@ -808,12 +806,12 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 				// Filtrar documentos para el docente
 				Map<String, Object> documentosParaDocente = documentosParaEvaluador.entrySet().stream()
-						.filter(entry -> !entry.getKey().equals("formatoBEv2") && !entry.getKey().equals("formatoCEv2"))
+						.filter(entry -> !entry.getKey().equals("formatoCEv2"))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 				// Filtrar documentos para el experto
 				Map<String, Object> documentosParaExperto = documentosParaEvaluador.entrySet().stream()
-						.filter(entry -> !entry.getKey().equals("formatoBEv1") && !entry.getKey().equals("formatoCEv1"))
+						.filter(entry -> !entry.getKey().equals("formatoCEv1"))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 				DocenteResponseDto docente = archivoClient
@@ -828,6 +826,12 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				envioCorreos.enviarCorreoEvaluadores(experto.getPersona().getCorreoElectronico(),
 						examenValoracionDto.getEnvioEmailDto().getAsunto(),
 						examenValoracionDto.getEnvioEmailDto().getMensaje(), documentosParaExperto);
+
+				// Envio a estudiante y docente
+				String asunto = "Copia envio documentos a evaluador";
+				String mensaje = "Se adjunta copia de los documentos enviados a los evaluadores "
+						+ docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+				envioCorreos.enviarCorreoConAnexos(correos, asunto, mensaje, documentosParaEvaluador);
 
 				trabajoGrado.setNumeroEstado(5);
 				insertarInformacionTiempos(examenValoracionDto.getFechaMaximaEvaluacion(), trabajoGrado);

@@ -5,13 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,15 +103,8 @@ public class ActualizarInformacionCoordinadorFase4STest {
         void ActualizarInformacionCoordinadorFase4STest_ActualizacionExitosaAprobado() {
                 Long idTrabajoGrado = 1L;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setLinkActaSustentacionPublica("linkActaSustentacionPublica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setNumeroActaFinal("a-abc");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setFechaActaFinal(LocalDate.parse("2024-05-29", formatter));
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -154,14 +144,6 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 sustentacionTrabajoInvestigacionNew.setId(sustentacionTrabajoInvestigacionOld.getId());
                 sustentacionTrabajoInvestigacionNew.setRespuestaSustentacion(
                                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto.getRespuestaSustentacion());
-                sustentacionTrabajoInvestigacionNew.setLinkActaSustentacionPublica(
-                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkActaSustentacionPublica.txt");
-                sustentacionTrabajoInvestigacionNew
-                                .setNumeroActaFinal(sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                                .getNumeroActaFinal());
-                sustentacionTrabajoInvestigacionNew
-                                .setFechaActaFinal(sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                                .getFechaActaFinal());
 
                 when(sustentacionProyectoInvestigacionRepository.save(sustentacionTrabajoInvestigacionOld))
                                 .thenReturn(sustentacionTrabajoInvestigacionNew);
@@ -170,11 +152,6 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 coordinadorFase4ResponseDto.setId(sustentacionTrabajoInvestigacionNew.getId());
                 coordinadorFase4ResponseDto.setRespuestaSustentacion(
                                 sustentacionTrabajoInvestigacionNew.getRespuestaSustentacion());
-                coordinadorFase4ResponseDto.setLinkActaSustentacionPublica(
-                                sustentacionTrabajoInvestigacionNew.getLinkActaSustentacionPublica());
-                coordinadorFase4ResponseDto
-                                .setNumeroActaFinal(sustentacionTrabajoInvestigacionNew.getNumeroActaFinal());
-                coordinadorFase4ResponseDto.setFechaActaFinal(sustentacionTrabajoInvestigacionNew.getFechaActaFinal());
 
                 when(sustentacionProyectoInvestigacionResponseMapper
                                 .toCoordinadorFase4Dto(sustentacionTrabajoInvestigacionNew))
@@ -194,19 +171,12 @@ public class ActualizarInformacionCoordinadorFase4STest {
                         assertNotNull(resultado);
                         assertEquals(1L, resultado.getId());
                         assertEquals(ConceptosVarios.APROBADO, resultado.getRespuestaSustentacion());
-                        assertEquals("./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkActaSustentacionPublica.txt",
-                                        resultado.getLinkActaSustentacionPublica());
-
-                        assertEquals("a-abc", resultado.getNumeroActaFinal());
-                        assertEquals(LocalDate.parse("2024-05-29", formatter), resultado.getFechaActaFinal());
                 }
         }
 
         @Test
         void ActualizarInformacionCoordinadorFase4STest_ActualizacionExitosaNoAprobado() {
                 Long idTrabajoGrado = 1L;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto
@@ -217,11 +187,6 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionOld.setId(1L);
                 sustentacionTrabajoInvestigacionOld.setRespuestaSustentacion(ConceptosVarios.APROBADO);
-                sustentacionTrabajoInvestigacionOld
-                                .setLinkActaSustentacionPublica(
-                                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkActaSustentacionPublica.txt");
-                sustentacionTrabajoInvestigacionOld.setNumeroActaFinal("a-abc");
-                sustentacionTrabajoInvestigacionOld.setFechaActaFinal(LocalDate.parse("2024-05-29", formatter));
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -289,8 +254,6 @@ public class ActualizarInformacionCoordinadorFase4STest {
         void ActualizarInformacionCoordinadorFase4STest_RegistroExitosoAplazado() {
                 Long idTrabajoGrado = 1L;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APLAZADO);
 
@@ -299,11 +262,6 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionOld.setId(1L);
                 sustentacionTrabajoInvestigacionOld.setRespuestaSustentacion(ConceptosVarios.APROBADO);
-                sustentacionTrabajoInvestigacionOld
-                                .setLinkActaSustentacionPublica(
-                                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkActaSustentacionPublica.txt");
-                sustentacionTrabajoInvestigacionOld.setNumeroActaFinal("a-abc");
-                sustentacionTrabajoInvestigacionOld.setFechaActaFinal(LocalDate.parse("2024-05-29", formatter));
 
                 TrabajoGrado trabajoGrado = new TrabajoGrado();
                 trabajoGrado.setId(idTrabajoGrado);
@@ -371,16 +329,9 @@ public class ActualizarInformacionCoordinadorFase4STest {
         void ActualizarInformacionCoordinadorFase4STest_AtributosNoValidos() {
                 Long idTrabajoGrado = 1L;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto
                                 .setRespuestaSustentacion(ConceptosVarios.NO_APROBADO);
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setLinkActaSustentacionPublica("linkActaSustentacionPublica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setNumeroActaFinal("a-abc");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setFechaActaFinal(LocalDate.parse("2024-05-29", formatter));
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -401,13 +352,8 @@ public class ActualizarInformacionCoordinadorFase4STest {
         void ActualizarInformacionCoordinadorFase4STest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setNumeroActaFinal("a-abc");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setFechaActaFinal(LocalDate.parse("2024-05-29", formatter));
 
                 FieldError fieldError = new FieldError("SustentacionProyectoInvestigacionServiceImpl",
                                 "linkActaSustentacionPublica",
@@ -435,14 +381,8 @@ public class ActualizarInformacionCoordinadorFase4STest {
         void ActualizarInformacionCoordinadorFase4STest_AtributosIncompletos() {
                 Long idTrabajoGrado = 1L;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setLinkActaSustentacionPublica("linkActaSustentacionPublica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setFechaActaFinal(LocalDate.parse("2024-05-29", formatter));
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -463,15 +403,8 @@ public class ActualizarInformacionCoordinadorFase4STest {
         void ActualizarInformacionCoordinadorFase4STest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setLinkActaSustentacionPublica("linkActaSustentacionPublica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setNumeroActaFinal("a-abc");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setFechaActaFinal(LocalDate.parse("2024-05-29", formatter));
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -506,22 +439,16 @@ public class ActualizarInformacionCoordinadorFase4STest {
         void ActualizarInformacionCoordinadorFase4STest_NoExisteTrabajoGrado() {
                 Long idTrabajoGrado = 2L;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setLinkActaSustentacionPublica("linkActaSustentacionPublica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setNumeroActaFinal("a-abc");
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setFechaActaFinal(LocalDate.parse("2024-05-29", formatter));
 
                 when(result.hasErrors()).thenReturn(false);
 
                 when(trabajoGradoRepository.findById(idTrabajoGrado)).thenReturn(Optional.empty());
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                        sustentacionProyectoInvestigacionServiceImpl.actualizarInformacionCoordinadoFase4(idTrabajoGrado,
+                        sustentacionProyectoInvestigacionServiceImpl.actualizarInformacionCoordinadoFase4(
+                                        idTrabajoGrado,
                                         sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
                                         result);
                 });

@@ -105,8 +105,6 @@ public class ListarInformacionCoordinadorTest {
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt");
                 respuestaExamenValoracion.setLinkFormatoC(
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt");
-                respuestaExamenValoracion.setLinkObservaciones(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt");
                 respuestaExamenValoracion.setAnexos(listaAnexos);
                 respuestaExamenValoracion.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracion.setIdEvaluador(1L);
@@ -130,8 +128,6 @@ public class ListarInformacionCoordinadorTest {
                 respuestaExamenValoracionResponseDto.setId(idTrabajoGrado);
                 respuestaExamenValoracionResponseDto.setLinkFormatoB(respuestaExamenValoracion.getLinkFormatoB());
                 respuestaExamenValoracionResponseDto.setLinkFormatoC(respuestaExamenValoracion.getLinkFormatoC());
-                respuestaExamenValoracionResponseDto
-                                .setLinkObservaciones(respuestaExamenValoracion.getLinkObservaciones());
                 respuestaExamenValoracionResponseDto.setAnexos(listaAnexosResponseDto);
                 respuestaExamenValoracionResponseDto
                                 .setRespuestaExamenValoracion(respuestaExamenValoracion.getRespuestaExamenValoracion());
@@ -156,8 +152,6 @@ public class ListarInformacionCoordinadorTest {
                                 dto.getLinkFormatoB());
                 assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoC.txt",
                                 dto.getLinkFormatoC());
-                assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-observaciones.txt",
-                                dto.getLinkObservaciones());
                 assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-Anexos.txt",
                                 dto.getAnexos().get(0).getLinkAnexo());
                 assertEquals(ConceptosVarios.APROBADO, dto.getRespuestaExamenValoracion());

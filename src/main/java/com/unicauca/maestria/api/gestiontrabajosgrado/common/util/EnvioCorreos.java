@@ -148,8 +148,8 @@ public class EnvioCorreos {
                 // Determinar la extensión y el tipo MIME
                 String extension;
                 String mimeType;
-                if (nombreDocumento.equals("formatoBEv1") || nombreDocumento.equals("formatoCEv1") ||
-                        nombreDocumento.equals("formatoBEv2") || nombreDocumento.equals("formatoCEv2")) {
+                if (nombreDocumento.equals("formatoB") || nombreDocumento.equals("formatoCEv1") ||
+                        nombreDocumento.equals("formatoCEv2")) {
                     extension = ".docx";
                     mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
                 } else {

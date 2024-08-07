@@ -67,16 +67,10 @@ public class SustentacionProyectoInvestigacion {
 
     private String linkFormatoI;
 
-    private String linkActaSustentacionPublica;
-
     @Enumerated(EnumType.STRING)
     private ConceptosVarios respuestaSustentacion;
 
     private String linkEstudioHojaVidaAcademicaGrado;
-
-    private String numeroActaFinal;
-
-    private LocalDate fechaActaFinal;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_trabajo_grado")

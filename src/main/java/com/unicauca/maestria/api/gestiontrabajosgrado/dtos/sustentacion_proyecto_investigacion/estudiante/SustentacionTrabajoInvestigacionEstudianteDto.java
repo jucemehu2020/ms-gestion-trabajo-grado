@@ -1,6 +1,9 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.estudiante;
 
 import lombok.*;
+
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -15,8 +18,11 @@ public class SustentacionTrabajoInvestigacionEstudianteDto {
 
     @NotNull
     private String linkFormatoI;
-    
+
     @NotNull
     private String linkEstudioHojaVidaAcademicaGrado;
+
+    @NotNull
+    private LocalDate fechaSustentacion;
 
 }

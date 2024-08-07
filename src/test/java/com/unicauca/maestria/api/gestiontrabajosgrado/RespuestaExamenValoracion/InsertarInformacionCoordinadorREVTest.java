@@ -127,7 +127,6 @@ public class InsertarInformacionCoordinadorREVTest {
                 RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
@@ -172,7 +171,6 @@ public class InsertarInformacionCoordinadorREVTest {
                 respuestaExamenValoracion.setId(1L);
                 respuestaExamenValoracion.setLinkFormatoB(respuestaExamenValoracionDto.getLinkFormatoB());
                 respuestaExamenValoracion.setLinkFormatoC(respuestaExamenValoracionDto.getLinkFormatoC());
-                respuestaExamenValoracion.setLinkObservaciones(respuestaExamenValoracionDto.getLinkObservaciones());
                 respuestaExamenValoracion.setAnexos(listaAnexos);
                 respuestaExamenValoracion
                                 .setRespuestaExamenValoracion(
@@ -218,8 +216,6 @@ public class InsertarInformacionCoordinadorREVTest {
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-formatoB.txt");
                 respuestaExamenValoracionResponseDto.setLinkFormatoC(
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-formatoC.txt");
-                respuestaExamenValoracionResponseDto.setLinkObservaciones(
-                                "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-observaciones.txt");
                 respuestaExamenValoracionResponseDto.setAnexos(listaAnexosResponseDto);
                 respuestaExamenValoracionResponseDto
                                 .setRespuestaExamenValoracion(respuestaExamenValoracion.getRespuestaExamenValoracion());
@@ -246,8 +242,6 @@ public class InsertarInformacionCoordinadorREVTest {
                                         resultado.getLinkFormatoB());
                         assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-formatoC.txt",
                                         resultado.getLinkFormatoC());
-                        assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-observaciones.txt",
-                                        resultado.getLinkObservaciones());
                         assertEquals("./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701004050-Anexos.txt",
                                         resultado.getAnexos().get(0).getLinkAnexo());
                         assertEquals(ConceptosVarios.APROBADO, resultado.getRespuestaExamenValoracion());
@@ -273,7 +267,6 @@ public class InsertarInformacionCoordinadorREVTest {
 
                 RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
@@ -316,7 +309,6 @@ public class InsertarInformacionCoordinadorREVTest {
                 RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
@@ -362,7 +354,6 @@ public class InsertarInformacionCoordinadorREVTest {
                 RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
@@ -400,7 +391,6 @@ public class InsertarInformacionCoordinadorREVTest {
                 RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(2L);
@@ -456,7 +446,6 @@ public class InsertarInformacionCoordinadorREVTest {
                 RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(2L);
@@ -513,7 +502,6 @@ public class InsertarInformacionCoordinadorREVTest {
                 RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.NO_APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
@@ -578,7 +566,6 @@ public class InsertarInformacionCoordinadorREVTest {
                 RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);
@@ -631,7 +618,6 @@ public class InsertarInformacionCoordinadorREVTest {
                 RespuestaExamenValoracionDto respuestaExamenValoracionDto = new RespuestaExamenValoracionDto();
                 respuestaExamenValoracionDto.setLinkFormatoB("formatoB.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setLinkFormatoC("formatoC.txt-cHJ1ZWJhIGRlIHRleHR");
-                respuestaExamenValoracionDto.setLinkObservaciones("observaciones.txt-cHJ1ZWJhIGRlIHRleHR");
                 respuestaExamenValoracionDto.setAnexos(listaAnexosDto);
                 respuestaExamenValoracionDto.setRespuestaExamenValoracion(ConceptosVarios.APROBADO);
                 respuestaExamenValoracionDto.setIdEvaluador(1L);

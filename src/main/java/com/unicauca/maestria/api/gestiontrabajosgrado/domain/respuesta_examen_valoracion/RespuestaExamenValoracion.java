@@ -31,8 +31,6 @@ public class RespuestaExamenValoracion {
 
     private String linkFormatoC;
 
-    private String linkObservaciones;
-
     @OneToMany(mappedBy = "respuestaExamenValoracion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<AnexoRespuestaExamenValoracion> anexos;

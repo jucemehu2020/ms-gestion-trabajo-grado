@@ -18,6 +18,9 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase1Dto {
     @NotNull
     private ConceptoVerificacion conceptoCoordinador;
 
+    @NotNull
+    private String linkEstudioHojaVidaAcademica;
+
     @Valid
     private EnvioEmailDto envioEmail;
 

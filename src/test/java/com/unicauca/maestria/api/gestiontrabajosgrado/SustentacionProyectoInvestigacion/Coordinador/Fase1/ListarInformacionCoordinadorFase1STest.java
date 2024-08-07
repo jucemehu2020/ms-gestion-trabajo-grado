@@ -41,7 +41,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proy
 @SpringBootTest
 public class ListarInformacionCoordinadorFase1STest {
 
-     @Mock
+        @Mock
         private SustentacionProyectoInvestigacionRepository sustentacionProyectoInvestigacionRepository;
         @Mock
         private SustentacionProyectoInvestigacionMapper sustentacionProyectoIngestigacionMapper;
@@ -85,67 +85,76 @@ public class ListarInformacionCoordinadorFase1STest {
                 ReflectionTestUtils.setField(sustentacionProyectoInvestigacionServiceImpl, "envioCorreos",
                                 envioCorreos);
         }
-    @Test
-    void ListarInformacionCoordinadorFase1STest_Exito() {
-        Long idTrabajoGrado = 1L;
 
-        SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setId(1L);
-        sustentacionTrabajoInvestigacionOld.setConceptoCoordinador(ConceptoVerificacion.ACEPTADO);
+        @Test
+        void ListarInformacionCoordinadorFase1STest_Exito() {
+                Long idTrabajoGrado = 1L;
 
-        when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
-                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
+                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
+                sustentacionTrabajoInvestigacionOld.setId(1L);
+                sustentacionTrabajoInvestigacionOld.setConceptoCoordinador(ConceptoVerificacion.ACEPTADO);
+                sustentacionTrabajoInvestigacionOld.setLinkEstudioHojaVidaAcademica(
+                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademica.txt");
 
-        STICoordinadorFase1ResponseDto stiCoordinadorFase1ResponseDto = new STICoordinadorFase1ResponseDto();
-        stiCoordinadorFase1ResponseDto.setId(sustentacionTrabajoInvestigacionOld.getId());
-        stiCoordinadorFase1ResponseDto
-                .setConceptoCoordinador(sustentacionTrabajoInvestigacionOld.getConceptoCoordinador());
+                when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
-        when(sustentacionProyectoInvestigacionResponseMapper.toCoordinadorFase1Dto(sustentacionTrabajoInvestigacionOld))
-                .thenReturn(stiCoordinadorFase1ResponseDto);
+                STICoordinadorFase1ResponseDto stiCoordinadorFase1ResponseDto = new STICoordinadorFase1ResponseDto();
+                stiCoordinadorFase1ResponseDto.setId(sustentacionTrabajoInvestigacionOld.getId());
+                stiCoordinadorFase1ResponseDto
+                                .setConceptoCoordinador(sustentacionTrabajoInvestigacionOld.getConceptoCoordinador());
+                stiCoordinadorFase1ResponseDto
+                                .setLinkEstudioHojaVidaAcademica(
+                                                sustentacionTrabajoInvestigacionOld.getLinkEstudioHojaVidaAcademica());
 
-        STICoordinadorFase1ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
-                .listarInformacionCoordinadorFase1(idTrabajoGrado);
+                when(sustentacionProyectoInvestigacionResponseMapper
+                                .toCoordinadorFase1Dto(sustentacionTrabajoInvestigacionOld))
+                                .thenReturn(stiCoordinadorFase1ResponseDto);
 
-        assertNotNull(resultado);
-        assertEquals(1L, resultado.getId());
-        assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoCoordinador());
+                STICoordinadorFase1ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
+                                .listarInformacionCoordinadorFase1(idTrabajoGrado);
 
-    }
+                assertNotNull(resultado);
+                assertEquals(1L, resultado.getId());
+                assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoCoordinador());
+                assertEquals("./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademica.txt",
+                                resultado.getLinkEstudioHojaVidaAcademica());
 
-    @Test
-    void ListarInformacionCoordinadorFase1STest_NoHayRegistro() {
-        Long idTrabajoGrado = 1L;
+        }
 
-        SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
-        sustentacionTrabajoInvestigacionOld.setId(1L);
+        @Test
+        void ListarInformacionCoordinadorFase1STest_NoHayRegistro() {
+                Long idTrabajoGrado = 1L;
 
-        when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
-                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
+                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
+                sustentacionTrabajoInvestigacionOld.setId(1L);
 
-        InformationException exception = assertThrows(InformationException.class, () -> {
-            sustentacionProyectoInvestigacionServiceImpl.listarInformacionCoordinadorFase1(idTrabajoGrado);
-        });
+                when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
-        assertNotNull(exception.getMessage());
-        String expectedMessage = "No se han registrado datos";
-        assertTrue(exception.getMessage().contains(expectedMessage));
-    }
+                InformationException exception = assertThrows(InformationException.class, () -> {
+                        sustentacionProyectoInvestigacionServiceImpl.listarInformacionCoordinadorFase1(idTrabajoGrado);
+                });
 
-    @Test
-    void ListarInformacionCoordinadorFase1STest_TrabajoGradoNoExiste() {
-        Long idTrabajoGrado = 2L;
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "No se han registrado datos";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
 
-        when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
-                .thenReturn(Optional.empty());
+        @Test
+        void ListarInformacionCoordinadorFase1STest_TrabajoGradoNoExiste() {
+                Long idTrabajoGrado = 2L;
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            sustentacionProyectoInvestigacionServiceImpl.listarInformacionCoordinadorFase1(idTrabajoGrado);
-        });
+                when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
+                                .thenReturn(Optional.empty());
 
-        assertNotNull(exception.getMessage());
-        String expectedMessage = "Trabajo de grado con id 2 no encontrado";
-        assertTrue(exception.getMessage().contains(expectedMessage));
-    }
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+                        sustentacionProyectoInvestigacionServiceImpl.listarInformacionCoordinadorFase1(idTrabajoGrado);
+                });
+
+                assertNotNull(exception.getMessage());
+                String expectedMessage = "Trabajo de grado con id 2 no encontrado";
+                assertTrue(exception.getMessage().contains(expectedMessage));
+        }
 
 }

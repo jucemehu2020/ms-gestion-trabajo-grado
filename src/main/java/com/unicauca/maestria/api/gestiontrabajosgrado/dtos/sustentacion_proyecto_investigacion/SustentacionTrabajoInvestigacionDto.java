@@ -70,13 +70,4 @@ public class SustentacionTrabajoInvestigacionDto {
     @NotNull
     private ConceptosVarios respuestaSustentacion;
 
-    @NotBlank
-    private String linkEstudioHojaVidaAcademicaGrado;
-
-    @NotBlank
-    private String numeroActaFinal;
-
-    @NotNull
-    private LocalDate fechaActaFinal;
-
 }

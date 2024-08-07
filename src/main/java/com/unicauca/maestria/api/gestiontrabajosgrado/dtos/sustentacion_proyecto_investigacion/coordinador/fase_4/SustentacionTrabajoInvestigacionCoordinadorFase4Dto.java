@@ -1,7 +1,5 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_4;
 
-import java.time.LocalDate;
-
 import lombok.*;
 import javax.validation.constraints.NotNull;
 
@@ -16,11 +14,5 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase4Dto {
 
     @NotNull
     private ConceptosVarios respuestaSustentacion;
-
-    private String linkActaSustentacionPublica;
-
-    private String numeroActaFinal;
-
-    private LocalDate fechaActaFinal;
 
 }

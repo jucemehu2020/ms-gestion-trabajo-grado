@@ -16,8 +16,6 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase3Dto {
     @NotNull
     private ConceptoVerificacion juradosAceptados;
 
-    private LocalDate fechaSustentacion;
-
     @NotNull
     private String numeroActaConsejo;
 

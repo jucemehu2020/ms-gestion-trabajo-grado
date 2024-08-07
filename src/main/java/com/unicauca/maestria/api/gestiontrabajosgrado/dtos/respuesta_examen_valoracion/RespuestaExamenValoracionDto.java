@@ -1,7 +1,6 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion;
 
 import lombok.*;
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -23,9 +22,6 @@ public class RespuestaExamenValoracionDto {
 
     @NotNull
     private String linkFormatoC;
-
-    @NotNull
-    private String linkObservaciones;
 
     @Valid
     private List<AnexoRespuestaExamenValoracionDto> anexos;

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -97,14 +96,6 @@ public class ListarInformacionCoordinadorFase4STest {
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionOld.setId(1L);
                 sustentacionTrabajoInvestigacionOld.setRespuestaSustentacion(ConceptosVarios.APROBADO);
-                sustentacionTrabajoInvestigacionOld
-                                .setLinkActaSustentacionPublica(
-                                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkActaSustentacionPublica.txt");
-                sustentacionTrabajoInvestigacionOld
-                                .setLinkEstudioHojaVidaAcademicaGrado(
-                                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademicaGrado.txt");
-                sustentacionTrabajoInvestigacionOld.setNumeroActaFinal("a-abc");
-                sustentacionTrabajoInvestigacionOld.setFechaActaFinal(LocalDate.parse("2024-05-29", formatter));
 
                 when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
@@ -113,11 +104,6 @@ public class ListarInformacionCoordinadorFase4STest {
                 coordinadorFase4ResponseDto.setId(sustentacionTrabajoInvestigacionOld.getId());
                 coordinadorFase4ResponseDto.setRespuestaSustentacion(
                                 sustentacionTrabajoInvestigacionOld.getRespuestaSustentacion());
-                coordinadorFase4ResponseDto.setLinkActaSustentacionPublica(
-                                sustentacionTrabajoInvestigacionOld.getLinkActaSustentacionPublica());
-                coordinadorFase4ResponseDto
-                                .setNumeroActaFinal(sustentacionTrabajoInvestigacionOld.getNumeroActaFinal());
-                coordinadorFase4ResponseDto.setFechaActaFinal(sustentacionTrabajoInvestigacionOld.getFechaActaFinal());
 
                 when(sustentacionProyectoInvestigacionResponseMapper
                                 .toCoordinadorFase4Dto(sustentacionTrabajoInvestigacionOld))
@@ -129,11 +115,6 @@ public class ListarInformacionCoordinadorFase4STest {
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
                 assertEquals(ConceptosVarios.APROBADO, resultado.getRespuestaSustentacion());
-                assertEquals("./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkActaSustentacionPublica.txt",
-                                resultado.getLinkActaSustentacionPublica());
-                assertEquals("a-abc", resultado.getNumeroActaFinal());
-                assertEquals(LocalDate.parse("2024-05-29", formatter), resultado.getFechaActaFinal());
-
         }
 
         @Test

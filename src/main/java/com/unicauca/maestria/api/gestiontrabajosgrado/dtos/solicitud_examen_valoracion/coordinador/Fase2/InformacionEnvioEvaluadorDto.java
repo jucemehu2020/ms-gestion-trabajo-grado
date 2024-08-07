@@ -17,9 +17,8 @@ public class InformacionEnvioEvaluadorDto {
     private String b64FormatoE;
     private List<String> b64Anexos;
     private String b64Oficio;
-    private String b64FormatoBEv1;
+    private String b64FormatoB;
     private String b64FormatoCEv1;
-    private String b64FormatoBEv2;
     private String b64FormatoCEv2;
 
     public Map<String, Object> getDocumentos() {
@@ -28,9 +27,8 @@ public class InformacionEnvioEvaluadorDto {
         documentos.put("formatoE", b64FormatoE);
         documentos.put("anexos", b64Anexos);
         documentos.put("oficio", b64Oficio);
-        documentos.put("formatoBEv1", b64FormatoBEv1);
+        documentos.put("formatoB", b64FormatoB);
         documentos.put("formatoCEv1", b64FormatoCEv1);
-        documentos.put("formatoBEv2", b64FormatoBEv2);
         documentos.put("formatoCEv2", b64FormatoCEv2);
         return documentos;
     }

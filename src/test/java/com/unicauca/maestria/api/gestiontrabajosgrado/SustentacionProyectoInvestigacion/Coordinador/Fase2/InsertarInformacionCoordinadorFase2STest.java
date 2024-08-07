@@ -134,14 +134,12 @@ public class InsertarInformacionCoordinadorFase2STest {
 
                 SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto = new SustentacionTrabajoInvestigacionCoordinadorFase2Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                .setLinkEstudioHojaVidaAcademica(
-                                                "linkEstudioHojaVidaAcademica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setLinkFormatoG("linkFormatoG.txt-cHJ1ZWJhIGRlIHRleHR");
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setActaFechaRespuestaComite(listaRespuestaComiteDto);
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto.setInformacionEnvioConsejo(informacionEnvioConsejoDto);
+                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
+                                .setInformacionEnvioConsejo(informacionEnvioConsejoDto);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -187,8 +185,7 @@ public class InsertarInformacionCoordinadorFase2STest {
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionNew.setId(1L);
                 sustentacionTrabajoInvestigacionNew.setActaFechaRespuestaComite(listaRespuestaComiteSustentacion);
-                sustentacionTrabajoInvestigacionNew.setLinkEstudioHojaVidaAcademica(
-                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademica.txt");
+
                 sustentacionTrabajoInvestigacionNew.setLinkFormatoG(
                                 "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkFormatoG.txt");
 
@@ -198,8 +195,6 @@ public class InsertarInformacionCoordinadorFase2STest {
                 STICoordinadorFase2ResponseDto resCoordinadorFase2ResponseDto = new STICoordinadorFase2ResponseDto();
                 resCoordinadorFase2ResponseDto.setId(sustentacionTrabajoInvestigacionNew.getId());
                 resCoordinadorFase2ResponseDto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
-                resCoordinadorFase2ResponseDto.setLinkEstudioHojaVidaAcademica(
-                                sustentacionTrabajoInvestigacionNew.getLinkEstudioHojaVidaAcademica());
                 resCoordinadorFase2ResponseDto.setLinkFormatoG(sustentacionTrabajoInvestigacionNew.getLinkFormatoG());
 
                 when(sustentacionProyectoInvestigacionResponseMapper
@@ -222,11 +217,7 @@ public class InsertarInformacionCoordinadorFase2STest {
                         assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
                         assertEquals(LocalDate.parse("2023-05-24", formatter),
                                         resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
-                        assertEquals(
-                                        "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademica.txt",
-                                        resultado.getLinkEstudioHojaVidaAcademica());
-                        assertEquals(
-                                        "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkFormatoG.txt",
+                        assertEquals("./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkFormatoG.txt",
                                         resultado.getLinkFormatoG());
                 }
         }
@@ -344,9 +335,6 @@ public class InsertarInformacionCoordinadorFase2STest {
 
                 SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto = new SustentacionTrabajoInvestigacionCoordinadorFase2Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                .setLinkEstudioHojaVidaAcademica(
-                                                "linkEstudioHojaVidaAcademica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setLinkFormatoG("linkFormatoG.txt-cHJ1ZWJhIGRlIHRleHR");
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setActaFechaRespuestaComite(listaRespuestaComiteDto);
@@ -385,9 +373,6 @@ public class InsertarInformacionCoordinadorFase2STest {
                 envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
 
                 SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto = new SustentacionTrabajoInvestigacionCoordinadorFase2Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                .setLinkEstudioHojaVidaAcademica(
-                                                "linkEstudioHojaVidaAcademica.txt-cHJ1ZWJhIGRlIHRleHR");
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setLinkFormatoG("linkFormatoG.txt-cHJ1ZWJhIGRlIHRleHR");
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
@@ -477,14 +462,12 @@ public class InsertarInformacionCoordinadorFase2STest {
 
                 SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto = new SustentacionTrabajoInvestigacionCoordinadorFase2Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                .setLinkEstudioHojaVidaAcademica(
-                                                "linkEstudioHojaVidaAcademica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setLinkFormatoG("linkFormatoG.txt-cHJ1ZWJhIGRlIHRleHR");
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setActaFechaRespuestaComite(listaRespuestaComiteDto);
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto.setInformacionEnvioConsejo(informacionEnvioConsejoDto);
+                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
+                                .setInformacionEnvioConsejo(informacionEnvioConsejoDto);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -540,14 +523,12 @@ public class InsertarInformacionCoordinadorFase2STest {
 
                 SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto = new SustentacionTrabajoInvestigacionCoordinadorFase2Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                .setLinkEstudioHojaVidaAcademica(
-                                                "linkEstudioHojaVidaAcademica.txt-cHJ1ZWJhIGRlIHRleHR");
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setLinkFormatoG("linkFormatoG.txt-cHJ1ZWJhIGRlIHRleHR");
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setActaFechaRespuestaComite(listaRespuestaComiteDto);
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto.setInformacionEnvioConsejo(informacionEnvioConsejoDto);
+                sustentacionTrabajoInvestigacionCoordinadorFase2Dto
+                                .setInformacionEnvioConsejo(informacionEnvioConsejoDto);
 
                 when(result.hasErrors()).thenReturn(false);
 

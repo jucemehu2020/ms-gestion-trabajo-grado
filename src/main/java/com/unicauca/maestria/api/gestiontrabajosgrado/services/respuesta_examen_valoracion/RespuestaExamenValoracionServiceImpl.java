@@ -185,9 +185,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 rtaExamenValoracion.getLinkFormatoB()));
                 rtaExamenValoracion.setLinkFormatoC(FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                 rtaExamenValoracion.getLinkFormatoC()));
-                rtaExamenValoracion.setLinkObservaciones(
-                                FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                rtaExamenValoracion.getLinkObservaciones()));
 
                 List<AnexoRespuestaExamenValoracion> updatedLinkAnexos = new ArrayList<>();
                 if (respuestaExamenValoracionDto.getAnexos() != null) {
@@ -309,8 +306,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 documentosParaEvaluador.put("formatoB", formatoB[1]);
                 String[] formatoC = respuestaExamenValoracionDto.getLinkFormatoC().split("-");
                 documentosParaEvaluador.put("formatoC", formatoC[1]);
-                String[] obervaciones = respuestaExamenValoracionDto.getLinkObservaciones().split("-");
-                documentosParaEvaluador.put("observaciones", obervaciones[1]);
                 List<AnexoRespuestaExamenValoracionDto> anexos = respuestaExamenValoracionDto.getAnexos();
                 if (anexos != null) {
                         for (int i = 0; i < anexos.size(); i++) {
@@ -435,14 +430,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                         respuestaExamenValoracionDto.getLinkFormatoC()));
                         FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkFormatoC());
                 }
-                if (respuestaExamenValoracionDto.getLinkObservaciones()
-                                .compareTo(respuestaExamenValoracionTmp.getLinkObservaciones()) != 0) {
-                        validarLink(respuestaExamenValoracionDto.getLinkObservaciones());
-                        respuestaExamenValoracionDto.setLinkObservaciones(FilesUtilities.guardarArchivoNew2(
-                                        rutaArchivo,
-                                        respuestaExamenValoracionDto.getLinkObservaciones()));
-                        FilesUtilities.deleteFileExample(respuestaExamenValoracionTmp.getLinkObservaciones());
-                }
 
                 List<AnexoRespuestaExamenValoracionDto> anexos = respuestaExamenValoracionDto.getAnexos();
                 if (anexos == null) {
@@ -549,7 +536,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                 // Update archivos
                 respuestaExamenValoracion.setLinkFormatoB(respuestaExamenValoracionDto.getLinkFormatoB());
                 respuestaExamenValoracion.setLinkFormatoC(respuestaExamenValoracionDto.getLinkFormatoC());
-                respuestaExamenValoracion.setLinkObservaciones(respuestaExamenValoracionDto.getLinkObservaciones());
         }
 
         private int validarEstado(Long idTrabajoGrado, ConceptosVarios conceptoEvaluador, int vieneDe,

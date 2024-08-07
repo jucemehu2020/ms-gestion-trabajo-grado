@@ -13,7 +13,6 @@ public class STICoordinadorFase2ResponseDto {
 
     private Long id;
     private List<RespuestaComiteSustentacionDto> actaFechaRespuestaComite;
-    private String linkEstudioHojaVidaAcademica;
     private String linkFormatoG;
 
 }

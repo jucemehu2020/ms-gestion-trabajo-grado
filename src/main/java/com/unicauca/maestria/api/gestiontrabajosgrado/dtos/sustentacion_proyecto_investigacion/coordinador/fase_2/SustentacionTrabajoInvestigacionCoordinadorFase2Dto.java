@@ -20,8 +20,6 @@ public class SustentacionTrabajoInvestigacionCoordinadorFase2Dto {
     @Valid
     private List<RespuestaComiteSustentacionDto> actaFechaRespuestaComite;
 
-    private String linkEstudioHojaVidaAcademica;
-
     private String linkFormatoG;
 
     @NotNull

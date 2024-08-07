@@ -108,8 +108,6 @@ public class ListarInformacionCoordinadorFase2STest {
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionOld.setId(1L);
                 sustentacionTrabajoInvestigacionOld.setActaFechaRespuestaComite(listaRespuestaComiteSustentacion);
-                sustentacionTrabajoInvestigacionOld.setLinkEstudioHojaVidaAcademica(
-                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademica.txt");
                 sustentacionTrabajoInvestigacionOld.setLinkFormatoG(
                                 "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkFormatoG.txt");
 
@@ -127,9 +125,6 @@ public class ListarInformacionCoordinadorFase2STest {
                 STICoordinadorFase2ResponseDto resCoordinadorFase2ResponseDto = new STICoordinadorFase2ResponseDto();
                 resCoordinadorFase2ResponseDto.setId(sustentacionTrabajoInvestigacionOld.getId());
                 resCoordinadorFase2ResponseDto.setActaFechaRespuestaComite(listaRespuestaComiteDto);
-                resCoordinadorFase2ResponseDto
-                                .setLinkEstudioHojaVidaAcademica(
-                                                sustentacionTrabajoInvestigacionOld.getLinkEstudioHojaVidaAcademica());
                 resCoordinadorFase2ResponseDto.setLinkFormatoG(sustentacionTrabajoInvestigacionOld.getLinkFormatoG());
 
                 when(sustentacionProyectoInvestigacionResponseMapper
@@ -145,11 +140,7 @@ public class ListarInformacionCoordinadorFase2STest {
                 assertEquals("AX1-3445", resultado.getActaFechaRespuestaComite().get(0).getNumeroActa());
                 assertEquals(LocalDate.parse("2023-05-24", formatter),
                                 resultado.getActaFechaRespuestaComite().get(0).getFechaActa());
-                assertEquals(
-                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademica.txt",
-                                resultado.getLinkEstudioHojaVidaAcademica());
-                assertEquals(
-                                "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkFormatoG.txt",
+                assertEquals("./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkFormatoG.txt",
                                 resultado.getLinkFormatoG());
 
         }

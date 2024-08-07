@@ -127,9 +127,8 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64Anexos(anexos);
                 informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv1("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv1("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv2("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv2("cHJ1ZWJhIGRlIHRleHR");
 
                 SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
@@ -397,9 +396,8 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64Anexos(anexos);
                 informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv1("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv1("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv2("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv2("cHJ1ZWJhIGRlIHRleHR");
 
                 SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
@@ -453,9 +451,8 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64Anexos(anexos);
                 informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv1("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv1("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv2("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv2("cHJ1ZWJhIGRlIHRleHR");
 
                 SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
@@ -516,9 +513,8 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64Anexos(anexos);
                 informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv1("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv1("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv2("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv2("cHJ1ZWJhIGRlIHRleHR");
 
                 SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();
@@ -586,9 +582,8 @@ public class InsertarInformacionCoordinadorFase2SEVTest {
                 informacionEnvioEvaluadorDto.setB64FormatoE("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64Anexos(anexos);
                 informacionEnvioEvaluadorDto.setB64Oficio("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv1("cHJ1ZWJhIGRlIHRleHR");
+                informacionEnvioEvaluadorDto.setB64FormatoB("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv1("cHJ1ZWJhIGRlIHRleHR");
-                informacionEnvioEvaluadorDto.setB64FormatoBEv2("cHJ1ZWJhIGRlIHRleHR");
                 informacionEnvioEvaluadorDto.setB64FormatoCEv2("cHJ1ZWJhIGRlIHRleHR");
 
                 SolicitudExamenValoracionCoordinadorFase2Dto solicitudExamenValoracionCoordinadorFase2Dto = new SolicitudExamenValoracionCoordinadorFase2Dto();

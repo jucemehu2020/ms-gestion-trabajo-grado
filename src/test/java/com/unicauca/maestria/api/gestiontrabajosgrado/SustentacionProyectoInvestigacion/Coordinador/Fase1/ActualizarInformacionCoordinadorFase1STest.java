@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -106,6 +105,9 @@ public class ActualizarInformacionCoordinadorFase1STest {
                 SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase1Dto
                                 .setConceptoCoordinador(ConceptoVerificacion.ACEPTADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setLinkEstudioHojaVidaAcademica(
+                                                "linkEstudioHojaVidaAcademica.txt-cHJ1ZWJhIGRlIHRleHR");
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -131,6 +133,8 @@ public class ActualizarInformacionCoordinadorFase1STest {
                 sustentacionTrabajoInvestigacionNew
                                 .setConceptoCoordinador(sustentacionTrabajoInvestigacionCoordinadorFase1Dto
                                                 .getConceptoCoordinador());
+                sustentacionTrabajoInvestigacionNew.setLinkEstudioHojaVidaAcademica(
+                                sustentacionTrabajoInvestigacionNew.getLinkEstudioHojaVidaAcademica());
 
                 when(sustentacionProyectoInvestigacionRepository.save(sustentacionTrabajoInvestigacionOld))
                                 .thenReturn(sustentacionTrabajoInvestigacionNew);
@@ -151,6 +155,8 @@ public class ActualizarInformacionCoordinadorFase1STest {
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
                 assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoCoordinador());
+                assertEquals("./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademica.txt",
+                                resultado.getLinkEstudioHojaVidaAcademica());
         }
 
         @Test
@@ -237,6 +243,9 @@ public class ActualizarInformacionCoordinadorFase1STest {
                 SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase1Dto
                                 .setConceptoCoordinador(ConceptoVerificacion.ACEPTADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setLinkEstudioHojaVidaAcademica(
+                                                "linkEstudioHojaVidaAcademica.txt-cHJ1ZWJhIGRlIHRleHR");
                 sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
 
                 when(result.hasErrors()).thenReturn(false);
@@ -263,6 +272,9 @@ public class ActualizarInformacionCoordinadorFase1STest {
 
                 SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setEnvioEmail(envioEmailDto);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setLinkEstudioHojaVidaAcademica(
+                                                "linkEstudioHojaVidaAcademica.txt-cHJ1ZWJhIGRlIHRleHR");
 
                 FieldError fieldError = new FieldError("SustentacionTrabajoInvestigacionCoordinadorFase1Dto",
                                 "conceptoCoordinador",

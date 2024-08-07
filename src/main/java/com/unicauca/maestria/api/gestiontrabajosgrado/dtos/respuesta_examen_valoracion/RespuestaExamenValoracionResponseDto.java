@@ -18,7 +18,6 @@ public class RespuestaExamenValoracionResponseDto {
     private Long id;
     private String linkFormatoB;
     private String linkFormatoC;
-    private String linkObservaciones;
     private List<AnexoRespuestaExamenValoracionDto> anexos;
     private ConceptosVarios respuestaExamenValoracion;
     private LocalDate fechaMaximaEntrega;

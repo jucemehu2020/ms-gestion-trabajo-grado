@@ -36,8 +36,5 @@ public class SustentacionTrabajoInvestigacionResponseDto {
     private String linkFormatoI;
     private String linkActaSustentacionPublica;
     private ConceptosVarios respuestaSustentacion;
-    private String linkEstudioHojaVidaAcademicaGrado;
-    private String numeroActaFinal;
-    private LocalDate fechaActaFinal;
 
 }

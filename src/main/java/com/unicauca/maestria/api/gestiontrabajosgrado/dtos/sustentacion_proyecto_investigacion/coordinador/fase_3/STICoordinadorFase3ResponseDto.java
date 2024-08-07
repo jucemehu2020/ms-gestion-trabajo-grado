@@ -15,7 +15,6 @@ public class STICoordinadorFase3ResponseDto {
 
     private Long id;
     private ConceptoVerificacion juradosAceptados;
-    private LocalDate fechaSustentacion;
     private String numeroActaConsejo;
     private LocalDate fechaActaConsejo;
     private String idJuradoInterno;
