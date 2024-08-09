@@ -28,7 +28,7 @@ import org.springframework.validation.FieldError;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
@@ -105,7 +105,7 @@ public class InsertarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -165,7 +165,7 @@ public class InsertarInformacionCoordinadorFase4STest {
 
                         assertNotNull(resultado);
                         assertEquals(1L, resultado.getId());
-                        assertEquals(ConceptosVarios.APROBADO, resultado.getRespuestaSustentacion());
+                        assertEquals(ConceptoSustentacion.APROBADO, resultado.getRespuestaSustentacion());
                 }
         }
 
@@ -175,7 +175,7 @@ public class InsertarInformacionCoordinadorFase4STest {
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setRespuestaSustentacion(ConceptosVarios.NO_APROBADO);
+                                .setRespuestaSustentacion(ConceptoSustentacion.NO_APROBADO);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -220,7 +220,7 @@ public class InsertarInformacionCoordinadorFase4STest {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals(ConceptosVarios.NO_APROBADO, resultado.getRespuestaSustentacion());
+                assertEquals(ConceptoSustentacion.NO_APROBADO, resultado.getRespuestaSustentacion());
         }
 
         @Test
@@ -228,7 +228,7 @@ public class InsertarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APLAZADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APLAZADO);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -276,7 +276,7 @@ public class InsertarInformacionCoordinadorFase4STest {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals(ConceptosVarios.APLAZADO, resultado.getRespuestaSustentacion());
+                assertEquals(ConceptoSustentacion.APLAZADO, resultado.getRespuestaSustentacion());
         }
 
         @Test
@@ -284,7 +284,7 @@ public class InsertarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APLAZADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APLAZADO);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -305,7 +305,7 @@ public class InsertarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 FieldError fieldError = new FieldError("SustentacionProyectoInvestigacionServiceImpl",
                                 "linkActaSustentacionPublica",
@@ -333,7 +333,7 @@ public class InsertarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -354,7 +354,7 @@ public class InsertarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionOld.setId(1L);
@@ -386,7 +386,7 @@ public class InsertarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 2L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptosVarios.APROBADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionOld.setId(1L);

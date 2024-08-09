@@ -9,6 +9,7 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.RespuestaComiteSustentacionDto;
@@ -68,6 +69,6 @@ public class SustentacionTrabajoInvestigacionDto {
     private String linkActaSustentacionPublica;
 
     @NotNull
-    private ConceptosVarios respuestaSustentacion;
+    private ConceptoSustentacion respuestaSustentacion;
 
 }

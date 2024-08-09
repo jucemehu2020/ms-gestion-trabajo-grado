@@ -22,7 +22,7 @@ import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_4.STICoordinadorFase4ResponseDto;
@@ -95,7 +95,7 @@ public class ListarInformacionCoordinadorFase4STest {
 
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionOld = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionOld.setId(1L);
-                sustentacionTrabajoInvestigacionOld.setRespuestaSustentacion(ConceptosVarios.APROBADO);
+                sustentacionTrabajoInvestigacionOld.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 when(sustentacionProyectoInvestigacionRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
@@ -114,7 +114,7 @@ public class ListarInformacionCoordinadorFase4STest {
 
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
-                assertEquals(ConceptosVarios.APROBADO, resultado.getRespuestaSustentacion());
+                assertEquals(ConceptoSustentacion.APROBADO, resultado.getRespuestaSustentacion());
         }
 
         @Test

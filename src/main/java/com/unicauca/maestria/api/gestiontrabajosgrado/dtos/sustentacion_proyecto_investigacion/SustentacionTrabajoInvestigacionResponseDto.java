@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.RespuestaComiteSustentacionDto;
@@ -35,6 +36,6 @@ public class SustentacionTrabajoInvestigacionResponseDto {
     private String linkFormatoH;
     private String linkFormatoI;
     private String linkActaSustentacionPublica;
-    private ConceptosVarios respuestaSustentacion;
+    private ConceptoSustentacion respuestaSustentacion;
 
 }

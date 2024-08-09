@@ -3,7 +3,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyect
 import lombok.*;
 import javax.validation.constraints.NotNull;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 
 @Getter
 @Setter
@@ -13,6 +13,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Con
 public class SustentacionTrabajoInvestigacionCoordinadorFase4Dto {
 
     @NotNull
-    private ConceptosVarios respuestaSustentacion;
+    private ConceptoSustentacion respuestaSustentacion;
 
 }

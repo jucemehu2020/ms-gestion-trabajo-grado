@@ -562,8 +562,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 if (numeroEstadoActual == 5 || (!tieneDosEvaluadores && vieneDe == 2)) {
                                         numEstado = 6;
                                 } else if (numeroEstadoActual == 6 || numeroEstadoActual == 12
-                                                || numeroEstadoActual == 13 || numeroEstadoActual == 17
-                                                || numeroEstadoActual == 15) {
+                                                || numeroEstadoActual == 13 || numeroEstadoActual == 17) {
                                         Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
                                                         .findByTrabajoGradoId(idTrabajoGrado);
                                         if (tiemposPendientesOpt.isPresent()) {
@@ -571,6 +570,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                         }
                                         numEstado = 7;
                                 } else if (numeroEstadoActual == 9 || numeroEstadoActual == 8
+                                                || numeroEstadoActual == 15
                                                 || (conceptoOther != null
                                                                 && conceptoOther.equals(ConceptosVarios.NO_APROBADO)
                                                                 && numeroEstadoActual == 14)) {
@@ -586,7 +586,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 if (numeroEstadoActual == 5 || (!tieneDosEvaluadores && vieneDe == 2)) {
                                         numEstado = 8;
                                 } else if (numeroEstadoActual == 8 || numeroEstadoActual == 12
-                                                || numeroEstadoActual == 14 || numeroEstadoActual == 15) {
+                                                || numeroEstadoActual == 14) {
                                         numEstado = 9;
                                 } else if (numeroEstadoActual == 7 || numeroEstadoActual == 6
                                                 || (conceptoOther != null
@@ -604,7 +604,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 if (numeroEstadoActual == 5 || (!tieneDosEvaluadores && vieneDe == 2)) {
                                         numEstado = 10;
                                 } else if (numeroEstadoActual == 10 || numeroEstadoActual == 13
-                                                || numeroEstadoActual == 14 || numeroEstadoActual == 15) {
+                                                || numeroEstadoActual == 14) {
                                         numEstado = 11;
                                 } else if (numeroEstadoActual == 6 || numeroEstadoActual == 7
                                                 || (conceptoOther != null
@@ -612,6 +612,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                                                 && numeroEstadoActual == 12)) {
                                         numEstado = 13;
                                 } else if (numeroEstadoActual == 8 || numeroEstadoActual == 9
+                                                || numeroEstadoActual == 15
                                                 || (conceptoOther != null
                                                                 && conceptoOther.equals(ConceptosVarios.NO_APROBADO)
                                                                 && numeroEstadoActual == 12)) {

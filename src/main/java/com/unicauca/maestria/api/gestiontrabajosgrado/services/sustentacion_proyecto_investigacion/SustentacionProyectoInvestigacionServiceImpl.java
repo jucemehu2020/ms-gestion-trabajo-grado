@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
@@ -498,9 +499,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 }
 
                 if (sustentacionDto.getFechaSustentacion() != null
-                                && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
+                                && sustentacionDto.getFechaSustentacion().isAfter(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha de la sustentacion no puede ser menor a la fecha actual.");
+                                        "La fecha de la sustentacion no puede ser mayor a la fecha actual.");
                 }
 
                 validarLink(sustentacionDto.getLinkFormatoH());
@@ -589,18 +590,22 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                                                 .getId()
                                                                 + " no encontrado"));
 
-                if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.APROBADO)) {
+                if (sustentacionDto.getRespuestaSustentacion().equals(ConceptoSustentacion.APROBADO)) {
                         Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
                                         .findByTrabajoGradoId(idTrabajoGrado);
                         if (tiemposPendientesOpt.isPresent()) {
                                 tiemposPendientesRepository.delete(tiemposPendientesOpt.get());
                         }
                         trabajoGrado.setNumeroEstado(31);
-                } else if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.NO_APROBADO)) {
+                } else if (sustentacionDto.getRespuestaSustentacion()
+                                .equals(ConceptoSustentacion.APROBADO_CON_OBSERVACIONES)) {
+                        trabajoGrado.setNumeroEstado(32);
+                        insertarInformacionTiempos(trabajoGrado, 15);
+                } else if (sustentacionDto.getRespuestaSustentacion().equals(ConceptoSustentacion.NO_APROBADO)) {
                         trabajoGrado.setNumeroEstado(32);
                 } else {
                         trabajoGrado.setNumeroEstado(33);
-                        insertarInformacionTiempos(trabajoGrado);
+                        insertarInformacionTiempos(trabajoGrado, 60);
                 }
 
                 agregarInformacionCoordinadorFase4(sustentacionProyectoInvestigacionTmp, sustentacionDto, trabajoGrado);
@@ -612,7 +617,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .toCoordinadorFase4Dto(sustentacionProyectoInvestigacionRes);
         }
 
-        private void insertarInformacionTiempos(TrabajoGrado trabajoGrado) {
+        private void insertarInformacionTiempos(TrabajoGrado trabajoGrado, int tiempo) {
                 Optional<TiemposPendientes> optionalTiemposPendientes = tiemposPendientesRepository
                                 .findByTrabajoGradoId(trabajoGrado.getId());
 
@@ -629,7 +634,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 LocalDate fechaActual = LocalDate.now();
                 tiemposPendientes.setFechaRegistro(LocalDate.now());
                 tiemposPendientes.setEstado(trabajoGrado.getNumeroEstado());
-                tiemposPendientes.setFechaLimite(fechaActual.plusDays(60));
+                tiemposPendientes.setFechaLimite(fechaActual.plusDays(tiempo));
 
                 tiemposPendientesRepository.save(tiemposPendientes);
         }
@@ -1312,9 +1317,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 }
 
                 if (sustentacionDto.getFechaSustentacion() != null
-                                && sustentacionDto.getFechaSustentacion().isBefore(LocalDate.now())) {
+                                && sustentacionDto.getFechaSustentacion().isAfter(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha de la sustentacion no puede ser menor a la fecha actual.");
+                                        "La fecha de la sustentacion no puede ser mayor a la fecha actual.");
                 }
 
                 validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado());
@@ -1406,18 +1411,26 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                                 + trabajoGrado.getSustentacionProyectoInvestigacion()
                                                                                 .getId()
                                                                 + " no encontrado"));
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
 
                 if (!sustentacionProyectoInvestigacionTmp.getRespuestaSustentacion()
                                 .equals(sustentacionDto.getRespuestaSustentacion())) {
-                        if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.APROBADO)) {
-
+                        if (sustentacionDto.getRespuestaSustentacion().equals(ConceptoSustentacion.APROBADO)) {
+                                Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
+                                                .findByTrabajoGradoId(idTrabajoGrado);
+                                if (tiemposPendientesOpt.isPresent()) {
+                                        tiemposPendientesRepository.delete(tiemposPendientesOpt.get());
+                                }
                                 trabajoGrado.setNumeroEstado(31);
-                        } else if (sustentacionDto.getRespuestaSustentacion().equals(ConceptosVarios.NO_APROBADO)) {
-
+                        } else if (sustentacionDto.getRespuestaSustentacion()
+                                        .equals(ConceptoSustentacion.APROBADO_CON_OBSERVACIONES)) {
+                                trabajoGrado.setNumeroEstado(37);
+                                insertarInformacionTiempos(trabajoGrado, 15);
+                        } else if (sustentacionDto.getRespuestaSustentacion()
+                                        .equals(ConceptoSustentacion.NO_APROBADO)) {
                                 trabajoGrado.setNumeroEstado(32);
                         } else {
                                 trabajoGrado.setNumeroEstado(33);
+                                insertarInformacionTiempos(trabajoGrado, 60);
                         }
                 }
 

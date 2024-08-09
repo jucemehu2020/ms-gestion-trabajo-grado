@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
@@ -68,7 +69,7 @@ public class SustentacionProyectoInvestigacion {
     private String linkFormatoI;
 
     @Enumerated(EnumType.STRING)
-    private ConceptosVarios respuestaSustentacion;
+    private ConceptoSustentacion respuestaSustentacion;
 
     private String linkEstudioHojaVidaAcademicaGrado;
 

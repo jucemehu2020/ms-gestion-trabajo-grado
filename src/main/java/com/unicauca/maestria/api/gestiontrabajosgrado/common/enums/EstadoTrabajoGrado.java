@@ -39,7 +39,8 @@ public enum EstadoTrabajoGrado {
         SUSTENTACION_NO_APROBADA("Sustentación no APROBADA. Trabajo de grado finalizado."),
         SUSTENTACION_APLAZADA("Sustentación APLAZADA. Trabajo de grado en espera."),
         CANCELADO_TRABAJO_GRADO("El trabajo de grado ha sido cancelado de forma DEFINITIVA por el COORDINADOR."),
-        EVALUADOR_NO_RESPONDIO("Uno o ambos evaluadores no dieron respuesta al EXAMEN DE VALORACIÓN");
+        EVALUADOR_NO_RESPONDIO("Uno o ambos evaluadores no dieron respuesta al EXAMEN DE VALORACIÓN"),
+        SUSTENTACION_APROBADA_CON_OBSERVACIONES("Sustentación APROBADA con OBSERVACIONES. Trabajo de grado en espera.");
 
     private final String mensaje;
 

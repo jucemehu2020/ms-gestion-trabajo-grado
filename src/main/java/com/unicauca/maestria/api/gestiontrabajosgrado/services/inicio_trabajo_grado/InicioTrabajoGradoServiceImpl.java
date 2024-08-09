@@ -248,9 +248,9 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 	public List<InformacionTrabajoGradoResponseDto> listarInformacionEstados(
 			ArrayList<Integer> capturaEstadosDto) {
 
-		boolean isValid = capturaEstadosDto.stream().allMatch(estado -> estado >= 0 && estado <= 36);
+		boolean isValid = capturaEstadosDto.stream().allMatch(estado -> estado >= 0 && estado <= 37);
 		if (!isValid) {
-			throw new InformationException("El rango de estados es del 0 a 36");
+			throw new InformationException("El rango de estados es del 0 a 37");
 		}
 
 		List<TrabajoGrado> listaTrabajoGrado = trabajoGradoRepository.findAll();
