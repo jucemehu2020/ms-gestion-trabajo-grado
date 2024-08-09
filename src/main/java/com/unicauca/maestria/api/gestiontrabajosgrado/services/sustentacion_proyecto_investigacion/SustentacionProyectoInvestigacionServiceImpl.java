@@ -254,6 +254,11 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                                 + " no encontrado"));
 
                 if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
+                        String rutaArchivo = identificacionArchivo(trabajoGrado);
+                        sustentacionProyectoInvestigacionTmp
+                                        .setLinkEstudioHojaVidaAcademica(FilesUtilities.guardarArchivoNew2(
+                                                        rutaArchivo,
+                                                        sustentacionDto.getLinkEstudioHojaVidaAcademica()));
                         trabajoGrado.setNumeroEstado(26);
                 } else {
                         ArrayList<String> correos = new ArrayList<>();
@@ -267,12 +272,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         trabajoGrado.setNumeroEstado(25);
                 }
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
-
                 sustentacionProyectoInvestigacionTmp.setConceptoCoordinador(sustentacionDto.getConceptoCoordinador());
-                sustentacionProyectoInvestigacionTmp.setLinkEstudioHojaVidaAcademica(FilesUtilities.guardarArchivoNew2(
-                                rutaArchivo,
-                                sustentacionDto.getLinkEstudioHojaVidaAcademica()));
 
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacionTmp);
