@@ -980,15 +980,14 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 }
 
                 if ((sustentacionDto.getEnvioEmail() == null
-                                || sustentacionDto.getLinkEstudioHojaVidaAcademica() == null)
+                                || sustentacionDto.getLinkEstudioHojaVidaAcademica() != null)
                                 && sustentacionDto.getConceptoCoordinador()
                                                 .equals(ConceptoVerificacion.RECHAZADO)) {
                         throw new InformationException("Faltan atributos para el registro");
                 }
 
-                if ((sustentacionDto.getEnvioEmail() != null
-                                || sustentacionDto.getLinkEstudioHojaVidaAcademica() != null)
-                                && sustentacionDto.getConceptoCoordinador()
+                if ((sustentacionDto.getLinkEstudioHojaVidaAcademica() == null
+                                || sustentacionDto.getEnvioEmail() != null) && sustentacionDto.getConceptoCoordinador()
                                                 .equals(ConceptoVerificacion.ACEPTADO)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
