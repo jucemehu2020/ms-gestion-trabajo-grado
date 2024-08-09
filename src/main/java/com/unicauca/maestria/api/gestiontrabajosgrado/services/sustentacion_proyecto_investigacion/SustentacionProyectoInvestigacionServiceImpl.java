@@ -657,6 +657,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .obtenerDocentePorId(sustentacionProyectoInvestigacionTmp.getIdJuradoInterno());
                 String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
                 Map<String, String> evaluadorInternoMap = new HashMap<>();
+                evaluadorInternoMap.put("id", docente.getId().toString());
                 evaluadorInternoMap.put("nombres", nombre_docente);
                 evaluadorInternoMap.put("universidad", "Universidad del Cauca");
                 evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
@@ -665,6 +666,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .obtenerExpertoPorId(sustentacionProyectoInvestigacionTmp.getIdJuradoExterno());
                 String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
                 Map<String, String> evaluadorExternoMap = new HashMap<>();
+                evaluadorExternoMap.put("id", experto.getId().toString());
                 evaluadorExternoMap.put("nombres", nombre_experto);
                 evaluadorExternoMap.put("universidad", experto.getUniversidadtitexp());
                 evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
@@ -702,7 +704,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 "Trabajo de grado con id " + idTrabajoGrado
                                                                 + " no encontrado"));
 
-                if (sustentacionTrabajoInvestigacion.getConceptoCoordinador() == null) {
+                if (sustentacionTrabajoInvestigacion.getConceptoCoordinador() == null
+                                && sustentacionTrabajoInvestigacion.getLinkEstudioHojaVidaAcademica() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
@@ -723,9 +726,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .getActaFechaRespuestaComite() == null ||
                                 sustentacionTrabajoInvestigacion.getActaFechaRespuestaComite().isEmpty();
 
-                if (actaFechaRespuestaComiteEmpty
-                                && sustentacionTrabajoInvestigacion.getLinkEstudioHojaVidaAcademica() == null
-                                && sustentacionTrabajoInvestigacion.getLinkFormatoG() == null) {
+                if (actaFechaRespuestaComiteEmpty && sustentacionTrabajoInvestigacion.getLinkFormatoG() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 

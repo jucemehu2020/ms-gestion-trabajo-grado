@@ -418,7 +418,7 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	public SolicitudExamenValoracionDocenteResponseListDto listarInformacionDocente(Long idTrabajoGrado) {
 		SolicitudExamenValoracion solicitudExamenValoracion = solicitudExamenValoracionRepository
 				.findByTrabajoGradoId(idTrabajoGrado).orElseThrow(() -> new ResourceNotFoundException(
-						"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+						"Solicitud examen de valoracion con id trabajo de grado " + idTrabajoGrado + " no encontrado"));
 
 		if (solicitudExamenValoracion.getLinkFormatoA() == null || solicitudExamenValoracion.getLinkFormatoD() == null
 				|| solicitudExamenValoracion.getLinkFormatoE() == null
