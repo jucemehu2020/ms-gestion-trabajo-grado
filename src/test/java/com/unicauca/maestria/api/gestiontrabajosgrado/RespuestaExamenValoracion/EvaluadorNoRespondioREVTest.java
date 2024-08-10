@@ -37,7 +37,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class EvaluadorNoRespondioTest {
+public class EvaluadorNoRespondioREVTest {
 
     @Mock
     private RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;

@@ -169,7 +169,7 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                                 .countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado);
 
                 Long totalAplazados = respuestaExamenValoracionRepository
-                                .countByTrabajoGradoIdAndRespuestaNoAprobado(idTrabajoGrado);
+                                .countByTrabajoGradoIdAndRespuestaAplazado(idTrabajoGrado);
 
                 if (totalNoAprobados > 0 && totalAplazados > 0 && numEstado == 7
                                 && trabajoGrado.getNumeroEstado() != 17) {
@@ -645,7 +645,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
         }
 
         @Override
-        @Transactional(readOnly = true)
         public Boolean evaluadorNoRespondio(Long idTrabajoGrado) {
                 TrabajoGrado trabajoGrado = trabajoGradoRepository
                                 .findById(idTrabajoGrado)

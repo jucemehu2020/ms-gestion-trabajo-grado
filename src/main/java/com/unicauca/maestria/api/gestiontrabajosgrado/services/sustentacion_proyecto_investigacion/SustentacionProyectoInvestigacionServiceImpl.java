@@ -612,7 +612,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         trabajoGrado.setNumeroEstado(31);
                 } else if (sustentacionDto.getRespuestaSustentacion()
                                 .equals(ConceptoSustentacion.APROBADO_CON_OBSERVACIONES)) {
-                        trabajoGrado.setNumeroEstado(32);
+                        trabajoGrado.setNumeroEstado(36);
                         insertarInformacionTiempos(trabajoGrado, 15);
                 } else if (sustentacionDto.getRespuestaSustentacion().equals(ConceptoSustentacion.NO_APROBADO)) {
                         trabajoGrado.setNumeroEstado(32);
@@ -1425,7 +1425,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
                 if (trabajoGrado.getNumeroEstado() != 30 && trabajoGrado.getNumeroEstado() != 31
-                                && trabajoGrado.getNumeroEstado() != 32 && trabajoGrado.getNumeroEstado() != 33) {
+                                && trabajoGrado.getNumeroEstado() != 32 && trabajoGrado.getNumeroEstado() != 33
+                                && trabajoGrado.getNumeroEstado() != 36) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
@@ -1449,7 +1450,7 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 trabajoGrado.setNumeroEstado(31);
                         } else if (sustentacionDto.getRespuestaSustentacion()
                                         .equals(ConceptoSustentacion.APROBADO_CON_OBSERVACIONES)) {
-                                trabajoGrado.setNumeroEstado(37);
+                                trabajoGrado.setNumeroEstado(36);
                                 insertarInformacionTiempos(trabajoGrado, 15);
                         } else if (sustentacionDto.getRespuestaSustentacion()
                                         .equals(ConceptoSustentacion.NO_APROBADO)) {

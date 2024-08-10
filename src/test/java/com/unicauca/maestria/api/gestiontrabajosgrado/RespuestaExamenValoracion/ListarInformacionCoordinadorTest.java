@@ -183,7 +183,7 @@ public class ListarInformacionCoordinadorTest {
         }
 
         @Test
-        void ListarInformacionCoordinadorTestt_TrabajoGradoNoExiste() {
+        void ListarInformacionCoordinadorTest_TrabajoGradoNoExiste() {
                 Long idTrabajoGrado = 2L;
 
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
