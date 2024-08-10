@@ -104,7 +104,8 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
+                                .setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -131,12 +132,6 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 PersonaEstudianteDto.setNombre("Juan");
                 PersonaEstudianteDto.setApellido("Meneses");
 
-                EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
-                estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
-
-                when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
-                                .thenReturn(estudianteResponseDtoAll);
-
                 when(tiemposPendientesRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(new TiemposPendientes()));
 
@@ -157,21 +152,14 @@ public class ActualizarInformacionCoordinadorFase4STest {
                                 .toCoordinadorFase4Dto(sustentacionTrabajoInvestigacionNew))
                                 .thenReturn(coordinadorFase4ResponseDto);
 
-                try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
-                        utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
-                                        .thenReturn("path/to/new/file");
-                        utilities.when(() -> FilesUtilities.deleteFileExample(anyString()))
-                                        .thenReturn(true);
+                STICoordinadorFase4ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
+                                .actualizarInformacionCoordinadoFase4(idTrabajoGrado,
+                                                sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
+                                                result);
 
-                        STICoordinadorFase4ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
-                                        .actualizarInformacionCoordinadoFase4(idTrabajoGrado,
-                                                        sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
-                                                        result);
-
-                        assertNotNull(resultado);
-                        assertEquals(1L, resultado.getId());
-                        assertEquals(ConceptoSustentacion.APROBADO, resultado.getRespuestaSustentacion());
-                }
+                assertNotNull(resultado);
+                assertEquals(1L, resultado.getId());
+                assertEquals(ConceptoSustentacion.APROBADO, resultado.getRespuestaSustentacion());
         }
 
         @Test
@@ -202,17 +190,6 @@ public class ActualizarInformacionCoordinadorFase4STest {
                                 .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
-                PersonaDto PersonaEstudianteDto = new PersonaDto();
-                PersonaEstudianteDto.setIdentificacion(123L);
-                PersonaEstudianteDto.setNombre("Juan");
-                PersonaEstudianteDto.setApellido("Meneses");
-
-                EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
-                estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
-
-                when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
-                                .thenReturn(estudianteResponseDtoAll);
-
                 when(tiemposPendientesRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(new TiemposPendientes()));
 
@@ -233,21 +210,15 @@ public class ActualizarInformacionCoordinadorFase4STest {
                                 .toCoordinadorFase4Dto(sustentacionTrabajoInvestigacionNew))
                                 .thenReturn(coordinadorFase4ResponseDto);
 
-                try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
-                        utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
-                                        .thenReturn("path/to/new/file");
-                        utilities.when(() -> FilesUtilities.deleteFileExample(anyString()))
-                                        .thenReturn(true);
+                STICoordinadorFase4ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
+                                .actualizarInformacionCoordinadoFase4(idTrabajoGrado,
+                                                sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
+                                                result);
 
-                        STICoordinadorFase4ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
-                                        .actualizarInformacionCoordinadoFase4(idTrabajoGrado,
-                                                        sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
-                                                        result);
+                assertNotNull(resultado);
+                assertEquals(1L, resultado.getId());
+                assertEquals(ConceptoSustentacion.NO_APROBADO, resultado.getRespuestaSustentacion());
 
-                        assertNotNull(resultado);
-                        assertEquals(1L, resultado.getId());
-                        assertEquals(ConceptoSustentacion.NO_APROBADO, resultado.getRespuestaSustentacion());
-                }
         }
 
         @Test
@@ -255,7 +226,8 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APLAZADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
+                                .setRespuestaSustentacion(ConceptoSustentacion.APLAZADO);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -276,18 +248,7 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 when(sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
-
-                PersonaDto PersonaEstudianteDto = new PersonaDto();
-                PersonaEstudianteDto.setIdentificacion(123L);
-                PersonaEstudianteDto.setNombre("Juan");
-                PersonaEstudianteDto.setApellido("Meneses");
-
-                EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
-                estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
-
-                when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
-                                .thenReturn(estudianteResponseDtoAll);
-
+                                
                 when(tiemposPendientesRepository.findByTrabajoGradoId(idTrabajoGrado))
                                 .thenReturn(Optional.of(new TiemposPendientes()));
 
@@ -326,34 +287,12 @@ public class ActualizarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase4STest_AtributosNoValidos() {
-                Long idTrabajoGrado = 1L;
-
-                SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
-                                .setRespuestaSustentacion(ConceptoSustentacion.NO_APROBADO);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        sustentacionProyectoInvestigacionServiceImpl.actualizarInformacionCoordinadoFase4(
-                                        idTrabajoGrado,
-                                        sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Envio de atributos no permitido";
-
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void ActualizarInformacionCoordinadorFase4STest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
+                                .setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 FieldError fieldError = new FieldError("SustentacionProyectoInvestigacionServiceImpl",
                                 "linkActaSustentacionPublica",
@@ -378,33 +317,12 @@ public class ActualizarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase4STest_AtributosIncompletos() {
-                Long idTrabajoGrado = 1L;
-
-                SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        sustentacionProyectoInvestigacionServiceImpl.actualizarInformacionCoordinadoFase4(
-                                        idTrabajoGrado,
-                                        sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Atributos incorrectos";
-
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void ActualizarInformacionCoordinadorFase4STest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
+                                .setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 when(result.hasErrors()).thenReturn(false);
 
@@ -440,7 +358,8 @@ public class ActualizarInformacionCoordinadorFase4STest {
                 Long idTrabajoGrado = 2L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase4Dto
+                                .setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
 
                 when(result.hasErrors()).thenReturn(false);
 

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +31,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClien
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClientEgresados;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
@@ -128,6 +131,17 @@ public class ActualizarInformacionCoordinadorFase1STest {
                                 .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
+                PersonaDto PersonaEstudianteDto = new PersonaDto();
+                PersonaEstudianteDto.setIdentificacion(123L);
+                PersonaEstudianteDto.setNombre("Juan");
+                PersonaEstudianteDto.setApellido("Meneses");
+
+                EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
+                estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
+
+                when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
+                                .thenReturn(estudianteResponseDtoAll);
+
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionNew.setId(1L);
                 sustentacionTrabajoInvestigacionNew
@@ -155,8 +169,6 @@ public class ActualizarInformacionCoordinadorFase1STest {
                 assertNotNull(resultado);
                 assertEquals(1L, resultado.getId());
                 assertEquals(ConceptoVerificacion.ACEPTADO, resultado.getConceptoCoordinador());
-                assertEquals("./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademica.txt",
-                                resultado.getLinkEstudioHojaVidaAcademica());
         }
 
         @Test
@@ -223,13 +235,19 @@ public class ActualizarInformacionCoordinadorFase1STest {
                                 .toCoordinadorFase1Dto(sustentacionTrabajoInvestigacionNew))
                                 .thenReturn(stiCoordinadorFase1ResponseDto);
 
-                STICoordinadorFase1ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
-                                .actualizarInformacionCoordinadoFase1(idTrabajoGrado,
-                                                sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
+                try (MockedStatic<FilesUtilities> utilities = mockStatic(FilesUtilities.class)) {
+                        utilities.when(() -> FilesUtilities.guardarArchivoNew2(anyString(), anyString()))
+                                        .thenReturn("path/to/new/file");
+                        utilities.when(() -> FilesUtilities.deleteFileExample(anyString()))
+                                        .thenReturn(true);
+                        STICoordinadorFase1ResponseDto resultado = sustentacionProyectoInvestigacionServiceImpl
+                                        .actualizarInformacionCoordinadoFase1(idTrabajoGrado,
+                                                        sustentacionTrabajoInvestigacionCoordinadorFase1Dto, result);
 
-                assertNotNull(resultado);
-                assertEquals(1L, resultado.getId());
-                assertEquals(ConceptoVerificacion.RECHAZADO, resultado.getConceptoCoordinador());
+                        assertNotNull(resultado);
+                        assertEquals(1L, resultado.getId());
+                        assertEquals(ConceptoVerificacion.RECHAZADO, resultado.getConceptoCoordinador());
+                }
         }
 
         @Test

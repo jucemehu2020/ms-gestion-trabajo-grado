@@ -165,7 +165,7 @@ public class CrearTrabajoGradoTest {
 
         assertNotNull(resultado);
         assertEquals(0, resultado.getNumeroEstado());
-        assertEquals("Sin registrar solicitud de examen de valoración por parte del DOCENTE", resultado.getEstado());
+        assertEquals("Sin registrar SOLICITUD EXAMEN DE VALORACIÓN por parte del DOCENTE.", resultado.getEstado());
     }
 
     @Test

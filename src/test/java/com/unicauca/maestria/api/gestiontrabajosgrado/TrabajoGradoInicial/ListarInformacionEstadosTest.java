@@ -122,7 +122,7 @@ public class ListarInformacionEstadosTest {
         assertEquals("Julio Mellizo", dto1.getNombreCompleto());
         assertEquals("julio@example.com", dto1.getCorreoElectronico());
         assertEquals(1, dto1.getNumeroEstado());
-        assertEquals("Pendiente revision por parte del COORDINADOR", dto1.getEstado());
+        assertEquals("Pendiente revisión de archivos para la SOLICITUD EXAMEN DE VALORACIÓN por parte del COORDINADOR.", dto1.getEstado());
 
         InformacionTrabajoGradoResponseDto dto2 = resultado.get(1);
         assertEquals(2L, dto2.getId());
@@ -137,14 +137,14 @@ public class ListarInformacionEstadosTest {
     @Test
     void ListarInformacionEstadosTest_RangoNoValido() {
         ArrayList<Integer> numerosEstado = new ArrayList<Integer>();
-        numerosEstado.add(37);
+        numerosEstado.add(39);
 
         InformationException exception = assertThrows(InformationException.class, () -> {
             inicioTrabajoGradoServiceImpl.listarInformacionEstados(numerosEstado);
         });
 
         assertNotNull(exception.getMessage());
-        String expectedMessage = "El rango de estados es del 0 a 36";
+        String expectedMessage = "El rango de estados es del 0 a 37";
         assertTrue(exception.getMessage().contains(expectedMessage));
     }
 

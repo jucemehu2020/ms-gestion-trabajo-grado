@@ -128,6 +128,7 @@ public class ListarInformacionDocenteSTest {
                                 .thenReturn(docenteResponseDto);
 
                 Map<String, String> docenteEsperado = new HashMap<>();
+                docenteEsperado.put("id", String.valueOf(docenteResponseDto.getId()));
                 docenteEsperado.put("correo", docenteResponseDto.getPersona().getCorreoElectronico());
                 docenteEsperado.put("universidad", "Universidad del Cauca");
                 docenteEsperado.put("nombres",
@@ -148,6 +149,7 @@ public class ListarInformacionDocenteSTest {
                                 .thenReturn(expertoResponseDto);
 
                 Map<String, String> expertoEsperado = new HashMap<>();
+                expertoEsperado.put("id", String.valueOf(expertoResponseDto.getId()));
                 expertoEsperado.put("correo", expertoResponseDto.getPersona().getCorreoElectronico());
                 expertoEsperado.put("universidad", expertoResponseDto.getUniversidadtitexp());
                 expertoEsperado.put("nombres",

@@ -128,6 +128,17 @@ public class InsertarInformacionCoordinadorFase1STest {
                                 trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
+                PersonaDto PersonaEstudianteDto = new PersonaDto();
+                PersonaEstudianteDto.setIdentificacion(123L);
+                PersonaEstudianteDto.setNombre("Juan");
+                PersonaEstudianteDto.setApellido("Meneses");
+
+                EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
+                estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
+
+                when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
+                                .thenReturn(estudianteResponseDtoAll);
+
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionNew.setId(1L);
                 sustentacionTrabajoInvestigacionNew
@@ -311,7 +322,8 @@ public class InsertarInformacionCoordinadorFase1STest {
                 Long idTrabajoGrado = 1L;
 
                 SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionTrabajoInvestigacionCoordinadorFase1Dto = new SustentacionTrabajoInvestigacionCoordinadorFase1Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase1Dto.setConceptoCoordinador(ConceptoVerificacion.RECHAZADO);
+                sustentacionTrabajoInvestigacionCoordinadorFase1Dto
+                                .setConceptoCoordinador(ConceptoVerificacion.RECHAZADO);
 
                 when(result.hasErrors()).thenReturn(false);
 

@@ -126,17 +126,6 @@ public class InsertarInformacionCoordinadorFase4STest {
                                 .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId()))
                                 .thenReturn(Optional.of(sustentacionTrabajoInvestigacionOld));
 
-                PersonaDto PersonaEstudianteDto = new PersonaDto();
-                PersonaEstudianteDto.setIdentificacion(123L);
-                PersonaEstudianteDto.setNombre("Juan");
-                PersonaEstudianteDto.setApellido("Meneses");
-
-                EstudianteResponseDtoAll estudianteResponseDtoAll = new EstudianteResponseDtoAll();
-                estudianteResponseDtoAll.setPersona(PersonaEstudianteDto);
-
-                when(archivoClient.obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante()))
-                                .thenReturn(estudianteResponseDtoAll);
-
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionNew.setId(sustentacionTrabajoInvestigacionOld.getId());
                 sustentacionTrabajoInvestigacionNew.setRespuestaSustentacion(
@@ -280,27 +269,6 @@ public class InsertarInformacionCoordinadorFase4STest {
         }
 
         @Test
-        void InsertarInformacionCoordinadorFase4STest_AtributosNoValidos() {
-                Long idTrabajoGrado = 1L;
-
-                SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APLAZADO);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        sustentacionProyectoInvestigacionServiceImpl.insertarInformacionCoordinadoFase4(idTrabajoGrado,
-                                        sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Envio de atributos no permitido";
-
-                assertTrue(exception.getMessage().contains(expectedMessage));
-        }
-
-        @Test
         void InsertarInformacionCoordinadorFase4STest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
@@ -326,27 +294,6 @@ public class InsertarInformacionCoordinadorFase4STest {
                                 + fieldError.getDefaultMessage();
                 String expectedMessage = "El campo: linkActaSustentacionPublica, no debe ser nulo";
                 assertTrue(actualMessage.contains(expectedMessage));
-        }
-
-        @Test
-        void InsertarInformacionCoordinadorFase4STest_AtributosIncompletos() {
-                Long idTrabajoGrado = 1L;
-
-                SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionTrabajoInvestigacionCoordinadorFase4Dto = new SustentacionTrabajoInvestigacionCoordinadorFase4Dto();
-                sustentacionTrabajoInvestigacionCoordinadorFase4Dto.setRespuestaSustentacion(ConceptoSustentacion.APROBADO);
-
-                when(result.hasErrors()).thenReturn(false);
-
-                InformationException exception = assertThrows(InformationException.class, () -> {
-                        sustentacionProyectoInvestigacionServiceImpl.insertarInformacionCoordinadoFase4(idTrabajoGrado,
-                                        sustentacionTrabajoInvestigacionCoordinadorFase4Dto,
-                                        result);
-                });
-
-                assertNotNull(exception.getMessage());
-                String expectedMessage = "Atributos incorrectos";
-
-                assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
         @Test

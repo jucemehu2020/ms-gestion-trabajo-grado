@@ -41,7 +41,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.Traba
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.coordinador.Fase2.InformacionEnvioEvaluadorDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.InformacionEnvioConsejoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.RespuestaComiteSustentacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.STICoordinadorFase2ResponseDto;

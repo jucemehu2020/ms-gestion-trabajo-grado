@@ -293,6 +293,19 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new FieldErrorException(result);
                 }
 
+                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+                                .equals(Concepto.NO_APROBADO)
+                                && (sustentacionDto.getLinkFormatoG() != null
+                                                || sustentacionDto.getInformacionEnvioConsejo() != null)) {
+                        throw new InformationException("Envio de atributos no permitido");
+                }
+
+                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)
+                                && (sustentacionDto.getLinkFormatoG() == null
+                                                || sustentacionDto.getInformacionEnvioConsejo() == null)) {
+                        throw new InformationException("Atributos incorrectos");
+                }
+
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getFechaActa() != null
                                 && sustentacionDto.getActaFechaRespuestaComite().get(0).getFechaActa()
                                                 .isAfter(LocalDate.now())) {
@@ -1084,6 +1097,19 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         BindingResult result) {
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
+                }
+
+                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
+                                .equals(Concepto.NO_APROBADO)
+                                && (sustentacionDto.getLinkFormatoG() != null
+                                                || sustentacionDto.getInformacionEnvioConsejo() != null)) {
+                        throw new InformationException("Envio de atributos no permitido");
+                }
+
+                if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite().equals(Concepto.APROBADO)
+                                && (sustentacionDto.getLinkFormatoG() == null
+                                                || sustentacionDto.getInformacionEnvioConsejo() == null)) {
+                        throw new InformationException("Atributos incorrectos");
                 }
 
                 TrabajoGrado trabajoGrado = trabajoGradoRepository

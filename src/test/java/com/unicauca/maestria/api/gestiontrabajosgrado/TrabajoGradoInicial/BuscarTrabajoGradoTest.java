@@ -89,7 +89,7 @@ public class BuscarTrabajoGradoTest {
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
-        assertEquals("Pendiente revision por parte del COORDINADOR", resultado.getEstado());
+        assertEquals("Pendiente revisión de archivos para la SOLICITUD EXAMEN DE VALORACIÓN por parte del COORDINADOR.", resultado.getEstado());
         assertEquals(LocalDate.parse("2025-07-12", formatter), resultado.getFechaCreacion());
         assertEquals(1, resultado.getNumeroEstado());
         assertEquals("Ciclo del software", resultado.getTitulo());

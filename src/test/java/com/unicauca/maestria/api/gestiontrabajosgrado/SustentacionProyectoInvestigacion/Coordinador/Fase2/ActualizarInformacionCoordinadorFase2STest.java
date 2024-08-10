@@ -60,7 +60,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.services.sustentacion_proy
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ActualizarInformacionCoordinadorFase2Test {
+public class ActualizarInformacionCoordinadorFase2STest {
 
         @Mock
         private SustentacionProyectoInvestigacionRepository sustentacionProyectoInvestigacionRepository;
@@ -108,7 +108,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase2Test_ActualizacionExitosaTrue() {
+        void ActualizarInformacionCoordinadorFase2STest_ActualizacionExitosaTrue() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -244,7 +244,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase2Test_ActualizacionExitosaFalse() {
+        void ActualizarInformacionCoordinadorFase2STest_ActualizacionExitosaFalse() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -367,7 +367,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase2Test_AtributosNoValidos() {
+        void ActualizarInformacionCoordinadorFase2STest_AtributosNoValidos() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -407,7 +407,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase2Test_FaltanAtributos() {
+        void ActualizarInformacionCoordinadorFase2STest_FaltanAtributos() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -452,7 +452,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase2Test_AtributosIncompletos() {
+        void ActualizarInformacionCoordinadorFase2STest_AtributosIncompletos() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -465,15 +465,9 @@ public class ActualizarInformacionCoordinadorFase2Test {
                 List<RespuestaComiteSustentacionDto> listaRespuestaComiteDto = new ArrayList<>();
                 listaRespuestaComiteDto.add(respuestaComiteSustentacionDto);
 
-                EnvioEmailDto envioEmailDto = new EnvioEmailDto();
-                envioEmailDto.setAsunto("Solicitud revision comite");
-                envioEmailDto.setMensaje("Comedidamente solicito revisar los documentos.");
-
                 SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto = new SustentacionTrabajoInvestigacionCoordinadorFase2Dto();
                 sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                 .setActaFechaRespuestaComite(listaRespuestaComiteDto);
-                sustentacionTrabajoInvestigacionCoordinadorFase2Dto.setEnvioEmail(envioEmailDto);
-
                 when(result.hasErrors()).thenReturn(false);
 
                 InformationException exception = assertThrows(InformationException.class, () -> {
@@ -490,7 +484,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase2Test_EstadoNoValido() {
+        void ActualizarInformacionCoordinadorFase2STest_EstadoNoValido() {
                 Long idTrabajoGrado = 1L;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -555,7 +549,7 @@ public class ActualizarInformacionCoordinadorFase2Test {
         }
 
         @Test
-        void ActualizarInformacionCoordinadorFase2Test_NoExisteTrabajoGrado() {
+        void ActualizarInformacionCoordinadorFase2STest_NoExisteTrabajoGrado() {
 
                 Long idTrabajoGrado = 2L;
 
