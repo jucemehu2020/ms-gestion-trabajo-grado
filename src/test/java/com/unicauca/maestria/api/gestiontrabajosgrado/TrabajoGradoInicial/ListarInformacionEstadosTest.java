@@ -131,7 +131,7 @@ public class ListarInformacionEstadosTest {
         assertEquals("Luis Perez", dto2.getNombreCompleto());
         assertEquals("luis@example.com", dto2.getCorreoElectronico());
         assertEquals(2, dto2.getNumeroEstado());
-        assertEquals("Se ha devuelto el examen de valoracion para correciones solicitadas del COORDINADOR", dto2.getEstado());
+        assertEquals("Se ha devuelto la SOLICITUD EXAMEN DE VALORACIÓN para realizar correcciones solicitadas del COORDINADOR.", dto2.getEstado());
     }
 
     @Test
