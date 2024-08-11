@@ -848,30 +848,25 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	private void updateExamenValoracionCoordinadorValues(SolicitudExamenValoracion examenValoracion,
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto, TrabajoGrado trabajoGrado) {
 
-		List<RespuestaComiteExamenValoracion> respuestaComiteList = solicitudExamenValoracionRepository
-				.findRespuestaComiteBySolicitudExamenValoracionId(examenValoracion.getId());
-		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteList.isEmpty() ? null
-				: respuestaComiteList.get(0);
+		// Obtener el último registro asociado a este examen de valoración
+		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteSolicitudRepository
+				.findFirstBySolicitudExamenValoracionIdOrderByIdDesc(examenValoracion.getId());
 
+		// Si se encontró un registro, actualízalo
 		if (ultimoRegistro != null) {
 			ultimoRegistro.setNumeroActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getNumeroActa());
 			ultimoRegistro.setFechaActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getFechaActa());
-
-			RespuestaComiteExamenValoracion actaFechaRespuestaComite = respuestaComiteSolicitudRepository
-					.findFirstByOrderByIdDesc();
-
-			actaFechaRespuestaComite
+			ultimoRegistro
 					.setConceptoComite(examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite());
-			actaFechaRespuestaComite
-					.setNumeroActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getNumeroActa());
-			actaFechaRespuestaComite
-					.setFechaActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getFechaActa());
 
-			examenValoracion.setFechaMaximaEvaluacion(examenValoracionDto.getFechaMaximaEvaluacion());
-			examenValoracion.setLinkOficioDirigidoEvaluadores(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
-
-			respuestaComiteSolicitudRepository.save(actaFechaRespuestaComite);
+			// Guardar los cambios en la base de datos
+			respuestaComiteSolicitudRepository.save(ultimoRegistro);
 		}
+
+		// Actualizar otros campos en examenValoracion
+		examenValoracion.setFechaMaximaEvaluacion(examenValoracionDto.getFechaMaximaEvaluacion());
+		examenValoracion.setLinkOficioDirigidoEvaluadores(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
+
 	}
 
 	private String identificacionArchivo(TrabajoGrado trabajoGrado) {

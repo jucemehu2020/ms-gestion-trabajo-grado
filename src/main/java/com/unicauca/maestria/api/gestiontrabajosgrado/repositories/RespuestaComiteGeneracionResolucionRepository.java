@@ -8,4 +8,6 @@ public interface RespuestaComiteGeneracionResolucionRepository
         extends JpaRepository<RespuestaComiteGeneracionResolucion, Long> {
 
     RespuestaComiteGeneracionResolucion findFirstByOrderByIdDesc();
+
+    RespuestaComiteGeneracionResolucion findFirstByGeneracionResolucionIdOrderByIdDesc(Long generacionResolucionId);
 }

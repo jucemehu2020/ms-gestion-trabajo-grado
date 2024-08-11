@@ -1220,38 +1220,28 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto,
                         TrabajoGrado trabajoGrado) {
 
-                List<RespuestaComiteSustentacion> respuestaComiteList = sustentacionProyectoInvestigacionRepository
-                                .findRespuestaComiteBySustentacionId(sustentacionTrabajoInvestigacion.getId());
-                RespuestaComiteSustentacion ultimoRegistro = respuestaComiteList.isEmpty() ? null
-                                : respuestaComiteList.get(0);
+                // Obtener el último registro asociado a este
+                // id_sustentacion_proyecto_investigacion
+                RespuestaComiteSustentacion ultimoRegistro = respuestaComiteSustentacionRepository
+                                .findFirstBySustentacionProyectoInvestigacionIdOrderByIdDesc(sustentacionTrabajoInvestigacion.getId());
 
                 if (ultimoRegistro != null) {
-                        // Actualizar los valores de ultimoRegistro
+                        // Actualizar los valores del último registro
                         ultimoRegistro.setNumeroActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                         .getActaFechaRespuestaComite().get(0).getNumeroActa());
                         ultimoRegistro.setFechaActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                         .getActaFechaRespuestaComite().get(0).getFechaActa());
+                        ultimoRegistro.setConceptoComite(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
+                                        .getActaFechaRespuestaComite().get(0).getConceptoComite());
 
-                        // Actualizar la lista actaFechaRespuestaComite de examenValoracion
-                        RespuestaComiteSustentacion actaFechaRespuestaComite = respuestaComiteSustentacionRepository
-                                        .findFirstByOrderByIdDesc();
-
-                        actaFechaRespuestaComite.setConceptoComite(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                        .getActaFechaRespuestaComite().get(0)
-                                        .getConceptoComite());
-                        actaFechaRespuestaComite.setNumeroActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                        .getActaFechaRespuestaComite().get(0)
-                                        .getNumeroActa());
-                        actaFechaRespuestaComite.setFechaActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                        .getActaFechaRespuestaComite().get(0)
-                                        .getFechaActa());
-
-                        // Actualizar otros campos de examenValoracion
-                        sustentacionTrabajoInvestigacion.setLinkFormatoG(
-                                        sustentacionTrabajoInvestigacionCoordinadorFase2Dto.getLinkFormatoG());
-
-                        respuestaComiteSustentacionRepository.save(actaFechaRespuestaComite);
+                        // Guardar los cambios en la base de datos
+                        respuestaComiteSustentacionRepository.save(ultimoRegistro);
                 }
+
+                // Actualizar otros campos en sustentacionTrabajoInvestigacion
+                sustentacionTrabajoInvestigacion
+                                .setLinkFormatoG(sustentacionTrabajoInvestigacionCoordinadorFase2Dto.getLinkFormatoG());
+
         }
 
         @Override

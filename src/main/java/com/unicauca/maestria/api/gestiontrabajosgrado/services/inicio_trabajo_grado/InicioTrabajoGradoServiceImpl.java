@@ -289,6 +289,10 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 						() -> new ResourceNotFoundException(
 								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+		if(trabajoGrado.getNumeroEstado() == 34){	
+			throw new InformationException("El trabajo de grado ya ha sido cancelado");
+		}
+
 		trabajoGrado.setNumeroEstado(34);
 
 		trabajoGradoRepository.save(trabajoGrado);

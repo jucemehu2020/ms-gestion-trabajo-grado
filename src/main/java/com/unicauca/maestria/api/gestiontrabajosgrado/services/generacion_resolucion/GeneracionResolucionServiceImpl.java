@@ -816,40 +816,30 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto,
                         TrabajoGrado trabajoGrado) {
 
-                List<RespuestaComiteGeneracionResolucion> respuestaComiteList = generacionResolucionRepository
-                                .findRespuestaComiteByGeneracionResolucionId(
-                                                generacionResolucion.getId());
-                RespuestaComiteGeneracionResolucion ultimoRegistro = respuestaComiteList.isEmpty() ? null
-                                : respuestaComiteList.get(0);
+                // Obtener el último registro asociado a este id_generacion_resolucion
+                RespuestaComiteGeneracionResolucion ultimoRegistro = respuestaComiteGeneracionResolucionRepository
+                                .findFirstByGeneracionResolucionIdOrderByIdDesc(generacionResolucion.getId());
 
                 if (ultimoRegistro != null) {
-                        // Actualizar los valores de ultimoRegistro
+                        // Actualizar los valores del último registro
                         ultimoRegistro.setNumeroActa(
                                         generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
                                                         .getNumeroActa());
                         ultimoRegistro.setFechaActa(
                                         generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
                                                         .getFechaActa());
+                        ultimoRegistro.setConceptoComite(
+                                        generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
+                                                        .getConceptoComite());
 
-                        // Actualizar la lista actaFechaRespuestaComite de examenValoracion
-                        RespuestaComiteGeneracionResolucion actaFechaRespuestaComite = respuestaComiteGeneracionResolucionRepository
-                                        .findFirstByOrderByIdDesc();
-
-                        actaFechaRespuestaComite.setConceptoComite(generacionResolucionCoordinadorFase2Dto
-                                        .getActaFechaRespuestaComite().get(0)
-                                        .getConceptoComite());
-                        actaFechaRespuestaComite.setNumeroActa(generacionResolucionCoordinadorFase2Dto
-                                        .getActaFechaRespuestaComite().get(0)
-                                        .getNumeroActa());
-                        actaFechaRespuestaComite.setFechaActa(generacionResolucionCoordinadorFase2Dto
-                                        .getActaFechaRespuestaComite().get(0)
-                                        .getFechaActa());
-
-                        respuestaComiteGeneracionResolucionRepository.save(actaFechaRespuestaComite);
+                        // Guardar los cambios en la base de datos
+                        respuestaComiteGeneracionResolucionRepository.save(ultimoRegistro);
                 }
 
+                // Actualizar otros campos en generacionResolucion
                 generacionResolucion.setLinkSolicitudConsejo(
                                 generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
+
         }
 
         @Override
@@ -899,7 +889,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                         generacionResolucionCoordinadorFase3Dto
                                                                         .getLinkOficioConsejo()));
                         FilesUtilities.deleteFileExample(
-                                generacionResolucionOld.getLinkOficioConsejo());
+                                        generacionResolucionOld.getLinkOficioConsejo());
                 }
 
                 // GeneracionResolucion generacionResolucion = new GeneracionResolucion();

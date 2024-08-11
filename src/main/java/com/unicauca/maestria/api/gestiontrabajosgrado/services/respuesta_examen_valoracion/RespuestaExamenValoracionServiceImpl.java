@@ -390,14 +390,22 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
                         archivoClient.obtenerExpertoPorId(respuestaExamenValoracionDto.getIdEvaluador());
                 }
 
-                List<Long> ultimoRegistro = respuestaExamenValoracionRepository
-                                .findLatestIdByIdEvaluadorAndTipoEvaluador(
+                List<RespuestaExamenValoracion> ultimoRegistroList = respuestaExamenValoracionRepository
+                                .findLatestByIdEvaluadorAndTipoEvaluadorAndId(
                                                 respuestaExamenValoracionDto.getIdEvaluador(),
-                                                respuestaExamenValoracionDto.getTipoEvaluador());
+                                                respuestaExamenValoracionDto.getTipoEvaluador(),
+                                                idRespuestaExamen);
 
-                if (!ultimoRegistro.isEmpty() && !idRespuestaExamen.equals(ultimoRegistro.get(0))) {
+                if (!ultimoRegistroList.isEmpty()) {
+                        RespuestaExamenValoracion ultimoRegistro = ultimoRegistroList.get(0);
+
+                        if (!idRespuestaExamen.equals(ultimoRegistro.getId())) {
+                                throw new InformationException(
+                                                "No es permitido actualizar porque no es el último registro realizado por el evaluador");
+                        }
+                } else {
                         throw new InformationException(
-                                        "No es permitido actualizar porque no es el ultimo registro realizado por el evaluador");
+                                        "No se encontró ningún registro asociado a este evaluador, tipo de evaluador, y respuesta específica");
                 }
 
                 String rutaArchivo = identificacionArchivo(trabajoGrado);
