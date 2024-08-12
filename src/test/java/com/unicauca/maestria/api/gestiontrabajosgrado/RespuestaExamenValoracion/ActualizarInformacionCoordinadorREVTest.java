@@ -140,6 +140,7 @@ public class ActualizarInformacionCoordinadorREVTest {
                 trabajoGrado.setCorreoElectronicoTutor("juliomellizo24@gmail.com");
 
                 RespuestaExamenValoracion respuestaExamenValoracionOld = new RespuestaExamenValoracion();
+                respuestaExamenValoracionOld.setId(1L);
                 respuestaExamenValoracionOld.setLinkFormatoB(
                                 "./files/2024/7/1084-Juan_Meneses/Respuesta_Examen_Valoracion/01-07-24/20240701132302-formatoB.txt");
                 respuestaExamenValoracionOld.setLinkFormatoC(
@@ -156,13 +157,14 @@ public class ActualizarInformacionCoordinadorREVTest {
                 when(trabajoGradoRepository.findById(respuestaExamenValoracionOld.getTrabajoGrado().getId()))
                                 .thenReturn(Optional.of(trabajoGrado));
 
-                ArrayList<Long> lista = new ArrayList<>();
-                lista.add(1L);
-                lista.add(2L);
+                ArrayList<RespuestaExamenValoracion> lista = new ArrayList<>();
+                lista.add(respuestaExamenValoracionOld);
 
-                when(respuestaExamenValoracionRepository.findLatestIdByIdEvaluadorAndTipoEvaluador(
-                                respuestaExamenValoracionDto.getIdEvaluador(),
-                                respuestaExamenValoracionDto.getTipoEvaluador()))
+                when(respuestaExamenValoracionRepository
+                                .findLatestByIdEvaluadorAndTipoEvaluadorAndId(
+                                                respuestaExamenValoracionDto.getIdEvaluador(),
+                                                respuestaExamenValoracionDto.getTipoEvaluador(),
+                                                idRespuestaExamen))
                                 .thenReturn(lista);
 
                 PersonaDto PersonaEstudianteDto = new PersonaDto();

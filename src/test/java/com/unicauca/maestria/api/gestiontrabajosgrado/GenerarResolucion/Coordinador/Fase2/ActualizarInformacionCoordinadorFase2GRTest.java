@@ -184,13 +184,6 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
                 generacionResolucionNew.setLinkSolicitudConsejo(
                                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
 
-                when(respuestaComiteGeneracionResolucionRepository
-                                .findFirstByOrderByIdDesc())
-                                .thenReturn(respuestaComiteGeneracionResolucionNew);
-
-                when(respuestaComiteGeneracionResolucionRepository.save(any(RespuestaComiteGeneracionResolucion.class)))
-                                .thenReturn(respuestaComiteGeneracionResolucionNew);
-
                 when(generacionResolucionRepository.save(any(GeneracionResolucion.class)))
                                 .thenReturn(generacionResolucionNew);
 
@@ -312,13 +305,6 @@ public class ActualizarInformacionCoordinadorFase2GRTest {
                 generacionResolucionNew.setActaFechaRespuestaComite(listaRespuestaComiteNew);
                 generacionResolucionNew.setLinkSolicitudConsejo(
                                 "./files/2024/7/1084-Juan_Meneses/Generacion_Resolucion/02-07-24/20240702174506-linkSolicitudConcejoFacultad.txt");
-
-                when(respuestaComiteGeneracionResolucionRepository
-                                .findFirstByOrderByIdDesc())
-                                .thenReturn(respuestaComiteGeneracionResolucionNew);
-
-                when(respuestaComiteGeneracionResolucionRepository.save(any(RespuestaComiteGeneracionResolucion.class)))
-                                .thenReturn(respuestaComiteGeneracionResolucionNew);
 
                 when(generacionResolucionRepository.save(any(GeneracionResolucion.class)))
                                 .thenReturn(generacionResolucionNew);

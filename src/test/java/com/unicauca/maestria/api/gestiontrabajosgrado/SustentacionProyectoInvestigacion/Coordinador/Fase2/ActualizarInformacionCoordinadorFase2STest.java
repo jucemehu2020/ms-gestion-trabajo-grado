@@ -185,9 +185,6 @@ public class ActualizarInformacionCoordinadorFase2STest {
                                 .findRespuestaComiteBySustentacionId(sustentacionTrabajoInvestigacionOld.getId()))
                                 .thenReturn(listaRespuestaComiteSustentacion);
 
-                when(respuestaComiteSustentacionRepository.findFirstByOrderByIdDesc())
-                                .thenReturn(respuestaComiteSustentacion);
-
                 RespuestaComiteSustentacion respuestaComiteSustentacionNew = new RespuestaComiteSustentacion();
                 respuestaComiteSustentacionNew.setConceptoComite(Concepto.APROBADO);
                 respuestaComiteSustentacionNew.setNumeroActa("AX1-3445");
@@ -203,9 +200,6 @@ public class ActualizarInformacionCoordinadorFase2STest {
                                 "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkEstudioHojaVidaAcademica.txt");
                 sustentacionTrabajoInvestigacionNew.setLinkFormatoG(
                                 "./files/2024/7/1084-Juan_Meneses/Sustentacion_Proyecto_Investigacion/12-07-24/20240712153209-linkFormatoG.txt");
-
-                when(respuestaComiteSustentacionRepository.save(respuestaComiteSustentacion))
-                                .thenReturn(respuestaComiteSustentacionNew);
 
                 when(sustentacionProyectoInvestigacionRepository.save(sustentacionTrabajoInvestigacionOld))
                                 .thenReturn(sustentacionTrabajoInvestigacionNew);
@@ -315,9 +309,6 @@ public class ActualizarInformacionCoordinadorFase2STest {
                                 .findRespuestaComiteBySustentacionId(sustentacionTrabajoInvestigacionOld.getId()))
                                 .thenReturn(listaRespuestaComiteSustentacion);
 
-                when(respuestaComiteSustentacionRepository.findFirstByOrderByIdDesc())
-                                .thenReturn(respuestaComiteSustentacion);
-
                 RespuestaComiteSustentacion respuestaComiteSustentacionNew = new RespuestaComiteSustentacion();
                 respuestaComiteSustentacionNew.setConceptoComite(Concepto.NO_APROBADO);
                 respuestaComiteSustentacionNew.setNumeroActa("AX1-3445");
@@ -329,9 +320,6 @@ public class ActualizarInformacionCoordinadorFase2STest {
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacionNew = new SustentacionProyectoInvestigacion();
                 sustentacionTrabajoInvestigacionNew.setId(1L);
                 sustentacionTrabajoInvestigacionNew.setActaFechaRespuestaComite(listaRespuestaComiteSustentacionNew);
-
-                when(respuestaComiteSustentacionRepository.save(respuestaComiteSustentacion))
-                                .thenReturn(respuestaComiteSustentacionNew);
 
                 when(sustentacionProyectoInvestigacionRepository.save(sustentacionTrabajoInvestigacionOld))
                                 .thenReturn(sustentacionTrabajoInvestigacionNew);

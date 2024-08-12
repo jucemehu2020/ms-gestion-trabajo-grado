@@ -237,9 +237,6 @@ public class ActualizarInformacionCoordinadorFase2SEVTest {
                                 .setFechaMaximaEvaluacion(solicitudExamenValoracionCoordinadorFase2Dto
                                                 .getFechaMaximaEvaluacion());
 
-                when(respuestaComiteSolicitudRepository.findFirstByOrderByIdDesc())
-                                .thenReturn(respuestaComite);
-
                 when(tiemposPendientesRepository.save(any(TiemposPendientes.class)))
                                 .thenReturn(new TiemposPendientes());
 
@@ -367,9 +364,6 @@ public class ActualizarInformacionCoordinadorFase2SEVTest {
 
                 SolicitudExamenValoracion solicitudExamenValoracion = new SolicitudExamenValoracion();
                 solicitudExamenValoracion.setActaFechaRespuestaComite(listaRespuestaComiteExamenValoracion);
-
-                when(respuestaComiteSolicitudRepository.findFirstByOrderByIdDesc())
-                                .thenReturn(respuestaComite);
 
                 when(solicitudExamenValoracionRepository.save(any(SolicitudExamenValoracion.class)))
                                 .thenReturn(solicitudExamenValoracion);
