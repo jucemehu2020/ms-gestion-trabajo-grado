@@ -1,7 +1,7 @@
 @echo off
-set SPRING_DATASOURCE_URL=jdbc:mysql://dockertest.unicauca.edu.co:4207/computacion
-set SPRING_DATASOURCE_USERNAME=computacion
-set SPRING_DATASOURCE_PASSWORD=DB-C0mput4c10N
+set SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/maestriafinal
+set SPRING_DATASOURCE_USERNAME=root
+set SPRING_DATASOURCE_PASSWORD=root
 set SPRING_JWT_KEY=SecretKey
 set SPRING_JWT_EXPIRATION=86400000
 set SPRING_MAIL_SMTP=smtp.gmail.com

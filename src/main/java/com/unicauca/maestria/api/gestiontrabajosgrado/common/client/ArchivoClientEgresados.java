@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.egresado.CursoSaveDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.egresado.EmpresaSaveDto;
 
-@FeignClient(name = "ms-gestion-egresados", url = "http://ms-gestion-egresados:8084")
+@FeignClient(name = "ms-gestion-egresados", url = "http://localhost:8084")
 public interface ArchivoClientEgresados {
 
     @GetMapping("/api/curso/listarCursosDictados/{idEstudiante}")
