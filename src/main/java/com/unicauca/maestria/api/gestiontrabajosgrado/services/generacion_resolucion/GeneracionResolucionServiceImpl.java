@@ -56,23 +56,36 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
         private final TrabajoGradoRepository trabajoGradoRepository;
         private final RespuestaComiteGeneracionResolucionRepository respuestaComiteGeneracionResolucionRepository;
         private final ArchivoClient archivoClient;
-        // private final ArchivoClientExpertos archivoClientExpertos;
 
         @Autowired
         private EnvioCorreos envioCorreos;
 
+        /**
+         * Método que lista directores y codirectores disponibles.
+         * Este método interactúa con un servidor externo para obtener la lista de
+         * docentes registrados, y luego convierte esos datos en una lista de objetos
+         * DirectorAndCodirectorResponseDto que contienen
+         * la información relevante de los docentes.
+         * 
+         * @return una lista de objetos {@link DirectorAndCodirectorResponseDto} que
+         *         contienen la información de los docentes disponibles.
+         * @throws InformationException si no se encuentran docentes registrados.
+         */
         @Override
         @Transactional(readOnly = true)
         public List<DirectorAndCodirectorResponseDto> listarDirectorAndCodirector() {
-                List<DirectorAndCodirectorResponseDto> docentesYExpertos = new ArrayList<>();
+                List<DirectorAndCodirectorResponseDto> directoresYCodirectores = new ArrayList<>();
 
-                List<DocenteResponseDto> listadoDocentesDirector = archivoClient.listarDocentesRes();
-                if (listadoDocentesDirector.size() == 0) {
+                // Obtiene la lista de docentes a través de un cliente externo
+                List<DocenteResponseDto> docentes = archivoClient.listarDocentesRes();
+
+                // Verifica si la lista de docentes está vacía y lanza una excepción si es así
+                if (docentes.isEmpty()) {
                         throw new InformationException("No hay docentes registrados");
                 }
 
-                // List<ExpertoResponseDto> listadoExpertos = archivoClientExpertos.listar();
-                List<DirectorAndCodirectorResponseDto> docentes = listadoDocentesDirector.stream()
+                // Transforma la lista de docentes en objetos DirectorAndCodirectorResponseDto
+                List<DirectorAndCodirectorResponseDto> directoresYCodirectoresConvertidos = docentes.stream()
                                 .map(docente -> new DirectorAndCodirectorResponseDto(
                                                 docente.getId(),
                                                 docente.getPersona().getTipoIdentificacion(),
@@ -80,93 +93,139 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 docente.getPersona().getNombre(),
                                                 docente.getPersona().getApellido()))
                                 .collect(Collectors.toList());
-                // List<DirectorAndCodirectorResponseDto> expertos =
-                // listadoDocentesCoDirector.stream()
-                // .map(experto -> new DirectorAndCodirectorResponseDto(
-                // experto.getPersona().getTipoIdentificacion(),
-                // experto.getPersona().getIdentificacion(),
-                // experto.getPersona().getNombre(),
-                // experto.getPersona().getApellido()))
-                // .collect(Collectors.toList());
 
-                docentesYExpertos.addAll(docentes);
-                // docentesYExpertos.addAll(expertos);
+                // Añade todos los docentes transformados a la lista principal
+                directoresYCodirectores.addAll(directoresYCodirectoresConvertidos);
 
-                return docentesYExpertos;
+                return directoresYCodirectores;
         }
 
+        /**
+         * Método para insertar la información de un docente en relación con la
+         * generación de resolución para un trabajo de grado. Se valida la información
+         * proporcionada, incluyendo los enlaces y la asignación de director y
+         * codirector.
+         * También se gestionan los archivos asociados.
+         * 
+         * @param idTrabajoGrado          el identificador del trabajo de grado.
+         * @param generacionResolucionDto objeto que contiene la información de la
+         *                                generación de resolución.
+         * @param result                  resultado de la validación de los campos.
+         * @return un objeto {@link GeneracionResolucionDocenteResponseDto} que contiene
+         *         la información del docente y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado no se encuentra.
+         * @throws InformationException      si no se permite registrar la información o
+         *                                   si se intenta registrar
+         *                                   al mismo docente como director y
+         *                                   codirector.
+         */
         @Override
         @Transactional
-        public GeneracionResolucionDocenteResponseDto insertarInformacionDocente(Long idTrabajoGrado,
+        public GeneracionResolucionDocenteResponseDto insertarInformacionDocente(
+                        Long idTrabajoGrado,
                         GeneracionResolucionDocenteDto generacionResolucionDto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validación de los enlaces proporcionados
                 validarLink(generacionResolucionDto.getLinkAnteproyectoFinal());
                 validarLink(generacionResolucionDto.getLinkSolicitudComite());
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 7 && trabajoGrado.getNumeroEstado() != 17) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                if (generacionResolucionDto.getIdDirector() == generacionResolucionDto.getIdCodirector()) {
+                // Validación para evitar que director y codirector sean la misma persona
+                if (generacionResolucionDto.getIdDirector().equals(generacionResolucionDto.getIdCodirector())) {
                         throw new InformationException(
                                         "No se permite registrar al mismo docente como director y codirector");
                 }
 
+                // Validación de la existencia del director y codirector
                 archivoClient.obtenerDocentePorId(generacionResolucionDto.getIdDirector());
-
                 archivoClient.obtenerDocentePorId(generacionResolucionDto.getIdCodirector());
 
-                // Mapear DTO a entidad
-                GeneracionResolucion generarResolucion = generacionResolucionMapper.toEntity(generacionResolucionDto);
-                generarResolucion.setDirector(generacionResolucionDto.getIdDirector());
-                generarResolucion.setCodirector(generacionResolucionDto.getIdCodirector());
+                // Convertir DTO a entidad y asignar director y codirector
+                GeneracionResolucion generacionResolucion = generacionResolucionMapper
+                                .toEntity(generacionResolucionDto);
+                generacionResolucion.setDirector(generacionResolucionDto.getIdDirector());
+                generacionResolucion.setCodirector(generacionResolucionDto.getIdCodirector());
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificación de la ruta del archivo
+                String rutaArchivo = identificarRutaArchivo(trabajoGrado);
 
-                // Establecer la relación uno a uno
-                generarResolucion.setTrabajoGrado(trabajoGrado);
-                trabajoGrado.setGeneracionResolucion(generarResolucion);
-
-                // Se cambia el numero de estado
+                // Asignación del trabajo de grado y actualización de su estado
+                generacionResolucion.setTrabajoGrado(trabajoGrado);
+                trabajoGrado.setGeneracionResolucion(generacionResolucion);
                 trabajoGrado.setNumeroEstado(18);
 
-                // Guardar la entidad ExamenValoracion
-                generarResolucion.setLinkAnteproyectoFinal(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                generarResolucion.getLinkAnteproyectoFinal()));
-                generarResolucion.setLinkSolicitudComite(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                generarResolucion.getLinkSolicitudComite()));
+                // Guardar los archivos asociados y actualizar los enlaces en la entidad
+                generacionResolucion.setLinkAnteproyectoFinal(FilesUtilities.guardarArchivoNew2(
+                                rutaArchivo, generacionResolucion.getLinkAnteproyectoFinal()));
+                generacionResolucion.setLinkSolicitudComite(FilesUtilities.guardarArchivoNew2(
+                                rutaArchivo, generacionResolucion.getLinkSolicitudComite()));
 
-                GeneracionResolucion generarResolucionRes = generacionResolucionRepository.save(generarResolucion);
+                // Guardar la entidad en el repositorio
+                GeneracionResolucion generacionResolucionGuardada = generacionResolucionRepository
+                                .save(generacionResolucion);
 
-                GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = generacionResolucionResponseMapper
-                                .toDocenteDto(generarResolucionRes);
-                generacionResolucionDocenteResponseDto.setTitulo(trabajoGrado.getTitulo());
+                // Convertir la entidad guardada en el DTO de respuesta
+                GeneracionResolucionDocenteResponseDto respuestaDto = generacionResolucionResponseMapper
+                                .toDocenteDto(generacionResolucionGuardada);
+                respuestaDto.setTitulo(trabajoGrado.getTitulo());
 
-                return generacionResolucionDocenteResponseDto;
+                return respuestaDto;
         }
 
+        /**
+         * Método para insertar la información del coordinador en la fase 1 de la
+         * generación de resolución
+         * para un trabajo de grado. Se valida la información proporcionada, incluyendo
+         * el concepto de los
+         * documentos del coordinador y el envío de correos electrónicos si es
+         * necesario.
+         * 
+         * @param idTrabajoGrado          el identificador del trabajo de grado.
+         * @param generacionResolucionDto objeto que contiene la información de la
+         *                                generación de resolución
+         *                                para la fase 1 del coordinador.
+         * @param bindingResult           resultado de la validación de los campos.
+         * @return un objeto {@link GeneracionResolucionCoordinadorFase1ResponseDto} que
+         *         contiene la información del
+         *         coordinador en la fase 1 y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la generación de
+         *                                   resolución no se encuentran.
+         * @throws InformationException      si no se permite registrar la información,
+         *                                   si faltan atributos o si se
+         *                                   envían atributos no permitidos.
+         */
         @Override
         @Transactional
         public GeneracionResolucionCoordinadorFase1ResponseDto insertarInformacionCoordinadorFase1(
                         Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase1Dto generacionResolucionDto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validación de atributos en función del concepto de verificación
                 if (generacionResolucionDto.getEnvioEmail() == null
                                 && generacionResolucionDto.getConceptoDocumentosCoordinador()
                                                 .equals(ConceptoVerificacion.RECHAZADO)) {
@@ -179,28 +238,30 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id "
-                                                                + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 18) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                // Buscar la generación de resolución asociada al trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findById(trabajoGrado.getGeneracionResolucion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Generacion de resolucion con id: "
-                                                                + trabajoGrado.getGeneracionResolucion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                                + trabajoGrado.getGeneracionResolucion().getId()
+                                                                + " no encontrada"));
 
+                // Actualización del estado del trabajo de grado en función del concepto del
+                // coordinador
                 if (generacionResolucionDto.getConceptoDocumentosCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
                         trabajoGrado.setNumeroEstado(20);
                 } else {
+                        // Envío de correos electrónicos de corrección si el concepto es rechazado
                         ArrayList<String> correos = new ArrayList<>();
                         EstudianteResponseDtoAll estudiante = archivoClient
                                         .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
@@ -212,26 +273,54 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         trabajoGrado.setNumeroEstado(19);
                 }
 
-                generacionResolucionTmp.setConceptoDocumentosCoordinador(
+                // Actualizar el concepto de los documentos del coordinador en la generación de
+                // resolución
+                generacionResolucion.setConceptoDocumentosCoordinador(
                                 generacionResolucionDto.getConceptoDocumentosCoordinador());
 
-                GeneracionResolucion generarResolucionRes = generacionResolucionRepository
-                                .save(generacionResolucionTmp);
+                // Guardar los cambios en la generación de resolución
+                GeneracionResolucion generacionResolucionGuardada = generacionResolucionRepository
+                                .save(generacionResolucion);
 
-                return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generarResolucionRes);
+                // Convertir la entidad guardada en el DTO de respuesta
+                return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generacionResolucionGuardada);
         }
 
+        /**
+         * Método para insertar la información del coordinador en la fase 2 de la
+         * generación de resolución para un trabajo de grado. Se valida la información
+         * proporcionada, incluyendo las fechas de actas, los conceptos del comité
+         * y el envío de correos electrónicos si es necesario.
+         * 
+         * @param idTrabajoGrado          el identificador del trabajo de grado.
+         * @param generacionResolucionDto objeto que contiene la información de la
+         *                                generación de resolución
+         *                                para la fase 2 del coordinador.
+         * @param bindingResult           resultado de la validación de los campos.
+         * @return un objeto {@link GeneracionResolucionCoordinadorFase2ResponseDto} que
+         *         contiene la información del
+         *         coordinador en la fase 2 y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la generación de
+         *                                   resolución no se encuentran.
+         * @throws InformationException      si no se permite registrar la información,
+         *                                   si se proporcionan atributos incorrectos
+         *                                   o si el concepto ya es APROBADO.
+         */
         @Override
         @Transactional
         public GeneracionResolucionCoordinadorFase2ResponseDto insertarInformacionCoordinadorFase2(
                         Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validación de atributos en función del concepto del comité
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
                                 && (generacionResolucionDto.getLinkSolicitudConsejo() != null ||
@@ -242,64 +331,64 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)
-                                && (generacionResolucionDto.getLinkSolicitudConsejo() == null
-                                                || generacionResolucionDto
+                                && (generacionResolucionDto.getLinkSolicitudConsejo() == null ||
+                                                generacionResolucionDto
                                                                 .getObtenerDocumentosParaEnvioConsejo() == null)) {
                         throw new InformationException("Atributos incorrectos");
                 }
 
+                // Validación de la fecha del acta del comité
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getFechaActa() != null
                                 && generacionResolucionDto.getActaFechaRespuestaComite().get(0).getFechaActa()
                                                 .isAfter(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha de registro del comite no puede ser mayor a la fecha actual.");
+                                        "La fecha de registro del comité no puede ser mayor a la fecha actual.");
                 }
 
+                // Validación y procesamiento de documentos si el concepto es APROBADO
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)) {
                         validarLink(generacionResolucionDto.getLinkSolicitudConsejo());
-                        ValidationUtils.validarBase64(
-                                        generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
-                                                        .getB64FormatoBEv1());
-                        ValidationUtils.validarBase64(
-                                        generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
-                                                        .getB64FormatoBEv2());
-                        ValidationUtils.validarBase64(
-                                        generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
-                                                        .getB64AnteproyectoFinal());
-                        ValidationUtils.validarBase64(
-                                        generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
-                                                        .getB64SolicitudConsejo());
+                        ValidationUtils.validarBase64(generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
+                                        .getB64FormatoBEv1());
+                        ValidationUtils.validarBase64(generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
+                                        .getB64FormatoBEv2());
+                        ValidationUtils.validarBase64(generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
+                                        .getB64AnteproyectoFinal());
+                        ValidationUtils.validarBase64(generacionResolucionDto.getObtenerDocumentosParaEnvioConsejo()
+                                        .getB64SolicitudConsejo());
                 }
 
                 ArrayList<String> correos = new ArrayList<>();
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id "
-                                                                + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 20) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                // Buscar la generación de resolución asociada al trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findById(trabajoGrado.getGeneracionResolucion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Generacion de resolucion con id: "
-                                                                + trabajoGrado.getGeneracionResolucion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                                + trabajoGrado.getGeneracionResolucion().getId()
+                                                                + " no encontrada"));
 
-                for (RespuestaComiteGeneracionResolucion respuesta : generacionResolucionTmp
+                // Verificación para evitar duplicados en el concepto de APROBADO
+                for (RespuestaComiteGeneracionResolucion respuesta : generacionResolucion
                                 .getActaFechaRespuestaComite()) {
                         if (respuesta.getConceptoComite().equals(Concepto.APROBADO)) {
                                 throw new InformationException("El concepto ya es APROBADO");
                         }
                 }
 
+                // Procesamiento de correos y actualización del estado del trabajo de grado
+                // según el concepto del comité
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)) {
                         correos.add(Constants.correoConsejo);
@@ -309,7 +398,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                         generacionResolucionDto.getEnvioEmail().getAsunto(),
                                         generacionResolucionDto.getEnvioEmail().getMensaje(),
                                         documentosParaConsejo);
-                        String rutaArchivo = identificacionArchivo(trabajoGrado);
+                        String rutaArchivo = identificarRutaArchivo(trabajoGrado);
                         generacionResolucionDto.setLinkSolicitudConsejo(
                                         FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                         generacionResolucionDto.getLinkSolicitudConsejo()));
@@ -325,16 +414,35 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         trabajoGrado.setNumeroEstado(21);
                 }
 
-                agregarInformacionCoordinadorFase2(generacionResolucionTmp, generacionResolucionDto);
+                // Agregar la información del coordinador de la fase 2 a la generación de
+                // resolución
+                agregarInformacionCoordinadorFase2(generacionResolucion, generacionResolucionDto);
 
-                GeneracionResolucion generarResolucionRes = generacionResolucionRepository
-                                .save(generacionResolucionTmp);
+                // Guardar los cambios en la generación de resolución
+                GeneracionResolucion generacionResolucionGuardada = generacionResolucionRepository
+                                .save(generacionResolucion);
 
-                return generacionResolucionResponseMapper.toCoordinadorFase2Dto(generarResolucionRes);
+                // Convertir la entidad guardada en el DTO de respuesta
+                return generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucionGuardada);
         }
 
-        private void agregarInformacionCoordinadorFase2(GeneracionResolucion generacionResolucion,
+        /**
+         * Método que agrega la información del coordinador en la fase 2 a la entidad de
+         * generación de resolución.
+         * Esta información incluye los detalles del acta de respuesta del comité y el
+         * enlace a la solicitud del consejo.
+         * 
+         * @param generacionResolucion    la entidad de generación de resolución a la
+         *                                que se le agregará la información.
+         * @param generacionResolucionDto objeto que contiene la información de la
+         *                                generación de resolución para la fase 2.
+         */
+        private void agregarInformacionCoordinadorFase2(
+                        GeneracionResolucion generacionResolucion,
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto) {
+
+                // Crear una nueva respuesta del comité con la información proporcionada en el
+                // DTO
                 RespuestaComiteGeneracionResolucion respuestaComite = RespuestaComiteGeneracionResolucion.builder()
                                 .conceptoComite(generacionResolucionDto.getActaFechaRespuestaComite().get(0)
                                                 .getConceptoComite())
@@ -344,102 +452,171 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 .generacionResolucion(generacionResolucion)
                                 .build();
 
+                // Inicializar la lista de respuestas del comité si está vacía
                 if (generacionResolucion.getActaFechaRespuestaComite() == null) {
                         generacionResolucion.setActaFechaRespuestaComite(new ArrayList<>());
                 }
 
+                // Agregar la nueva respuesta del comité a la lista existente
                 generacionResolucion.getActaFechaRespuestaComite().add(respuestaComite);
-                generacionResolucion.setLinkSolicitudConsejo(
-                                generacionResolucionDto.getLinkSolicitudConsejo());
+
+                // Establecer el enlace a la solicitud del consejo en la generación de
+                // resolución
+                generacionResolucion.setLinkSolicitudConsejo(generacionResolucionDto.getLinkSolicitudConsejo());
         }
 
+        /**
+         * Método para insertar la información del coordinador en la fase 3 de la
+         * generación de resolución para un trabajo de grado. Se valida la
+         * información proporcionada, incluyendo el enlace del oficio
+         * del consejo, y se actualiza el estado del trabajo de grado.
+         * 
+         * @param idTrabajoGrado          el identificador del trabajo de grado.
+         * @param generacionResolucionDto objeto que contiene la información de la
+         *                                generación de resolución
+         *                                para la fase 3 del coordinador.
+         * @param bindingResult           resultado de la validación de los campos.
+         * @return un objeto {@link GeneracionResolucionCoordinadorFase3ResponseDto} que
+         *         contiene la información del
+         *         coordinador en la fase 3 y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la generación de
+         *                                   resolución no se encuentran.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado.
+         */
         @Override
         @Transactional
         public GeneracionResolucionCoordinadorFase3ResponseDto insertarInformacionCoordinadorFase3(
                         Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto,
-                        BindingResult result) {
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                        BindingResult bindingResult) {
+
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validación del enlace del oficio del consejo
                 validarLink(generacionResolucionDto.getLinkOficioConsejo());
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id "
-                                                                + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 22) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+                // Buscar la generación de resolución asociada al trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findById(trabajoGrado.getGeneracionResolucion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Generacion de resolucion con id: "
-                                                                + trabajoGrado.getGeneracionResolucion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                                + trabajoGrado.getGeneracionResolucion().getId()
+                                                                + " no encontrada"));
 
+                // Actualizar el estado del trabajo de grado
                 trabajoGrado.setNumeroEstado(23);
 
-                String directorioArchivos = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar el archivo
+                String directorioArchivos = identificarRutaArchivo(trabajoGrado);
 
+                // Guardar el archivo del oficio del consejo y actualizar el enlace en el DTO
                 generacionResolucionDto.setLinkOficioConsejo(
                                 FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                 generacionResolucionDto.getLinkOficioConsejo()));
 
-                agregarInformacionCoordinadorFase3(generacionResolucionTmp, generacionResolucionDto);
+                // Agregar la información de la fase 3 del coordinador a la generación de
+                // resolución
+                agregarInformacionCoordinadorFase3(generacionResolucion, generacionResolucionDto);
 
-                GeneracionResolucion generarResolucionRes = generacionResolucionRepository
-                                .save(generacionResolucionTmp);
+                // Guardar los cambios en la generación de resolución
+                GeneracionResolucion generacionResolucionGuardada = generacionResolucionRepository
+                                .save(generacionResolucion);
 
-                return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generarResolucionRes);
+                // Convertir la entidad guardada en el DTO de respuesta
+                return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionGuardada);
         }
 
-        private void agregarInformacionCoordinadorFase3(GeneracionResolucion generacionResolucion,
+        /**
+         * Método que agrega la información del coordinador en la fase 3 a la entidad de
+         * generación de resolución.
+         * Esta información incluye el número y la fecha del acta del consejo, así como
+         * el enlace al oficio del consejo.
+         * 
+         * @param generacionResolucion    la entidad de generación de resolución a la
+         *                                que se le agregará la información.
+         * @param generacionResolucionDto objeto que contiene la información de la
+         *                                generación de resolución para la fase 3.
+         */
+        private void agregarInformacionCoordinadorFase3(
+                        GeneracionResolucion generacionResolucion,
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto) {
-                generacionResolucion.setNumeroActaConsejo(
-                                generacionResolucionDto.getNumeroActaConsejo());
-                generacionResolucion.setFechaActaConsejo(generacionResolucionDto.getFechaActaConsejo());
-                generacionResolucion.setLinkOficioConsejo(generacionResolucionDto.getLinkOficioConsejo());
 
+                // Asignar el número y la fecha del acta del consejo
+                generacionResolucion.setNumeroActaConsejo(generacionResolucionDto.getNumeroActaConsejo());
+                generacionResolucion.setFechaActaConsejo(generacionResolucionDto.getFechaActaConsejo());
+
+                // Asignar el enlace al oficio del consejo
+                generacionResolucion.setLinkOficioConsejo(generacionResolucionDto.getLinkOficioConsejo());
         }
 
+        /**
+         * Método que obtiene la información de la generación de resolución para un
+         * trabajo de grado de un docente, incluyendo los detalles del director y
+         * codirector.
+         * Esta información se devuelve en un objeto
+         * {@link GeneracionResolucionDocenteListDto}.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto {@link GeneracionResolucionDocenteListDto} que contiene la
+         *         información del
+         *         director, codirector y enlaces relevantes para la generación de
+         *         resolución.
+         * @throws ResourceNotFoundException si no se encuentra la generación de
+         *                                   resolución asociada al trabajo de grado.
+         */
         @Override
         @Transactional(readOnly = true)
         public GeneracionResolucionDocenteListDto listarInformacionDocente(Long idTrabajoGrado) {
+
+                // Buscar la generación de resolución por el ID del trabajo de grado
                 GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findByTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Generacion de resolucion con ID trabajo de grado "
-                                                                + idTrabajoGrado
+                                                "Generacion de resolucion con ID trabajo de grado " + idTrabajoGrado
                                                                 + " no encontrado"));
 
+                // Buscar el trabajo de grado asociado
                 Optional<TrabajoGrado> trabajoGrado = trabajoGradoRepository
                                 .findById(generacionResolucion.getTrabajoGrado().getId());
 
-                DocenteResponseDto docente1 = archivoClient.obtenerDocentePorId(generacionResolucion.getDirector());
-                String nombre_docente1 = docente1.getPersona().getNombre() + " " + docente1.getPersona().getApellido();
-                Map<String, String> evaluadorInternoMap1 = new HashMap<>();
-                evaluadorInternoMap1.put("id", docente1.getId().toString());
-                evaluadorInternoMap1.put("nombres", nombre_docente1);
+                // Obtener información del director y armar el mapa con los datos
+                DocenteResponseDto director = archivoClient.obtenerDocentePorId(generacionResolucion.getDirector());
+                String nombreDirector = director.getPersona().getNombre() + " " + director.getPersona().getApellido();
+                Map<String, String> directorMap = new HashMap<>();
+                directorMap.put("id", director.getId().toString());
+                directorMap.put("nombres", nombreDirector);
 
-                DocenteResponseDto docente2 = archivoClient.obtenerDocentePorId(generacionResolucion.getCodirector());
-                String nombre_docente2 = docente2.getPersona().getNombre() + " " + docente2.getPersona().getApellido();
-                Map<String, String> evaluadorInternoMap2 = new HashMap<>();
-                evaluadorInternoMap2.put("id", docente2.getId().toString());
-                evaluadorInternoMap2.put("nombres", nombre_docente2);
+                // Obtener información del codirector y armar el mapa con los datos
+                DocenteResponseDto codirector = archivoClient.obtenerDocentePorId(generacionResolucion.getCodirector());
+                String nombreCodirector = codirector.getPersona().getNombre() + " "
+                                + codirector.getPersona().getApellido();
+                Map<String, String> codirectorMap = new HashMap<>();
+                codirectorMap.put("id", codirector.getId().toString());
+                codirectorMap.put("nombres", nombreCodirector);
 
+                // Crear el DTO de respuesta y asignar la información obtenida
                 GeneracionResolucionDocenteListDto generacionResolucionDocenteListDto = new GeneracionResolucionDocenteListDto();
-
                 generacionResolucionDocenteListDto.setId(generacionResolucion.getId());
                 generacionResolucionDocenteListDto.setTitulo(trabajoGrado.get().getTitulo());
-                generacionResolucionDocenteListDto.setDirector(evaluadorInternoMap1);
-                generacionResolucionDocenteListDto.setCodirector(evaluadorInternoMap2);
+                generacionResolucionDocenteListDto.setDirector(directorMap);
+                generacionResolucionDocenteListDto.setCodirector(codirectorMap);
                 generacionResolucionDocenteListDto
                                 .setLinkAnteproyectoFinal(generacionResolucion.getLinkAnteproyectoFinal());
                 generacionResolucionDocenteListDto
@@ -448,202 +625,327 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 return generacionResolucionDocenteListDto;
         }
 
+        /**
+         * Método que obtiene la información del coordinador en la fase 1 para un
+         * trabajo de grado, devolviendo un objeto
+         * {@link GeneracionResolucionCoordinadorFase1ResponseDto}
+         * con los detalles.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto {@link GeneracionResolucionCoordinadorFase1ResponseDto} que
+         *         contiene la información
+         *         del coordinador en la fase 1 de la generación de resolución.
+         * @throws ResourceNotFoundException si no se encuentra la generación de
+         *                                   resolución asociada al trabajo de grado.
+         * @throws InformationException      si no se han registrado datos del
+         *                                   coordinador.
+         */
         @Override
         @Transactional(readOnly = true)
-        public GeneracionResolucionCoordinadorFase1ResponseDto listarInformacionCoordinadorFase1(
-                        Long idTrabajoGrado) {
-                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+        public GeneracionResolucionCoordinadorFase1ResponseDto listarInformacionCoordinadorFase1(Long idTrabajoGrado) {
+
+                // Buscar la generación de resolución por el ID del trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findByTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-                if (generacionResolucionTmp.getConceptoDocumentosCoordinador() == null) {
+                // Verificar si no se han registrado datos del coordinador
+                if (generacionResolucion.getConceptoDocumentosCoordinador() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
-                return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generacionResolucionTmp);
+                // Convertir la entidad en el DTO de respuesta para la fase 1 del coordinador
+                return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generacionResolucion);
         }
 
+        /**
+         * Método que obtiene la información del coordinador en la fase 2 para un
+         * trabajo de grado,
+         * devolviendo un objeto {@link GeneracionResolucionCoordinadorFase2ResponseDto}
+         * con los detalles.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto {@link GeneracionResolucionCoordinadorFase2ResponseDto} que
+         *         contiene la información
+         *         del coordinador en la fase 2 de la generación de resolución.
+         * @throws ResourceNotFoundException si no se encuentra la generación de
+         *                                   resolución asociada al trabajo de grado.
+         * @throws InformationException      si no se han registrado datos del
+         *                                   coordinador en la fase 2.
+         */
         @Transactional(readOnly = true)
-        public GeneracionResolucionCoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(
-                        Long idTrabajoGrado) {
-                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+        public GeneracionResolucionCoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(Long idTrabajoGrado) {
+
+                // Buscar la generación de resolución por el ID del trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findByTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-                boolean actaFechaRespuestaComiteEmpty = generacionResolucionTmp
-                                .getActaFechaRespuestaComite() == null ||
-                                generacionResolucionTmp.getActaFechaRespuestaComite().isEmpty();
-                if (actaFechaRespuestaComiteEmpty
-                                && generacionResolucionTmp.getLinkSolicitudConsejo() == null) {
+                // Verificar si no se han registrado datos del comité o del consejo
+                boolean actaFechaRespuestaComiteEmpty = generacionResolucion.getActaFechaRespuestaComite() == null ||
+                                generacionResolucion.getActaFechaRespuestaComite().isEmpty();
+                if (actaFechaRespuestaComiteEmpty && generacionResolucion.getLinkSolicitudConsejo() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
-                return generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucionTmp);
+                // Convertir la entidad en el DTO de respuesta para la fase 2 del coordinador
+                return generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucion);
         }
 
+        /**
+         * Método que obtiene la información del coordinador en la fase 3 para un
+         * trabajo de grado,
+         * devolviendo un objeto {@link GeneracionResolucionCoordinadorFase3ResponseDto}
+         * con los detalles.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto {@link GeneracionResolucionCoordinadorFase3ResponseDto} que
+         *         contiene la información
+         *         del coordinador en la fase 3 de la generación de resolución.
+         * @throws ResourceNotFoundException si no se encuentra la generación de
+         *                                   resolución asociada al trabajo de grado.
+         * @throws InformationException      si no se han registrado datos del
+         *                                   coordinador en la fase 3.
+         */
         @Override
         @Transactional(readOnly = true)
-        public GeneracionResolucionCoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(
-                        Long idTrabajoGrado) {
-                GeneracionResolucion generacionResolucionTmp = generacionResolucionRepository
+        public GeneracionResolucionCoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(Long idTrabajoGrado) {
+
+                // Buscar la generación de resolución por el ID del trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findByTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-                if (generacionResolucionTmp.getNumeroActaConsejo() == null
-                                && generacionResolucionTmp.getFechaActaConsejo() == null
-                                && generacionResolucionTmp.getLinkOficioConsejo() == null) {
+                // Verificar si no se han registrado datos del consejo
+                if (generacionResolucion.getNumeroActaConsejo() == null &&
+                                generacionResolucion.getFechaActaConsejo() == null &&
+                                generacionResolucion.getLinkOficioConsejo() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
-                return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionTmp);
+                // Convertir la entidad en el DTO de respuesta para la fase 3 del coordinador
+                return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucion);
         }
 
+        /**
+         * Método para actualizar la información del docente en la generación de
+         * resolución para un trabajo de grado.
+         * Se valida la información proporcionada, incluyendo los enlaces de los
+         * documentos y la asignación de director y codirector.
+         * 
+         * @param idTrabajoGrado                 el identificador del trabajo de grado.
+         * @param generacionResolucionDocenteDto objeto que contiene la información
+         *                                       actualizada de la generación de
+         *                                       resolución docente.
+         * @param bindingResult                  resultado de la validación de los
+         *                                       campos.
+         * @return un objeto {@link GeneracionResolucionDocenteResponseDto} que contiene
+         *         la información actualizada del docente
+         *         y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la generación de
+         *                                   resolución no se encuentran.
+         * @throws InformationException      si no se permite registrar la información o
+         *                                   si se intenta registrar al mismo docente
+         *                                   como director y codirector.
+         */
         @Override
-        public GeneracionResolucionDocenteResponseDto actualizarInformacionDocente(Long idTrabajoGrado,
+        public GeneracionResolucionDocenteResponseDto actualizarInformacionDocente(
+                        Long idTrabajoGrado,
                         GeneracionResolucionDocenteDto generacionResolucionDocenteDto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
-                                .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
-                                                + idTrabajoGrado
-                                                + " no encontrado"));
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validar la existencia del director y codirector
                 archivoClient.obtenerDocentePorId(generacionResolucionDocenteDto.getIdDirector());
-
                 archivoClient.obtenerDocentePorId(generacionResolucionDocenteDto.getIdCodirector());
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 18 && trabajoGrado.getNumeroEstado() != 19
                                 && trabajoGrado.getNumeroEstado() != 21) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                if (generacionResolucionDocenteDto.getIdDirector() == generacionResolucionDocenteDto
-                                .getIdCodirector()) {
+                // Validación para evitar que director y codirector sean la misma persona
+                if (generacionResolucionDocenteDto.getIdDirector()
+                                .equals(generacionResolucionDocenteDto.getIdCodirector())) {
                         throw new InformationException(
                                         "No se permite registrar al mismo docente como director y codirector");
                 }
 
-                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
+                // Buscar la generación de resolución asociada al trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findById(trabajoGrado.getGeneracionResolucion().getId())
-                                .orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id: "
-                                                + trabajoGrado.getGeneracionResolucion().getId()
-                                                + " no encontrado"));
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Generación de resolución con id: "
+                                                                + trabajoGrado.getGeneracionResolucion().getId()
+                                                                + " no encontrada"));
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar los archivos
+                String directorioArchivos = identificarRutaArchivo(trabajoGrado);
 
+                // Actualizar el estado del trabajo de grado
                 trabajoGrado.setNumeroEstado(18);
 
+                // Actualizar enlaces de los documentos si han cambiado
                 if (!generacionResolucionDocenteDto.getLinkAnteproyectoFinal()
-                                .equals(generacionResolucionOld.getLinkAnteproyectoFinal())) {
+                                .equals(generacionResolucion.getLinkAnteproyectoFinal())) {
                         validarLink(generacionResolucionDocenteDto.getLinkAnteproyectoFinal());
                         generacionResolucionDocenteDto.setLinkAnteproyectoFinal(
-                                        FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                        generacionResolucionDocenteDto
-                                                                        .getLinkAnteproyectoFinal()));
-                        FilesUtilities.deleteFileExample(generacionResolucionOld.getLinkAnteproyectoFinal());
+                                        FilesUtilities.guardarArchivoNew2(directorioArchivos,
+                                                        generacionResolucionDocenteDto.getLinkAnteproyectoFinal()));
+                        FilesUtilities.deleteFileExample(generacionResolucion.getLinkAnteproyectoFinal());
                 }
                 if (!generacionResolucionDocenteDto.getLinkSolicitudComite()
-                                .equals(generacionResolucionOld.getLinkSolicitudComite())) {
+                                .equals(generacionResolucion.getLinkSolicitudComite())) {
                         validarLink(generacionResolucionDocenteDto.getLinkSolicitudComite());
                         generacionResolucionDocenteDto.setLinkSolicitudComite(
-                                        FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                                        generacionResolucionDocenteDto
-                                                                        .getLinkSolicitudComite()));
-                        FilesUtilities.deleteFileExample(generacionResolucionOld.getLinkSolicitudComite());
+                                        FilesUtilities.guardarArchivoNew2(directorioArchivos,
+                                                        generacionResolucionDocenteDto.getLinkSolicitudComite()));
+                        FilesUtilities.deleteFileExample(generacionResolucion.getLinkSolicitudComite());
                 }
 
-                updateExamenValoracionDocenteValues(generacionResolucionOld, generacionResolucionDocenteDto,
-                                trabajoGrado);
-                GeneracionResolucion generacionResolucion = generacionResolucionRepository
-                                .save(generacionResolucionOld);
+                // Actualizar los valores de la generación de resolución
+                updateExamenValoracionDocenteValues(generacionResolucion, generacionResolucionDocenteDto, trabajoGrado);
 
+                // Guardar los cambios en la generación de resolución
+                GeneracionResolucion generacionResolucionGuardada = generacionResolucionRepository
+                                .save(generacionResolucion);
+
+                // Convertir la entidad guardada en el DTO de respuesta
                 GeneracionResolucionDocenteResponseDto generacionResolucionDocenteResponseDto = generacionResolucionResponseMapper
-                                .toDocenteDto(generacionResolucion);
+                                .toDocenteDto(generacionResolucionGuardada);
                 generacionResolucionDocenteResponseDto.setTitulo(trabajoGrado.getTitulo());
 
                 return generacionResolucionDocenteResponseDto;
         }
 
-        private void updateExamenValoracionDocenteValues(GeneracionResolucion generacionResolucion,
-                        GeneracionResolucionDocenteDto generacionResolucionDocenteDto, TrabajoGrado trabajoGrado) {
+        /**
+         * Método auxiliar para actualizar los valores de la generación de resolución
+         * docente con los datos proporcionados.
+         * 
+         * @param generacionResolucion           la entidad de generación de resolución
+         *                                       que se actualizará.
+         * @param generacionResolucionDocenteDto objeto que contiene la información
+         *                                       actualizada de la generación de
+         *                                       resolución docente.
+         * @param trabajoGrado                   el trabajo de grado asociado.
+         */
+        private void updateExamenValoracionDocenteValues(
+                        GeneracionResolucion generacionResolucion,
+                        GeneracionResolucionDocenteDto generacionResolucionDocenteDto,
+                        TrabajoGrado trabajoGrado) {
 
+                // Validar la existencia del director y codirector
                 archivoClient.obtenerDocentePorId(generacionResolucionDocenteDto.getIdDirector());
-
                 archivoClient.obtenerDocentePorId(generacionResolucionDocenteDto.getIdCodirector());
 
+                // Resetear el concepto de documentos del coordinador
                 generacionResolucion.setConceptoDocumentosCoordinador(null);
 
+                // Actualizar director y codirector
                 generacionResolucion.setDirector(generacionResolucionDocenteDto.getIdDirector());
                 generacionResolucion.setCodirector(generacionResolucionDocenteDto.getIdCodirector());
 
+                // Actualizar enlaces de documentos
                 generacionResolucion
                                 .setLinkAnteproyectoFinal(generacionResolucionDocenteDto.getLinkAnteproyectoFinal());
                 generacionResolucion.setLinkSolicitudComite(generacionResolucionDocenteDto.getLinkSolicitudComite());
         }
 
+        /**
+         * Método para actualizar la información del coordinador en la fase 1 de la
+         * generación de resolución para un trabajo de grado.
+         * Se valida la información proporcionada, incluyendo el concepto de los
+         * documentos del coordinador y el envío de correos electrónicos.
+         * 
+         * @param idTrabajoGrado                 el identificador del trabajo de grado.
+         * @param generacionResolucionDocenteDto objeto que contiene la información
+         *                                       actualizada de la fase 1 del
+         *                                       coordinador.
+         * @param bindingResult                  resultado de la validación de los
+         *                                       campos.
+         * @return un objeto {@link GeneracionResolucionCoordinadorFase1ResponseDto} que
+         *         contiene la información actualizada
+         *         del coordinador en la fase 1 y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la generación de
+         *                                   resolución no se encuentran.
+         * @throws InformationException      si no se permite registrar la información o
+         *                                   si faltan atributos necesarios.
+         */
         @Override
         public GeneracionResolucionCoordinadorFase1ResponseDto actualizarInformacionCoordinadorFase1(
                         Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase1Dto generacionResolucionDocenteDto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
-                if (generacionResolucionDocenteDto.getEnvioEmail() == null
-                                && generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
+                // Validación de atributos según el concepto de verificación
+                if (generacionResolucionDocenteDto.getEnvioEmail() == null &&
+                                generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
                                                 .equals(ConceptoVerificacion.RECHAZADO)) {
                         throw new InformationException("Faltan atributos para el registro");
                 }
 
-                if (generacionResolucionDocenteDto.getEnvioEmail() != null
-                                && generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
+                if (generacionResolucionDocenteDto.getEnvioEmail() != null &&
+                                generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
                                                 .equals(ConceptoVerificacion.ACEPTADO)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
-                                .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
-                                                + idTrabajoGrado
-                                                + " no encontrado"));
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 18 && trabajoGrado.getNumeroEstado() != 19
-                                && trabajoGrado.getNumeroEstado() != 20) {
+                // Validación del estado del trabajo de grado
+                if (trabajoGrado.getNumeroEstado() != 18 && trabajoGrado.getNumeroEstado() != 19 &&
+                                trabajoGrado.getNumeroEstado() != 20) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
+                // Buscar la generación de resolución asociada al trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findById(trabajoGrado.getGeneracionResolucion().getId())
-                                .orElseThrow(() -> new ResourceNotFoundException("Examen de valoracion con id: "
-                                                + trabajoGrado.getGeneracionResolucion().getId()
-                                                + " no encontrado"));
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Generación de resolución con id: "
+                                                                + trabajoGrado.getGeneracionResolucion().getId()
+                                                                + " no encontrada"));
 
-                if (generacionResolucionOld.getConceptoDocumentosCoordinador() == null) {
+                // Verificar si no se han registrado datos del coordinador
+                if (generacionResolucion.getConceptoDocumentosCoordinador() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
-                GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-
+                // Lista de correos para notificaciones
                 ArrayList<String> correos = new ArrayList<>();
 
-                if (generacionResolucionDocenteDto.getConceptoDocumentosCoordinador() != generacionResolucionOld
-                                .getConceptoDocumentosCoordinador()) {
-                        // Si pasa de aprobado a no aprobado
-                        if (!generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
-                                        .equals(ConceptoVerificacion.ACEPTADO)) {
+                // Actualización del estado del trabajo de grado y envío de correos si cambia el
+                // concepto de verificación
+                if (!generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
+                                .equals(generacionResolucion.getConceptoDocumentosCoordinador())) {
+
+                        if (generacionResolucionDocenteDto.getConceptoDocumentosCoordinador()
+                                        .equals(ConceptoVerificacion.RECHAZADO)) {
                                 EstudianteResponseDtoAll estudiante = archivoClient
                                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
                                 correos.add(estudiante.getCorreoUniversidad());
@@ -657,80 +959,113 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         }
                 }
 
-                generacionResolucionOld.setConceptoDocumentosCoordinador(
+                // Actualizar el concepto de los documentos del coordinador en la generación de
+                // resolución
+                generacionResolucion.setConceptoDocumentosCoordinador(
                                 generacionResolucionDocenteDto.getConceptoDocumentosCoordinador());
 
-                generacionResolucion = generacionResolucionRepository.save(generacionResolucionOld);
+                // Guardar los cambios en la generación de resolución
+                GeneracionResolucion generacionResolucionGuardada = generacionResolucionRepository
+                                .save(generacionResolucion);
 
-                return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generacionResolucion);
+                // Convertir la entidad guardada en el DTO de respuesta para la fase 1 del
+                // coordinador
+                return generacionResolucionResponseMapper.toCoordinadorFase1Dto(generacionResolucionGuardada);
         }
 
+        /**
+         * Método para actualizar la información del coordinador en la fase 2 de la
+         * generación de resolución para un trabajo de grado.
+         * Se valida la información proporcionada, incluyendo los conceptos del comité y
+         * la documentación asociada al consejo.
+         * 
+         * @param idTrabajoGrado                          el identificador del trabajo
+         *                                                de grado.
+         * @param generacionResolucionCoordinadorFase2Dto objeto que contiene la
+         *                                                información actualizada de la
+         *                                                fase 2 del coordinador.
+         * @param bindingResult                           resultado de la validación de
+         *                                                los campos.
+         * @return un objeto {@link GeneracionResolucionCoordinadorFase2ResponseDto} que
+         *         contiene la información actualizada
+         *         del coordinador en la fase 2 y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la generación de
+         *                                   resolución no se encuentran.
+         * @throws InformationException      si no se permite registrar la información o
+         *                                   si se proporcionan atributos incorrectos.
+         */
         @Override
         public GeneracionResolucionCoordinadorFase2ResponseDto actualizarInformacionCoordinadorFase2(
                         Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validación de atributos en función del concepto del comité
                 if (generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
-                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo() != null
-                                                || generacionResolucionCoordinadorFase2Dto
+                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo() != null ||
+                                                generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo() != null)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
                 if (generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)
-                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo() == null
-                                                || generacionResolucionCoordinadorFase2Dto
+                                && (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo() == null ||
+                                                generacionResolucionCoordinadorFase2Dto
                                                                 .getObtenerDocumentosParaEnvioConsejo() == null)) {
                         throw new InformationException("Atributos incorrectos");
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
-                                .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
-                                                + idTrabajoGrado
-                                                + " no encontrado"));
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-                if (trabajoGrado.getNumeroEstado() != 20 && trabajoGrado.getNumeroEstado() != 21
-                                && trabajoGrado.getNumeroEstado() != 22) {
+                // Validación del estado del trabajo de grado
+                if (trabajoGrado.getNumeroEstado() != 20 && trabajoGrado.getNumeroEstado() != 21 &&
+                                trabajoGrado.getNumeroEstado() != 22) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
+                // Buscar la generación de resolución asociada al trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findById(trabajoGrado.getGeneracionResolucion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Examen de valoracion con id: "
-                                                                + trabajoGrado.getGeneracionResolucion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Generación de resolución con id: "
+                                                                + trabajoGrado.getGeneracionResolucion().getId()
+                                                                + " no encontrada"));
 
-                boolean actaFechaRespuestaComiteEmpty = generacionResolucionOld.getActaFechaRespuestaComite() == null ||
-                                generacionResolucionOld.getActaFechaRespuestaComite().isEmpty();
-                if (actaFechaRespuestaComiteEmpty
-                                && generacionResolucionOld.getLinkSolicitudConsejo() == null) {
+                boolean actaFechaRespuestaComiteEmpty = generacionResolucion.getActaFechaRespuestaComite() == null ||
+                                generacionResolucion.getActaFechaRespuestaComite().isEmpty();
+                if (actaFechaRespuestaComiteEmpty && generacionResolucion.getLinkSolicitudConsejo() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar los archivos
+                String directorioArchivos = identificarRutaArchivo(trabajoGrado);
 
-                GeneracionResolucion responseExamenValoracion = null;
+                GeneracionResolucion generacionResolucionActualizada = null;
                 List<RespuestaComiteGeneracionResolucion> respuestaComiteList = generacionResolucionRepository
-                                .findRespuestaComiteByGeneracionResolucionId(
-                                                generacionResolucionOld.getId());
+                                .findRespuestaComiteByGeneracionResolucionId(generacionResolucion.getId());
                 RespuestaComiteGeneracionResolucion ultimoRegistro = respuestaComiteList.isEmpty() ? null
                                 : respuestaComiteList.get(0);
 
-                if (ultimoRegistro != null
-                                && ultimoRegistro.getConceptoComite() != generacionResolucionCoordinadorFase2Dto
-                                                .getActaFechaRespuestaComite().get(0)
-                                                .getConceptoComite()) {
+                // Validar cambios en el concepto del comité y realizar acciones
+                // correspondientes
+                if (ultimoRegistro != null &&
+                                !ultimoRegistro.getConceptoComite().equals(generacionResolucionCoordinadorFase2Dto
+                                                .getActaFechaRespuestaComite().get(0).getConceptoComite())) {
+
                         ArrayList<String> correos = new ArrayList<>();
+
                         // Si pasa de aprobado a no aprobado
                         if (!generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
                                         .getConceptoComite().equals(Concepto.APROBADO)) {
@@ -740,29 +1075,20 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 correos.add(trabajoGrado.getCorreoElectronicoTutor());
                                 envioCorreos.enviarCorreosCorrecion(correos,
                                                 generacionResolucionCoordinadorFase2Dto.getEnvioEmail().getAsunto(),
-                                                generacionResolucionCoordinadorFase2Dto.getEnvioEmail()
-                                                                .getMensaje());
-                                FilesUtilities.deleteFileExample(
-                                                generacionResolucionOld.getLinkSolicitudConsejo());
+                                                generacionResolucionCoordinadorFase2Dto.getEnvioEmail().getMensaje());
+                                FilesUtilities.deleteFileExample(generacionResolucion.getLinkSolicitudConsejo());
                                 trabajoGrado.setNumeroEstado(21);
                         } else {
+                                // Validar y procesar la documentación si el concepto es aprobado
                                 validarLink(generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
-                                ValidationUtils.validarBase64(
-                                                generacionResolucionCoordinadorFase2Dto
-                                                                .getObtenerDocumentosParaEnvioConsejo()
-                                                                .getB64FormatoBEv1());
-                                ValidationUtils.validarBase64(
-                                                generacionResolucionCoordinadorFase2Dto
-                                                                .getObtenerDocumentosParaEnvioConsejo()
-                                                                .getB64FormatoBEv2());
-                                ValidationUtils.validarBase64(
-                                                generacionResolucionCoordinadorFase2Dto
-                                                                .getObtenerDocumentosParaEnvioConsejo()
-                                                                .getB64AnteproyectoFinal());
-                                ValidationUtils.validarBase64(
-                                                generacionResolucionCoordinadorFase2Dto
-                                                                .getObtenerDocumentosParaEnvioConsejo()
-                                                                .getB64SolicitudConsejo());
+                                ValidationUtils.validarBase64(generacionResolucionCoordinadorFase2Dto
+                                                .getObtenerDocumentosParaEnvioConsejo().getB64FormatoBEv1());
+                                ValidationUtils.validarBase64(generacionResolucionCoordinadorFase2Dto
+                                                .getObtenerDocumentosParaEnvioConsejo().getB64FormatoBEv2());
+                                ValidationUtils.validarBase64(generacionResolucionCoordinadorFase2Dto
+                                                .getObtenerDocumentosParaEnvioConsejo().getB64AnteproyectoFinal());
+                                ValidationUtils.validarBase64(generacionResolucionCoordinadorFase2Dto
+                                                .getObtenerDocumentosParaEnvioConsejo().getB64SolicitudConsejo());
                                 correos.add(Constants.correoConsejo);
                                 Map<String, Object> documentosParaConsejo = generacionResolucionCoordinadorFase2Dto
                                                 .getObtenerDocumentosParaEnvioConsejo().getDocumentos();
@@ -770,38 +1096,55 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                                 generacionResolucionCoordinadorFase2Dto.getEnvioEmail().getAsunto(),
                                                 generacionResolucionCoordinadorFase2Dto.getEnvioEmail().getMensaje(),
                                                 documentosParaConsejo);
-                                generacionResolucionCoordinadorFase2Dto
-                                                .setLinkSolicitudConsejo(FilesUtilities.guardarArchivoNew2(
-                                                                rutaArchivo,
+                                generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejo(
+                                                FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                                 generacionResolucionCoordinadorFase2Dto
                                                                                 .getLinkSolicitudConsejo()));
                                 trabajoGrado.setNumeroEstado(22);
                         }
                 } else {
-                        if (generacionResolucionOld != null && generacionResolucionCoordinadorFase2Dto
-                                        .getLinkSolicitudConsejo() != null) {
-                                if (generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo()
-                                                .compareTo(generacionResolucionOld
-                                                                .getLinkSolicitudConsejo()) != 0) {
-                                        validarLink(generacionResolucionCoordinadorFase2Dto
-                                                        .getLinkSolicitudConsejo());
-                                        generacionResolucionCoordinadorFase2Dto
-                                                        .setLinkSolicitudConsejo(FilesUtilities
-                                                                        .guardarArchivoNew2(rutaArchivo,
-                                                                                        generacionResolucionCoordinadorFase2Dto
-                                                                                                        .getLinkSolicitudConsejo()));
+                        // Verificar si el enlace de solicitud del consejo ha cambiado y actualizarlo
+                        if (generacionResolucion != null
+                                        && generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo() != null) {
+                                if (!generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo()
+                                                .equals(generacionResolucion.getLinkSolicitudConsejo())) {
+                                        validarLink(generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
+                                        generacionResolucionCoordinadorFase2Dto.setLinkSolicitudConsejo(
+                                                        FilesUtilities.guardarArchivoNew2(directorioArchivos,
+                                                                        generacionResolucionCoordinadorFase2Dto
+                                                                                        .getLinkSolicitudConsejo()));
                                         FilesUtilities.deleteFileExample(
-                                                        generacionResolucionOld.getLinkSolicitudConsejo());
+                                                        generacionResolucion.getLinkSolicitudConsejo());
                                 }
                         }
                 }
-                updateExamenValoracionCoordinadorValues(generacionResolucionOld,
-                                generacionResolucionCoordinadorFase2Dto, trabajoGrado);
-                responseExamenValoracion = generacionResolucionRepository.save(generacionResolucionOld);
-                return generacionResolucionResponseMapper.toCoordinadorFase2Dto(responseExamenValoracion);
+
+                // Actualizar los valores de la generación de resolución
+                updateExamenValoracionCoordinadorValues(generacionResolucion, generacionResolucionCoordinadorFase2Dto,
+                                trabajoGrado);
+
+                // Guardar los cambios en la generación de resolución
+                generacionResolucionActualizada = generacionResolucionRepository.save(generacionResolucion);
+
+                // Convertir la entidad guardada en el DTO de respuesta para la fase 2 del
+                // coordinador
+                return generacionResolucionResponseMapper.toCoordinadorFase2Dto(generacionResolucionActualizada);
         }
 
-        private void updateExamenValoracionCoordinadorValues(GeneracionResolucion generacionResolucion,
+        /**
+         * Método auxiliar para actualizar los valores de la generación de resolución en
+         * la fase 2 del coordinador,
+         * incluyendo los detalles del acta del comité y la solicitud del consejo.
+         * 
+         * @param generacionResolucion                    la entidad de generación de
+         *                                                resolución que se actualizará.
+         * @param generacionResolucionCoordinadorFase2Dto objeto que contiene la
+         *                                                información actualizada de la
+         *                                                fase 2 del coordinador.
+         * @param trabajoGrado                            el trabajo de grado asociado.
+         */
+        private void updateExamenValoracionCoordinadorValues(
+                        GeneracionResolucion generacionResolucion,
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto,
                         TrabajoGrado trabajoGrado) {
 
@@ -809,106 +1152,153 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 .findFirstByGeneracionResolucionIdOrderByIdDesc(generacionResolucion.getId());
 
                 if (ultimoRegistro != null) {
-                        ultimoRegistro.setNumeroActa(
-                                        generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
-                                                        .getNumeroActa());
-                        ultimoRegistro.setFechaActa(
-                                        generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
-                                                        .getFechaActa());
-                        ultimoRegistro.setConceptoComite(
-                                        generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
-                                                        .getConceptoComite());
+                        ultimoRegistro.setNumeroActa(generacionResolucionCoordinadorFase2Dto
+                                        .getActaFechaRespuestaComite().get(0).getNumeroActa());
+                        ultimoRegistro.setFechaActa(generacionResolucionCoordinadorFase2Dto
+                                        .getActaFechaRespuestaComite().get(0).getFechaActa());
+                        ultimoRegistro.setConceptoComite(generacionResolucionCoordinadorFase2Dto
+                                        .getActaFechaRespuestaComite().get(0).getConceptoComite());
 
                         respuestaComiteGeneracionResolucionRepository.save(ultimoRegistro);
                 }
 
                 generacionResolucion.setLinkSolicitudConsejo(
                                 generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
-
         }
 
+        /**
+         * Método para actualizar la información del coordinador en la fase 3 de la
+         * generación de resolución para un trabajo de grado.
+         * Se valida la información proporcionada, incluyendo el enlace del oficio del
+         * consejo y se actualizan los datos del acta del consejo.
+         * 
+         * @param idTrabajoGrado                          el identificador del trabajo
+         *                                                de grado.
+         * @param generacionResolucionCoordinadorFase3Dto objeto que contiene la
+         *                                                información actualizada de la
+         *                                                fase 3 del coordinador.
+         * @param bindingResult                           resultado de la validación de
+         *                                                los campos.
+         * @return un objeto {@link GeneracionResolucionCoordinadorFase3ResponseDto} que
+         *         contiene la información actualizada
+         *         del coordinador en la fase 3 y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la generación de
+         *                                   resolución no se encuentran.
+         * @throws InformationException      si no se permite registrar la información o
+         *                                   si no se han registrado los datos
+         *                                   requeridos.
+         */
         @Override
         public GeneracionResolucionCoordinadorFase3ResponseDto actualizarInformacionCoordinadorFase3(
                         Long idTrabajoGrado,
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucionCoordinadorFase3Dto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validar el enlace del oficio del consejo
                 validarLink(generacionResolucionCoordinadorFase3Dto.getLinkOficioConsejo());
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
-                                .orElseThrow(() -> new ResourceNotFoundException("Trabajo de grado con id "
-                                                + idTrabajoGrado
-                                                + " no encontrado"));
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 21 && trabajoGrado.getNumeroEstado() != 23) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                GeneracionResolucion generacionResolucionOld = generacionResolucionRepository
+                // Buscar la generación de resolución asociada al trabajo de grado
+                GeneracionResolucion generacionResolucion = generacionResolucionRepository
                                 .findById(trabajoGrado.getGeneracionResolucion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Examen de valoracion con id: "
-                                                                + trabajoGrado.getGeneracionResolucion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Generación de resolución con id: "
+                                                                + trabajoGrado.getGeneracionResolucion().getId()
+                                                                + " no encontrada"));
 
-                if (generacionResolucionOld.getNumeroActaConsejo() == null
-                                && generacionResolucionOld.getFechaActaConsejo() == null) {
+                // Verificar si no se han registrado datos del acta del consejo
+                if (generacionResolucion.getNumeroActaConsejo() == null
+                                && generacionResolucion.getFechaActaConsejo() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
+                // Actualizar el estado del trabajo de grado
                 trabajoGrado.setNumeroEstado(23);
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar los archivos
+                String directorioArchivos = identificarRutaArchivo(trabajoGrado);
 
+                // Actualizar el enlace del oficio del consejo si ha cambiado
                 if (!generacionResolucionCoordinadorFase3Dto.getLinkOficioConsejo()
-                                .equals(generacionResolucionOld.getLinkOficioConsejo())) {
+                                .equals(generacionResolucion.getLinkOficioConsejo())) {
                         validarLink(generacionResolucionCoordinadorFase3Dto.getLinkOficioConsejo());
                         generacionResolucionCoordinadorFase3Dto.setLinkOficioConsejo(
-                                        FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                        FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                         generacionResolucionCoordinadorFase3Dto
                                                                         .getLinkOficioConsejo()));
-                        FilesUtilities.deleteFileExample(
-                                        generacionResolucionOld.getLinkOficioConsejo());
+                        FilesUtilities.deleteFileExample(generacionResolucion.getLinkOficioConsejo());
                 }
 
-                generacionResolucionOld.setNumeroActaConsejo(
-                                generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejo());
-                generacionResolucionOld.setFechaActaConsejo(
-                                generacionResolucionCoordinadorFase3Dto.getFechaActaConsejo());
-                generacionResolucionOld.setLinkOficioConsejo(
-                                generacionResolucionCoordinadorFase3Dto.getLinkOficioConsejo());
+                // Actualizar los datos del acta del consejo en la generación de resolución
+                generacionResolucion
+                                .setNumeroActaConsejo(generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejo());
+                generacionResolucion.setFechaActaConsejo(generacionResolucionCoordinadorFase3Dto.getFechaActaConsejo());
+                generacionResolucion
+                                .setLinkOficioConsejo(generacionResolucionCoordinadorFase3Dto.getLinkOficioConsejo());
 
-                generacionResolucionOld = generacionResolucionRepository.save(generacionResolucionOld);
+                // Guardar los cambios en la generación de resolución
+                GeneracionResolucion generacionResolucionGuardada = generacionResolucionRepository
+                                .save(generacionResolucion);
 
-                return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionOld);
+                // Convertir la entidad guardada en el DTO de respuesta para la fase 3 del
+                // coordinador
+                return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generacionResolucionGuardada);
         }
 
-        private String identificacionArchivo(TrabajoGrado trabajoGrado) {
-                EstudianteResponseDtoAll informacionEstudiantes = archivoClient
+        /**
+         * Método que genera la ruta del archivo donde se guardarán los documentos del
+         * estudiante en el proceso de generación de resolución.
+         * La ruta se construye en función de la información del estudiante, la fecha
+         * actual y el proceso específico.
+         * 
+         * @param trabajoGrado el trabajo de grado asociado al estudiante.
+         * @return la ruta donde se almacenarán los documentos del proceso de generación
+         *         de resolución.
+         */
+        private String identificarRutaArchivo(TrabajoGrado trabajoGrado) {
+                EstudianteResponseDtoAll informacionEstudiante = archivoClient
                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 
-                String procesoVa = "Generacion_Resolucion";
-
+                String proceso = "Generacion_Resolucion";
                 LocalDate fechaActual = LocalDate.now();
                 int anio = fechaActual.getYear();
                 int mes = fechaActual.getMonthValue();
 
-                Long identificacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
-                String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
-                String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
-                String informacionEstudiante = identificacionEstudiante + "-" + nombreEstudiante + "_"
+                Long identificacionEstudiante = informacionEstudiante.getPersona().getIdentificacion();
+                String nombreEstudiante = informacionEstudiante.getPersona().getNombre();
+                String apellidoEstudiante = informacionEstudiante.getPersona().getApellido();
+                String informacionEstudiante2 = identificacionEstudiante + "-" + nombreEstudiante + "_"
                                 + apellidoEstudiante;
-                String rutaCarpeta = anio + "/" + mes + "/" + informacionEstudiante + "/" + procesoVa;
 
+                // Construir la ruta del archivo
+                String rutaCarpeta = anio + "/" + mes + "/" + informacionEstudiante2 + "/" + proceso;
                 return rutaCarpeta;
         }
 
+        /**
+         * Método que valida el formato de un enlace y su contenido codificado en
+         * base64.
+         * 
+         * @param link el enlace que se va a validar.
+         * @throws ValidationException si el enlace no cumple con el formato o contenido
+         *                             esperado.
+         */
         private void validarLink(String link) {
                 ValidationUtils.validarFormatoLink(link);
                 String base64 = link.substring(link.indexOf('-') + 1);

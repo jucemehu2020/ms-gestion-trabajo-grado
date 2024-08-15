@@ -643,7 +643,7 @@ public class InsertarInformacionCoordinadorREVTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "No se permiten mas registros para el evaluador";
+                String expectedMessage = "No se permiten más registros para el evaluador";
                 assertTrue(exception.getMessage().contains(expectedMessage));
 
         }

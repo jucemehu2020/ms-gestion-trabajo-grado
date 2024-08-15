@@ -358,7 +358,7 @@ public class ActualizarInformacionCoordinadorREVTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "Respuesta examen de valoracion con id 2 no encontrado";
+                String expectedMessage = "Respuesta examen de valoración con id 2 no encontrado";
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 

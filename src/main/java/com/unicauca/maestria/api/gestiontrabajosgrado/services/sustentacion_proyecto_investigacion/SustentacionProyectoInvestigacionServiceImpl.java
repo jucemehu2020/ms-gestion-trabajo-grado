@@ -76,11 +76,19 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
         @Autowired
         private EnvioCorreos envioCorreos;
 
+        /**
+         * Método que obtiene una lista de todos los docentes registrados en el sistema.
+         * Si no hay docentes registrados, lanza una excepción.
+         * 
+         * @return una lista de objetos {@link DocenteInfoDto} que contienen la
+         *         información de los docentes.
+         * @throws InformationException si no se encuentran docentes registrados.
+         */
         @Override
         @Transactional(readOnly = true)
         public List<DocenteInfoDto> listarDocentes() {
                 List<DocenteResponseDto> listadoDocentes = archivoClient.listarDocentesRes();
-                if (listadoDocentes.size() == 0) {
+                if (listadoDocentes.isEmpty()) {
                         throw new InformationException("No hay docentes registrados");
                 }
                 List<DocenteInfoDto> docentes = listadoDocentes.stream()
@@ -94,14 +102,22 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 return docentes;
         }
 
+        /**
+         * Método que obtiene una lista de todos los expertos registrados en el sistema.
+         * Si no hay expertos registrados, lanza una excepción.
+         * 
+         * @return una lista de objetos {@link ExpertoInfoDto} que contienen la
+         *         información de los expertos.
+         * @throws InformationException si no se encuentran expertos registrados.
+         */
         @Override
         @Transactional(readOnly = true)
         public List<ExpertoInfoDto> listarExpertos() {
-                List<ExpertoResponseDto> listadoExperto = archivoClient.listarExpertos();
-                if (listadoExperto.size() == 0) {
+                List<ExpertoResponseDto> listadoExpertos = archivoClient.listarExpertos();
+                if (listadoExpertos.isEmpty()) {
                         throw new InformationException("No hay expertos registrados");
                 }
-                List<ExpertoInfoDto> expertos = listadoExperto.stream()
+                List<ExpertoInfoDto> expertos = listadoExpertos.stream()
                                 .map(experto -> new ExpertoInfoDto(
                                                 experto.getId(),
                                                 experto.getPersona().getNombre(),
@@ -112,6 +128,13 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 return expertos;
         }
 
+        /**
+         * Método que obtiene la información de un docente específico por su ID.
+         * 
+         * @param id el identificador del docente.
+         * @return un objeto {@link DocenteInfoDto} que contiene la información del
+         *         docente.
+         */
         @Override
         @Transactional(readOnly = true)
         public DocenteInfoDto obtenerDocente(Long id) {
@@ -124,6 +147,13 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 docente.getUltimaUniversidad());
         }
 
+        /**
+         * Método que obtiene la información de un experto específico por su ID.
+         * 
+         * @param id el identificador del experto.
+         * @return un objeto {@link ExpertoInfoDto} que contiene la información del
+         *         experto.
+         */
         @Override
         @Transactional(readOnly = true)
         public ExpertoInfoDto obtenerExperto(Long id) {
@@ -136,56 +166,86 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 experto.getUniversidadtitexp());
         }
 
+        /**
+         * Método para insertar la información del docente relacionada con la
+         * sustentación de un proyecto de investigación.
+         * Se valida la información proporcionada, incluyendo los enlaces de los
+         * documentos y los anexos, y se actualizan los datos del trabajo de grado.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la sustentación
+         *                        del proyecto de investigación.
+         * @param bindingResult   resultado de la validación de los campos.
+         * @return un objeto {@link SustentacionTrabajoInvestigacionDocenteResponseDto}
+         *         que contiene la información registrada
+         *         de la sustentación y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado no se encuentra.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado.
+         */
         @Override
         @Transactional
         public SustentacionTrabajoInvestigacionDocenteResponseDto insertarInformacionDocente(
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,
-                        BindingResult result) {
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                        BindingResult bindingResult) {
+
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validar enlaces de monografía y formato F
                 validarLink(sustentacionDto.getLinkMonografia());
                 validarLink(sustentacionDto.getLinkFormatoF());
+
+                // Validar enlaces de anexos
                 for (AnexoSustentacionDto anexo : sustentacionDto.getAnexos()) {
                         validarLink(anexo.getLinkAnexo());
                 }
 
+                // Buscar el trabajo de grado por su ID
                 TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 23) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
+                // Validar la existencia del jurado interno y externo
                 archivoClient.obtenerDocentePorId(sustentacionDto.getIdJuradoInterno());
                 archivoClient.obtenerExpertoPorId(sustentacionDto.getIdJuradoExterno());
 
+                // Convertir el DTO en la entidad correspondiente
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoIngestigacionMapper
                                 .toEntity(sustentacionDto);
 
+                // Asignar el trabajo de grado a la sustentación y actualizar el estado
                 sustentacionProyectoInvestigacion.setTrabajoGrado(trabajoGrado);
                 trabajoGrado.setSustentacionProyectoInvestigacion(sustentacionProyectoInvestigacion);
-
                 trabajoGrado.setNumeroEstado(24);
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar los archivos
+                String directorioArchivos = identificacionArchivo(trabajoGrado);
 
+                // Guardar los enlaces de monografía y formato F
                 sustentacionProyectoInvestigacion.setLinkMonografia(
-                                FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                 sustentacionProyectoInvestigacion.getLinkMonografia()));
-
                 sustentacionProyectoInvestigacion.setLinkFormatoF(
-                                FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                 sustentacionProyectoInvestigacion.getLinkFormatoF()));
 
+                // Guardar los anexos si existen
                 if (sustentacionProyectoInvestigacion.getAnexos() != null) {
                         List<AnexoSustentacion> anexosActualizados = new ArrayList<>();
                         for (AnexoSustentacionDto anexoDto : sustentacionDto.getAnexos()) {
-                                String rutaAnexo = FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                String rutaAnexo = FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                 anexoDto.getLinkAnexo());
                                 AnexoSustentacion anexo = new AnexoSustentacion();
                                 anexo.setLinkAnexo(rutaAnexo);
@@ -195,65 +255,93 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         sustentacionProyectoInvestigacion.setAnexos(anexosActualizados);
                 }
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionGuardada = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacion);
 
+                // Convertir la entidad guardada en el DTO de respuesta
                 SustentacionTrabajoInvestigacionDocenteResponseDto sustentacionResponseDto = sustentacionProyectoInvestigacionResponseMapper
-                                .toDocenteDto(sustentacionProyectoInvestigacionRes);
+                                .toDocenteDto(sustentacionProyectoInvestigacionGuardada);
 
                 return sustentacionResponseDto;
         }
 
+        /**
+         * Método para insertar la información del coordinador en la fase 1 de la
+         * sustentación de un proyecto de investigación.
+         * Se valida la información proporcionada, incluyendo los conceptos del
+         * coordinador y los enlaces de los documentos asociados.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la sustentación
+         *                        del coordinador en la fase 1.
+         * @param bindingResult   resultado de la validación de los campos.
+         * @return un objeto {@link STICoordinadorFase1ResponseDto} que contiene la
+         *         información registrada
+         *         del coordinador y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la sustentación no
+         *                                   se encuentran.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado.
+         */
         @Override
         @Transactional
         public STICoordinadorFase1ResponseDto insertarInformacionCoordinadoFase1(
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validación de atributos según el concepto de verificación
                 if ((sustentacionDto.getEnvioEmail() == null
                                 || sustentacionDto.getLinkEstudioHojaVidaAcademica() != null)
-                                && sustentacionDto.getConceptoCoordinador()
-                                                .equals(ConceptoVerificacion.RECHAZADO)) {
+                                && sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.RECHAZADO)) {
                         throw new InformationException("Faltan atributos para el registro");
                 }
 
                 if ((sustentacionDto.getLinkEstudioHojaVidaAcademica() == null
-                                || sustentacionDto.getEnvioEmail() != null) && sustentacionDto.getConceptoCoordinador()
-                                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                                || sustentacionDto.getEnvioEmail() != null)
+                                && sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
+                // Validar enlace de estudio de hoja de vida académica si el concepto es
+                // aceptado
                 if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
                         validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 24) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentacion con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
+                // Actualizar la información según el concepto del coordinador
                 if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
-                        String rutaArchivo = identificacionArchivo(trabajoGrado);
-                        sustentacionProyectoInvestigacionTmp
+                        String directorioArchivos = identificacionArchivo(trabajoGrado);
+                        sustentacionProyectoInvestigacion
                                         .setLinkEstudioHojaVidaAcademica(FilesUtilities.guardarArchivoNew2(
-                                                        rutaArchivo,
+                                                        directorioArchivos,
                                                         sustentacionDto.getLinkEstudioHojaVidaAcademica()));
                         trabajoGrado.setNumeroEstado(26);
                 } else {
@@ -268,26 +356,53 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         trabajoGrado.setNumeroEstado(25);
                 }
 
-                sustentacionProyectoInvestigacionTmp.setConceptoCoordinador(sustentacionDto.getConceptoCoordinador());
+                // Actualizar el concepto del coordinador en la sustentación
+                sustentacionProyectoInvestigacion.setConceptoCoordinador(sustentacionDto.getConceptoCoordinador());
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionGuardada = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
+                // Convertir la entidad guardada en el DTO de respuesta
                 return sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase1Dto(sustentacionProyectoInvestigacionRes);
+                                .toCoordinadorFase1Dto(sustentacionProyectoInvestigacionGuardada);
         }
 
+        /**
+         * Método para insertar la información del coordinador en la fase 2 de la
+         * sustentación de un proyecto de investigación.
+         * Se valida la información proporcionada, incluyendo los conceptos del comité y
+         * los enlaces de los documentos asociados.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la sustentación
+         *                        del coordinador en la fase 2.
+         * @param bindingResult   resultado de la validación de los campos.
+         * @return un objeto {@link STICoordinadorFase2ResponseDto} que contiene la
+         *         información registrada del coordinador y el estado del trabajo de
+         *         grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la sustentación no
+         *                                   se encuentran.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado o si se proporcionan atributos
+         *                                   incorrectos.
+         */
         @Override
         @Transactional
         public STICoordinadorFase2ResponseDto insertarInformacionCoordinadoFase2(
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validación de atributos en función del concepto del comité
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
                                 && (sustentacionDto.getLinkFormatoG() != null
@@ -301,13 +416,15 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("Atributos incorrectos");
                 }
 
+                // Validación de la fecha del acta del comité
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getFechaActa() != null
                                 && sustentacionDto.getActaFechaRespuestaComite().get(0).getFechaActa()
                                                 .isAfter(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha de registro del comite no puede ser mayor a la fecha actual.");
+                                        "La fecha de registro del comité no puede ser mayor a la fecha actual.");
                 }
 
+                // Validación de documentos en caso de concepto aprobado
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)) {
                         validarLink(sustentacionDto.getLinkFormatoG());
@@ -319,28 +436,28 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         }
                 }
 
+                // Inicializar la lista de correos para notificaciones
                 ArrayList<String> correos = new ArrayList<>();
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id "
-                                                                + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 26) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
+                // Buscar la sustentación asociada al trabajo de grado
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentacion con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
+                // Verificar si el concepto del comité ya ha sido aprobado
                 for (RespuestaComiteSustentacion respuesta : sustentacionProyectoInvestigacion
                                 .getActaFechaRespuestaComite()) {
                         if (respuesta.getConceptoComite().equals(Concepto.APROBADO)) {
@@ -348,19 +465,20 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         }
                 }
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar los archivos
+                String directorioArchivos = identificacionArchivo(trabajoGrado);
 
+                // Procesar la información según el concepto del comité
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)) {
                         correos.add(Constants.correoConsejo);
-                        Map<String, Object> documentosParaConsejo = sustentacionDto
-                                        .getInformacionEnvioConsejo().getDocumentos();
+                        Map<String, Object> documentosParaConsejo = sustentacionDto.getInformacionEnvioConsejo()
+                                        .getDocumentos();
                         envioCorreos.enviarCorreoConAnexos(correos, sustentacionDto.getEnvioEmail().getAsunto(),
                                         sustentacionDto.getEnvioEmail().getMensaje(), documentosParaConsejo);
 
                         sustentacionDto.setLinkFormatoG(FilesUtilities.guardarArchivoNew2(
-                                        rutaArchivo,
-                                        sustentacionDto.getLinkFormatoG()));
+                                        directorioArchivos, sustentacionDto.getLinkFormatoG()));
 
                         trabajoGrado.setNumeroEstado(28);
                 } else {
@@ -374,50 +492,100 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         trabajoGrado.setNumeroEstado(27);
                 }
 
+                // Agregar la información del coordinador en la fase 2
                 agregarInformacionCoordinadorFase2(sustentacionProyectoInvestigacion, sustentacionDto);
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionGuardada = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacion);
 
+                // Convertir la entidad guardada en el DTO de respuesta
                 return sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase2Dto(sustentacionProyectoInvestigacionRes);
+                                .toCoordinadorFase2Dto(sustentacionProyectoInvestigacionGuardada);
         }
 
+        /**
+         * Método auxiliar para agregar la información del coordinador en la fase 2 a la
+         * entidad de sustentación del proyecto de investigación.
+         * Esta información incluye los detalles del acta de respuesta del comité y el
+         * enlace al formato G.
+         * 
+         * @param sustentacionProyectoInvestigacion                   la entidad de
+         *                                                            sustentación del
+         *                                                            proyecto de
+         *                                                            investigación a la
+         *                                                            que se le agregará
+         *                                                            la información.
+         * @param sustentacionTrabajoInvestigacionCoordinadorFase2Dto objeto que
+         *                                                            contiene la
+         *                                                            información de la
+         *                                                            fase 2 del
+         *                                                            coordinador.
+         */
         private void agregarInformacionCoordinadorFase2(
-                        SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion,
+                        SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion,
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto) {
 
+                // Crear una nueva respuesta del comité con la información proporcionada en el
+                // DTO
                 RespuestaComiteSustentacion respuestaComite = RespuestaComiteSustentacion.builder()
                                 .conceptoComite(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                                .getActaFechaRespuestaComite().get(0)
-                                                .getConceptoComite())
+                                                .getActaFechaRespuestaComite().get(0).getConceptoComite())
                                 .numeroActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
-                                                .getActaFechaRespuestaComite().get(0)
-                                                .getNumeroActa())
+                                                .getActaFechaRespuestaComite().get(0).getNumeroActa())
                                 .fechaActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                                 .getActaFechaRespuestaComite().get(0).getFechaActa())
-                                .sustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacion)
+                                .sustentacionProyectoInvestigacion(sustentacionProyectoInvestigacion)
                                 .build();
 
-                if (sustentacionTrabajoInvestigacion.getActaFechaRespuestaComite() == null) {
-                        sustentacionTrabajoInvestigacion.setActaFechaRespuestaComite(new ArrayList<>());
+                // Inicializar la lista de respuestas del comité si está vacía
+                if (sustentacionProyectoInvestigacion.getActaFechaRespuestaComite() == null) {
+                        sustentacionProyectoInvestigacion.setActaFechaRespuestaComite(new ArrayList<>());
                 }
 
-                sustentacionTrabajoInvestigacion.getActaFechaRespuestaComite().add(respuestaComite);
-                sustentacionTrabajoInvestigacion.setLinkFormatoG(
-                                sustentacionTrabajoInvestigacionCoordinadorFase2Dto.getLinkFormatoG());
+                // Agregar la nueva respuesta del comité a la lista existente
+                sustentacionProyectoInvestigacion.getActaFechaRespuestaComite().add(respuestaComite);
+
+                // Asignar el enlace al formato G en la sustentación
+                sustentacionProyectoInvestigacion
+                                .setLinkFormatoG(sustentacionTrabajoInvestigacionCoordinadorFase2Dto.getLinkFormatoG());
         }
 
+        /**
+         * Método para insertar la información del coordinador en la fase 3 de la
+         * sustentación de un proyecto de investigación.
+         * Se valida la información proporcionada, incluyendo los conceptos de
+         * aceptación de jurados y los enlaces de los documentos asociados.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la sustentación
+         *                        del coordinador en la fase 3.
+         * @param bindingResult   resultado de la validación de los campos.
+         * @return un objeto {@link STICoordinadorFase3ResponseDto} que contiene la
+         *         información registrada del coordinador y el estado del trabajo de
+         *         grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la sustentación no
+         *                                   se encuentran.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado o si se proporcionan atributos
+         *                                   incorrectos.
+         */
         @Override
         @Transactional
         public STICoordinadorFase3ResponseDto insertarInformacionCoordinadoFase3(
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
-                        BindingResult result) {
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                        BindingResult bindingResult) {
+
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validación de atributos en función del estado de aceptación de los jurados
                 if (sustentacionDto.getJuradosAceptados().equals(ConceptoVerificacion.ACEPTADO)
                                 && (!sustentacionDto.getIdJuradoInterno().equals("Sin cambios")
                                                 || !sustentacionDto.getIdJuradoExterno().equals("Sin cambios"))) {
@@ -430,54 +598,73 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("Atributos incorrectos");
                 }
 
+                // Validación de la fecha del acta del consejo
                 if (sustentacionDto.getFechaActaConsejo() != null
                                 && sustentacionDto.getFechaActaConsejo().isAfter(LocalDate.now())) {
-                        throw new InformationException(
-                                        "La fecha del consejo no puede ser mayor a la fecha actual.");
+                        throw new InformationException("La fecha del consejo no puede ser mayor a la fecha actual.");
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id "
-                                                                + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 28) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentación con id " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
+                // Identificar el directorio para guardar los archivos
                 String directorioArchivos = identificacionArchivo(trabajoGrado);
 
+                // Guardar el enlace del oficio del consejo
                 sustentacionDto.setLinkOficioConsejo(
                                 FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                 sustentacionDto.getLinkOficioConsejo()));
 
-                agregarInformacionCoordinadorFase3(sustentacionProyectoInvestigacionTmp, sustentacionDto, trabajoGrado);
+                // Agregar la información del coordinador en la fase 3
+                agregarInformacionCoordinadorFase3(sustentacionProyectoInvestigacion, sustentacionDto, trabajoGrado);
 
+                // Actualizar el estado del trabajo de grado
                 trabajoGrado.setNumeroEstado(29);
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionGuardada = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
+                // Convertir la entidad guardada en el DTO de respuesta
                 return sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase3Dto(sustentacionProyectoInvestigacionRes);
+                                .toCoordinadorFase3Dto(sustentacionProyectoInvestigacionGuardada);
         }
 
+        /**
+         * Método auxiliar para agregar la información del coordinador en la fase 3 a la
+         * entidad de sustentación del proyecto de investigación.
+         * Esta información incluye los detalles de aceptación de jurados, el acta del
+         * consejo, y el enlace del oficio del consejo.
+         * 
+         * @param sustentacionProyectoInvestigacion la entidad de sustentación del
+         *                                          proyecto de investigación a la que
+         *                                          se le agregará la información.
+         * @param sustentacionDto                   objeto que contiene la información
+         *                                          de la fase 3 del coordinador.
+         * @param trabajoGrado                      el trabajo de grado asociado.
+         */
         private void agregarInformacionCoordinadorFase3(
                         SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion,
                         SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
                         TrabajoGrado trabajoGrado) {
 
+                // Si los jurados fueron rechazados, actualizar la información del jurado
+                // interno y externo
                 if (sustentacionDto.getJuradosAceptados().equals(ConceptoVerificacion.RECHAZADO)) {
                         archivoClient.obtenerDocentePorId(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
                         archivoClient.obtenerExpertoPorId(Long.parseLong(sustentacionDto.getIdJuradoExterno()));
@@ -487,122 +674,169 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         sustentacionProyectoInvestigacion
                                         .setIdJuradoExterno(Long.parseLong(sustentacionDto.getIdJuradoExterno()));
                 }
+
+                // Actualizar la información del acta del consejo y el oficio del consejo
                 sustentacionProyectoInvestigacion.setJuradosAceptados(sustentacionDto.getJuradosAceptados());
                 sustentacionProyectoInvestigacion.setNumeroActaConsejo(sustentacionDto.getNumeroActaConsejo());
                 sustentacionProyectoInvestigacion.setFechaActaConsejo(sustentacionDto.getFechaActaConsejo());
                 sustentacionProyectoInvestigacion.setLinkOficioConsejo(sustentacionDto.getLinkOficioConsejo());
-
         }
 
+        /**
+         * Método para insertar la información del estudiante relacionada con la
+         * sustentación de un proyecto de investigación.
+         * Se valida la información proporcionada, incluyendo los enlaces de los
+         * documentos, y se actualizan los datos del trabajo de grado.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la sustentación
+         *                        del estudiante.
+         * @param bindingResult   resultado de la validación de los campos.
+         * @return un objeto
+         *         {@link SustentacionTrabajoInvestigacionEstudianteResponseDto} que
+         *         contiene la información registrada
+         *         de la sustentación y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado no se encuentra.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado
+         *                                   o a que el estudiante no ha completado los
+         *                                   datos de egresado.
+         */
         @Override
         @Transactional
         public SustentacionTrabajoInvestigacionEstudianteResponseDto insertarInformacionEstudiante(
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
+                // Validación de la fecha de sustentación
                 if (sustentacionDto.getFechaSustentacion() != null
                                 && sustentacionDto.getFechaSustentacion().isAfter(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha de la sustentacion no puede ser mayor a la fecha actual.");
+                                        "La fecha de la sustentación no puede ser mayor a la fecha actual.");
                 }
 
+                // Validar los enlaces de los documentos
                 validarLink(sustentacionDto.getLinkFormatoH());
                 validarLink(sustentacionDto.getLinkFormatoI());
                 validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado());
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id "
-                                                                + idTrabajoGrado
-                                                                + " no encontrado"));
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 29) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                // List<CursoSaveDto> cursos = archivoClientEgresados
-                // .obtenerCursosPorIdEstudiante(trabajoGrado.getIdEstudiante());
+                // Validar que el estudiante ha completado los datos de egresado
                 List<EmpresaSaveDto> empresas = archivoClientEgresados
                                 .obtenerEmpresasPorIdEstudiante(trabajoGrado.getIdEstudiante());
-
-                if (empresas.size() == 0) {
+                if (empresas.isEmpty()) {
                         throw new InformationException(
                                         "No es permitido registrar la información debido a que el estudiante no ha completado los datos de egresado");
                 }
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentación con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar los archivos
+                String directorioArchivos = identificacionArchivo(trabajoGrado);
 
+                // Actualizar la información de la sustentación
                 trabajoGrado.setNumeroEstado(30);
-
-                sustentacionProyectoInvestigacionTmp.setFechaSustentacion(sustentacionDto.getFechaSustentacion());
-
-                sustentacionProyectoInvestigacionTmp.setLinkFormatoH(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                sustentacionDto.getLinkFormatoH()));
-
-                sustentacionProyectoInvestigacionTmp.setLinkFormatoI(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                sustentacionDto.getLinkFormatoI()));
-
-                sustentacionProyectoInvestigacionTmp
-                                .setLinkEstudioHojaVidaAcademicaGrado(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                sustentacionProyectoInvestigacion.setFechaSustentacion(sustentacionDto.getFechaSustentacion());
+                sustentacionProyectoInvestigacion.setLinkFormatoH(
+                                FilesUtilities.guardarArchivoNew2(directorioArchivos,
+                                                sustentacionDto.getLinkFormatoH()));
+                sustentacionProyectoInvestigacion.setLinkFormatoI(
+                                FilesUtilities.guardarArchivoNew2(directorioArchivos,
+                                                sustentacionDto.getLinkFormatoI()));
+                sustentacionProyectoInvestigacion.setLinkEstudioHojaVidaAcademicaGrado(
+                                FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                 sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado()));
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionGuardada = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
+                // Convertir la entidad guardada en el DTO de respuesta
                 return sustentacionProyectoInvestigacionResponseMapper
-                                .toEstudianteDto(sustentacionProyectoInvestigacionRes);
+                                .toEstudianteDto(sustentacionProyectoInvestigacionGuardada);
         }
 
+        /**
+         * Método para insertar la información del coordinador en la fase 4 de la
+         * sustentación de un proyecto de investigación.
+         * Se actualizan los datos del trabajo de grado en función de la respuesta a la
+         * sustentación.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la sustentación
+         *                        del coordinador en la fase 4.
+         * @param bindingResult   resultado de la validación de los campos.
+         * @return un objeto {@link STICoordinadorFase4ResponseDto} que contiene la
+         *         información registrada
+         *         del coordinador y el estado del trabajo de grado.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si el trabajo de grado o la sustentación no
+         *                                   se encuentran.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado.
+         */
         @Override
         @Transactional
         public STICoordinadorFase4ResponseDto insertarInformacionCoordinadoFase4(
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
-                        BindingResult result) {
+                        BindingResult bindingResult) {
 
-                if (result.hasErrors()) {
-                        throw new FieldErrorException(result);
+                // Validación de errores en los campos
+                if (bindingResult.hasErrors()) {
+                        throw new FieldErrorException(bindingResult);
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 30) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentación con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
+                // Actualizar el estado del trabajo de grado en función de la respuesta a la
+                // sustentación
                 if (sustentacionDto.getRespuestaSustentacion().equals(ConceptoSustentacion.APROBADO)) {
                         Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
                                         .findByTrabajoGradoId(idTrabajoGrado);
-                        if (tiemposPendientesOpt.isPresent()) {
-                                tiemposPendientesRepository.delete(tiemposPendientesOpt.get());
-                        }
+                        tiemposPendientesOpt.ifPresent(tiemposPendientesRepository::delete);
                         trabajoGrado.setNumeroEstado(31);
                 } else if (sustentacionDto.getRespuestaSustentacion()
                                 .equals(ConceptoSustentacion.APROBADO_CON_OBSERVACIONES)) {
@@ -615,20 +849,32 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         insertarInformacionTiempos(trabajoGrado, 60);
                 }
 
-                agregarInformacionCoordinadorFase4(sustentacionProyectoInvestigacionTmp, sustentacionDto, trabajoGrado);
+                // Agregar la información del coordinador en la fase 4
+                agregarInformacionCoordinadorFase4(sustentacionProyectoInvestigacion, sustentacionDto, trabajoGrado);
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionGuardada = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
+                // Convertir la entidad guardada en el DTO de respuesta
                 return sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase4Dto(sustentacionProyectoInvestigacionRes);
+                                .toCoordinadorFase4Dto(sustentacionProyectoInvestigacionGuardada);
         }
 
+        /**
+         * Método auxiliar para insertar o actualizar la información de los tiempos
+         * pendientes para un trabajo de grado.
+         * Se establece una fecha límite en función del número de días proporcionado.
+         * 
+         * @param trabajoGrado el trabajo de grado asociado.
+         * @param tiempo       el número de días a partir de la fecha actual para
+         *                     establecer la fecha límite.
+         */
         private void insertarInformacionTiempos(TrabajoGrado trabajoGrado, int tiempo) {
                 Optional<TiemposPendientes> optionalTiemposPendientes = tiemposPendientesRepository
                                 .findByTrabajoGradoId(trabajoGrado.getId());
 
-                TiemposPendientes tiemposPendientes = new TiemposPendientes();
+                TiemposPendientes tiemposPendientes;
                 if (optionalTiemposPendientes.isPresent()) {
                         tiemposPendientes = optionalTiemposPendientes.get();
                 } else {
@@ -637,144 +883,223 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                 }
 
                 LocalDate fechaActual = LocalDate.now();
-                tiemposPendientes.setFechaRegistro(LocalDate.now());
+                tiemposPendientes.setFechaRegistro(fechaActual);
                 tiemposPendientes.setEstado(trabajoGrado.getNumeroEstado());
                 tiemposPendientes.setFechaLimite(fechaActual.plusDays(tiempo));
 
                 tiemposPendientesRepository.save(tiemposPendientes);
         }
 
+        /**
+         * Método auxiliar para agregar la información del coordinador en la fase 4 a la
+         * entidad de sustentación del proyecto de investigación.
+         * Esta información incluye la respuesta a la sustentación.
+         * 
+         * @param sustentacionProyectoInvestigacion la entidad de sustentación del
+         *                                          proyecto de investigación a la que
+         *                                          se le agregará la información.
+         * @param sustentacionDto                   objeto que contiene la información
+         *                                          de la fase 4 del coordinador.
+         * @param trabajoGrado                      el trabajo de grado asociado.
+         */
         private void agregarInformacionCoordinadorFase4(
                         SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion,
                         SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
                         TrabajoGrado trabajoGrado) {
 
-                sustentacionProyectoInvestigacion
-                                .setRespuestaSustentacion(sustentacionDto.getRespuestaSustentacion());
+                sustentacionProyectoInvestigacion.setRespuestaSustentacion(sustentacionDto.getRespuestaSustentacion());
         }
 
+        /**
+         * Método para listar la información del docente relacionada con la sustentación
+         * de un proyecto de investigación.
+         * Se obtiene la información del jurado interno y externo, así como los enlaces
+         * de los documentos de la sustentación.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto {@link SustentacionTrabajoInvestigacionListDocenteDto} que
+         *         contiene la información del docente y de la sustentación.
+         * @throws ResourceNotFoundException si no se encuentra la sustentación asociada
+         *                                   al trabajo de grado.
+         */
         @Override
         @Transactional(readOnly = true)
         public SustentacionTrabajoInvestigacionListDocenteDto listarInformacionDocente(Long idTrabajoGrado) {
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
                                 .findByTrabajoGradoId(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con ID trabajo de grado " + idTrabajoGrado
+                                                "Sustentación con ID trabajo de grado " + idTrabajoGrado
                                                                 + " no encontrado"));
 
+                // Obtener la información del jurado interno
                 DocenteResponseDto docente = archivoClient
-                                .obtenerDocentePorId(sustentacionProyectoInvestigacionTmp.getIdJuradoInterno());
-                String nombre_docente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
+                                .obtenerDocentePorId(sustentacionProyectoInvestigacion.getIdJuradoInterno());
+                String nombreDocente = docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
                 Map<String, String> evaluadorInternoMap = new HashMap<>();
                 evaluadorInternoMap.put("id", docente.getId().toString());
-                evaluadorInternoMap.put("nombres", nombre_docente);
+                evaluadorInternoMap.put("nombres", nombreDocente);
                 evaluadorInternoMap.put("universidad", "Universidad del Cauca");
                 evaluadorInternoMap.put("correo", docente.getPersona().getCorreoElectronico());
 
+                // Obtener la información del jurado externo
                 ExpertoResponseDto experto = archivoClient
-                                .obtenerExpertoPorId(sustentacionProyectoInvestigacionTmp.getIdJuradoExterno());
-                String nombre_experto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
+                                .obtenerExpertoPorId(sustentacionProyectoInvestigacion.getIdJuradoExterno());
+                String nombreExperto = experto.getPersona().getNombre() + " " + experto.getPersona().getApellido();
                 Map<String, String> evaluadorExternoMap = new HashMap<>();
                 evaluadorExternoMap.put("id", experto.getId().toString());
-                evaluadorExternoMap.put("nombres", nombre_experto);
+                evaluadorExternoMap.put("nombres", nombreExperto);
                 evaluadorExternoMap.put("universidad", experto.getUniversidadtitexp());
                 evaluadorExternoMap.put("correo", experto.getPersona().getCorreoElectronico());
 
-                SustentacionTrabajoInvestigacionListDocenteDto sustentacionTrabajoInvestigacionDocenteResponseDto = new SustentacionTrabajoInvestigacionListDocenteDto();
-                sustentacionTrabajoInvestigacionDocenteResponseDto.setId(
-                                sustentacionProyectoInvestigacionTmp.getId());
-                sustentacionTrabajoInvestigacionDocenteResponseDto
-                                .setLinkFormatoF(sustentacionProyectoInvestigacionTmp.getLinkFormatoF());
-                sustentacionTrabajoInvestigacionDocenteResponseDto
-                                .setLinkMonografia(sustentacionProyectoInvestigacionTmp.getLinkMonografia());
+                // Crear el DTO de respuesta
+                SustentacionTrabajoInvestigacionListDocenteDto responseDto = new SustentacionTrabajoInvestigacionListDocenteDto();
+                responseDto.setId(sustentacionProyectoInvestigacion.getId());
+                responseDto.setLinkFormatoF(sustentacionProyectoInvestigacion.getLinkFormatoF());
+                responseDto.setLinkMonografia(sustentacionProyectoInvestigacion.getLinkMonografia());
 
-                List<AnexoSustentacion> anexoSustentacion = anexosSustentacionRepository
-                                .obtenerAnexosPorId(sustentacionTrabajoInvestigacionDocenteResponseDto.getId());
+                // Obtener los anexos de la sustentación
+                List<AnexoSustentacion> anexos = anexosSustentacionRepository.obtenerAnexosPorId(responseDto.getId());
+                List<String> listaAnexos = anexos.stream()
+                                .map(AnexoSustentacion::getLinkAnexo)
+                                .collect(Collectors.toList());
+                responseDto.setAnexos(listaAnexos);
 
-                ArrayList<String> listaAnexos = new ArrayList<>();
-                for (AnexoSustentacion anexo : anexoSustentacion) {
-                        listaAnexos.add(anexo.getLinkAnexo());
-                }
-
-                sustentacionTrabajoInvestigacionDocenteResponseDto.setAnexos(listaAnexos);
-                sustentacionTrabajoInvestigacionDocenteResponseDto.setJuradoInterno(evaluadorInternoMap);
-                sustentacionTrabajoInvestigacionDocenteResponseDto.setJuradoExterno(evaluadorExternoMap);
-
-                return sustentacionTrabajoInvestigacionDocenteResponseDto;
-        }
-
-        @Override
-        @Transactional(readOnly = true)
-        public STICoordinadorFase1ResponseDto listarInformacionCoordinadorFase1(
-                        Long idTrabajoGrado) {
-
-                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
-                                .findByTrabajoGradoId(idTrabajoGrado).orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
-
-                if (sustentacionTrabajoInvestigacion.getConceptoCoordinador() == null
-                                && sustentacionTrabajoInvestigacion.getLinkEstudioHojaVidaAcademica() == null) {
-                        throw new InformationException("No se han registrado datos");
-                }
-
-                return sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase1Dto(sustentacionTrabajoInvestigacion);
-        }
-
-        @Override
-        @Transactional(readOnly = true)
-        public STICoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(Long idTrabajoGrado) {
-
-                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
-                                .findByTrabajoGradoId(idTrabajoGrado).orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
-
-                boolean actaFechaRespuestaComiteEmpty = sustentacionTrabajoInvestigacion
-                                .getActaFechaRespuestaComite() == null ||
-                                sustentacionTrabajoInvestigacion.getActaFechaRespuestaComite().isEmpty();
-
-                if (actaFechaRespuestaComiteEmpty && sustentacionTrabajoInvestigacion.getLinkFormatoG() == null) {
-                        throw new InformationException("No se han registrado datos");
-                }
-
-                STICoordinadorFase2ResponseDto responseDto = sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase2Dto(sustentacionTrabajoInvestigacion);
+                responseDto.setJuradoInterno(evaluadorInternoMap);
+                responseDto.setJuradoExterno(evaluadorExternoMap);
 
                 return responseDto;
         }
 
+        /**
+         * Método para listar la información del coordinador en la fase 1 de la
+         * sustentación de un proyecto de investigación.
+         * Se obtiene el concepto del coordinador y el enlace de estudio de la hoja de
+         * vida académica.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto {@link STICoordinadorFase1ResponseDto} que contiene la
+         *         información del coordinador en la fase 1.
+         * @throws ResourceNotFoundException si no se encuentra la sustentación asociada
+         *                                   al trabajo de grado.
+         * @throws InformationException      si no se han registrado datos de la fase 1.
+         */
         @Override
         @Transactional(readOnly = true)
-        public STICoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(
-                        Long idTrabajoGrado) {
+        public STICoordinadorFase1ResponseDto listarInformacionCoordinadorFase1(Long idTrabajoGrado) {
 
-                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
-                                .findByTrabajoGradoId(idTrabajoGrado).orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findByTrabajoGradoId(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-                if (sustentacionTrabajoInvestigacion.getJuradosAceptados() == null
-                                && sustentacionTrabajoInvestigacion.getNumeroActaConsejo() == null
-                                && sustentacionTrabajoInvestigacion.getFechaActaConsejo() == null
-                                && sustentacionTrabajoInvestigacion.getLinkOficioConsejo() == null) {
+                // Verificar si se han registrado datos
+                if (sustentacionProyectoInvestigacion.getConceptoCoordinador() == null
+                                && sustentacionProyectoInvestigacion.getLinkEstudioHojaVidaAcademica() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
                 return sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase3Dto(sustentacionTrabajoInvestigacion);
+                                .toCoordinadorFase1Dto(sustentacionProyectoInvestigacion);
         }
 
+        /**
+         * Método para listar la información del coordinador en la fase 2 de la
+         * sustentación de un proyecto de investigación.
+         * Se obtiene la respuesta del comité y el enlace del formato G.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto {@link STICoordinadorFase2ResponseDto} que contiene la
+         *         información del coordinador en la fase 2.
+         * @throws ResourceNotFoundException si no se encuentra la sustentación asociada
+         *                                   al trabajo de grado.
+         * @throws InformationException      si no se han registrado datos de la fase 2.
+         */
+        @Override
+        @Transactional(readOnly = true)
+        public STICoordinadorFase2ResponseDto listarInformacionCoordinadorFase2(Long idTrabajoGrado) {
+
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findByTrabajoGradoId(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+                // Verificar si se han registrado datos
+                boolean actaFechaRespuestaComiteEmpty = sustentacionProyectoInvestigacion
+                                .getActaFechaRespuestaComite() == null
+                                || sustentacionProyectoInvestigacion.getActaFechaRespuestaComite().isEmpty();
+                if (actaFechaRespuestaComiteEmpty && sustentacionProyectoInvestigacion.getLinkFormatoG() == null) {
+                        throw new InformationException("No se han registrado datos");
+                }
+
+                return sustentacionProyectoInvestigacionResponseMapper
+                                .toCoordinadorFase2Dto(sustentacionProyectoInvestigacion);
+        }
+
+        /**
+         * Método para listar la información del coordinador en la fase 3 de la
+         * sustentación de un proyecto de investigación.
+         * Se obtiene la aceptación de los jurados, el acta del consejo, y el enlace del
+         * oficio del consejo.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto {@link STICoordinadorFase3ResponseDto} que contiene la
+         *         información del coordinador en la fase 3.
+         * @throws ResourceNotFoundException si no se encuentra la sustentación asociada
+         *                                   al trabajo de grado.
+         * @throws InformationException      si no se han registrado datos de la fase 3.
+         */
+        @Override
+        @Transactional(readOnly = true)
+        public STICoordinadorFase3ResponseDto listarInformacionCoordinadorFase3(Long idTrabajoGrado) {
+
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findByTrabajoGradoId(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+                // Verificar si se han registrado datos
+                if (sustentacionProyectoInvestigacion.getJuradosAceptados() == null
+                                && sustentacionProyectoInvestigacion.getNumeroActaConsejo() == null
+                                && sustentacionProyectoInvestigacion.getFechaActaConsejo() == null
+                                && sustentacionProyectoInvestigacion.getLinkOficioConsejo() == null) {
+                        throw new InformationException("No se han registrado datos");
+                }
+
+                return sustentacionProyectoInvestigacionResponseMapper
+                                .toCoordinadorFase3Dto(sustentacionProyectoInvestigacion);
+        }
+
+        /**
+         * Método para listar la información del estudiante relacionada con la
+         * sustentación de un proyecto de investigación.
+         * Se obtienen los enlaces de los formatos H e I, así como otros documentos
+         * relacionados con la sustentación.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto
+         *         {@link SustentacionTrabajoInvestigacionEstudianteResponseDto} que
+         *         contiene la información del estudiante y de la sustentación.
+         * @throws ResourceNotFoundException si no se encuentra la sustentación asociada
+         *                                   al trabajo de grado.
+         * @throws InformationException      si no se han registrado los datos de la
+         *                                   sustentación.
+         */
         @Override
         @Transactional(readOnly = true)
         public SustentacionTrabajoInvestigacionEstudianteResponseDto listarInformacionEstudiante(Long idTrabajoGrado) {
-                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
-                                .findByTrabajoGradoId(idTrabajoGrado).orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
 
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findByTrabajoGradoId(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+                // Verificar si se han registrado los enlaces de los formatos H e I
                 if (sustentacionTrabajoInvestigacion.getLinkFormatoH() == null
                                 && sustentacionTrabajoInvestigacion.getLinkFormatoI() == null) {
                         throw new InformationException("No se han registrado datos");
@@ -784,15 +1109,30 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .toEstudianteDto(sustentacionTrabajoInvestigacion);
         }
 
+        /**
+         * Método para listar la información del coordinador en la fase 4 de la
+         * sustentación de un proyecto de investigación.
+         * Se obtiene la respuesta de la sustentación.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return un objeto {@link STICoordinadorFase4ResponseDto} que contiene la
+         *         información del coordinador en la fase 4.
+         * @throws ResourceNotFoundException si no se encuentra la sustentación asociada
+         *                                   al trabajo de grado.
+         * @throws InformationException      si no se han registrado los datos de la
+         *                                   fase 4.
+         */
         @Override
         @Transactional(readOnly = true)
-        public STICoordinadorFase4ResponseDto listarInformacionCoordinadorFase4(
-                        Long idTrabajoGrado) {
-                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
-                                .findByTrabajoGradoId(idTrabajoGrado).orElseThrow(() -> new ResourceNotFoundException(
-                                                "Trabajo de grado con id " + idTrabajoGrado
-                                                                + " no encontrado"));
+        public STICoordinadorFase4ResponseDto listarInformacionCoordinadorFase4(Long idTrabajoGrado) {
 
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findByTrabajoGradoId(idTrabajoGrado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
+
+                // Verificar si se ha registrado la respuesta a la sustentación
                 if (sustentacionTrabajoInvestigacion.getRespuestaSustentacion() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
@@ -801,45 +1141,83 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .toCoordinadorFase4Dto(sustentacionTrabajoInvestigacion);
         }
 
+        /**
+         * Método para verificar si el estudiante asociado a un trabajo de grado ha
+         * completado los datos de egresado.
+         * 
+         * @param idTrabajoGrado el identificador del trabajo de grado.
+         * @return {@code true} si el estudiante ha completado los datos de egresado,
+         *         {@code false} en caso contrario.
+         * @throws ResourceNotFoundException si no se encuentra el trabajo de grado.
+         */
         @Override
         @Transactional(readOnly = true)
         public Boolean verificarEgresado(Long idTrabajoGrado) {
+
+                // Buscar el trabajo de grado por su ID
                 TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "TrabajoGrado con id: " + idTrabajoGrado + " no encontrado"));
 
-                // List<CursoSaveDto> cursos = archivoClientEgresados
-                // .obtenerCursosPorIdEstudiante(trabajoGrado.getIdEstudiante());
+                // Obtener las empresas asociadas al estudiante
                 List<EmpresaSaveDto> empresas = archivoClientEgresados
                                 .obtenerEmpresasPorIdEstudiante(trabajoGrado.getIdEstudiante());
 
-                if (empresas.size() == 0) {
-                        return false;
-                }
-
-                return true;
+                // Verificar si el estudiante ha completado los datos de egresado
+                return !empresas.isEmpty();
         }
 
+        /**
+         * Método auxiliar para generar la ruta de almacenamiento de archivos para un
+         * trabajo de grado.
+         * La ruta se genera en función de la fecha actual y la información del
+         * estudiante.
+         * 
+         * @param trabajoGrado el trabajo de grado asociado.
+         * @return la ruta generada para almacenar los archivos.
+         */
         private String identificacionArchivo(TrabajoGrado trabajoGrado) {
+
+                // Obtener la información del estudiante asociado al trabajo de grado
                 EstudianteResponseDtoAll informacionEstudiantes = archivoClient
                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
 
+                // Definir el proceso y la fecha actual
                 String procesoVa = "Sustentacion_Proyecto_Investigacion";
-
                 LocalDate fechaActual = LocalDate.now();
                 int anio = fechaActual.getYear();
                 int mes = fechaActual.getMonthValue();
 
+                // Generar la ruta basada en la información del estudiante y la fecha
                 Long identificacionEstudiante = informacionEstudiantes.getPersona().getIdentificacion();
                 String nombreEstudiante = informacionEstudiantes.getPersona().getNombre();
                 String apellidoEstudiante = informacionEstudiantes.getPersona().getApellido();
                 String informacionEstudiante = identificacionEstudiante + "-" + nombreEstudiante + "_"
                                 + apellidoEstudiante;
-                String rutaCarpeta = anio + "/" + mes + "/" + informacionEstudiante + "/" + procesoVa;
-
-                return rutaCarpeta;
+                return anio + "/" + mes + "/" + informacionEstudiante + "/" + procesoVa;
         }
 
+        /**
+         * Método para actualizar la información del docente relacionada con la
+         * sustentación de un proyecto de investigación.
+         * Se validan y actualizan los enlaces de los documentos y anexos, y se
+         * actualiza el estado del trabajo de grado.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la sustentación
+         *                        del docente.
+         * @param result          resultado de la validación de los campos.
+         * @return un objeto {@link SustentacionTrabajoInvestigacionDocenteResponseDto}
+         *         que contiene la información actualizada del docente y la
+         *         sustentación.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si no se encuentra el trabajo de grado o la
+         *                                   sustentación asociada.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado.
+         */
         @Override
         @Transactional
         public SustentacionTrabajoInvestigacionDocenteResponseDto actualizarInformacionDocente(
@@ -847,99 +1225,131 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,
                         BindingResult result) {
 
+                // Validación de errores en los campos
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 24 && trabajoGrado.getNumeroEstado() != 25
                                 && trabajoGrado.getNumeroEstado() != 27) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
+                // Validar la existencia de los jurados internos y externos
                 archivoClient.obtenerDocentePorId(sustentacionDto.getIdJuradoInterno());
                 archivoClient.obtenerExpertoPorId(sustentacionDto.getIdJuradoExterno());
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentación con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar los archivos
+                String directorioArchivos = identificacionArchivo(trabajoGrado);
 
+                // Actualizar el estado del trabajo de grado
                 trabajoGrado.setNumeroEstado(24);
 
+                // Validar y actualizar el enlace de la monografía
                 if (!sustentacionDto.getLinkMonografia()
-                                .equals(sustentacionProyectoInvestigacionTmp.getLinkMonografia())) {
+                                .equals(sustentacionProyectoInvestigacion.getLinkMonografia())) {
                         validarLink(sustentacionDto.getLinkMonografia());
-                        sustentacionDto.setLinkMonografia(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                        sustentacionDto.setLinkMonografia(FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                         sustentacionDto.getLinkMonografia()));
-                        FilesUtilities.deleteFileExample(
-                                        sustentacionProyectoInvestigacionTmp.getLinkMonografia());
-                }
-                if (!sustentacionDto.getLinkFormatoF().equals(sustentacionProyectoInvestigacionTmp.getLinkFormatoF())) {
-                        validarLink(sustentacionDto.getLinkFormatoF());
-                        sustentacionDto.setLinkFormatoF(FilesUtilities.guardarArchivoNew2(rutaArchivo,
-                                        sustentacionDto.getLinkFormatoF()));
-                        FilesUtilities.deleteFileExample(
-                                        sustentacionProyectoInvestigacionTmp.getLinkFormatoF());
+                        FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacion.getLinkMonografia());
                 }
 
+                // Validar y actualizar el enlace del formato F
+                if (!sustentacionDto.getLinkFormatoF().equals(sustentacionProyectoInvestigacion.getLinkFormatoF())) {
+                        validarLink(sustentacionDto.getLinkFormatoF());
+                        sustentacionDto.setLinkFormatoF(FilesUtilities.guardarArchivoNew2(directorioArchivos,
+                                        sustentacionDto.getLinkFormatoF()));
+                        FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacion.getLinkFormatoF());
+                }
+
+                // Actualizar los anexos si se proporcionan
                 if (sustentacionDto.getAnexos() != null) {
                         List<AnexoSustentacion> anexosEntidades = sustentacionDto.getAnexos().stream()
                                         .map(anexoSustentacionMapper::toEntity)
                                         .collect(Collectors.toList());
 
-                        actualizarAnexos(sustentacionProyectoInvestigacionTmp, anexosEntidades, rutaArchivo);
+                        actualizarAnexos(sustentacionProyectoInvestigacion, anexosEntidades, directorioArchivos);
                 }
 
-                updateExamenValoracionDocenteValues(sustentacionProyectoInvestigacionTmp, sustentacionDto,
-                                trabajoGrado);
+                // Actualizar los valores de la sustentación del docente
+                updateExamenValoracionDocenteValues(sustentacionProyectoInvestigacion, sustentacionDto, trabajoGrado);
 
-                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionGuardada = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
-                SustentacionTrabajoInvestigacionDocenteResponseDto sustentacionResponseDto = sustentacionProyectoInvestigacionResponseMapper
-                                .toDocenteDto(sustentacionTrabajoInvestigacion);
-
-                return sustentacionResponseDto;
+                // Convertir la entidad guardada en el DTO de respuesta
+                return sustentacionProyectoInvestigacionResponseMapper
+                                .toDocenteDto(sustentacionProyectoInvestigacionGuardada);
         }
 
+        /**
+         * Método auxiliar para actualizar los valores de la sustentación del docente.
+         * Se actualizan los identificadores de los jurados y los enlaces de los
+         * documentos de la sustentación.
+         * 
+         * @param sustentacionProyectoInvestigacion la entidad de sustentación del
+         *                                          proyecto de investigación a
+         *                                          actualizar.
+         * @param sustentacionDto                   objeto que contiene la nueva
+         *                                          información de la sustentación del
+         *                                          docente.
+         * @param trabajoGrado                      el trabajo de grado asociado.
+         */
         private void updateExamenValoracionDocenteValues(
-                        SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion,
-                        SustentacionTrabajoInvestigacionDocenteDto sustentacionTrabajoInvestigacionDocenteDto,
+                        SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion,
+                        SustentacionTrabajoInvestigacionDocenteDto sustentacionDto,
                         TrabajoGrado trabajoGrado) {
 
-                sustentacionTrabajoInvestigacion.setConceptoCoordinador(null);
+                sustentacionProyectoInvestigacion.setConceptoCoordinador(null);
 
-                sustentacionTrabajoInvestigacion
-                                .setIdJuradoInterno(sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoInterno());
-                sustentacionTrabajoInvestigacion
-                                .setIdJuradoExterno(sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoExterno());
-                sustentacionTrabajoInvestigacion
-                                .setLinkMonografia(sustentacionTrabajoInvestigacionDocenteDto.getLinkMonografia());
-                sustentacionTrabajoInvestigacion
-                                .setLinkFormatoF(sustentacionTrabajoInvestigacionDocenteDto.getLinkFormatoF());
+                sustentacionProyectoInvestigacion.setIdJuradoInterno(sustentacionDto.getIdJuradoInterno());
+                sustentacionProyectoInvestigacion.setIdJuradoExterno(sustentacionDto.getIdJuradoExterno());
+                sustentacionProyectoInvestigacion.setLinkMonografia(sustentacionDto.getLinkMonografia());
+                sustentacionProyectoInvestigacion.setLinkFormatoF(sustentacionDto.getLinkFormatoF());
         }
 
-        private void actualizarAnexos(SustentacionProyectoInvestigacion sustentacionTmp,
+        /**
+         * Método auxiliar para actualizar los anexos de la sustentación del proyecto de
+         * investigación.
+         * Se validan y actualizan los enlaces de los anexos, eliminando los anexos que
+         * ya no son válidos.
+         * 
+         * @param sustentacionProyectoInvestigacion la entidad de sustentación del
+         *                                          proyecto de investigación a
+         *                                          actualizar.
+         * @param anexosNuevos                      la lista de nuevos anexos que se
+         *                                          agregarán o actualizarán.
+         * @param rutaArchivo                       la ruta donde se almacenarán los
+         *                                          archivos de los anexos.
+         */
+        private void actualizarAnexos(
+                        SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion,
                         List<AnexoSustentacion> anexosNuevos, String rutaArchivo) {
-                List<AnexoSustentacion> anexosActuales = sustentacionTmp.getAnexos();
 
+                List<AnexoSustentacion> anexosActuales = sustentacionProyectoInvestigacion.getAnexos();
+
+                // Crear un mapa de los anexos actuales para facilitar la búsqueda
                 Map<String, AnexoSustentacion> mapaAnexosActuales = anexosActuales.stream()
-                                .collect(Collectors.toMap(AnexoSustentacion::getLinkAnexo,
-                                                Function.identity()));
+                                .collect(Collectors.toMap(AnexoSustentacion::getLinkAnexo, Function.identity()));
 
                 List<AnexoSustentacion> anexosActualizados = new ArrayList<>();
 
+                // Actualizar o agregar nuevos anexos
                 for (AnexoSustentacion anexoNuevo : anexosNuevos) {
                         AnexoSustentacion anexoActual = mapaAnexosActuales.get(anexoNuevo.getLinkAnexo());
 
@@ -950,24 +1360,45 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 String rutaAnexoNueva = FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                 anexoNuevo.getLinkAnexo());
                                 anexoNuevo.setLinkAnexo(rutaAnexoNueva);
-                                anexoNuevo.setSustentacionProyectoInvestigacion(sustentacionTmp);
+                                anexoNuevo.setSustentacionProyectoInvestigacion(sustentacionProyectoInvestigacion);
                                 anexosActualizados.add(anexoNuevo);
                         }
                 }
 
-                Iterator<AnexoSustentacion> iterator = anexosActuales.iterator();
-                while (iterator.hasNext()) {
-                        AnexoSustentacion anexoActual = iterator.next();
+                // Eliminar los anexos que ya no son válidos
+                anexosActuales.removeIf(anexoActual -> {
                         if (!anexosActualizados.contains(anexoActual)) {
                                 FilesUtilities.deleteFileExample(anexoActual.getLinkAnexo());
-                                iterator.remove();
+                                return true;
                         }
-                }
+                        return false;
+                });
 
+                // Actualizar la lista de anexos en la entidad de sustentación
                 anexosActuales.clear();
                 anexosActuales.addAll(anexosActualizados);
         }
 
+        /**
+         * Método para actualizar la información del coordinador en la fase 1 de la
+         * sustentación de un proyecto de investigación.
+         * Se validan los atributos proporcionados y se actualizan los datos del trabajo
+         * de grado y la sustentación.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la fase 1 del
+         *                        coordinador en la sustentación.
+         * @param result          resultado de la validación de los campos.
+         * @return un objeto {@link STICoordinadorFase1ResponseDto} que contiene la
+         *         información actualizada del coordinador y la sustentación.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si no se encuentra el trabajo de grado o la
+         *                                   sustentación asociada.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado o falta de atributos requeridos.
+         */
         @Override
         @Transactional
         public STICoordinadorFase1ResponseDto actualizarInformacionCoordinadoFase1(
@@ -975,57 +1406,65 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         SustentacionTrabajoInvestigacionCoordinadorFase1Dto sustentacionDto,
                         BindingResult result) {
 
+                // Validación de errores en los campos
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
 
+                // Validaciones adicionales según el concepto del coordinador y atributos
+                // proporcionados
                 if ((sustentacionDto.getEnvioEmail() == null
                                 || sustentacionDto.getLinkEstudioHojaVidaAcademica() != null)
-                                && sustentacionDto.getConceptoCoordinador()
-                                                .equals(ConceptoVerificacion.RECHAZADO)) {
+                                && sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.RECHAZADO)) {
                         throw new InformationException("Faltan atributos para el registro");
                 }
 
                 if ((sustentacionDto.getLinkEstudioHojaVidaAcademica() == null
-                                || sustentacionDto.getEnvioEmail() != null) && sustentacionDto.getConceptoCoordinador()
-                                                .equals(ConceptoVerificacion.ACEPTADO)) {
+                                || sustentacionDto.getEnvioEmail() != null)
+                                && sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
                         throw new InformationException("Envio de atributos no permitido");
                 }
 
+                // Validar el enlace del estudio de hoja de vida académica si el concepto es
+                // aceptado
                 if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.ACEPTADO)) {
                         validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 24 && trabajoGrado.getNumeroEstado() != 25
                                 && trabajoGrado.getNumeroEstado() != 26) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentación con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
-                if (sustentacionProyectoInvestigacionTmp.getConceptoCoordinador() == null) {
+                // Verificar si se han registrado datos previos
+                if (sustentacionProyectoInvestigacion.getConceptoCoordinador() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar los archivos
+                String directorioArchivos = identificacionArchivo(trabajoGrado);
 
-                if (sustentacionDto.getConceptoCoordinador() != sustentacionProyectoInvestigacionTmp
-                                .getConceptoCoordinador()) {
+                // Actualizar el concepto del coordinador y el estado del trabajo de grado
+                if (!sustentacionDto.getConceptoCoordinador()
+                                .equals(sustentacionProyectoInvestigacion.getConceptoCoordinador())) {
                         ArrayList<String> correos = new ArrayList<>();
-                        // Si pasa de aprobado a no aprobado
                         if (sustentacionDto.getConceptoCoordinador().equals(ConceptoVerificacion.RECHAZADO)) {
+                                // Enviar correos de corrección y eliminar archivo si el concepto cambia a
+                                // rechazado
                                 EstudianteResponseDtoAll estudiante = archivoClient
                                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
                                 correos.add(estudiante.getCorreoUniversidad());
@@ -1034,53 +1473,77 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 sustentacionDto.getEnvioEmail().getAsunto(),
                                                 sustentacionDto.getEnvioEmail().getMensaje());
                                 FilesUtilities.deleteFileExample(
-                                                sustentacionProyectoInvestigacionTmp
-                                                                .getLinkEstudioHojaVidaAcademica());
+                                                sustentacionProyectoInvestigacion.getLinkEstudioHojaVidaAcademica());
                                 trabajoGrado.setNumeroEstado(25);
                         } else {
+                                // Guardar el nuevo archivo si el concepto es aceptado
                                 sustentacionDto.setLinkEstudioHojaVidaAcademica(FilesUtilities.guardarArchivoNew2(
-                                                rutaArchivo,
-                                                sustentacionDto.getLinkEstudioHojaVidaAcademica()));
+                                                directorioArchivos, sustentacionDto.getLinkEstudioHojaVidaAcademica()));
                                 trabajoGrado.setNumeroEstado(26);
                         }
                 } else {
-                        if (sustentacionDto.getLinkEstudioHojaVidaAcademica() != null) {
-                                if (sustentacionDto != null && sustentacionDto.getLinkEstudioHojaVidaAcademica()
-                                                .compareTo(sustentacionProyectoInvestigacionTmp
-                                                                .getLinkEstudioHojaVidaAcademica()) != 0) {
-                                        validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
-                                        sustentacionDto.setLinkEstudioHojaVidaAcademica(FilesUtilities
-                                                        .guardarArchivoNew2(rutaArchivo, sustentacionDto
-                                                                        .getLinkEstudioHojaVidaAcademica()));
-                                        FilesUtilities.deleteFileExample(
-                                                        sustentacionProyectoInvestigacionTmp
-                                                                        .getLinkEstudioHojaVidaAcademica());
-                                }
-
+                        // Validar y actualizar el archivo si el enlace ha cambiado
+                        if (sustentacionDto.getLinkEstudioHojaVidaAcademica() != null
+                                        && !sustentacionDto.getLinkEstudioHojaVidaAcademica()
+                                                        .equals(sustentacionProyectoInvestigacion
+                                                                        .getLinkEstudioHojaVidaAcademica())) {
+                                validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademica());
+                                sustentacionDto.setLinkEstudioHojaVidaAcademica(
+                                                FilesUtilities.guardarArchivoNew2(directorioArchivos,
+                                                                sustentacionDto.getLinkEstudioHojaVidaAcademica()));
+                                FilesUtilities.deleteFileExample(
+                                                sustentacionProyectoInvestigacion.getLinkEstudioHojaVidaAcademica());
                         }
                 }
 
-                sustentacionProyectoInvestigacionTmp.setConceptoCoordinador(sustentacionDto.getConceptoCoordinador());
-                sustentacionProyectoInvestigacionTmp.setLinkEstudioHojaVidaAcademica(
-                                sustentacionDto.getLinkEstudioHojaVidaAcademica());
+                // Actualizar los valores de la sustentación del proyecto de investigación
+                sustentacionProyectoInvestigacion.setConceptoCoordinador(sustentacionDto.getConceptoCoordinador());
+                sustentacionProyectoInvestigacion
+                                .setLinkEstudioHojaVidaAcademica(sustentacionDto.getLinkEstudioHojaVidaAcademica());
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionGuardada = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
+                // Convertir la entidad guardada en el DTO de respuesta
                 return sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase1Dto(sustentacionProyectoInvestigacionRes);
+                                .toCoordinadorFase1Dto(sustentacionProyectoInvestigacionGuardada);
         }
 
+        /**
+         * Método para actualizar la información del coordinador en la fase 2 de la
+         * sustentación de un proyecto de investigación.
+         * Se validan los atributos proporcionados y se actualizan los datos del trabajo
+         * de grado y la sustentación.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la fase 2 del
+         *                        coordinador en la sustentación.
+         * @param result          resultado de la validación de los campos.
+         * @return un objeto {@link STICoordinadorFase2ResponseDto} que contiene la
+         *         información actualizada del coordinador y la sustentación.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si no se encuentra el trabajo de grado o la
+         *                                   sustentación asociada.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado o falta de atributos requeridos.
+         */
         @Override
         @Transactional
         public STICoordinadorFase2ResponseDto actualizarInformacionCoordinadoFase2(
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionDto,
                         BindingResult result) {
+
+                // Validación de errores en los campos
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
 
+                // Validaciones adicionales según el concepto del comité y los atributos
+                // proporcionados
                 if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.NO_APROBADO)
                                 && (sustentacionDto.getLinkFormatoG() != null
@@ -1094,28 +1557,29 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("Atributos incorrectos");
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 26 && trabajoGrado.getNumeroEstado() != 27
                                 && trabajoGrado.getNumeroEstado() != 28) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
+                // Buscar la sustentación asociada al trabajo de grado
                 SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionOld = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentación con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
+                // Verificar si se han registrado datos previos
                 boolean actaFechaRespuestaComiteEmpty = sustentacionProyectoInvestigacionOld
-                                .getActaFechaRespuestaComite() == null ||
-                                sustentacionProyectoInvestigacionOld.getActaFechaRespuestaComite().isEmpty();
+                                .getActaFechaRespuestaComite() == null
+                                || sustentacionProyectoInvestigacionOld.getActaFechaRespuestaComite().isEmpty();
                 if (actaFechaRespuestaComiteEmpty
                                 && sustentacionProyectoInvestigacionOld.getLinkEstudioHojaVidaAcademica() == null
                                 && sustentacionProyectoInvestigacionOld.getLinkFormatoG() == null
@@ -1123,24 +1587,25 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("No se han registrado datos");
                 }
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                // Identificar el directorio para guardar los archivos
+                String directorioArchivos = identificacionArchivo(trabajoGrado);
 
                 SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = null;
                 List<RespuestaComiteSustentacion> respuestaComiteList = sustentacionProyectoInvestigacionRepository
-                                .findRespuestaComiteBySustentacionId(
-                                                sustentacionProyectoInvestigacionOld
-                                                                .getId());
+                                .findRespuestaComiteBySustentacionId(sustentacionProyectoInvestigacionOld.getId());
                 RespuestaComiteSustentacion ultimoRegistro = respuestaComiteList.isEmpty() ? null
                                 : respuestaComiteList.get(0);
 
+                // Actualizar el estado del trabajo de grado y los archivos según el concepto
+                // del comité
                 if (ultimoRegistro != null
-                                && ultimoRegistro.getConceptoComite() != sustentacionDto
-                                                .getActaFechaRespuestaComite().get(0)
-                                                .getConceptoComite()) {
+                                && !ultimoRegistro.getConceptoComite().equals(sustentacionDto
+                                                .getActaFechaRespuestaComite().get(0).getConceptoComite())) {
                         ArrayList<String> correos = new ArrayList<>();
-                        // Si pasa de aprobado a no aprobado
                         if (sustentacionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                         .equals(Concepto.NO_APROBADO)) {
+                                // Enviar correos de corrección y eliminar archivo si el concepto cambia a no
+                                // aprobado
                                 EstudianteResponseDtoAll estudiante = archivoClient
                                                 .obtenerInformacionEstudiante(trabajoGrado.getIdEstudiante());
                                 correos.add(estudiante.getCorreoUniversidad());
@@ -1149,62 +1614,77 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                                 sustentacionDto.getEnvioEmail().getAsunto(),
                                                 sustentacionDto.getEnvioEmail().getMensaje());
                                 FilesUtilities.deleteFileExample(
-                                                sustentacionProyectoInvestigacionOld
-                                                                .getLinkFormatoG());
-
+                                                sustentacionProyectoInvestigacionOld.getLinkFormatoG());
                                 trabajoGrado.setNumeroEstado(27);
                         } else {
+                                // Guardar el nuevo archivo y enviar correos si el concepto es aprobado
                                 validarLink(sustentacionDto.getLinkFormatoG());
                                 correos.add(Constants.correoComite);
                                 Map<String, Object> documentosParaConsejo = new HashMap<>();
-                                correos.add(Constants.correoComite);
-                                String[] formatoG = sustentacionDto
-                                                .getLinkFormatoG()
-                                                .split("-");
-                                documentosParaConsejo.put("formatoG", formatoG[1]);
-                                envioCorreos.enviarCorreoConAnexos(correos,
-                                                sustentacionDto.getEnvioEmail().getAsunto(),
-                                                sustentacionDto.getEnvioEmail().getMensaje(),
-                                                documentosParaConsejo);
+                                documentosParaConsejo.put("formatoG", sustentacionDto.getLinkFormatoG().split("-")[1]);
+                                envioCorreos.enviarCorreoConAnexos(correos, sustentacionDto.getEnvioEmail().getAsunto(),
+                                                sustentacionDto.getEnvioEmail().getMensaje(), documentosParaConsejo);
 
-                                sustentacionDto.setLinkFormatoG(FilesUtilities.guardarArchivoNew2(
-                                                rutaArchivo,
+                                sustentacionDto.setLinkFormatoG(FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                 sustentacionDto.getLinkFormatoG()));
-
                                 trabajoGrado.setNumeroEstado(28);
                         }
                 } else {
-                        if (sustentacionProyectoInvestigacionOld != null) {
-                                if (sustentacionDto.getLinkFormatoG() != null && sustentacionDto.getLinkFormatoG()
-                                                .compareTo(sustentacionProyectoInvestigacionOld
-                                                                .getLinkFormatoG()) != 0) {
-                                        validarLink(sustentacionDto.getLinkFormatoG());
-                                        sustentacionDto.setLinkFormatoG(
-                                                        FilesUtilities.guardarArchivoNew2(rutaArchivo, sustentacionDto
-                                                                        .getLinkFormatoG()));
-                                        FilesUtilities.deleteFileExample(
-                                                        sustentacionProyectoInvestigacionOld
-                                                                        .getLinkFormatoG());
-                                }
+                        // Validar y actualizar el archivo si el enlace ha cambiado
+                        if (sustentacionDto.getLinkFormatoG() != null
+                                        && !sustentacionDto.getLinkFormatoG().equals(
+                                                        sustentacionProyectoInvestigacionOld.getLinkFormatoG())) {
+                                validarLink(sustentacionDto.getLinkFormatoG());
+                                sustentacionDto.setLinkFormatoG(FilesUtilities.guardarArchivoNew2(directorioArchivos,
+                                                sustentacionDto.getLinkFormatoG()));
+                                FilesUtilities.deleteFileExample(
+                                                sustentacionProyectoInvestigacionOld.getLinkFormatoG());
                         }
                         trabajoGrado.setNumeroEstado(26);
                 }
+
+                // Actualizar los valores de la sustentación del proyecto de investigación
                 updateSustentacionCoordinadorFase2Values(sustentacionProyectoInvestigacionOld, sustentacionDto,
                                 trabajoGrado);
+
+                // Guardar la entidad en el repositorio
                 sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
                                 .save(sustentacionProyectoInvestigacionOld);
+
+                // Convertir la entidad guardada en el DTO de respuesta
                 return sustentacionProyectoInvestigacionResponseMapper
                                 .toCoordinadorFase2Dto(sustentacionTrabajoInvestigacion);
         }
 
+        /**
+         * Método auxiliar para actualizar los valores de la sustentación del
+         * coordinador en la fase 2.
+         * Se actualizan los datos de la respuesta del comité y el enlace del formato G.
+         * 
+         * @param sustentacionTrabajoInvestigacion                    la entidad de
+         *                                                            sustentación del
+         *                                                            proyecto de
+         *                                                            investigación a
+         *                                                            actualizar.
+         * @param sustentacionTrabajoInvestigacionCoordinadorFase2Dto objeto que
+         *                                                            contiene la nueva
+         *                                                            información de la
+         *                                                            fase 2 del
+         *                                                            coordinador.
+         * @param trabajoGrado                                        el trabajo de
+         *                                                            grado asociado.
+         */
         private void updateSustentacionCoordinadorFase2Values(
                         SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion,
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto,
                         TrabajoGrado trabajoGrado) {
 
+                // Buscar el último registro de respuesta del comité
                 RespuestaComiteSustentacion ultimoRegistro = respuestaComiteSustentacionRepository
-                                .findFirstBySustentacionProyectoInvestigacionIdOrderByIdDesc(sustentacionTrabajoInvestigacion.getId());
+                                .findFirstBySustentacionProyectoInvestigacionIdOrderByIdDesc(
+                                                sustentacionTrabajoInvestigacion.getId());
 
+                // Actualizar la información de la respuesta del comité
                 if (ultimoRegistro != null) {
                         ultimoRegistro.setNumeroActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                         .getActaFechaRespuestaComite().get(0).getNumeroActa());
@@ -1212,15 +1692,34 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                         .getActaFechaRespuestaComite().get(0).getFechaActa());
                         ultimoRegistro.setConceptoComite(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                         .getActaFechaRespuestaComite().get(0).getConceptoComite());
-
                         respuestaComiteSustentacionRepository.save(ultimoRegistro);
                 }
 
+                // Actualizar el enlace del formato G
                 sustentacionTrabajoInvestigacion
                                 .setLinkFormatoG(sustentacionTrabajoInvestigacionCoordinadorFase2Dto.getLinkFormatoG());
-
         }
 
+        /**
+         * Método para actualizar la información del coordinador en la fase 3 de la
+         * sustentación de un proyecto de investigación.
+         * Se validan los atributos proporcionados y se actualizan los datos del trabajo
+         * de grado y la sustentación.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la fase 3 del
+         *                        coordinador en la sustentación.
+         * @param result          resultado de la validación de los campos.
+         * @return un objeto {@link STICoordinadorFase3ResponseDto} que contiene la
+         *         información actualizada del coordinador y la sustentación.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si no se encuentra el trabajo de grado o la
+         *                                   sustentación asociada.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado o falta de atributos requeridos.
+         */
         @Override
         @Transactional
         public STICoordinadorFase3ResponseDto actualizarInformacionCoordinadoFase3(
@@ -1228,10 +1727,12 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         SustentacionTrabajoInvestigacionCoordinadorFase3Dto sustentacionDto,
                         BindingResult result) {
 
+                // Validación de errores en los campos
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
 
+                // Validaciones adicionales según los atributos proporcionados
                 if (sustentacionDto.getIdJuradoInterno().equals("Sin cambios")
                                 && sustentacionDto.getIdJuradoExterno().equals("Sin cambios")) {
                         throw new InformationException("Atributos incorrectos");
@@ -1239,142 +1740,197 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 if (sustentacionDto.getFechaActaConsejo() != null
                                 && sustentacionDto.getFechaActaConsejo().isAfter(LocalDate.now())) {
-                        throw new InformationException(
-                                        "La fecha del consejo no puede ser mayor a la fecha actual.");
+                        throw new InformationException("La fecha del consejo no puede ser mayor a la fecha actual.");
                 }
 
+                // Validar la existencia de los jurados en el sistema
                 archivoClient.obtenerDocentePorId(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
                 archivoClient.obtenerExpertoPorId(Long.parseLong(sustentacionDto.getIdJuradoExterno()));
 
+                // Buscar el trabajo de grado por su ID
                 TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 28 && trabajoGrado.getNumeroEstado() != 29
                                 && trabajoGrado.getNumeroEstado() != 36) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
                                 .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentación con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
-                if (sustentacionProyectoInvestigacionTmp.getJuradosAceptados() == null
-                                && sustentacionProyectoInvestigacionTmp.getNumeroActaConsejo() == null
-                                && sustentacionProyectoInvestigacionTmp.getFechaActaConsejo() == null
-                                && sustentacionProyectoInvestigacionTmp.getLinkOficioConsejo() == null) {
+                // Verificar si se han registrado datos previos
+                if (sustentacionProyectoInvestigacion.getJuradosAceptados() == null
+                                && sustentacionProyectoInvestigacion.getNumeroActaConsejo() == null
+                                && sustentacionProyectoInvestigacion.getFechaActaConsejo() == null
+                                && sustentacionProyectoInvestigacion.getLinkOficioConsejo() == null) {
                         throw new InformationException("No se han registrado datos");
                 }
 
-                sustentacionProyectoInvestigacionTmp
+                // Actualizar los jurados y el enlace del oficio del consejo
+                sustentacionProyectoInvestigacion
                                 .setIdJuradoInterno(Long.parseLong(sustentacionDto.getIdJuradoInterno()));
-                sustentacionProyectoInvestigacionTmp
+                sustentacionProyectoInvestigacion
                                 .setIdJuradoExterno(Long.parseLong(sustentacionDto.getIdJuradoExterno()));
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                String directorioArchivos = identificacionArchivo(trabajoGrado);
 
                 if (!sustentacionDto.getLinkOficioConsejo()
-                                .equals(sustentacionProyectoInvestigacionTmp.getLinkOficioConsejo())) {
+                                .equals(sustentacionProyectoInvestigacion.getLinkOficioConsejo())) {
                         validarLink(sustentacionDto.getLinkOficioConsejo());
-                        sustentacionDto.setLinkOficioConsejo(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                        sustentacionDto.setLinkOficioConsejo(FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                         sustentacionDto.getLinkOficioConsejo()));
-                        FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp.getLinkOficioConsejo());
+                        FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacion.getLinkOficioConsejo());
                 }
 
-                sustentacionProyectoInvestigacionTmp.setJuradosAceptados(sustentacionDto.getJuradosAceptados());
-                sustentacionProyectoInvestigacionTmp.setNumeroActaConsejo(sustentacionDto.getNumeroActaConsejo());
-                sustentacionProyectoInvestigacionTmp.setFechaActaConsejo(sustentacionDto.getFechaActaConsejo());
-                sustentacionProyectoInvestigacionTmp.setLinkOficioConsejo(sustentacionDto.getLinkOficioConsejo());
+                // Actualizar los demás valores de la sustentación
+                sustentacionProyectoInvestigacion.setJuradosAceptados(sustentacionDto.getJuradosAceptados());
+                sustentacionProyectoInvestigacion.setNumeroActaConsejo(sustentacionDto.getNumeroActaConsejo());
+                sustentacionProyectoInvestigacion.setFechaActaConsejo(sustentacionDto.getFechaActaConsejo());
+                sustentacionProyectoInvestigacion.setLinkOficioConsejo(sustentacionDto.getLinkOficioConsejo());
 
                 trabajoGrado.setNumeroEstado(29);
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionGuardada = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
-                return sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase3Dto(sustentacionProyectoInvestigacionRes);
+                // Convertir la entidad guardada en el DTO de respuesta
+                return sustentacionProyectoInvestigacionResponseMapper.toCoordinadorFase3Dto(sustentacionGuardada);
         }
 
+        /**
+         * Método para actualizar la información del estudiante en la sustentación de un
+         * proyecto de investigación.
+         * Se validan los atributos proporcionados y se actualizan los datos del trabajo
+         * de grado y la sustentación.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información del estudiante en
+         *                        la sustentación.
+         * @param result          resultado de la validación de los campos.
+         * @return un objeto
+         *         {@link SustentacionTrabajoInvestigacionEstudianteResponseDto} que
+         *         contiene la información actualizada de la sustentación.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si no se encuentra el trabajo de grado o la
+         *                                   sustentación asociada.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado o falta de atributos requeridos.
+         */
         @Override
         @Transactional
         public SustentacionTrabajoInvestigacionEstudianteResponseDto actualizarInformacionEstudiante(
                         Long idTrabajoGrado,
                         SustentacionTrabajoInvestigacionEstudianteDto sustentacionDto,
                         BindingResult result) {
+
+                // Validación de errores en los campos
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
 
+                // Validaciones adicionales según los atributos proporcionados
                 if (sustentacionDto.getFechaSustentacion() != null
                                 && sustentacionDto.getFechaSustentacion().isAfter(LocalDate.now())) {
                         throw new InformationException(
-                                        "La fecha de la sustentacion no puede ser mayor a la fecha actual.");
+                                        "La fecha de la sustentación no puede ser mayor a la fecha actual.");
                 }
 
+                // Validar los enlaces proporcionados
                 validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado());
                 validarLink(sustentacionDto.getLinkFormatoH());
                 validarLink(sustentacionDto.getLinkFormatoI());
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 30) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
-                                .orElseThrow(() -> new ResourceNotFoundException("Sustentacion con id: "
-                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                .getId()
-                                                + " no encontrado"));
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Sustentación con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
-                String rutaArchivo = identificacionArchivo(trabajoGrado);
+                String directorioArchivos = identificacionArchivo(trabajoGrado);
 
-                if (!sustentacionDto.getLinkFormatoH().equals(sustentacionProyectoInvestigacionTmp.getLinkFormatoH())) {
+                // Actualizar los enlaces de los formatos y la hoja de vida académica
+                if (!sustentacionDto.getLinkFormatoH().equals(sustentacionProyectoInvestigacion.getLinkFormatoH())) {
                         validarLink(sustentacionDto.getLinkFormatoH());
-                        sustentacionDto.setLinkFormatoH(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                        sustentacionDto.setLinkFormatoH(FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                         sustentacionDto.getLinkFormatoH()));
-                        FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp.getLinkFormatoH());
+                        FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacion.getLinkFormatoH());
                 }
-                if (!sustentacionDto.getLinkFormatoI().equals(sustentacionProyectoInvestigacionTmp.getLinkFormatoI())) {
+                if (!sustentacionDto.getLinkFormatoI().equals(sustentacionProyectoInvestigacion.getLinkFormatoI())) {
                         validarLink(sustentacionDto.getLinkFormatoI());
-                        sustentacionDto.setLinkFormatoI(FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                        sustentacionDto.setLinkFormatoI(FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                         sustentacionDto.getLinkFormatoI()));
-                        FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp.getLinkFormatoI());
+                        FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacion.getLinkFormatoI());
                 }
                 if (!sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado().equals(
-                                sustentacionProyectoInvestigacionTmp.getLinkEstudioHojaVidaAcademicaGrado())) {
+                                sustentacionProyectoInvestigacion.getLinkEstudioHojaVidaAcademicaGrado())) {
                         validarLink(sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado());
                         sustentacionDto.setLinkEstudioHojaVidaAcademicaGrado(
-                                        FilesUtilities.guardarArchivoNew2(rutaArchivo,
+                                        FilesUtilities.guardarArchivoNew2(directorioArchivos,
                                                         sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado()));
-                        FilesUtilities.deleteFileExample(sustentacionProyectoInvestigacionTmp
-                                        .getLinkEstudioHojaVidaAcademicaGrado());
+                        FilesUtilities.deleteFileExample(
+                                        sustentacionProyectoInvestigacion.getLinkEstudioHojaVidaAcademicaGrado());
                 }
 
-                sustentacionProyectoInvestigacionTmp.setFechaSustentacion(sustentacionDto.getFechaSustentacion());
-                sustentacionProyectoInvestigacionTmp.setLinkFormatoH(sustentacionDto.getLinkFormatoH());
-                sustentacionProyectoInvestigacionTmp.setLinkFormatoI(sustentacionDto.getLinkFormatoI());
-                sustentacionProyectoInvestigacionTmp.setLinkEstudioHojaVidaAcademicaGrado(
+                // Actualizar la fecha de sustentación y los enlaces
+                sustentacionProyectoInvestigacion.setFechaSustentacion(sustentacionDto.getFechaSustentacion());
+                sustentacionProyectoInvestigacion.setLinkFormatoH(sustentacionDto.getLinkFormatoH());
+                sustentacionProyectoInvestigacion.setLinkFormatoI(sustentacionDto.getLinkFormatoI());
+                sustentacionProyectoInvestigacion.setLinkEstudioHojaVidaAcademicaGrado(
                                 sustentacionDto.getLinkEstudioHojaVidaAcademicaGrado());
 
-                SustentacionProyectoInvestigacion sustentacionTrabajoInvestigacion = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionGuardada = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
                 trabajoGrado.setNumeroEstado(30);
 
-                return sustentacionProyectoInvestigacionResponseMapper
-                                .toEstudianteDto(sustentacionTrabajoInvestigacion);
+                // Convertir la entidad guardada en el DTO de respuesta
+                return sustentacionProyectoInvestigacionResponseMapper.toEstudianteDto(sustentacionGuardada);
         }
 
+        /**
+         * Método para actualizar la información del coordinador en la fase 4 de la
+         * sustentación de un proyecto de investigación.
+         * Se validan los atributos proporcionados y se actualizan los datos del trabajo
+         * de grado y la sustentación.
+         * 
+         * @param idTrabajoGrado  el identificador del trabajo de grado.
+         * @param sustentacionDto objeto que contiene la información de la fase 4 del
+         *                        coordinador en la sustentación.
+         * @param result          resultado de la validación de los campos.
+         * @return un objeto {@link STICoordinadorFase4ResponseDto} que contiene la
+         *         información actualizada del coordinador y la sustentación.
+         * @throws FieldErrorException       si se encuentran errores de validación en
+         *                                   los campos.
+         * @throws ResourceNotFoundException si no se encuentra el trabajo de grado o la
+         *                                   sustentación asociada.
+         * @throws InformationException      si no se permite registrar la información
+         *                                   debido a un estado incorrecto del trabajo
+         *                                   de grado o falta de atributos requeridos.
+         */
         @Override
         @Transactional
         public STICoordinadorFase4ResponseDto actualizarInformacionCoordinadoFase4(
@@ -1382,38 +1938,39 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
                         BindingResult result) {
 
+                // Validación de errores en los campos
                 if (result.hasErrors()) {
                         throw new FieldErrorException(result);
                 }
 
-                TrabajoGrado trabajoGrado = trabajoGradoRepository
-                                .findById(idTrabajoGrado)
+                // Buscar el trabajo de grado por su ID
+                TrabajoGrado trabajoGrado = trabajoGradoRepository.findById(idTrabajoGrado)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
+                // Validación del estado del trabajo de grado
                 if (trabajoGrado.getNumeroEstado() != 30 && trabajoGrado.getNumeroEstado() != 31
                                 && trabajoGrado.getNumeroEstado() != 32 && trabajoGrado.getNumeroEstado() != 33
                                 && trabajoGrado.getNumeroEstado() != 36) {
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp = sustentacionProyectoInvestigacionRepository
-                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                .getId())
+                // Buscar la sustentación asociada al trabajo de grado
+                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion = sustentacionProyectoInvestigacionRepository
+                                .findById(trabajoGrado.getSustentacionProyectoInvestigacion().getId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Sustentacion con id: "
-                                                                + trabajoGrado.getSustentacionProyectoInvestigacion()
-                                                                                .getId()
-                                                                + " no encontrado"));
+                                                "Sustentación con id: " + trabajoGrado
+                                                                .getSustentacionProyectoInvestigacion().getId()
+                                                                + " no encontrada"));
 
-                if (!sustentacionProyectoInvestigacionTmp.getRespuestaSustentacion()
+                // Verificar si la respuesta de la sustentación ha cambiado y actualizar el
+                // estado del trabajo de grado en consecuencia
+                if (!sustentacionProyectoInvestigacion.getRespuestaSustentacion()
                                 .equals(sustentacionDto.getRespuestaSustentacion())) {
                         if (sustentacionDto.getRespuestaSustentacion().equals(ConceptoSustentacion.APROBADO)) {
                                 Optional<TiemposPendientes> tiemposPendientesOpt = tiemposPendientesRepository
                                                 .findByTrabajoGradoId(idTrabajoGrado);
-                                if (tiemposPendientesOpt.isPresent()) {
-                                        tiemposPendientesRepository.delete(tiemposPendientesOpt.get());
-                                }
+                                tiemposPendientesOpt.ifPresent(tiemposPendientesRepository::delete);
                                 trabajoGrado.setNumeroEstado(31);
                         } else if (sustentacionDto.getRespuestaSustentacion()
                                         .equals(ConceptoSustentacion.APROBADO_CON_OBSERVACIONES)) {
@@ -1428,37 +1985,55 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         }
                 }
 
+                // Actualizar tiempos pendientes si existen
                 Optional<TiemposPendientes> tiemposPendientes = tiemposPendientesRepository
                                 .findByTrabajoGradoId(idTrabajoGrado);
+                tiemposPendientes.ifPresent(tp -> tp.setFechaLimite(LocalDate.now().plusDays(60)));
 
-                LocalDate fechaActual = LocalDate.now();
+                // Actualizar la información de la sustentación
+                actualizarInformacionCoordinadorFase4(sustentacionProyectoInvestigacion, sustentacionDto, trabajoGrado);
 
-                if (tiemposPendientes.isPresent()) {
-                        tiemposPendientes.get().setFechaLimite(fechaActual.plusDays(60));
-                }
+                // Guardar la entidad en el repositorio
+                SustentacionProyectoInvestigacion sustentacionGuardada = sustentacionProyectoInvestigacionRepository
+                                .save(sustentacionProyectoInvestigacion);
 
-                actualizarInformacionCoordinadorFase4(sustentacionProyectoInvestigacionTmp,
-                                sustentacionDto, trabajoGrado);
-                sustentacionProyectoInvestigacionTmp
-                                .setRespuestaSustentacion(sustentacionDto.getRespuestaSustentacion());
-                SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionRes = sustentacionProyectoInvestigacionRepository
-                                .save(sustentacionProyectoInvestigacionTmp);
-
-                return sustentacionProyectoInvestigacionResponseMapper
-                                .toCoordinadorFase4Dto(sustentacionProyectoInvestigacionRes);
+                // Convertir la entidad guardada en el DTO de respuesta
+                return sustentacionProyectoInvestigacionResponseMapper.toCoordinadorFase4Dto(sustentacionGuardada);
         }
 
+        /**
+         * Método privado para actualizar la información del coordinador en la fase 4 de
+         * la sustentación.
+         * 
+         * @param sustentacionProyectoInvestigacion la entidad de sustentación que se va
+         *                                          a actualizar.
+         * @param sustentacionDto                   el objeto DTO que contiene la nueva
+         *                                          información para la actualización.
+         * @param trabajoGrado                      la entidad del trabajo de grado
+         *                                          asociada a la sustentación.
+         */
         private void actualizarInformacionCoordinadorFase4(
-                        SustentacionProyectoInvestigacion sustentacionProyectoInvestigacionTmp,
+                        SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion,
                         SustentacionTrabajoInvestigacionCoordinadorFase4Dto sustentacionDto,
                         TrabajoGrado trabajoGrado) {
 
-                sustentacionProyectoInvestigacionTmp
+                sustentacionProyectoInvestigacion
                                 .setRespuestaSustentacion(sustentacionDto.getRespuestaSustentacion());
         }
 
+        /**
+         * Método privado para validar el formato de un enlace y su contenido en base64.
+         * 
+         * @param link el enlace que se va a validar.
+         * @throws InformationException si el enlace no tiene un formato válido o su
+         *                              contenido no está codificado correctamente en
+         *                              base64.
+         */
         private void validarLink(String link) {
+                // Validar el formato del enlace
                 ValidationUtils.validarFormatoLink(link);
+
+                // Extraer y validar la parte codificada en base64 del enlace
                 String base64 = link.substring(link.indexOf('-') + 1);
                 ValidationUtils.validarBase64(base64);
         }

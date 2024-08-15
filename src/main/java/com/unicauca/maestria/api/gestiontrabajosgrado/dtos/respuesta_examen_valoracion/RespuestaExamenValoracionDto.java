@@ -31,7 +31,6 @@ public class RespuestaExamenValoracionDto {
     @NotNull
     private ConceptosVarios respuestaExamenValoracion;
 
-    @NotNull
     private LocalDate fechaMaximaEntrega;
 
     @NotNull

@@ -288,7 +288,7 @@ public class InsertarInformacionDocenteSEVTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "Ya existe un examen de valoracion asociado al trabajo de grado";
+                String expectedMessage = "Ya existe un examen de valoración asociado al trabajo de grado";
 
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }

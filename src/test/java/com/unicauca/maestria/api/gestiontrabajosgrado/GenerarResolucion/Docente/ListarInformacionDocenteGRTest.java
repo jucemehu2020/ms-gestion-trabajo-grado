@@ -29,7 +29,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.Traba
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion.docente.GeneracionResolucionDocenteListDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.GeneracionResolucionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.GeneracionResolucionResponseMapper;

@@ -192,7 +192,7 @@ public class ListarInformacionDocenteSTest {
                 });
 
                 assertNotNull(exception.getMessage());
-                String expectedMessage = "Sustentacion con ID trabajo de grado 2 no encontrado";
+                String expectedMessage = "Sustentación con ID trabajo de grado 2 no encontrado";
                 assertTrue(exception.getMessage().contains(expectedMessage));
         }
 
