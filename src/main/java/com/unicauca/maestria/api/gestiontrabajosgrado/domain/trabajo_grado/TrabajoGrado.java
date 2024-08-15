@@ -1,6 +1,7 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -8,52 +9,64 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import javax.persistence.FetchType;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.estudiante.Estudiante;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.rta_examen_valoracion.RespuestaExamenValoracion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.ExamenValoracionCancelado;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.respuesta_examen_valoracion.RespuestaExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_trabajo_investigacion.SustentacionTrabajoInvestigacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacion;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "trabajo_grado")
+@Getter
+@Setter
+@Table(name = "trabajos_grado")
 public class TrabajoGrado {
 
     @Id
-    @Column(name = "id_trabajo_grado")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_estudiante")
-    private Estudiante estudiante;
+    @Column(name = "id_estudiante")
+    private Long idEstudiante;
 
     private LocalDate fechaCreacion;
 
     private Integer numeroEstado;
 
-    @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
-    private SolicitudExamenValoracion examenValoracion;
+    private String titulo;
 
-    @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
-    private RespuestaExamenValoracion idRtaExamenValoracion;
+    private String correoElectronicoTutor;
 
-    @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
-    private GeneracionResolucion idGeneracionResolucion;
+    @OneToOne(mappedBy = "trabajoGrado", cascade = CascadeType.ALL)
+    private SolicitudExamenValoracion solicitudExamenValoracion;
 
-    @OneToOne(mappedBy = "idTrabajoGrado", cascade = CascadeType.ALL)
-    private SustentacionTrabajoInvestigacion idSustentacionProyectoInvestigacion;
+    @OneToMany(mappedBy = "trabajoGrado", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RespuestaExamenValoracion> respuestaExamenValoracion;
 
+    @OneToOne(mappedBy = "trabajoGrado", cascade = CascadeType.ALL)
+    private GeneracionResolucion generacionResolucion;
+
+    @OneToOne(mappedBy = "trabajoGrado", cascade = CascadeType.ALL)
+    private SustentacionProyectoInvestigacion sustentacionProyectoInvestigacion;
+
+    @OneToMany(mappedBy = "trabajoGrado", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TiemposPendientes> tiemposPendientes;
+
+    @OneToOne(mappedBy = "trabajoGrado", cascade = CascadeType.ALL)
+    private ExamenValoracionCancelado examenValoracionCancelado;
 }

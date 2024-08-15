@@ -1,8 +1,13 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.*;
 import javax.validation.constraints.NotNull;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.RespuestaComiteGeneracionResolucion;
 
 @Getter
 @Setter
@@ -10,41 +15,37 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder
 public class GeneracionResolucionDto {
-    
+
     @NotNull
     private Long idTrabajoGrados;
 
     @NotNull
-    private String titulo;
+    private Long director;
 
     @NotNull
-    private String director;
+    private Long codirector;
 
     @NotNull
-    private String codirector;
-
-    @NotNull
-    private String numeroActaRevision;
-
-    @NotNull
-    private LocalDate fechaActa;
-
-    @NotNull
-    private String linkAnteproyectoAprobado;
+    private String linkAnteproyectoFinal;
 
     @NotNull
     private String linkSolicitudComite;
 
     @NotNull
-    private String linkSolicitudConcejoFacultad;
-
-    //CF: Concejo de facultad
-    @NotNull
-    private String numeroResolucionGeneradaCF;
+    private ConceptoVerificacion conceptoDocumentosCoordinador;
 
     @NotNull
-    private LocalDate fechaResolucion;
+    private List<RespuestaComiteGeneracionResolucion> actaFechaRespuestaComite;
 
     @NotNull
-    private String linkResolucionGeneradaCF;
+    private String linkSolicitudConsejo;
+
+    @NotNull
+    private String numeroActaConsejo;
+
+    @NotNull
+    private LocalDate fechaActaConsejo;
+
+    @NotNull
+    private String linkOficioConsejo;
 }

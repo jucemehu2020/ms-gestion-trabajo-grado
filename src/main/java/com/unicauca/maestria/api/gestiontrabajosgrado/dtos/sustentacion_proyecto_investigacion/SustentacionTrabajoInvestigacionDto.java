@@ -1,8 +1,18 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.*;
+
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.RespuestaComiteSustentacionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.AnexoSustentacionDto;
 
 @Getter
 @Setter
@@ -11,38 +21,54 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class SustentacionTrabajoInvestigacionDto {
 
-    @NotNull
-    private Long idTrabajoGrados; 
+    @NotBlank
+    private String linkFormatoF;
 
     @NotNull
-    private String linkRemisionDocumentoFinal;
+    private String linkMonografia;
 
     @NotNull
-    private String urlDocumentacion;
-
-    // CF: Concejo de facultad
-    @NotNull
-    private String linkRemisionDocumentoFinalCF;
+    private List<AnexoSustentacionDto> anexos = new ArrayList<>();
 
     @NotNull
-    private String linkConstanciaDocumentoFinal;
+    private Long idJuradoInterno;
 
     @NotNull
-    private String linkActaSustentacion;
+    private Long idJuradoExterno;
 
     @NotNull
-    private String linkActaSustentacionPublica;
+    private ConceptoVerificacion conceptoCoordinador;
 
-    @NotNull
-    private Boolean respuestaSustentacion;
-
-    @NotNull
+    @NotBlank
     private String linkEstudioHojaVidaAcademica;
 
-    @NotNull
-    private String numeroActaTrabajoFinal;
+    private List<RespuestaComiteSustentacionDto> actaFechaRespuestaComite;
+
+    @NotBlank
+    private String linkFormatoG;
 
     @NotNull
-    private LocalDate fechaActa;
+    private ConceptoVerificacion juradosAceptados;
+
+    @NotNull
+    private LocalDate fechaSustentacion;
+
+    @NotBlank
+    private String numeroActaConsejo;
+
+    @NotNull
+    private LocalDate fechaActaConsejo;
+
+    @NotBlank
+    private String linkFormatoH;
+
+    @NotBlank
+    private String linkFormatoI;
+
+    @NotBlank
+    private String linkEstudioHojaVidaAcademicaGrado;
+
+    @NotNull
+    private ConceptoSustentacion respuestaSustentacion;
 
 }

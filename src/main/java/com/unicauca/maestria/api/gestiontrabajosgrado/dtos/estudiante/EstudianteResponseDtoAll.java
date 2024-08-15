@@ -6,7 +6,7 @@ import java.util.List;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.embeddables.Caracterizacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.embeddables.InformacionMaestriaActual;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +30,5 @@ public class EstudianteResponseDtoAll {
 	private InformacionMaestriaActual informacionMaestria;
 	private List<ProrrogaDto> prorrogas;
 	private List<ReingresoDto> reingresos;
-	private Integer estadoTrabajoGrado;
-	private List<TrabajoGradoDto> trabajoGrado;
+	private List<TrabajoGradoResponseDto> trabajoGrado;
 }

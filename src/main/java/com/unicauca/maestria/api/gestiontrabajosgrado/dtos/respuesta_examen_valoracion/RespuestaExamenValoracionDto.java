@@ -3,9 +3,14 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_val
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_examen_valoracion.TipoEvaluador;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.EnvioEmailDto;
 
 @Getter
 @Setter
@@ -15,27 +20,26 @@ import javax.validation.constraints.NotNull;
 public class RespuestaExamenValoracionDto {
 
     @NotNull
-    private Long idTrabajoGrados;
-
-    @NotBlank
     private String linkFormatoB;
 
-    @NotBlank
+    @NotNull
     private String linkFormatoC;
 
-    @NotBlank
-    private String observaciones;
-
-    @NotBlank
-    private String respuestaExamenValoracion;
+    @Valid
+    private List<AnexoRespuestaExamenValoracionDto> anexos;
 
     @NotNull
-    private LocalDate fechaMaxmiaEntrega;
+    private ConceptosVarios respuestaExamenValoracion;
+
+    private LocalDate fechaMaximaEntrega;
 
     @NotNull
-    private Boolean estadoFinalizado;
-    
-    @NotBlank
-    private String observacion;
+    private Long idEvaluador;
+
+    @NotNull
+    private TipoEvaluador tipoEvaluador;
+
+    @Valid
+    private EnvioEmailDto envioEmail;
 
 }

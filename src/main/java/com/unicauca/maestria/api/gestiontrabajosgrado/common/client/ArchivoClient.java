@@ -6,14 +6,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.InformacionEstudianteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.common.PersonaDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.EstudianteInfoDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
 
-@FeignClient(name = "msv-estudiante-docente", url = "http://localhost:8082")
+@FeignClient(name = "ms-estudiante-docente-experto", url = "http://ms-estudiante-docente-experto:8082", configuration = FeignConfig.class)
 public interface ArchivoClient {
 
     @GetMapping("/api/estudiantes/")
@@ -21,8 +19,20 @@ public interface ArchivoClient {
 
     @GetMapping("/api/estudiantes/{id}")
     public EstudianteResponseDto obtenerPorIdEstudiante(@PathVariable Long id);
+    
+    @GetMapping("/api/estudiantes/{id}")
+    public EstudianteResponseDtoAll obtenerInformacionEstudiante(@PathVariable Long id);
 
     @GetMapping("/api/docentes")
-    public DocenteResponseDto listarDocentesRes();
+    public List<DocenteResponseDto> listarDocentesRes();
+
+    @GetMapping("/api/docentes/{id}")
+    public DocenteResponseDto obtenerDocentePorId(@PathVariable Long id);
+
+    @GetMapping("/api/expertos")
+    public List<ExpertoResponseDto> listarExpertos();
+
+    @GetMapping("/api/expertos/{id}")
+    public ExpertoResponseDto obtenerExpertoPorId(@PathVariable Long id);
 
 }

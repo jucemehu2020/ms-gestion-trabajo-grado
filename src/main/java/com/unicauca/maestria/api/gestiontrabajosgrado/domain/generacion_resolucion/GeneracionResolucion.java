@@ -1,7 +1,10 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
 import lombok.AllArgsConstructor;
@@ -13,43 +16,42 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "generacion_resolucion")
+@Table(name = "generaciones_resolucion")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class GeneracionResolucion {
-    
+
     @Id
-    @Column(name = "id_generacion_resolucion")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String titulo;
+    private Long director;
 
-    private String director;
+    private Long codirector;
 
-    private String codirector;
-
-    private String numeroActaRevision;
-
-    private LocalDate fechaActa;
-
-    private String linkAnteproyectoAprobado;
+    private String linkAnteproyectoFinal;
 
     private String linkSolicitudComite;
 
-    private String linkSolicitudConcejoFacultad;
+    @Enumerated(EnumType.STRING)
+    private ConceptoVerificacion conceptoDocumentosCoordinador;
 
-    //CF: Concejo de facultad
-    private String numeroResolucionGeneradaCF;
+    @OneToMany(mappedBy = "generacionResolucion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<RespuestaComiteGeneracionResolucion> actaFechaRespuestaComite;
 
-    private LocalDate fechaResolucion;
+    private String linkSolicitudConsejo;
 
-    private String linkResolucionGeneradaCF;
+    private String numeroActaConsejo;
+
+    private LocalDate fechaActaConsejo;
+
+    private String linkOficioConsejo;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_trabajo_grado")
-    private TrabajoGrado idTrabajoGrado;
+    private TrabajoGrado trabajoGrado;
 }

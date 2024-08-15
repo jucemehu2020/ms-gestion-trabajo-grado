@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 
 
 @Data
-@NoArgsConstructor @AllArgsConstructor @Builder //pediente de cambios
+@NoArgsConstructor @AllArgsConstructor @Builder
 @Embeddable
 public class Caracterizacion {
 	

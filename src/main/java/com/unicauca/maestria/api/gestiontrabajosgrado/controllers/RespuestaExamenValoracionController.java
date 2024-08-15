@@ -1,48 +1,84 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.controllers;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.validation.Valid;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.RespuestaExamenValoracionResponseDto;
+import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion.Cancelado.ExamenValoracionCanceladoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.services.respuesta_examen_valoracion.RespuestaExamenValoracionService;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Validated
 @RestController
 @RequestMapping("/api/respuesta_examen_valoracion")
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class RespuestaExamenValoracionController {
 
-    private final RespuestaExamenValoracionService respuestaExamenValoracion;
+        private final RespuestaExamenValoracionService respuestaExamenValoracion;
 
-    @PostMapping
-    public ResponseEntity<RespuestaExamenValoracionDto> crear(@Valid @RequestBody RespuestaExamenValoracionDto examenValoracion,
-            BindingResult result) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(respuestaExamenValoracion.crear(examenValoracion, result));
-    }
+        @PostMapping("/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
+        public ResponseEntity<RespuestaExamenValoracionResponseDto> insertarInformacion(
+                        @PathVariable Long idTrabajoGrado,
+                        @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(respuestaExamenValoracion.insertarInformacion(idTrabajoGrado, examenValoracion,
+                                                result));
+        }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RespuestaExamenValoracionDto> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(respuestaExamenValoracion.buscarPorId(id));
-    }
+        @GetMapping("/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('DOCENTE') or hasRole('COORDINADOR')")
+        public ResponseEntity<Map<String, List<RespuestaExamenValoracionResponseDto>>> buscarPorId(
+                        @PathVariable Long idTrabajoGrado) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion.buscarPorId(idTrabajoGrado));
+        }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<RespuestaExamenValoracionDto> actualizar(@PathVariable Long id,
-            @Valid @RequestBody RespuestaExamenValoracionDto examenValoracion, BindingResult result) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(respuestaExamenValoracion.actualizar(id, examenValoracion, result));
-    }
+        @PutMapping("/{idRespuestaExamen}")
+        @PreAuthorize("hasRole('COORDINADOR')")
+        public ResponseEntity<RespuestaExamenValoracionResponseDto> actualizar(@PathVariable Long idRespuestaExamen,
+                        @Valid @RequestBody RespuestaExamenValoracionDto respuestaExamenValoracionDto,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(respuestaExamenValoracion.actualizar(idRespuestaExamen,
+                                                respuestaExamenValoracionDto,
+                                                result));
+        }
+
+        @PostMapping("/insertarInformacionCancelado/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
+        public ResponseEntity<ExamenValoracionCanceladoDto> insertarInformacionCancelado(
+                        @PathVariable Long idTrabajoGrado,
+                        @Valid @RequestBody ExamenValoracionCanceladoDto examenValoracionCanceladoDto,
+                        BindingResult result) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion
+                                                .insertarInformacionCancelado(idTrabajoGrado,
+                                                                examenValoracionCanceladoDto, result));
+        }
+
+        @PostMapping("/evaluadorNoRespondio/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
+        public ResponseEntity<?> evaluadorNoRespondio(@PathVariable Long idTrabajoGrado) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion.evaluadorNoRespondio(idTrabajoGrado));
+        }
+
+        @GetMapping("/obtenerFormatosB/{idTrabajoGrado}")
+        @PreAuthorize("hasRole('COORDINADOR')")
+        public ResponseEntity<?> obtenerFormatosB(@PathVariable Long idTrabajoGrado) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(respuestaExamenValoracion.obtenerFormatosB(idTrabajoGrado));
+        }
 }

@@ -2,6 +2,7 @@ package com.unicauca.maestria.api.gestiontrabajosgrado.common.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,22 +11,25 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 
+import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
+
 public class FilesUtilities {
-    public static String guardarArchivo(String archivoBase64) {
+
+    public static String guardarArchivoNew2(String ruta, String archivoBase64) {
         try {
             String[] partesBase64 = archivoBase64.split("-");
             byte[] archivoBytes = Base64.getDecoder().decode(partesBase64[1]);
             Date fechaActual = new Date();
             SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yy");
             String fechaFormateada = formatoFecha.format(fechaActual);
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(archivoBytes);
 
-            String rutaCarpeta = "./files/" + fechaFormateada;
+            String rutaCarpeta = "./files/" + ruta + "/" + fechaFormateada;
             String rutaArchivo = rutaCarpeta + "/" + generateUniqueFileName() + "-" + partesBase64[0];
             File carpeta = new File(rutaCarpeta);
             OutputStream out = null;
@@ -76,4 +80,34 @@ public class FilesUtilities {
         }
         return false;
     }
+
+    public static boolean deleteFolderAndItsContents(String nombreCarpetaInicial) {
+        String rutaCarpeta = "./files/" + nombreCarpetaInicial;
+        File carpeta = new File(rutaCarpeta);
+        if (!carpeta.exists() || !carpeta.isDirectory()) {
+            return false; // La ruta no es una carpeta válida
+        }
+
+        try {
+            FileUtils.deleteDirectory(carpeta);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false; // Error al eliminar la carpeta y su contenido
+        }
+    }
+
+    public static String recuperarArchivo(String rutaArchivo) {
+        try {
+            File archivo = new File(rutaArchivo);
+            FileInputStream fileInputStreamReader = new FileInputStream(archivo);
+            byte[] bytes = new byte[(int) archivo.length()];
+            fileInputStreamReader.read(bytes);
+            fileInputStreamReader.close();
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException e) {
+            throw new InformationException("Error al recuperar el archivo");
+        }
+    }
+
 }
