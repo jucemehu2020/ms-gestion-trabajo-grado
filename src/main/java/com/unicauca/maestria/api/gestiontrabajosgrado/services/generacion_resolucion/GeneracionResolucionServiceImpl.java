@@ -303,12 +303,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 if (generacionResolucionDto.getActaFechaRespuestaComite().get(0).getConceptoComite()
                                 .equals(Concepto.APROBADO)) {
                         correos.add(Constants.correoConsejo);
-                        // Map<String, Object> documentosParaConsejo = new HashMap<>();
-                        // String[] solicitudConsejoFacultad = generacionResolucionDto
-                        // .getLinkSolicitudConsejoFacultad()
-                        // .split("-");
-                        // documentosParaConsejo.put("Solicitud_Consejo_Facultad",
-                        // solicitudConsejoFacultad[1]);
                         Map<String, Object> documentosParaConsejo = generacionResolucionDto
                                         .getObtenerDocumentosParaEnvioConsejo().getDocumentos();
                         envioCorreos.enviarCorreoConAnexos(correos,
@@ -341,7 +335,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
         private void agregarInformacionCoordinadorFase2(GeneracionResolucion generacionResolucion,
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionDto) {
-                // Crear una nueva instancia de RespuestaComite
                 RespuestaComiteGeneracionResolucion respuestaComite = RespuestaComiteGeneracionResolucion.builder()
                                 .conceptoComite(generacionResolucionDto.getActaFechaRespuestaComite().get(0)
                                                 .getConceptoComite())
@@ -351,12 +344,10 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                 .generacionResolucion(generacionResolucion)
                                 .build();
 
-                // Si la colección está vacía, inicializarla
                 if (generacionResolucion.getActaFechaRespuestaComite() == null) {
                         generacionResolucion.setActaFechaRespuestaComite(new ArrayList<>());
                 }
 
-                // Agregar la nueva respuesta a la lista existente
                 generacionResolucion.getActaFechaRespuestaComite().add(respuestaComite);
                 generacionResolucion.setLinkSolicitudConsejo(
                                 generacionResolucionDto.getLinkSolicitudConsejo());
@@ -409,7 +400,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 return generacionResolucionResponseMapper.toCoordinadorFase3Dto(generarResolucionRes);
         }
 
-        // Funciones privadas
         private void agregarInformacionCoordinadorFase3(GeneracionResolucion generacionResolucion,
                         GeneracionResolucionCoordinadorFase3Dto generacionResolucionDto) {
                 generacionResolucion.setNumeroActaConsejo(
@@ -438,7 +428,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                 evaluadorInternoMap1.put("id", docente1.getId().toString());
                 evaluadorInternoMap1.put("nombres", nombre_docente1);
 
-                // Obtener y construir información del evaluador externo
                 DocenteResponseDto docente2 = archivoClient.obtenerDocentePorId(generacionResolucion.getCodirector());
                 String nombre_docente2 = docente2.getPersona().getNombre() + " " + docente2.getPersona().getApellido();
                 Map<String, String> evaluadorInternoMap2 = new HashMap<>();
@@ -597,7 +586,7 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 generacionResolucion.setDirector(generacionResolucionDocenteDto.getIdDirector());
                 generacionResolucion.setCodirector(generacionResolucionDocenteDto.getIdCodirector());
-                // Update archivos
+
                 generacionResolucion
                                 .setLinkAnteproyectoFinal(generacionResolucionDocenteDto.getLinkAnteproyectoFinal());
                 generacionResolucion.setLinkSolicitudComite(generacionResolucionDocenteDto.getLinkSolicitudComite());
@@ -816,12 +805,10 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                         GeneracionResolucionCoordinadorFase2Dto generacionResolucionCoordinadorFase2Dto,
                         TrabajoGrado trabajoGrado) {
 
-                // Obtener el último registro asociado a este id_generacion_resolucion
                 RespuestaComiteGeneracionResolucion ultimoRegistro = respuestaComiteGeneracionResolucionRepository
                                 .findFirstByGeneracionResolucionIdOrderByIdDesc(generacionResolucion.getId());
 
                 if (ultimoRegistro != null) {
-                        // Actualizar los valores del último registro
                         ultimoRegistro.setNumeroActa(
                                         generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
                                                         .getNumeroActa());
@@ -832,11 +819,9 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                         generacionResolucionCoordinadorFase2Dto.getActaFechaRespuestaComite().get(0)
                                                         .getConceptoComite());
 
-                        // Guardar los cambios en la base de datos
                         respuestaComiteGeneracionResolucionRepository.save(ultimoRegistro);
                 }
 
-                // Actualizar otros campos en generacionResolucion
                 generacionResolucion.setLinkSolicitudConsejo(
                                 generacionResolucionCoordinadorFase2Dto.getLinkSolicitudConsejo());
 
@@ -892,8 +877,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
                                         generacionResolucionOld.getLinkOficioConsejo());
                 }
 
-                // GeneracionResolucion generacionResolucion = new GeneracionResolucion();
-
                 generacionResolucionOld.setNumeroActaConsejo(
                                 generacionResolucionCoordinadorFase3Dto.getNumeroActaConsejo());
                 generacionResolucionOld.setFechaActaConsejo(
@@ -912,7 +895,6 @@ public class GeneracionResolucionServiceImpl implements GeneracionResolucionServ
 
                 String procesoVa = "Generacion_Resolucion";
 
-                // Obtener la fecha actual
                 LocalDate fechaActual = LocalDate.now();
                 int anio = fechaActual.getYear();
                 int mes = fechaActual.getMonthValue();

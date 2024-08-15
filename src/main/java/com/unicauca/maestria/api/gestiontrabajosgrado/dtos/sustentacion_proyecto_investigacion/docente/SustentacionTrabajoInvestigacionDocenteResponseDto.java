@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 public class SustentacionTrabajoInvestigacionDocenteResponseDto {
 
-    private Long id; 
+    private Long id;
     private String linkFormatoF;
     private String linkMonografia;
     private List<AnexoSustentacionDto> anexos = new ArrayList<>();

@@ -1,4 +1,5 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.mappers;
+
 import org.mapstruct.Mapper;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.GeneracionResolucion;
@@ -12,22 +13,18 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion
 public interface GeneracionResolucionResponseMapper
         extends GenericMapper<GeneracionResolucionResponseDto, GeneracionResolucion> {
 
-    // Docente
     GeneracionResolucionDocenteResponseDto toDocenteResponseDto(GeneracionResolucionResponseDto dto);
 
     GeneracionResolucionDocenteResponseDto toDocenteDto(GeneracionResolucion entity);
 
-    // Coordinador - Fase 1
     GeneracionResolucionDocenteResponseDto toCoordinadorFase1ResponseDto(GeneracionResolucionResponseDto dto);
 
     GeneracionResolucionCoordinadorFase1ResponseDto toCoordinadorFase1Dto(GeneracionResolucion entity);
 
-    // Coordinador - Fase 2
     GeneracionResolucionDocenteResponseDto toCoordinadorFase2ResponseDto(GeneracionResolucionResponseDto dto);
 
     GeneracionResolucionCoordinadorFase2ResponseDto toCoordinadorFase2Dto(GeneracionResolucion entity);
 
-    // Coordinador - Fase 3
     GeneracionResolucionDocenteResponseDto toCoordinadorFase3ResponseDto(GeneracionResolucionResponseDto dto);
 
     GeneracionResolucionCoordinadorFase3ResponseDto toCoordinadorFase3Dto(GeneracionResolucion entity);

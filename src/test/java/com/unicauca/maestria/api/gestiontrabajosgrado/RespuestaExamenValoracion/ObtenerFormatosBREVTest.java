@@ -30,7 +30,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoRespuestaExam
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.ExamenValoracionCanceladoMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenValoracionResponseMapper;
-import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosRespuestaExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.ExamenValoracionCanceladoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
@@ -46,8 +45,6 @@ public class ObtenerFormatosBREVTest {
     private RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
     @Mock
     private ExamenValoracionCanceladoRepository examenValoracionCanceladoRepository;
-    @Mock
-    private AnexosRespuestaExamenValoracionRepository anexosRespuestaExamenValoracionRepository;
     @Mock
     private RespuestaExamenValoracionMapper respuestaExamenValoracionMapper;
     @Mock
@@ -77,7 +74,6 @@ public class ObtenerFormatosBREVTest {
         respuestaExamenValoracionServiceImpl = new RespuestaExamenValoracionServiceImpl(
                 respuestaExamenValoracionRepository,
                 examenValoracionCanceladoRepository,
-                anexosRespuestaExamenValoracionRepository,
                 respuestaExamenValoracionMapper,
                 respuestaExamenValoracionResponseMapper,
                 anexoRespuestaExamenValoracionMapper,

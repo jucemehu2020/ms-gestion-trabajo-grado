@@ -14,7 +14,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.respuesta_exa
 @AllArgsConstructor
 @Builder
 public class RespuestaExamenValoracionResponseDto {
-    
+
     private Long id;
     private String linkFormatoB;
     private String linkFormatoC;
@@ -23,5 +23,5 @@ public class RespuestaExamenValoracionResponseDto {
     private LocalDate fechaMaximaEntrega;
     private Long idEvaluador;
     private TipoEvaluador tipoEvaluador;
-    
+
 }

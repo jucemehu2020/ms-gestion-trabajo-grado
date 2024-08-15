@@ -27,11 +27,9 @@ public class PersonaDto {
 	@NotBlank
 	private String apellido;
 	
-	//@NotBlank
 	@Email
 	private String correoElectronico;
 	
-	//@NotBlank
 	private String telefono;
 	
 	@NotNull

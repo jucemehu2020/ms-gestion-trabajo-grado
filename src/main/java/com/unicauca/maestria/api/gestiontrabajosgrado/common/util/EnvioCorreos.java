@@ -25,8 +25,6 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.unicauca.maestria.api.gestiontrabajosgrado.exceptions.InformationException;
-
 @Component
 public class EnvioCorreos {
 
@@ -38,61 +36,39 @@ public class EnvioCorreos {
 
     public boolean enviarCorreoConAnexos(ArrayList<String> correos, String asunto, String mensaje,
             Map<String, Object> documentos) {
-        List<String> correosFallidos = new ArrayList<>();
-        Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
-        // Validar todos los correos antes de enviar
-        // for (String correo : correos) {
-        // if (!esCorreoValido(correo, emailPattern)) {
-        // correosFallidos.add(correo);
-        // }
-        // }
-
-        // if (!correosFallidos.isEmpty()) {
-        // System.err.println("Los siguientes correos no son válidos: " +
-        // correosFallidos);
-        // throw new InformationException("Los siguientes correos no son válidos: " +
-        // correosFallidos);
-        // }
-
-        // Si todos los correos son válidos, proceder a enviarlos
         try {
             Map<String, Object> templateModel = new HashMap<>();
 
             for (String correo : correos) {
                 MimeMessage message = mailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true); // habilitar modo multipart
+                MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
                 String saludo = obtenerSaludo();
 
-                // Configurar variables del contexto para la plantilla
                 templateModel.put("mensaje_saludo", saludo);
                 templateModel.put("mensaje", mensaje);
 
-                // Crear el contexto para el motor de plantillas
                 Context context = new Context();
                 context.setVariables(templateModel);
 
-                // Procesar la plantilla de correo electrónico
                 String html = templateEngine.process("emailTemplate", context);
 
                 helper.setTo(correo);
                 helper.setSubject(asunto);
-                helper.setText(html, true); // Establecer el cuerpo del mensaje HTML
+                helper.setText(html, true);
 
                 for (Map.Entry<String, Object> entry : documentos.entrySet()) {
                     String nombreDocumento = entry.getKey();
                     Object valorDocumento = entry.getValue();
 
                     if (valorDocumento instanceof String) {
-                        // Manejar los documentos que son cadenas
                         String base64Documento = (String) valorDocumento;
                         byte[] documentoBytes = Base64.getDecoder().decode(base64Documento);
                         ByteArrayDataSource dataSource = new ByteArrayDataSource(documentoBytes,
                                 Constants.aplicacionExtension);
                         helper.addAttachment(nombreDocumento + Constants.extension, dataSource);
                     } else if (valorDocumento instanceof List) {
-                        // Manejar la lista de anexos
                         List<String> listaAnexos = (List<String>) valorDocumento;
                         for (int i = 0; i < listaAnexos.size(); i++) {
                             String base64Anexo = listaAnexos.get(i);
@@ -104,7 +80,6 @@ public class EnvioCorreos {
                     }
                 }
 
-                // Enviar el mensaje
                 mailSender.send(message);
             }
 
@@ -126,26 +101,22 @@ public class EnvioCorreos {
 
             String saludo = obtenerSaludo();
 
-            // Configurar variables del contexto para la plantilla
             templateModel.put("mensaje_saludo", saludo);
             templateModel.put("mensaje", mensaje);
 
-            // Crear el contexto para el motor de plantillas
             Context context = new Context();
             context.setVariables(templateModel);
 
-            // Procesar la plantilla de correo electrónico
             String html = templateEngine.process("emailTemplate", context);
 
             helper.setTo(correo);
             helper.setSubject(asunto);
-            helper.setText(html, true); // Establecer el cuerpo del mensaje HTML
+            helper.setText(html, true);
 
             for (Map.Entry<String, Object> entry : documentos.entrySet()) {
                 String nombreDocumento = entry.getKey();
                 Object valorDocumento = entry.getValue();
 
-                // Determinar la extensión y el tipo MIME
                 String extension;
                 String mimeType;
                 if (nombreDocumento.equals("formatoB") || nombreDocumento.equals("formatoCEv1") ||
@@ -158,13 +129,11 @@ public class EnvioCorreos {
                 }
 
                 if (valorDocumento instanceof String) {
-                    // Manejar los documentos que son cadenas
                     String base64Documento = (String) valorDocumento;
                     byte[] documentoBytes = Base64.getDecoder().decode(base64Documento);
                     ByteArrayDataSource dataSource = new ByteArrayDataSource(documentoBytes, mimeType);
                     helper.addAttachment(nombreDocumento + extension, dataSource);
                 } else if (valorDocumento instanceof List) {
-                    // Manejar la lista de anexos
                     List<String> listaAnexos = (List<String>) valorDocumento;
                     for (int i = 0; i < listaAnexos.size(); i++) {
                         String base64Anexo = listaAnexos.get(i);
@@ -175,7 +144,6 @@ public class EnvioCorreos {
                 }
             }
 
-            // Enviar el mensaje
             mailSender.send(message);
 
             return true;
@@ -183,28 +151,6 @@ public class EnvioCorreos {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private boolean esCorreoValido(String correo, Pattern emailPattern) {
-        if (correo == null || !emailPattern.matcher(correo).matches()) {
-            return false;
-        }
-
-        try {
-            InternetAddress emailAddr = new InternetAddress(correo);
-            emailAddr.validate();
-        } catch (AddressException ex) {
-            return false;
-        }
-
-        String domain = correo.substring(correo.indexOf("@") + 1);
-        try {
-            InetAddress.getByName(domain);
-        } catch (UnknownHostException e) {
-            return false;
-        }
-
-        return true;
     }
 
     public boolean enviarCorreosUnico(String correo, String asunto, String mensaje) {

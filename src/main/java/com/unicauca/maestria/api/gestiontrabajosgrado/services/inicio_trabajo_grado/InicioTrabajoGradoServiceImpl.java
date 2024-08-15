@@ -204,12 +204,8 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 		String respuestaLogin = archivoClientLogin.obtenerPersonaId(usuario);
 		JSONObject jsonObject = new JSONObject(respuestaLogin);
 
-		// Proceos temporal mientras se ajusta al login
-
 		Long personaId = jsonObject.getLong("personaId");
 		DocenteResponseDto docente = archivoClient.obtenerDocentePorId(personaId);
-
-		// String correoElectronico = jsonObject.getString("message");
 
 		TrabajoGrado trabajoGradoConvert = new TrabajoGrado();
 		trabajoGradoConvert.setIdEstudiante(informacionEstudiantes.getId());
@@ -289,7 +285,7 @@ public class InicioTrabajoGradoServiceImpl implements InicioTrabajoGradoService 
 						() -> new ResourceNotFoundException(
 								"Trabajo de grado con id " + idTrabajoGrado + " no encontrado"));
 
-		if(trabajoGrado.getNumeroEstado() == 34){	
+		if (trabajoGrado.getNumeroEstado() == 34) {
 			throw new InformationException("El trabajo de grado ya ha sido cancelado");
 		}
 

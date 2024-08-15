@@ -8,7 +8,6 @@ public interface RespuestaComiteSolicitudRepository extends JpaRepository<Respue
 
     RespuestaComiteExamenValoracion findFirstByOrderByIdDesc();
 
-    // Método para obtener el último registro según el id_examen_valoracion
     RespuestaComiteExamenValoracion findFirstBySolicitudExamenValoracionIdOrderByIdDesc(
             Long solicitudExamenValoracionId);
 }

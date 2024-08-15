@@ -1,10 +1,13 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.*;
 import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
+import com.unicauca.maestria.api.gestiontrabajosgrado.domain.generacion_resolucion.RespuestaComiteGeneracionResolucion;
 
 @Getter
 @Setter
@@ -17,10 +20,10 @@ public class GeneracionResolucionDto {
     private Long idTrabajoGrados;
 
     @NotNull
-    private String director;
+    private Long director;
 
     @NotNull
-    private String codirector;
+    private Long codirector;
 
     @NotNull
     private String linkAnteproyectoFinal;
@@ -32,10 +35,7 @@ public class GeneracionResolucionDto {
     private ConceptoVerificacion conceptoDocumentosCoordinador;
 
     @NotNull
-    private String numeroActaSolicitudComite;
-
-    @NotNull
-    private LocalDate fechaActaSolicitudComite;
+    private List<RespuestaComiteGeneracionResolucion> actaFechaRespuestaComite;
 
     @NotNull
     private String linkSolicitudConsejo;

@@ -323,12 +323,10 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			Map<String, Object> documentosParaEvaluador = examenValoracionDto
 					.getInformacionEnvioEvaluador().getDocumentos();
 
-			// Filtrar documentos para el docente
 			Map<String, Object> documentosParaDocente = documentosParaEvaluador.entrySet().stream()
 					.filter(entry -> !entry.getKey().equals("formatoCEv2"))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-			// Filtrar documentos para el experto
 			Map<String, Object> documentosParaExperto = documentosParaEvaluador.entrySet().stream()
 					.filter(entry -> !entry.getKey().equals("formatoCEv1"))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -346,7 +344,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 					examenValoracionDto.getEnvioEmailDto().getAsunto(),
 					examenValoracionDto.getEnvioEmailDto().getMensaje(), documentosParaExperto);
 
-			// Envio a estudiante y docente
 			String asunto = "Copia envio documentos a evaluador";
 			String mensaje = "Se adjunta copia de los documentos enviados a los evaluadores "
 					+ docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
@@ -378,10 +375,8 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 
 		TiemposPendientes tiemposPendientes = new TiemposPendientes();
 		if (optionalTiemposPendientes.isPresent()) {
-			// Si el registro ya existe, lo actualizamos
 			tiemposPendientes = optionalTiemposPendientes.get();
 		} else {
-			// Si no existe, creamos uno nuevo
 			tiemposPendientes = new TiemposPendientes();
 			tiemposPendientes.setTrabajoGrado(trabajoGrado);
 		}
@@ -594,21 +589,17 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			List<AnexoSolicitudExamenValoracion> anexosNuevos, String rutaArchivo) {
 		List<AnexoSolicitudExamenValoracion> anexosActuales = examenValoracionTmp.getAnexos();
 
-		// Mapa para buscar anexos actuales por enlace
 		Map<String, AnexoSolicitudExamenValoracion> mapaAnexosActuales = anexosActuales.stream()
 				.collect(Collectors.toMap(AnexoSolicitudExamenValoracion::getLinkAnexo, Function.identity()));
 
-		// Lista de anexos actualizados
 		List<AnexoSolicitudExamenValoracion> anexosActualizados = new ArrayList<>();
 
 		for (AnexoSolicitudExamenValoracion anexoNuevo : anexosNuevos) {
 			AnexoSolicitudExamenValoracion anexoActual = mapaAnexosActuales.get(anexoNuevo.getLinkAnexo());
 
 			if (anexoActual != null) {
-				// El anexo no ha cambiado, mantener el actual
 				anexosActualizados.add(anexoActual);
 			} else {
-				// El anexo ha cambiado o es nuevo, validar y agregar
 				validarLink(anexoNuevo.getLinkAnexo());
 				String rutaAnexoNueva = FilesUtilities.guardarArchivoNew2(rutaArchivo, anexoNuevo.getLinkAnexo());
 				anexoNuevo.setLinkAnexo(rutaAnexoNueva);
@@ -617,8 +608,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			}
 		}
 
-		// Eliminar archivos de los anexos que ya no están en la lista nueva y eliminar
-		// el anexo de la entidad
 		Iterator<AnexoSolicitudExamenValoracion> iterator = anexosActuales.iterator();
 		while (iterator.hasNext()) {
 			AnexoSolicitudExamenValoracion anexoActual = iterator.next();
@@ -628,7 +617,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 			}
 		}
 
-		// Agregar los nuevos anexos a la colección existente
 		anexosActuales.clear();
 		anexosActuales.addAll(anexosActualizados);
 	}
@@ -804,12 +792,10 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 				Map<String, Object> documentosParaEvaluador = examenValoracionDto
 						.getInformacionEnvioEvaluador().getDocumentos();
 
-				// Filtrar documentos para el docente
 				Map<String, Object> documentosParaDocente = documentosParaEvaluador.entrySet().stream()
 						.filter(entry -> !entry.getKey().equals("formatoCEv2"))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-				// Filtrar documentos para el experto
 				Map<String, Object> documentosParaExperto = documentosParaEvaluador.entrySet().stream()
 						.filter(entry -> !entry.getKey().equals("formatoCEv1"))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -827,7 +813,6 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 						examenValoracionDto.getEnvioEmailDto().getAsunto(),
 						examenValoracionDto.getEnvioEmailDto().getMensaje(), documentosParaExperto);
 
-				// Envio a estudiante y docente
 				String asunto = "Copia envio documentos a evaluador";
 				String mensaje = "Se adjunta copia de los documentos enviados a los evaluadores "
 						+ docente.getPersona().getNombre() + " " + docente.getPersona().getApellido();
@@ -848,22 +833,18 @@ public class SolicitudExamenValoracionServiceImpl implements SolicitudExamenValo
 	private void updateExamenValoracionCoordinadorValues(SolicitudExamenValoracion examenValoracion,
 			SolicitudExamenValoracionCoordinadorFase2Dto examenValoracionDto, TrabajoGrado trabajoGrado) {
 
-		// Obtener el último registro asociado a este examen de valoración
 		RespuestaComiteExamenValoracion ultimoRegistro = respuestaComiteSolicitudRepository
 				.findFirstBySolicitudExamenValoracionIdOrderByIdDesc(examenValoracion.getId());
 
-		// Si se encontró un registro, actualízalo
 		if (ultimoRegistro != null) {
 			ultimoRegistro.setNumeroActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getNumeroActa());
 			ultimoRegistro.setFechaActa(examenValoracionDto.getActaFechaRespuestaComite().get(0).getFechaActa());
 			ultimoRegistro
 					.setConceptoComite(examenValoracionDto.getActaFechaRespuestaComite().get(0).getConceptoComite());
 
-			// Guardar los cambios en la base de datos
 			respuestaComiteSolicitudRepository.save(ultimoRegistro);
 		}
 
-		// Actualizar otros campos en examenValoracion
 		examenValoracion.setFechaMaximaEvaluacion(examenValoracionDto.getFechaMaximaEvaluacion());
 		examenValoracion.setLinkOficioDirigidoEvaluadores(examenValoracionDto.getLinkOficioDirigidoEvaluadores());
 

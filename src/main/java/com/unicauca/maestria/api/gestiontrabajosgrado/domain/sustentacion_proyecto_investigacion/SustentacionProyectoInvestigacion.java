@@ -6,7 +6,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 
 import lombok.AllArgsConstructor;
@@ -45,13 +44,13 @@ public class SustentacionProyectoInvestigacion {
     @Enumerated(EnumType.STRING)
     private ConceptoVerificacion conceptoCoordinador;
 
+    private String linkEstudioHojaVidaAcademica;
+
     @OneToMany(mappedBy = "sustentacionProyectoInvestigacion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<RespuestaComiteSustentacion> actaFechaRespuestaComite;
 
     private String linkFormatoG;
-
-    private String linkEstudioHojaVidaAcademica;
 
     @Enumerated(EnumType.STRING)
     private ConceptoVerificacion juradosAceptados;
@@ -68,10 +67,10 @@ public class SustentacionProyectoInvestigacion {
 
     private String linkFormatoI;
 
+    private String linkEstudioHojaVidaAcademicaGrado;
+
     @Enumerated(EnumType.STRING)
     private ConceptoSustentacion respuestaSustentacion;
-
-    private String linkEstudioHojaVidaAcademicaGrado;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_trabajo_grado")

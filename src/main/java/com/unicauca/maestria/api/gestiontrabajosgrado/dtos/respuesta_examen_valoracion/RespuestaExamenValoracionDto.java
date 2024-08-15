@@ -1,6 +1,8 @@
 package com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valoracion;
 
 import lombok.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -30,11 +32,14 @@ public class RespuestaExamenValoracionDto {
     private ConceptosVarios respuestaExamenValoracion;
 
     @NotNull
+    private LocalDate fechaMaximaEntrega;
+
+    @NotNull
     private Long idEvaluador;
 
     @NotNull
     private TipoEvaluador tipoEvaluador;
-    
+
     @Valid
     private EnvioEmailDto envioEmail;
 

@@ -7,6 +7,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.respuesta_examen_valo
 
 @Mapper(componentModel = "spring")
 public interface ExamenValoracionCanceladoMapper
-        extends GenericMapper<ExamenValoracionCanceladoDto, ExamenValoracionCancelado> {
+                extends GenericMapper<ExamenValoracionCanceladoDto, ExamenValoracionCancelado> {
 
 }

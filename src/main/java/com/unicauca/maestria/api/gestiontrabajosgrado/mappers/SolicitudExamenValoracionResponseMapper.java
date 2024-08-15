@@ -9,25 +9,16 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valo
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.SolicitudExamenValoracionDocenteResponseDto;
 
 @Mapper(componentModel = "spring")
-public interface SolicitudExamenValoracionResponseMapper extends GenericMapper<SolicitudExamenValoracionResponseDto, SolicitudExamenValoracion> {
-
-    
-    // Métodos de mapeo para el DTO de Docente
-    //SolicitudExamenValoracion toEntity(SolicitudExamenValoracionDocenteDto docenteDto);
+public interface SolicitudExamenValoracionResponseMapper
+        extends GenericMapper<SolicitudExamenValoracionResponseDto, SolicitudExamenValoracion> {
 
     SolicitudExamenValoracionDocenteResponseDto toDocenteDto(SolicitudExamenValoracion entity);
 
     SolicitudExamenValoracionDocenteResponseDto toDocenteResponseDto(SolicitudExamenValoracionResponseDto entity);
 
-    // Métodos de mapeo para el DTO de Coordinador
-
     SolicitudExamenValoracionResponseFase1Dto toCoordinadorFase1Dto(SolicitudExamenValoracion entity);
 
-    //SolicitudExamenValoracion toEntity(SolicitudExamenValoracionCoordinadorDto coordinadorDto);
-
     SolicitudExamenValoracionCoordinadorFase2ResponseDto toCoordinadorFase2Dto(SolicitudExamenValoracion entity);
-    
-    // Agrega este método
+
     SolicitudExamenValoracionResponseDto toDto(SolicitudExamenValoracionResponseDto entity);
 }
-

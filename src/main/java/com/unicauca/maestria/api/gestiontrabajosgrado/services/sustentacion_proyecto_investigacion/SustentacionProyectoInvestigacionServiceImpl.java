@@ -15,24 +15,19 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.common.client.ArchivoClien
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.Concepto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.Constants;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.EnvioCorreos;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.FilesUtilities;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.util.ValidationUtils;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.TiemposPendientes;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.AnexoSolicitudExamenValoracion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_valoracion.SolicitudExamenValoracion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.AnexoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.RespuestaComiteSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.sustentacion_proyecto_investigacion.SustentacionProyectoInvestigacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.TrabajoGrado;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.docente.DocenteResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.egresado.CursoSaveDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.egresado.EmpresaSaveDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.estudiante.EstudianteResponseDtoAll;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.experto.ExpertoResponseDto;
-import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.AnexoSolicitudExamenValoracionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.DocenteInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.ExpertoInfoDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_1.STICoordinadorFase1ResponseDto;
@@ -404,7 +399,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .sustentacionProyectoInvestigacion(sustentacionTrabajoInvestigacion)
                                 .build();
 
-                // Si la colección está vacía, inicializarla
                 if (sustentacionTrabajoInvestigacion.getActaFechaRespuestaComite() == null) {
                         sustentacionTrabajoInvestigacion.setActaFechaRespuestaComite(new ArrayList<>());
                 }
@@ -636,10 +630,8 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 TiemposPendientes tiemposPendientes = new TiemposPendientes();
                 if (optionalTiemposPendientes.isPresent()) {
-                        // Si el registro ya existe, lo actualizamos
                         tiemposPendientes = optionalTiemposPendientes.get();
                 } else {
-                        // Si no existe, creamos uno nuevo
                         tiemposPendientes = new TiemposPendientes();
                         tiemposPendientes.setTrabajoGrado(trabajoGrado);
                 }
@@ -834,7 +826,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
 
                 String procesoVa = "Sustentacion_Proyecto_Investigacion";
 
-                // Obtener la fecha actual
                 LocalDate fechaActual = LocalDate.now();
                 int anio = fechaActual.getYear();
                 int mes = fechaActual.getMonthValue();
@@ -870,7 +861,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         throw new InformationException("No es permitido registrar la información");
                 }
 
-                // Valida si el docente y experto existen
                 archivoClient.obtenerDocentePorId(sustentacionDto.getIdJuradoInterno());
                 archivoClient.obtenerExpertoPorId(sustentacionDto.getIdJuradoExterno());
 
@@ -934,7 +924,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                                 .setIdJuradoInterno(sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoInterno());
                 sustentacionTrabajoInvestigacion
                                 .setIdJuradoExterno(sustentacionTrabajoInvestigacionDocenteDto.getIdJuradoExterno());
-                // Update archivos
                 sustentacionTrabajoInvestigacion
                                 .setLinkMonografia(sustentacionTrabajoInvestigacionDocenteDto.getLinkMonografia());
                 sustentacionTrabajoInvestigacion
@@ -945,22 +934,18 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         List<AnexoSustentacion> anexosNuevos, String rutaArchivo) {
                 List<AnexoSustentacion> anexosActuales = sustentacionTmp.getAnexos();
 
-                // Mapa para buscar anexos actuales por enlace
                 Map<String, AnexoSustentacion> mapaAnexosActuales = anexosActuales.stream()
                                 .collect(Collectors.toMap(AnexoSustentacion::getLinkAnexo,
                                                 Function.identity()));
 
-                // Lista de anexos actualizados
                 List<AnexoSustentacion> anexosActualizados = new ArrayList<>();
 
                 for (AnexoSustentacion anexoNuevo : anexosNuevos) {
                         AnexoSustentacion anexoActual = mapaAnexosActuales.get(anexoNuevo.getLinkAnexo());
 
                         if (anexoActual != null) {
-                                // El anexo no ha cambiado, mantener el actual
                                 anexosActualizados.add(anexoActual);
                         } else {
-                                // El anexo ha cambiado o es nuevo, validar y agregar
                                 validarLink(anexoNuevo.getLinkAnexo());
                                 String rutaAnexoNueva = FilesUtilities.guardarArchivoNew2(rutaArchivo,
                                                 anexoNuevo.getLinkAnexo());
@@ -970,8 +955,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         }
                 }
 
-                // Eliminar archivos de los anexos que ya no están en la lista nueva y eliminar
-                // el anexo de la entidad
                 Iterator<AnexoSustentacion> iterator = anexosActuales.iterator();
                 while (iterator.hasNext()) {
                         AnexoSustentacion anexoActual = iterator.next();
@@ -981,7 +964,6 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         }
                 }
 
-                // Agregar los nuevos anexos a la colección existente
                 anexosActuales.clear();
                 anexosActuales.addAll(anexosActualizados);
         }
@@ -1220,13 +1202,10 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         SustentacionTrabajoInvestigacionCoordinadorFase2Dto sustentacionTrabajoInvestigacionCoordinadorFase2Dto,
                         TrabajoGrado trabajoGrado) {
 
-                // Obtener el último registro asociado a este
-                // id_sustentacion_proyecto_investigacion
                 RespuestaComiteSustentacion ultimoRegistro = respuestaComiteSustentacionRepository
                                 .findFirstBySustentacionProyectoInvestigacionIdOrderByIdDesc(sustentacionTrabajoInvestigacion.getId());
 
                 if (ultimoRegistro != null) {
-                        // Actualizar los valores del último registro
                         ultimoRegistro.setNumeroActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                         .getActaFechaRespuestaComite().get(0).getNumeroActa());
                         ultimoRegistro.setFechaActa(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
@@ -1234,11 +1213,9 @@ public class SustentacionProyectoInvestigacionServiceImpl implements Sustentacio
                         ultimoRegistro.setConceptoComite(sustentacionTrabajoInvestigacionCoordinadorFase2Dto
                                         .getActaFechaRespuestaComite().get(0).getConceptoComite());
 
-                        // Guardar los cambios en la base de datos
                         respuestaComiteSustentacionRepository.save(ultimoRegistro);
                 }
 
-                // Actualizar otros campos en sustentacionTrabajoInvestigacion
                 sustentacionTrabajoInvestigacion
                                 .setLinkFormatoG(sustentacionTrabajoInvestigacionCoordinadorFase2Dto.getLinkFormatoG());
 

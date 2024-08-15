@@ -6,6 +6,7 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.solicitud_examen_va
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.solicitud_examen_valoracion.docente.AnexoSolicitudExamenValoracionDto;
 
 @Mapper(componentModel = "spring")
-public interface AnexoSolicitudExamenValoracionMapper extends GenericMapper<AnexoSolicitudExamenValoracionDto, AnexoSolicitudExamenValoracion> {
+public interface AnexoSolicitudExamenValoracionMapper
+        extends GenericMapper<AnexoSolicitudExamenValoracionDto, AnexoSolicitudExamenValoracion> {
 
 }

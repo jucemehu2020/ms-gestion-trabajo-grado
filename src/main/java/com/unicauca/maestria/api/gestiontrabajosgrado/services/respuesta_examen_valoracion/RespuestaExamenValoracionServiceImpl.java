@@ -35,7 +35,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.AnexoRespuestaExam
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.ExamenValoracionCanceladoMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenValoracionMapper;
 import com.unicauca.maestria.api.gestiontrabajosgrado.mappers.RespuestaExamenValoracionResponseMapper;
-import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.AnexosRespuestaExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.ExamenValoracionCanceladoRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.RespuestaExamenValoracionRepository;
 import com.unicauca.maestria.api.gestiontrabajosgrado.repositories.SolicitudExamenValoracionRepository;
@@ -50,7 +49,6 @@ public class RespuestaExamenValoracionServiceImpl implements RespuestaExamenValo
 
         private final RespuestaExamenValoracionRepository respuestaExamenValoracionRepository;
         private final ExamenValoracionCanceladoRepository examenValoracionCanceladoRepository;
-        private final AnexosRespuestaExamenValoracionRepository anexosRespuestaExamenValoracionRepository;
         private final RespuestaExamenValoracionMapper respuestaExamenValoracionMapper;
         private final RespuestaExamenValoracionResponseMapper respuestaExamenValoracionResponseMapper;
         private final AnexoRespuestaExamenValoracionMapper anexoRespuestaExamenValoracionMapper;

@@ -10,13 +10,10 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.generacion_resolucion
 @Mapper(componentModel = "spring")
 public interface GeneracionResolucionMapper extends GenericMapper<GeneracionResolucionDto, GeneracionResolucion> {
 
-    // Métodos de mapeo para el DTO de Coordinador
     GeneracionResolucion toEntity(GeneracionResolucionDocenteDto docenteDto);
 
-    // Métodos de mapeo para el DTO de Comite
     GeneracionResolucion toEntity(GeneracionResolucionCoordinadorFase2Dto coordinadorDto);
 
-    // Métodos de mapeo para el DTO de Comite
     GeneracionResolucion toEntity(GeneracionResolucionCoordinadorFase3Dto coordinadorDto);
 
 }

@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoSustentacion;
 import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptoVerificacion;
-import com.unicauca.maestria.api.gestiontrabajosgrado.common.enums.generales.ConceptosVarios;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.coordinador.fase_2.RespuestaComiteSustentacionDto;
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.sustentacion_proyecto_investigacion.docente.AnexoSustentacionDto;
 
@@ -37,19 +36,20 @@ public class SustentacionTrabajoInvestigacionDto {
     @NotNull
     private Long idJuradoExterno;
 
+    @NotNull
     private ConceptoVerificacion conceptoCoordinador;
+
+    @NotBlank
+    private String linkEstudioHojaVidaAcademica;
 
     private List<RespuestaComiteSustentacionDto> actaFechaRespuestaComite;
 
     @NotBlank
     private String linkFormatoG;
 
-    @NotBlank
-    private String linkEstudioHojaVidaAcademica;
-
     @NotNull
     private ConceptoVerificacion juradosAceptados;
-    
+
     @NotNull
     private LocalDate fechaSustentacion;
 
@@ -66,7 +66,7 @@ public class SustentacionTrabajoInvestigacionDto {
     private String linkFormatoI;
 
     @NotBlank
-    private String linkActaSustentacionPublica;
+    private String linkEstudioHojaVidaAcademicaGrado;
 
     @NotNull
     private ConceptoSustentacion respuestaSustentacion;

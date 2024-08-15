@@ -68,8 +68,6 @@ public class ActualizarInformacionCoordinadorREVTest {
         @Mock
         private ExamenValoracionCanceladoRepository examenValoracionCanceladoRepository;
         @Mock
-        private AnexosRespuestaExamenValoracionRepository anexosRespuestaExamenValoracionRepository;
-        @Mock
         private RespuestaExamenValoracionMapper respuestaExamenValoracionMapper;
         @Mock
         private RespuestaExamenValoracionResponseMapper respuestaExamenValoracionResponseMapper;
@@ -98,7 +96,6 @@ public class ActualizarInformacionCoordinadorREVTest {
                 respuestaExamenValoracionServiceImpl = new RespuestaExamenValoracionServiceImpl(
                                 respuestaExamenValoracionRepository,
                                 examenValoracionCanceladoRepository,
-                                anexosRespuestaExamenValoracionRepository,
                                 respuestaExamenValoracionMapper,
                                 respuestaExamenValoracionResponseMapper,
                                 anexoRespuestaExamenValoracionMapper,

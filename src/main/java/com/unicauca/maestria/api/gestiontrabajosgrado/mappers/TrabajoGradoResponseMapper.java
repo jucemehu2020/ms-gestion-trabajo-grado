@@ -6,6 +6,6 @@ import com.unicauca.maestria.api.gestiontrabajosgrado.domain.trabajo_grado.Traba
 import com.unicauca.maestria.api.gestiontrabajosgrado.dtos.inicio_trabajo_grado.TrabajoGradoResponseDto;
 
 @Mapper(componentModel = "spring")
-public interface TrabajoGradoResponseMapper extends GenericMapper<TrabajoGradoResponseDto, TrabajoGrado>{
-    
+public interface TrabajoGradoResponseMapper extends GenericMapper<TrabajoGradoResponseDto, TrabajoGrado> {
+
 }
